@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>LocalMentor Pro — Offline AI Journal</title>
+<style>
+  :root{
+    --bg:#0b0f14;--panel:#101826;--text:#e5e7eb;--muted:#93a4b7;--border:#1f2a37;--accent:#06b6d4;--accent2:#8b5cf6;--danger:#ef4444;--ok:#22c55e;--chip:#0e1522;--code:#0c1117
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto}
+  .app{display:grid;grid-template-columns:320px 1fr;grid-template-rows:auto 1fr auto;height:100%}
+  header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);background:rgba(16,24,38,.6);backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+  .brand{display:flex;gap:10px;align-items:center}
+  .logo{width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800}
+  .toolbar{display:flex;gap:8px;align-items:center}
+  .btn{background:#101723;border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:10px;cursor:pointer;transition:.18s;font-weight:600}
+  .btn:hover{transform:translateY(-1px);border-color:#2a374a}
+  .btn.primary{background:var(--accent2);border-color:transparent}
+  .btn.ok{background:var(--ok);border-color:transparent}
+  .btn.danger{background:var(--danger);border-color:transparent}
+
+  aside{border-right:1px solid var(--border);background:var(--panel);padding:12px;overflow:auto}
+  .chip{background:var(--chip);border:1px solid var(--border);padding:6px 8px;border-radius:999px;font-size:12px}
+  .muted{color:var(--muted)}
+  .input,.select,.textarea{background:#0f1624;border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:10px}
+
+  .section{display:grid;gap:10px;margin-bottom:12px}
+  .list{display:flex;flex-direction:column;gap:8px}
+  .card{background:#0e1522;border:1px solid var(--border);padding:12px;border-radius:12px}
+  .entry{cursor:pointer}
+  .entry.active{outline:2px solid var(--accent)}
+
+  .main{display:grid;grid-template-rows:auto auto 1fr auto}
+  .compose{display:grid;grid-template-columns:1fr 240px;gap:10px}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+  .chat{padding:14px;overflow:auto}
+  .msg{display:grid;grid-template-columns:36px 1fr;gap:10px;margin:8px 0}
+  .avatar{width:36px;height:36px;border-radius:10px;background:#0e1522;border:1px solid var(--border);display:grid;place-items:center;font-weight:800}
+  .bubble{background:#0e1522;border:1px solid var(--border);padding:12px;border-radius:12px}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .k{font-size:12px;color:var(--muted)}
+  .meter{height:8px;background:#0f1624;border:1px solid var(--border);border-radius:999px;overflow:hidden}
+  .meter>i{display:block;height:100%;background:linear-gradient(90deg,var(--danger),#f59e0b,var(--ok));width:0%}
+
+  canvas{background:#0f1624;border:1px solid var(--border);border-radius:12px}
+
+  @media(max-width:1024px){.app{grid-template-columns:1fr}aside{display:none}.compose{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><div class="logo">LM</div><div><div style="font-weight:800">LocalMentor Pro</div><div class="muted" style="font-size:12px">Private AI Journal • 100% local</div></div></div>
+    <div class="toolbar">
+      <button class="btn" id="btn-export">⬇️ Export</button>
+      <button class="btn" id="btn-import">⬆️ Import</button>
+      <button class="btn" id="btn-lock">🔒 Lock</button>
+      <button class="btn" id="btn-settings">⚙️ Settings</button>
+      <button class="btn ok" id="btn-new">➕ New Entry</button>
+    </div>
+  </header>
+
+  <aside>
+    <div class="section card">
+      <div class="row"><b>Today</b><span class="chip" id="today"></span></div>
+      <div class="grid2">
+        <label>Mood 😊<br/><input id="mood" class="input" type="range" min="1" max="5" value="3"/></label>
+        <label>Energy ⚡<br/><input id="energy" class="input" type="range" min="1" max="5" value="3"/></label>
+      </div>
+      <div class="row k" id="moodLabel">Neutral</div>
+      <div class="meter"><i id="moodBar" style="width:50%"></i></div>
+    </div>
+
+    <div class="section card">
+      <b>Prompts ✍️</b>
+      <div class="list" id="prompts"></div>
+    </div>
+
+    <div class="section card">
+      <b>Entries 📓</b>
+      <input id="search" class="input" placeholder="Search…"/>
+      <div class="list" id="entries"></div>
+    </div>
+  </aside>
+
+  <section class="main">
+    <div class="card">
+      <div class="row">
+        <select id="preset" class="select">
+          <option value="lmstudio">LM Studio (OpenAI /v1)</option>
+          <option value="ollama">Ollama (/api/chat)</option>
+        </select>
+        <input id="baseUrl" class="input" placeholder="http://localhost:1234" style="min-width:220px"/>
+        <input id="model" class="input" placeholder="llama-3-8b-instruct" style="min-width:220px"/>
+        <span class="chip" id="status">⚡ Ready</span>
+        <span class="chip" id="stats">—</span>
+        <button class="btn" id="btn-voice">🔊 Voice</button>
+        <button class="btn" id="btn-persona">🧩 Persona</button>
+      </div>
+    </div>
+
+    <div class="card compose">
+      <div class="section">
+        <input id="title" class="input" placeholder="Title (optional)"/>
+        <textarea id="text" class="textarea" placeholder="Write your thoughts… (Shift+Enter = newline)" style="min-height:160px"></textarea>
+        <div class="row">
+          <input id="tags" class="input" placeholder="#tags (comma or space)" style="min-width:240px"/>
+          <button class="btn ok" id="save">💾 Save</button>
+          <button class="btn" id="coach">🤝 Coach Me</button>
+          <button class="btn" id="summ">🪄 Summarize</button>
+          <button class="btn" id="record">🎙️ Dictate</button>
+        </div>
+      </div>
+      <div class="section">
+        <b>Insights 📊</b>
+        <canvas id="spark" width="220" height="80"></canvas>
+        <div class="k" id="insights">No data yet.</div>
+      </div>
+    </div>
+
+    <div id="chat" class="card" style="min-height:200px;overflow:auto"></div>
+
+    <div class="card k">Tip: Set a passphrase via 🔒 <b>Lock</b> to encrypt all journal data locally (AES‑GCM). No cloud, ever.</div>
+  </section>
+
+  <footer style="grid-column:1/-1;border-top:1px solid var(--border);padding:8px 14px;display:flex;justify-content:space-between;align-items:center;background:rgba(16,24,38,.6)">
+    <div class="muted">Made for privacy • Works offline • Exports JSON</div>
+    <div class="muted">LocalMentor Pro ©</div>
+  </footer>
+</div>
+
+<!-- Persona Modal -->
+<dialog id="personaModal" class="card" style="border:none">
+  <div class="row" style="justify-content:space-between"><b>Persona (System Prompt)</b><button class="btn" onclick="closeModal('personaModal')">✖</button></div>
+  <textarea id="persona" class="textarea" style="min-height:160px"></textarea>
+  <div class="row" style="justify-content:flex-end"><button class="btn ok" onclick="savePersona()">Save</button></div>
+</dialog>
+
+<input id="importFile" type="file" accept="application/json" style="display:none"/>
+
+<script>
+// ===== Mini toolkit =====
+const $= (q,r=document)=>r.querySelector(q); const $$=(q,r=document)=>Array.from(r.querySelectorAll(q));
+const store={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
+const fmtDate=d=>new Date(d).toLocaleString();
+const uid=()=>Math.random().toString(36).slice(2)+Date.now().toString(36);
+
+// ===== State =====
+const state={
+  entries: store.get('lm_entries',[]),
+  settings: store.get('lm_settings',{preset:'lmstudio',baseUrl:'http://localhost:1234',model:'llama-3-8b-instruct'}),
+  persona: store.get('lm_persona',`You are LocalMentor — an empathetic, practical life coach. Use brief bullet points, powerful questions, and 3-step action plans. Keep it supportive and direct. Use one relevant emoji when helpful.`),
+  voice:false, key:null, salt: store.get('lm_salt', null)
+};
+
+function persist(){ store.set('lm_entries',state.entries); store.set('lm_settings',state.settings); store.set('lm_persona',state.persona); if(state.salt) store.set('lm_salt',state.salt); }
+
+// ===== UI Boot =====
+$('#today').textContent=new Date().toDateString();
+$('#preset').value=state.settings.preset; $('#baseUrl').value=state.settings.baseUrl; $('#model').value=state.settings.model; $('#persona').value=state.persona;
+renderEntries(); calcInsights(); drawSpark();
+
+// Prompts
+const SUGGEST=[
+  'What energized me today? Why?',
+  'A tiny win I’m proud of:',
+  'What drained me? One boundary I can set.',
+  'If I reduce scope by 50%, what’s the next step?',
+  'One thing I’m avoiding — what’s the 5‑minute version?',
+  'Gratitude x3:',
+  'If today repeated forever, where would I end up?',
+];
+$('#prompts').innerHTML=SUGGEST.map(t=>`<button class="btn" onclick="insertPrompt(${JSON.stringify(t)})">💡 ${t}</button>`).join('');
+
+function insertPrompt(t){ const el=$('#text'); el.value += (el.value? '\n\n':'')+ t + '\n'; el.focus(); }
+
+// Mood UI
+function setMoodUI(){
+  const m=+$('#mood').value; const e=+$('#energy').value; const words=['Very Low','Low','Neutral','Good','Great'];
+  $('#moodLabel').textContent=`Mood: ${words[m-1]} • Energy: ${words[e-1]}`;
+  $('#moodBar').style.width=((m-1)*25+25)+'%';
+}
+$('#mood').oninput=setMoodUI; $('#energy').oninput=setMoodUI; setMoodUI();
+
+// Entries list
+function renderEntries(filter=''){
+  const root=$('#entries'); root.innerHTML='';
+  state.entries.filter(e=> (e.title+" "+e.text+" "+(e.tags||[]).join(' ')).toLowerCase().includes(filter.toLowerCase()))
+    .sort((a,b)=>b.created-a.created)
+    .forEach(e=>{
+      const div=document.createElement('div'); div.className='card entry';
+      div.innerHTML=`<div class='row' style='justify-content:space-between'><b>${e.title||'Untitled'}</b><span class='k'>${new Date(e.created).toLocaleDateString()}</span></div>
+      <div class='k'>Mood ${e.mood}/5 • Energy ${e.energy}/5 • ${e.tags?.map(t=>'#'+t).join(' ')||''}</div>`;
+      div.onclick=()=>loadEntry(e.id); root.appendChild(div);
+    })
+}
+$('#search').oninput=e=>renderEntries(e.target.value);
+
+function loadEntry(id){
+  const e=state.entries.find(x=>x.id===id); if(!e) return;
+  $('#title').value=e.title||''; $('#text').value=e.text||''; $('#tags').value=(e.tags||[]).join(', ');
+  $('#mood').value=e.mood||3; $('#energy').value=e.energy||3; setMoodUI();
+  $('#status').textContent='✍️ Editing '+new Date(e.created).toLocaleDateString();
+}
+
+// Save
+$('#save').onclick=()=>{
+  const id=uid();
+  const entry={id, created:Date.now(), title:$('#title').value.trim(), text:$('#text').value.trim(), tags=parseTags($('#tags').value), mood:+$('#mood').value, energy:+$('#energy').value};
+  if(!entry.text){ alert('Write something first 😊'); return; }
+  state.entries.push(entry); persist();
+  $('#title').value=''; $('#text').value=''; $('#tags').value='';
+  renderEntries(); calcInsights(); drawSpark();
+  addMsg('assistant', 'Saved ✔️ Keep going. Want a quick summary or an action plan?');
+}
+
+function parseTags(s){ return s.split(/[,#\s]+/).map(t=>t.trim()).filter(Boolean); }
+
+// Coach & Summarize (LLM)
+$('#coach').onclick=()=>runLLM('coach');
+$('#summ').onclick=()=>runLLM('summary');
+
+function buildMessages(goal){
+  const ctx = `Journal entry (title: ${$('#title').value||'Untitled'})\nMood: ${$('#mood').value}/5, Energy: ${$('#energy').value}/5\nTags: ${$('#tags').value}\nText:\n${$('#text').value}`;
+  const user = goal==='coach'? `Please act as a life coach. \n- Reflect key feelings and themes.\n- Ask 2-3 short, powerful questions.\n- Give a 3-step action plan for tomorrow.\n- Keep to 8-12 lines.\n${ctx}` : `Create a crisp 5-bullet summary with one motivational takeaway.\n${ctx}`;
+  return [
+    {role:'system', content: state.persona},
+    ...state.entries.slice(-3).map(e=>({role:'user', content:`Recent note on ${new Date(e.created).toLocaleDateString()}: ${e.text.slice(0,400)}`})),
+    {role:'user', content: user}
+  ];
+}
+
+async function runLLM(kind){
+  const {preset,baseUrl,model}=state.settings; if(!$('#text').value.trim()){ alert('Write something first 😊'); return; }
+  addMsg('user', kind==='coach'? 'Coach me on this.':'Summarize this.');
+  setStatus('⏳ Connecting…');
+  try{
+    if(preset==='lmstudio'){
+      const url=baseUrl.replace(/\/$/,'')+'/v1/chat/completions';
+      const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model,stream:true,messages:buildMessages(kind),temperature:0.7,top_p:0.95,max_tokens:600})});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      await streamSSE(res);
+    }else{
+      const url=baseUrl.replace(/\/$/,'')+'/api/chat';
+      const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model,stream:true,messages:buildMessages(kind)})});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      await streamJSONL(res);
+    }
+    setStatus('⚡ Done');
+  }catch(e){ setStatus('⚠️ Error'); addMsg('assistant','⚠️ '+(e.message||e)); }
+}
+
+async function streamSSE(res){
+  let acc=''; const rd=res.body.getReader(); const dec=new TextDecoder();
+  while(true){ const {value,done}=await rd.read(); if(done) break; const chunk=dec.decode(value,{stream:true});
+    for(const line of chunk.split(/\n/)){ if(!line.startsWith('data:')) continue; const data=line.slice(5).trim(); if(data==='[DONE]') break; try{ const j=JSON.parse(data); const d=j.choices?.[0]?.delta?.content||''; acc+=d; updateLast(acc);}catch{}}
+  }
+  finalize(acc);
+}
+async function streamJSONL(res){
+  let acc=''; const rd=res.body.getReader(); const dec=new TextDecoder();
+  while(true){ const {value,done}=await rd.read(); if(done) break; const chunk=dec.decode(value,{stream:true}).trim();
+    for(const line of chunk.split(/\n/)){ if(!line) continue; try{ const j=JSON.parse(line); const d=j.message?.content||''; acc+=d; updateLast(acc); if(j.done){ finalize(acc); return; } }catch{} }
+  }
+  finalize(acc);
+}
+
+function addMsg(role, text){ const root=$('#chat'); const who=role==='user'?'U':'AI'; root.insertAdjacentHTML('beforeend', `<div class='msg'><div class='avatar'>${who}</div><div class='bubble'>${escapeHTML(text).replace(/\n/g,'<br/>')}</div></div>`); root.scrollTop=root.scrollHeight; if(state.voice && role==='assistant') speak(text.slice(0,400)); }
+function updateLast(text){ const root=$('#chat'); let last=root.querySelector('.msg:last-child .bubble'); if(!last || root.querySelector('.msg:last-child .avatar').textContent==='U'){ addMsg('assistant',''); last=root.querySelector('.msg:last-child .bubble'); } last.innerHTML=escapeHTML(text).replace(/\n/g,'<br/>'); root.scrollTop=root.scrollHeight; }
+function finalize(text){ /* could log tokens later */ }
+function setStatus(t){ $('#status').textContent=t; }
+const escapeHTML=s=>s.replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));
+
+// ===== Voice =====
+$('#btn-voice').onclick=()=>{ state.voice=!state.voice; persist(); $('#btn-voice').textContent= state.voice? '🔊 Voice ON':'🔇 Voice'; if(state.voice) speak('Voice enabled'); };
+function speak(text){ try{ const u=new SpeechSynthesisUtterance(text); speechSynthesis.cancel(); speechSynthesis.speak(u);}catch{} }
+$('#record').onclick=()=>{ try{ const SR= window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR) return alert('Speech Recognition not supported'); const r=new SR(); r.lang='en-US'; r.onresult=e=>{ const t=[...e.results].map(x=>x[0].transcript).join(' '); $('#text').value += ( $('#text').value?' ':'')+ t; }; r.start(); }catch{ alert('Cannot start speech recognition'); } };
+
+// ===== Persona / Settings =====
+$('#btn-persona').onclick=()=>openModal('personaModal');
+function savePersona(){ state.persona=$('#persona').value.trim()||state.persona; persist(); closeModal('personaModal'); addMsg('assistant','Persona updated ✅'); }
+$('#settings').onclick=()=>openModal('settings');
+function openModal(id){ document.getElementById(id).showModal(); }
+function closeModal(id){ document.getElementById(id).close(); }
+$('#preset').onchange=e=>{ state.settings.preset=e.target.value; persist(); };
+$('#baseUrl').onchange=e=>{ state.settings.baseUrl=e.target.value; persist(); };
+$('#model').onchange=e=>{ state.settings.model=e.target.value; persist(); };
+
+// ===== Export / Import =====
+$('#btn-export').onclick=()=>{
+  const payload={ entries: maybeEncrypt(state.entries), settings: state.settings, persona: state.persona, ts: Date.now() };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='localmentor_export.json'; a.click(); URL.revokeObjectURL(a.href);
+};
+$('#btn-import').onclick=()=>$('#importFile').click();
+$('#importFile').onchange=e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=async()=>{
+  try{ const data=JSON.parse(r.result); let entries=data.entries; if(entries && entries.__enc){ entries= await decryptObject(entries); }
+    if(Array.isArray(entries)){ state.entries=entries; persist(); renderEntries(); calcInsights(); drawSpark(); addMsg('assistant','Imported ✅'); }
+  }catch{ alert('Invalid file'); }
+}; r.readAsText(f); e.target.value=''; };
+
+// ===== Encryption (AES-GCM + PBKDF2) =====
+$('#btn-lock').onclick=async()=>{
+  if(state.key){ state.key=null; addMsg('assistant','Unlocked 🔓'); return; }
+  const pass=prompt('Set or enter passphrase to lock 🔒'); if(!pass) return;
+  state.salt = state.salt || crypto.getRandomValues(new Uint8Array(16));
+  state.key = await deriveKey(pass, state.salt);
+  persist(); addMsg('assistant','Lock enabled. Exports will be encrypted.');
+};
+
+async function deriveKey(pass, salt){
+  const enc=new TextEncoder(); const key=await crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:120000,hash:'SHA-256'}, key, {name:'AES-GCM',length:256}, false, ['encrypt','decrypt']);
+}
+async function encryptObject(obj){
+  const enc=new TextEncoder(); const iv=crypto.getRandomValues(new Uint8Array(12));
+  const data=enc.encode(JSON.stringify(obj)); const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv}, state.key, data));
+  return {__enc:true, iv:Array.from(iv), salt:Array.from(state.salt), ct:Array.from(ct)};
+}
+async function decryptObject(pkg){
+  if(!pkg.__enc) return pkg; const iv=new Uint8Array(pkg.iv); const salt=new Uint8Array(pkg.salt); const ct=new Uint8Array(pkg.ct);
+  if(!state.key){ const pass=prompt('Enter passphrase to decrypt'); if(!pass) throw new Error('No passphrase'); state.key=await deriveKey(pass, salt); state.salt=salt; }
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv}, state.key, ct); return JSON.parse(new TextDecoder().decode(pt));
+}
+function maybeEncrypt(entries){ return state.key? (function(){return (async()=>await encryptObject(entries))()})(): entries }
+
+// Persist entries encrypted to localStorage when key is present
+window.addEventListener('beforeunload', async()=>{ if(state.key){ const enc=await encryptObject(state.entries); store.set('lm_entries', enc); } });
+// If entries look encrypted on load, decrypt interactively
+(async function(){ try{ if(state.entries && state.entries.__enc){ state.entries=await decryptObject(state.entries); persist(); renderEntries(); calcInsights(); drawSpark(); } }catch(e){ addMsg('assistant','Could not decrypt. Try Lock again.'); } })();
+
+// ===== Analytics / Insights =====
+function calcInsights(){
+  if(!state.entries.length){ $('#insights').textContent='No entries yet. Your streak starts when you save. ✨'; $('#stats').textContent='—'; return; }
+  const days=[...new Set(state.entries.map(e=>new Date(e.created).toDateString()))].length;
+  const avg=(k)=> (state.entries.reduce((a,e)=>a+(e[k]||0),0)/state.entries.length).toFixed(2);
+  const wc=state.entries.reduce((a,e)=>a+ (e.text.split(/\s+/).filter(Boolean).length),0);
+  $('#insights').textContent=`Days logged: ${days} • Avg Mood ${avg('mood')} • Avg Energy ${avg('energy')} • Words ${wc}`;
+  $('#stats').textContent=`Entries ${state.entries.length}`;
+}
+
+function drawSpark(){
+  const c=$('#spark'); const ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height);
+  const arr=state.entries.slice(-30).map(e=>e.mood); if(!arr.length) return;
+  const max=5, min=1; const step=c.width/(arr.length-1||1);
+  ctx.lineWidth=2; ctx.beginPath();
+  arr.forEach((v,i)=>{ const x=i*step; const y=c.height - ((v-min)/(max-min))*c.height; if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); });
+  ctx.strokeStyle='#8b5cf6'; ctx.stroke();
+}
+
+// ===== New Entry shortcut =====
+$('#btn-new').onclick=()=>{ $('#title').value=''; $('#text').value=''; $('#tags').value=''; $('#mood').value=3; $('#energy').value=3; setMoodUI(); addMsg('assistant','Fresh page ready ✨'); };
+
+</script>
+</body>
+</html>

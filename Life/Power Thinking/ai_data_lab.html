@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Data Lab — LM Studio</title>
+  <style>
+    :root{
+      --bg:#0b0f1a; --panel:#0f1526; --ink:#e6f0ff; --muted:#9fb3c8; --accent:#6ee7ff; --accent2:#a78bfa; --ok:#34d399; --warn:#f59e0b; --err:#ef4444;
+      --ring: 0 0 0 2px rgba(110,231,255,.35), 0 0 22px rgba(167,139,250,.25);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(1200px 600px at 10% -10%,rgba(167,139,250,.25),transparent 40%),radial-gradient(900px 400px at 110% 10%,rgba(110,231,255,.18),transparent 45%),var(--bg);color:var(--ink);font:15px/1.45 system-ui,Segoe UI,Roboto,Inter,Arial}
+    .wrap{max-width:1200px;margin:32px auto;padding:0 16px}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .title{display:flex;gap:12px;align-items:center}
+    .logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 0 3px rgba(110,231,255,.2)}
+    h1{font-size:22px;margin:0;letter-spacing:.3px}
+    .sub{color:var(--muted);font-size:12px;margin-top:2px}
+
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent 60%),var(--panel);border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:14px 14px 12px;box-shadow:var(--ring)}
+    .card h2{margin:4px 2px 10px;font-size:16px}
+    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .row > *{flex:1}
+
+    input[type="text"], input[type="number"], textarea, select{width:100%;background:#0b1324;border:1px solid rgba(255,255,255,.1);color:var(--ink);padding:10px 12px;border-radius:12px;outline:none}
+    textarea{min-height:96px;resize:vertical}
+    input[type="file"]{border:1px dashed rgba(255,255,255,.15);padding:10px;border-radius:12px;background:#0b1324;color:var(--muted)}
+    .btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(180deg,rgba(110,231,255,.25),rgba(167,139,250,.2));border:1px solid rgba(110,231,255,.35);color:#00131c;padding:10px 14px;border-radius:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;cursor:pointer}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .btn.secondary{background:transparent;color:var(--ink);border:1px solid rgba(255,255,255,.15)}
+    .hint{color:var(--muted);font-size:12px}
+    .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid rgba(255,255,255,.2);color:var(--muted)}
+
+    table{width:100%;border-collapse:collapse;background:#0b1324;border-radius:12px;overflow:auto}
+    th,td{border-bottom:1px solid rgba(255,255,255,.06);padding:8px 10px;text-align:left;font-size:13px}
+    th{position:sticky;top:0;background:#0f1526}
+    .scroll{max-height:280px;overflow:auto;border:1px solid rgba(255,255,255,.06);border-radius:12px}
+
+    .charts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:800px){.charts{grid-template-columns:1fr}}
+    canvas{width:100%;height:260px;background:#0b1324;border:1px solid rgba(255,255,255,.06);border-radius:12px}
+
+    .log{white-space:pre-wrap;background:#07101d;border:1px solid rgba(255,255,255,.06);padding:10px;border-radius:12px;min-height:120px}
+    .footer{margin-top:20px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#0b1324;border:1px solid rgba(255,255,255,.1);padding:2px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title"><div class="logo"></div>
+        <div>
+          <h1>AI Data Lab <span class="badge">Local · Private · Fast</span></h1>
+          <div class="sub">HTML + CSS + JS · Works with LM Studio (OpenAI-compatible)</div>
+        </div>
+      </div>
+      <div class="row" style="max-width:520px">
+        <button class="btn" id="demoBtn">Load Demo</button>
+        <button class="btn secondary" id="resetBtn">Reset</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- Left: Data -->
+      <section class="card">
+        <h2>1) Load Data</h2>
+        <div class="row">
+          <input type="file" id="file" accept=".csv,.tsv,.json" />
+          <select id="sep">
+            <option value=",">Comma ,</option>
+            <option value="\t">Tab \t</option>
+            <option value=";">Semicolon ;</option>
+            <option value="|">Pipe |</option>
+          </select>
+          <label class="hint"><input type="checkbox" id="hasHeader" checked /> First row is header</label>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <button class="btn" id="analyzeBtn">Analyze</button>
+          <button class="btn secondary" id="exportBtn">Export Summary</button>
+        </div>
+
+        <h2 style="margin-top:18px">Preview</h2>
+        <div class="scroll"><table id="preview"></table></div>
+
+        <h2 style="margin-top:18px">Quick Stats</h2>
+        <div id="stats" class="scroll" style="padding:10px"></div>
+
+        <div class="charts" style="margin-top:12px">
+          <div>
+            <div class="row"><select id="histCol"></select><button class="btn secondary" id="histBtn">Histogram</button></div>
+            <canvas id="hist"></canvas>
+          </div>
+          <div>
+            <div class="row"><select id="xCol"></select><select id="yCol"></select><button class="btn secondary" id="scatterBtn">Scatter</button></div>
+            <canvas id="scatter"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: AI -->
+      <section class="card">
+        <h2>2) Ask Local AI (LM Studio)</h2>
+        <div class="row">
+          <input type="text" id="baseUrl" placeholder="Base URL (e.g., http://localhost:1234/v1)" value="http://localhost:1234/v1">
+          <input type="text" id="model" placeholder="Model name (as shown in LM Studio)" value="">
+        </div>
+        <div class="row">
+          <input type="text" id="apiKey" placeholder="API Key (optional for LM Studio)" value="">
+          <input type="number" id="temperature" step="0.1" min="0" max="2" value="0.2">
+        </div>
+        <div class="row">
+          <textarea id="system" placeholder="System prompt (optional)">You are a helpful data science assistant. You will be given a dataset schema, sample rows, and summary stats. Answer precisely, include equations when relevant, and suggest checks for bias, leakage, and overfitting.</textarea>
+        </div>
+        <div class="row">
+          <textarea id="prompt" placeholder="Ask questions about your data, cleaning, EDA, or modeling…"></textarea>
+        </div>
+        <div class="row">
+          <button class="btn" id="askBtn">Ask AI</button>
+          <button class="btn secondary" id="stopBtn" disabled>Stop</button>
+        </div>
+        <div style="margin-top:10px" class="hint">Tip: Start LM Studio → Enable Server (OpenAI Compatible) → Copy model name. Default base URL is <span class="kbd">http://localhost:1234/v1</span>.</div>
+
+        <h2 style="margin-top:18px">AI Response</h2>
+        <div id="ai" class="log"></div>
+      </section>
+    </div>
+
+    <div class="footer">
+      <div>Made for local-first analysts — keep your data on your machine.</div>
+      <div>Shortcuts: <span class="kbd">L</span> Load demo · <span class="kbd">A</span> Analyze · <span class="kbd">H</span> Histogram · <span class="kbd">S</span> Scatter · <span class="kbd">/</span> Ask AI</div>
+    </div>
+  </div>
+
+  <script>
+    // ------- Utilities -------
+    const byId = (id)=>document.getElementById(id);
+    const state = { rows: [], header: [], types: {}, stats: {}, controller:null };
+
+    function inferType(values){
+      let num=0, dt=0; const n=values.length;
+      for(const v of values){
+        if(v==null || v==="") continue;
+        const x = +v; if(!Number.isNaN(x)) { num++; continue; }
+        const d = new Date(v); if(!isNaN(d)) dt++;
+      }
+      if(num/n>.6) return 'number';
+      if(dt/n>.5) return 'date';
+      return 'string';
+    }
+
+    function parseCSV(text, sep, hasHeader){
+      // Minimal CSV/TSV parser supporting quotes
+      const rows=[]; let cur=[], val="", inQ=false; for(let i=0;i<text.length;i++){
+        const c=text[i], n=text[i+1];
+        if(inQ){
+          if(c==='"' && n==='"'){ val+='"'; i++; }
+          else if(c==='"'){ inQ=false; }
+          else val+=c;
+        } else {
+          if(c==='"') inQ=true;
+          else if(c===sep){ cur.push(val); val=""; }
+          else if(c==='\n'){ cur.push(val); rows.push(cur); cur=[]; val=""; }
+          else if(c==='\r'){ /* ignore */ }
+          else val+=c;
+        }
+      }
+      if(val!==""||cur.length){ cur.push(val); rows.push(cur); }
+      let header=[], data=rows;
+      if(hasHeader){ header = rows[0]||[]; data = rows.slice(1); }
+      else { header = rows[0]?.map((_,i)=>`col_${i+1}`) || []; }
+      return {header, data};
+    }
+
+    function toTable(el, header, rows, limit=100){
+      const h = '<tr>'+header.map(h=>`<th>${escapeHtml(h)}</th>`).join('')+'</tr>';
+      const body = rows.slice(0,limit).map(r=>'<tr>'+r.map(c=>`<td>${escapeHtml(String(c))}</td>`).join('')+'</tr>').join('');
+      el.innerHTML = h + body;
+    }
+
+    function escapeHtml(s){return s.replace(/[&<>\"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m]))}
+
+    function computeStats(header, rows){
+      const cols={}; header.forEach((h,i)=>{ cols[h]=rows.map(r=>r[i]); });
+      const stats={}; const types={};
+      for(const h of header){
+        const vals = cols[h]; const type = inferType(vals); types[h]=type;
+        const clean = vals.map(v=> (v==null||v==="")? null : (type==='number'? +v : v));
+        const n = clean.length; const missing = clean.filter(v=>v===null).length;
+        const present = clean.filter(v=>v!==null);
+        const s = {type, n, missing};
+        if(type==='number'){
+          const arr = present.map(Number);
+          const mean = arr.reduce((a,b)=>a+b,0)/arr.length || 0;
+          const variance = arr.reduce((a,b)=>a+(b-mean)*(b-mean),0)/(arr.length>1?arr.length-1:1);
+          arr.sort((a,b)=>a-b);
+          const q = p=> arr.length? arr[Math.floor(p*(arr.length-1))] : 0;
+          Object.assign(s, {
+            count: arr.length,
+            mean, std: Math.sqrt(variance), min: arr[0]??0, q25:q(.25), median:q(.5), q75:q(.75), max: arr[arr.length-1]??0
+          });
+        } else if(type==='string'){
+          const freq={}; for(const v of present){ freq[v]=(freq[v]||0)+1; }
+          const top = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,5);
+          Object.assign(s,{unique:Object.keys(freq).length, top});
+        } else if(type==='date'){
+          const arr = present.map(v=>new Date(v).getTime()).filter(v=>!isNaN(v));
+          arr.sort((a,b)=>a-b);
+          const fmt = ms=> new Date(ms).toISOString();
+          Object.assign(s,{min: fmt(arr[0]||0), max: fmt(arr[arr.length-1]||0), count: arr.length});
+        }
+        stats[h]=s;
+      }
+      return {stats, types};
+    }
+
+    function renderStats(el, stats){
+      const blocks = Object.entries(stats).map(([k,s])=>{
+        const base = `<div class="badge">${s.type}</div> · n=${s.n} · missing=${s.missing}`;
+        let extra='';
+        if(s.type==='number'){
+          extra = ` · mean=${fmt(s.mean)} · std=${fmt(s.std)} · min=${fmt(s.min)} · q25=${fmt(s.q25)} · median=${fmt(s.median)} · q75=${fmt(s.q75)} · max=${fmt(s.max)}`;
+        } else if(s.type==='string'){
+          const top = (s.top||[]).map(([v,c])=>`<span class="badge">${escapeHtml(v)} (${c})</span>`).join(' ');
+          extra = ` · unique=${s.unique} · top: ${top}`;
+        } else if(s.type==='date'){
+          extra = ` · min=${s.min} · max=${s.max} · count=${s.count}`;
+        }
+        return `<div style="margin:6px 0"><strong>${escapeHtml(k)}</strong> — ${base}${extra}</div>`;
+      }).join('');
+      el.innerHTML = blocks || '<span class="hint">Run Analyze to compute stats.</span>';
+    }
+
+    function fmt(x){return (Math.round(x*100)/100).toString()}
+
+    // ------- Charts -------
+    function drawHist(canvas, values, bins=20){
+      const ctx=canvas.getContext('2d'); const w=canvas.width=canvas.clientWidth; const h=canvas.height=canvas.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      const arr=values.filter(v=>v!=null && !Number.isNaN(+v)).map(Number);
+      if(!arr.length){ ctx.fillStyle='#9fb3c8'; ctx.fillText('No numeric data', 10,20); return; }
+      const min=Math.min(...arr), max=Math.max(...arr); const step=(max-min)/bins || 1;
+      const counts=new Array(bins).fill(0); for(const v of arr){ let i=Math.floor((v-min)/step); if(i>=bins) i=bins-1; counts[i]++; }
+      const m=Math.max(...counts); const bw=w/bins-4;
+      ctx.fillStyle='rgba(110,231,255,.8)';
+      counts.forEach((c,i)=>{ const bh = (c/m)*(h-24); const x=i*(w/bins)+2; ctx.fillRect(x,h-bh-10,bw,bh); });
+      ctx.fillStyle='#9fb3c8'; ctx.fillText(`min ${fmt(min)}  max ${fmt(max)}  bins ${bins}`,10,14);
+    }
+
+    function drawScatter(canvas, xvals, yvals){
+      const ctx=canvas.getContext('2d'); const w=canvas.width=canvas.clientWidth; const h=canvas.height=canvas.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      const X=xvals.filter((v,i)=>v!=null && yvals[i]!=null && !Number.isNaN(+v) && !Number.isNaN(+yvals[i])).map(Number);
+      const Y=yvals.filter((v,i)=>xvals[i]!=null && yvals[i]!=null && !Number.isNaN(+v) && !Number.isNaN(+yvals[i])).map(Number);
+      if(!X.length){ ctx.fillStyle='#9fb3c8'; ctx.fillText('Need two numeric columns', 10,20); return; }
+      const xmin=Math.min(...X), xmax=Math.max(...X), ymin=Math.min(...Y), ymax=Math.max(...Y);
+      const sx=v=> ( (v - xmin) / (xmax - xmin || 1) )*(w-24)+12;
+      const sy=v=> h-12 - ( (v - ymin) / (ymax - ymin || 1) )*(h-24);
+      ctx.fillStyle='rgba(167,139,250,.85)';
+      for(let i=0;i<X.length;i++){ ctx.beginPath(); ctx.arc(sx(X[i]), sy(Y[i]), 3, 0, Math.PI*2); ctx.fill(); }
+      ctx.fillStyle='#9fb3c8'; ctx.fillText(`x: min ${fmt(xmin)} max ${fmt(xmax)} · y: min ${fmt(ymin)} max ${fmt(ymax)}`,10,14);
+    }
+
+    // ------- AI (LM Studio) -------
+    async function askLMStudio(question){
+      const base = byId('baseUrl').value.replace(/\/$/,'');
+      const model = byId('model').value.trim();
+      if(!model){ appendAI('\n⚠️ Please enter a model name from LM Studio.'); return; }
+      const apiKey = byId('apiKey').value.trim() || 'lm-studio';
+      const temperature = +byId('temperature').value || 0.2;
+      const system = byId('system').value.trim();
+
+      // Build context from data
+      const schema = state.header.map(h=> `${h}: ${state.types[h]||'unknown'}`).join('\n');
+      const sample = state.rows.slice(0,10).map(r=> Object.fromEntries(state.header.map((h,i)=>[h,r[i]])) );
+      const summary = state.stats;
+
+      const body = {
+        model,
+        temperature,
+        stream: true,
+        messages: [
+          ...(system? [{role:'system', content: system}] : []),
+          {role:'user', content: `Dataset schema:\n${schema}\n\nSummary stats (JSON):\n${JSON.stringify(summary).slice(0,12000)}\n\nSample rows (JSON):\n${JSON.stringify(sample)}\n\nQuestion:\n${question}`}
+        ]
+      };
+
+      const url = base + '/chat/completions';
+      byId('askBtn').disabled = true; byId('stopBtn').disabled=false;
+      state.controller = new AbortController();
+
+      try{
+        const res = await fetch(url, {
+          method:'POST',
+          headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${apiKey}` },
+          body: JSON.stringify(body),
+          signal: state.controller.signal
+        });
+        if(!res.ok){ appendAI(`\n❌ HTTP ${res.status} — check LM Studio server, base URL, and model.`); return; }
+        // Read SSE/stream (OpenAI-style)
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        appendAI('\n\n— — — — — — — — — — —');
+        let buf="";
+        while(true){
+          const {done, value} = await reader.read();
+          if(done) break;
+          buf += decoder.decode(value, {stream:true});
+          const parts = buf.split('\
+');
+          buf = parts.pop();
+          for(const p of parts){
+            if(!p.startsWith('data:')) continue; const j = p.slice(5).trim();
+            if(j==='[DONE]') break;
+            try{ const obj = JSON.parse(j); const delta = obj.choices?.[0]?.delta?.content || ''; if(delta) appendAI(delta); }
+            catch(e){ /* ignore parse errors */ }
+          }
+        }
+      } catch(e){
+        appendAI(`\n⛔ ${e.message}`);
+      } finally {
+        byId('askBtn').disabled = false; byId('stopBtn').disabled=true; state.controller=null;
+      }
+    }
+
+    function appendAI(text){ const el=byId('ai'); el.textContent += text; el.scrollTop = el.scrollHeight; }
+
+    // ------- Wiring -------
+    byId('file').addEventListener('change', async (e)=>{
+      const f=e.target.files[0]; if(!f) return;
+      const text = await f.text();
+      if(f.name.endsWith('.json')){
+        const arr = JSON.parse(text);
+        const header = Object.keys(arr[0]||{});
+        const data = arr.map(o=> header.map(h=> o[h]));
+        state.header=header; state.rows=data;
+      } else {
+        const {header,data} = parseCSV(text, byId('sep').value, byId('hasHeader').checked);
+        state.header=header; state.rows=data;
+      }
+      toTable(byId('preview'), state.header, state.rows);
+      fillColumnSelects();
+      byId('stats').innerHTML = '<span class="hint">Click Analyze to compute stats.</span>'
+    });
+
+    function fillColumnSelects(){
+      const opts = state.header.map(h=>`<option value="${escapeHtml(h)}">${escapeHtml(h)}</option>`).join('');
+      byId('histCol').innerHTML = '<option value="">Select column</option>' + opts;
+      byId('xCol').innerHTML = '<option value="">X</option>' + opts;
+      byId('yCol').innerHTML = '<option value="">Y</option>' + opts;
+    }
+
+    byId('analyzeBtn').addEventListener('click', ()=>{
+      if(!state.header.length){ alert('Load a file first.'); return; }
+      const {stats, types} = computeStats(state.header, state.rows);
+      state.stats = stats; state.types = types;
+      renderStats(byId('stats'), stats);
+    });
+
+    byId('histBtn').addEventListener('click', ()=>{
+      const col = byId('histCol').value; if(!col) return;
+      const i = state.header.indexOf(col); const vals = state.rows.map(r=>r[i]);
+      drawHist(byId('hist'), vals, 24);
+    });
+
+    byId('scatterBtn').addEventListener('click', ()=>{
+      const x = byId('xCol').value, y=byId('yCol').value; if(!x||!y) return;
+      const ix = state.header.indexOf(x), iy=state.header.indexOf(y);
+      const xv = state.rows.map(r=>r[ix]); const yv = state.rows.map(r=>r[iy]);
+      drawScatter(byId('scatter'), xv, yv);
+    });
+
+    byId('exportBtn').addEventListener('click', ()=>{
+      const payload = { header: state.header, types: state.types, stats: state.stats, sample: state.rows.slice(0,50) };
+      const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='summary.json'; a.click();
+    });
+
+    byId('askBtn').addEventListener('click', ()=>{
+      if(!byId('prompt').value.trim()){ byId('prompt').value='Suggest an EDA plan and potential target leakage.'; }
+      appendAI(`\n\nQ: ${byId('prompt').value.trim()}\nA: `);
+      askLMStudio(byId('prompt').value.trim());
+    });
+
+    byId('stopBtn').addEventListener('click', ()=>{ if(state.controller) state.controller.abort(); });
+
+    // Shortcuts
+    window.addEventListener('keydown', (e)=>{
+      if(e.key==='/' && !e.metaKey && !e.ctrlKey){ e.preventDefault(); byId('prompt').focus(); }
+      if(e.key==='A') byId('analyzeBtn').click();
+      if(e.key==='H') byId('histBtn').click();
+      if(e.key==='S') byId('scatterBtn').click();
+      if(e.key==='L') byId('demoBtn').click();
+    });
+
+    byId('resetBtn').addEventListener('click', ()=>{ location.reload(); });
+
+    // Demo dataset
+    byId('demoBtn').addEventListener('click', ()=>{
+      const csv = `sepal_length,sepal_width,petal_length,petal_width,species\n5.1,3.5,1.4,0.2,setosa\n4.9,3.0,1.4,0.2,setosa\n6.2,3.4,5.4,2.3,virginica\n5.9,3.0,5.1,1.8,virginica\n5.7,2.8,4.1,1.3,versicolor\n6.3,3.3,6.0,2.5,virginica\n6.8,3.2,5.9,2.3,virginica\n6.1,2.9,4.7,1.4,versicolor\n5.0,3.4,1.5,0.2,setosa\n5.5,2.6,4.4,1.2,versicolor`;
+      const {header,data} = parseCSV(csv, ',', true);
+      state.header=header; state.rows=data; toTable(byId('preview'), header, data); fillColumnSelects();
+      const res = computeStats(header,data); state.stats = res.stats; state.types = res.types; renderStats(byId('stats'), res.stats);
+      byId('histCol').value='sepal_length'; byId('xCol').value='sepal_length'; byId('yCol').value='petal_length';
+      byId('histBtn').click(); byId('scatterBtn').click();
+    });
+
+  </script>
+</body>
+</html>

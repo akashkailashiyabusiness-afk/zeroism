@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Idea Map Pro — Offline Mind Mapper</title>
+<style>
+  :root{
+    --bg:#071029; --panel:#0b1830; --muted:#9fb3c8; --text:#e6f0fa; --accent:#6ee7b7;
+    --card:#062033; --stroke:#184b62;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text);}
+  .wrap{max-width:1200px;margin:18px auto;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+  header{display:flex;gap:12px;align-items:center;justify-content:space-between}
+  h1{font-size:18px;margin:0}
+  .muted{color:var(--muted);font-size:13px}
+  .controls{display:flex;gap:8px;margin-top:12px;align-items:center}
+  textarea{width:100%;min-height:84px;padding:10px;border-radius:8px;background:#081426;border:1px solid rgba(255,255,255,0.03);color:var(--text)}
+  input,select,button{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:#071828;color:var(--text)}
+  button.primary{background:linear-gradient(90deg,#3dd9b9,#7ac7ff);color:#052022;border:none}
+  .workspace{display:flex;gap:12px;margin-top:14px}
+  .left{flex:0 0 380px}
+  .right{flex:1;min-height:640px;background:transparent;border-radius:8px;padding:12px}
+  #canvasWrap{width:100%;height:640px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border-radius:8px;overflow:auto; border:1px solid rgba(255,255,255,0.02)}
+  svg{width:1600px;height:1200px}
+  .node{cursor:grab;user-select:none;transition:transform 220ms cubic-bezier(.2,.9,.2,1);}
+  .node:active{cursor:grabbing}
+  .palette{display:flex;gap:6px;margin-top:8px}
+  .colorDot{width:20px;height:20px;border-radius:6px;border:2px solid rgba(0,0,0,0.12);cursor:pointer}
+  .small{font-size:13px;color:var(--muted)}
+  .toolbar-row{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+  .history{display:flex;gap:6px}
+  .btn{padding:6px 8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:#071828;color:var(--text);cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Idea Map Pro — Offline Mind Mapper ✨</h1>
+      <div class="muted">Drag nodes, smooth animation, undo/redo, color tags. LLM returns strict JSON.</div>
+    </div>
+    <div style="text-align:right">
+      <div class="muted">Local models: LM Studio / Ollama • Tip: set Base URL & Model</div>
+    </div>
+  </header>
+
+  <div style="margin-top:12px">
+    <label class="muted">Prompt</label>
+    <textarea id="prompt" placeholder="e.g. Brainstorm 8 SaaS startup ideas in education, each with 3 feature bullets and 1 short name"></textarea>
+    <div class="controls">
+      <div class="row" style="display:flex;gap:8px;align-items:center">
+        <select id="preset">
+          <option value="lmstudio">LM Studio (OpenAI-compatible)</option>
+          <option value="ollama">Ollama</option>
+        </select>
+        <input id="baseUrl" placeholder="http://localhost:1234" style="width:240px" />
+        <input id="model" placeholder="model name (e.g., llama-3)" style="width:220px" />
+      </div>
+      <div style="flex:1"></div>
+      <button id="generate" class="primary">Generate Map ▶</button>
+      <button id="clear" class="btn">Clear</button>
+    </div>
+  </div>
+
+  <div class="workspace">
+    <div class="left">
+      <div class="toolbar-row">
+        <input id="nodeFilter" placeholder="Search nodes…" style="flex:1" />
+        <button id="fit" class="btn">Fit</button>
+      </div>
+
+      <div style="margin-top:8px">
+        <div class="small">Export / Save</div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button id="exportPNG" class="btn">Export PNG</button>
+          <button id="exportJSON" class="btn">Export JSON</button>
+          <button id="exportMD" class="btn">Export Markdown</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <div class="small">Edit Selected Node</div>
+        <input id="editTitle" placeholder="Title" />
+        <textarea id="editNotes" placeholder="Notes / bullets" style="min-height:96px"></textarea>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <button id="saveNode" class="btn">Save</button>
+          <button id="addChild" class="btn">Add Child</button>
+          <button id="deleteNode" class="btn">Delete</button>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="small">Color Tag</div>
+          <div class="palette" id="palette"></div>
+          <div style="margin-top:8px"><button id="applyColor" class="btn">Apply Color to Selected</button></div>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="small">History</div>
+          <div class="history" style="margin-top:8px">
+            <button id="undo" class="btn">↶ Undo</button>
+            <button id="redo" class="btn">↷ Redo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div id="canvasWrap"><svg id="svgcanvas" xmlns="http://www.w3.org/2000/svg"></svg></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Idea Map Pro: drag, smooth animation, undo/redo, color tags, better LLM prompt
+// Data model: nodes {id, parent, title, notes, collapsed, x,y, color, manual}
+// Simple persistent history for undo/redo
+let nodes = [];
+let rootId = null;
+let selected = null;
+let history = [], historyPtr = -1;
+const svg = document.getElementById('svgcanvas');
+const promptEl = document.getElementById('prompt');
+
+const paletteColors = ['#062033','#0ea5a4','#7c3aed','#f97316','#ef4444','#f59e0b','#60a5fa','#34d399'];
+const palette = document.getElementById('palette');
+let pickedColor = paletteColors[1];
+
+paletteColors.forEach(c=>{ const d=document.createElement('div'); d.className='colorDot'; d.style.background=c; d.title=c; d.onclick=()=>{ pickedColor=c; Array.from(palette.children).forEach(x=>{ x.style.outline = x===d ? '3px solid rgba(255,255,255,0.06)' : '' }); }; palette.appendChild(d); });
+
+function uid(p='n'){return p+Math.random().toString(36).slice(2,9)}
+
+// history helpers
+function pushHistory() { const snap = JSON.stringify(nodes); history = history.slice(0, historyPtr+1); history.push(snap); historyPtr++; if(history.length>80) history.shift(); }
+function undo(){ if(historyPtr<=0) return; historyPtr--; nodes = JSON.parse(history[historyPtr]); rootId = nodes.find(n=>!n.parent)?.id; selected=null; render(); }
+function redo(){ if(historyPtr < history.length-1){ historyPtr++; nodes = JSON.parse(history[historyPtr]); rootId = nodes.find(n=>!n.parent)?.id; selected=null; render(); } }
+
+document.getElementById('undo').onclick = undo;
+document.getElementById('redo').onclick = redo;
+
+// persistence
+const store = k => { try{return JSON.parse(localStorage.getItem(k));}catch{return null} };
+const saveStore = (k,v)=> localStorage.setItem(k, JSON.stringify(v));
+
+// initial settings
+const settings = store('im_settings') || { preset:'lmstudio', baseUrl:'http://localhost:1234', model:'' };
+document.getElementById('preset').value = settings.preset; document.getElementById('baseUrl').value = settings.baseUrl; document.getElementById('model').value = settings.model;
+
+function addNode(title, parent=null, notes='', opts={}){
+  const id = uid();
+  const node = { id, parent, title, notes, collapsed:false, x: opts.x||null, y:opts.y||null, color: opts.color||'#062033', manual: !!opts.x };
+  nodes.push(node);
+  if(!parent) rootId = id;
+  pushHistory(); saveStore('im_nodes', nodes);
+  return id;
+}
+
+function clearAll(){ nodes=[]; rootId=null; selected=null; pushHistory(); saveStore('im_nodes', nodes); render(); }
+
+// layout: if node has manual x/y use it; else compute grid positions
+function treeLayout(){
+  if(nodes.length===0) return {map:new Map(), positions: new Map(), root:null};
+  const map = new Map(nodes.map(n=>[n.id, {...n, children:[]} ]));
+  let root = null;
+  for(const n of map.values()) if(n.parent) map.get(n.parent)?.children.push(n); else root = n;
+  // BFS levels
+  const levels = [];
+  function traverse(n,depth){
+    if(!levels[depth]) levels[depth]=[];
+    levels[depth].push(n);
+    if(n.collapsed) return;
+    for(const c of n.children) traverse(c, depth+1);
+  }
+  traverse(root,0);
+  const positions = new Map();
+  levels.forEach((lvl, depth)=>{
+    lvl.forEach((node,ix)=>{
+      const width = 240;
+      const x = node.x !== null && node.x !== undefined ? node.x : 120 + ix*width;
+      const y = node.y !== null && node.y !== undefined ? node.y : 60 + depth*140;
+      positions.set(node.id, {x,y});
+    });
+  });
+  return {map, positions, root};
+}
+
+// render SVG nodes + links
+function render(){
+  svg.innerHTML='';
+  if(nodes.length===0){ svg.setAttribute('width',1200); svg.setAttribute('height',800); return; }
+  const {map, positions, root} = treeLayout();
+  // draw links first
+  for(const n of map.values()){
+    if(n.parent){
+      const p = positions.get(n.parent); const c = positions.get(n.id);
+      if(p && c){
+        const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+        const d = `M${p.x+90} ${p.y+34} C ${p.x+140} ${p.y+34}, ${c.x-40} ${c.y+34}, ${c.x} ${c.y+24}`;
+        path.setAttribute('d', d);
+        path.setAttribute('stroke','#0b3b4a');
+        path.setAttribute('fill','none');
+        path.setAttribute('stroke-width','2');
+        svg.appendChild(path);
+      }
+    }
+  }
+  // draw nodes
+  for(const n of map.values()){
+    const pos = positions.get(n.id) || {x:20,y:20};
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('class','node');
+    g.setAttribute('data-id', n.id);
+    g.setAttribute('transform', `translate(${pos.x},${pos.y})`);
+    // rect
+    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('width',200); rect.setAttribute('height',72); rect.setAttribute('rx',12);
+    rect.setAttribute('fill', n.color || '#062033'); rect.setAttribute('stroke','#184b62'); rect.setAttribute('stroke-width', n.id===selected?3:1);
+    g.appendChild(rect);
+    // title text
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',14); t.setAttribute('y',28); t.setAttribute('fill','#e6f0fa'); t.setAttribute('font-size',14);
+    t.textContent = n.title.length>56? n.title.slice(0,53)+'…': n.title;
+    g.appendChild(t);
+    // notes preview
+    if(n.notes && n.notes.trim()){
+      const ts = document.createElementNS('http://www.w3.org/2000/svg','text');
+      ts.setAttribute('x',14); ts.setAttribute('y',46); ts.setAttribute('fill','#b6d7db'); ts.setAttribute('font-size',12);
+      ts.textContent = n.notes.split('\n')[0].slice(0,68);
+      g.appendChild(ts);
+    }
+    // collapse indicator
+    const ch = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    ch.setAttribute('cx',186); ch.setAttribute('cy',12); ch.setAttribute('r',8); ch.setAttribute('fill', n.collapsed? '#6ee7b7':'#2b8ca6');
+    g.appendChild(ch);
+
+    // pointer events for dragging
+    g.addEventListener('pointerdown', onPointerDown);
+    // click/dblclick
+    g.addEventListener('click', (e)=>{ e.stopPropagation(); selectNode(n.id); });
+    g.addEventListener('dblclick', (e)=>{ e.stopPropagation(); toggleCollapse(n.id); });
+    svg.appendChild(g);
+  }
+  svg.setAttribute('width', Math.max(1000, (Array.from(positions.values()).reduce((a,p)=>Math.max(a,p.x+260),0)))); svg.setAttribute('height', 1400);
+  saveStore('im_nodes', nodes);
+}
+
+// selection
+function selectNode(id){ selected = id; const node = nodes.find(n=>n.id===id); if(!node) return; document.getElementById('editTitle').value = node.title; document.getElementById('editNotes').value = node.notes; render(); }
+
+function toggleCollapse(id){ const n = nodes.find(x=>x.id===id); if(n){ n.collapsed = !n.collapsed; pushHistory(); render(); } }
+
+// editing handlers
+document.getElementById('saveNode').addEventListener('click', ()=>{
+  if(!selected) return alert('Select a node'); const n = nodes.find(x=>x.id===selected); n.title = document.getElementById('editTitle').value; n.notes = document.getElementById('editNotes').value; pushHistory(); render();
+});
+document.getElementById('addChild').addEventListener('click', ()=>{
+  if(!selected) return alert('Select a node'); const title = prompt('Child title'); if(title){ addNode(title, selected); render(); }
+});
+document.getElementById('deleteNode').addEventListener('click', ()=>{
+  if(!selected) return alert('Select a node'); if(!confirm('Delete this node and its children?')) return;
+  const toDel = new Set();
+  function mark(id){ toDel.add(id); for(const c of nodes.filter(x=>x.parent===id)) mark(c.id); }
+  mark(selected); nodes = nodes.filter(x=>!toDel.has(x.id)); selected=null; pushHistory(); render();
+});
+
+// color apply
+document.getElementById('applyColor').addEventListener('click', ()=>{
+  if(!selected) return alert('Select a node'); const n = nodes.find(x=>x.id===selected); n.color = pickedColor; pushHistory(); render();
+});
+
+// fit/search
+document.getElementById('fit').addEventListener('click', ()=>{ const wrap=document.getElementById('canvasWrap'); wrap.scrollTop=0; wrap.scrollLeft=0; });
+document.getElementById('nodeFilter').addEventListener('input', (e)=>{ const q=e.target.value.trim().toLowerCase(); if(!q){ selected=null; render(); return } const found = nodes.find(n=>n.title.toLowerCase().includes(q) || (n.notes||'').toLowerCase().includes(q)); if(found) selectNode(found.id); });
+
+// export functions (PNG/JSON/MD)
+function exportJSON(){ const data = {nodes}; const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ideamap_pro.json'; a.click(); URL.revokeObjectURL(a.href); }
+function exportMarkdown(){ if(!nodes.length) return alert('Nothing to export'); const map = new Map(nodes.map(n=>[n.id,{...n, children:[]} ])); for(const n of map.values()) if(n.parent) map.get(n.parent)?.children.push(n);
+  function rec(n,depth){ let s = `${'  '.repeat(depth)}- ${n.title}\n`; if(n.notes) s += `${'  '.repeat(depth+1)}${n.notes.split('\n').map(l=>' - '+l).join('\n'+('  '.repeat(depth+1)))}\n`; for(const c of n.children) s += rec(c,depth+1); return s }
+  let root = Array.from(map.values()).find(x=>!x.parent); const md = root? rec(root,0):''; const blob = new Blob([md],{type:'text/markdown'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ideamap_pro.md'; a.click(); URL.revokeObjectURL(a.href); }
+function exportPNG(){ const svgEl = svg.cloneNode(true); svgEl.setAttribute('xmlns','http://www.w3.org/2000/svg'); const s = new XMLSerializer().serializeToString(svgEl); const img = new Image(); const blob = new Blob([s],{type:'image/svg+xml;charset=utf-8'}); const url = URL.createObjectURL(blob);
+  img.onload = ()=>{ const w = svgEl.getAttribute('width')||1200, h = svgEl.getAttribute('height')||800; const c = document.createElement('canvas'); c.width = parseInt(w); c.height = parseInt(h); const ctx = c.getContext('2d'); ctx.fillStyle='#071029'; ctx.fillRect(0,0,c.width,c.height); ctx.drawImage(img,0,0); URL.revokeObjectURL(url); c.toBlob(b=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='ideamap_pro.png'; a.click(); URL.revokeObjectURL(a.href); },'image/png'); };
+  img.onerror = ()=>{ alert('Export failed'); URL.revokeObjectURL(url); }; img.src = url;
+}
+
+document.getElementById('exportJSON').onclick = exportJSON;
+document.getElementById('exportMD').onclick = exportMarkdown;
+document.getElementById('exportPNG').onclick = exportPNG;
+
+// Pointer drag logic (pointer events)
+let dragState = null;
+function onPointerDown(e){
+  const g = e.currentTarget;
+  const id = g.getAttribute('data-id'); const start = {x: e.clientX, y: e.clientY};
+  // get current translate values
+  const tr = g.getAttribute('transform') || 'translate(0,0)'; const m = tr.match(/translate\(([-\d.]+),\s*([-\d.]+)\)/); let initX=0, initY=0; if(m){ initX = parseFloat(m[1]); initY = parseFloat(m[2]); }
+  dragState = { id, start, initX, initY, ptrId: e.pointerId };
+  g.setPointerCapture(e.pointerId);
+  function onMove(ev){
+    ev.preventDefault();
+    const dx = ev.clientX - dragState.start.x; const dy = ev.clientY - dragState.start.y;
+    const nx = dragState.initX + dx; const ny = dragState.initY + dy;
+    g.setAttribute('transform', `translate(${nx},${ny})`);
+  }
+  function onUp(ev){
+    const g2 = g;
+    const dx = ev.clientX - dragState.start.x; const dy = ev.clientY - dragState.start.y;
+    const nx = dragState.initX + dx; const ny = dragState.initY + dy;
+    const node = nodes.find(n=>n.id===dragState.id); if(node){ node.x = nx; node.y = ny; node.manual = true; pushHistory(); saveStore('im_nodes',nodes); }
+    g2.removeEventListener('pointermove', onMove);
+    g2.removeEventListener('pointerup', onUp);
+    try{ g2.releasePointerCapture(ev.pointerId);}catch{}
+    dragState = null;
+    render();
+  }
+  g.addEventListener('pointermove', onMove);
+  g.addEventListener('pointerup', onUp);
+}
+
+// improved LLM prompt and call
+async function callLocalModel(prompt){
+  const preset = document.getElementById('preset').value;
+  const baseUrl = document.getElementById('baseUrl').value || settings.baseUrl;
+  const model = document.getElementById('model').value || settings.model;
+  saveStore('im_settings',{preset,baseUrl,model});
+
+  const systemMsg = `You are an assistant that MUST output only valid JSON (no prose). Respond with a JSON array of objects. Each object must have keys:\n- title (string)\n- notes (string, optional)\n- children (array, possibly empty)\nReturn only the JSON array and nothing else. Example:\n[ { \"title\": \"Idea A\", \"notes\": \"One-line notes\", \"children\": [ { \"title\":\"Subidea\",\"notes\":\"...\",\"children\":[] } ] } ]`;
+
+  if(preset==='lmstudio'){
+    const url = baseUrl.replace(/\/$/,'') + '/v1/chat/completions';
+    const body = { model, messages:[ { role:'system', content: systemMsg }, { role:'user', content: prompt } ], temperature: 0.0, max_tokens: 800, stream: false };
+    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    if(!res.ok) throw new Error(await res.text()); const j = await res.json(); return j.choices?.[0]?.message?.content || '';
+  } else {
+    const url = baseUrl.replace(/\/$/,'') + '/api/chat';
+    const body = { model, messages:[ { role:'system', content: systemMsg }, { role:'user', content: prompt } ], temperature:0.0 };
+    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    if(!res.ok) throw new Error(await res.text()); const j = await res.json(); return j?.response || j?.answer || j?.content || JSON.stringify(j);
+  }
+}
+
+// parse output robustly with JSON extraction fallback
+function parseToOutline(text){
+  try{ const j = JSON.parse(text); if(Array.isArray(j)) return j; if(j.outline) return j.outline; }catch(e){}
+  const m = text.match(/(\[\s*\{[\s\S]*\}\s*\])/m);
+  if(m){ try{ const j = JSON.parse(m[1]); if(Array.isArray(j)) return j; }catch(e){} }
+  const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  const rootItems = []; let current = null;
+  for(const ln of lines){
+    if(/^\d+\.|^- /.test(ln)){ const t = ln.replace(/^- /,'').replace(/^\d+\.\s*/,''); rootItems.push({ title:t, notes:'', children:[] }); current = rootItems[rootItems.length-1]; }
+    else { if(current) current.notes += (current.notes? '\n':'' ) + ln; else rootItems.push({ title: ln, notes:'', children:[] }); }
+  }
+  return rootItems;
+}
+
+// generate and build outline -> nodes
+document.getElementById('generate').addEventListener('click', async ()=>{
+  const p = promptEl.value.trim(); if(!p) return alert('Write a prompt');
+  const btn = document.getElementById('generate'); btn.textContent = 'Generating…'; btn.disabled = true;
+  try{
+    const out = await callLocalModel(p);
+    let outline = parseToOutline(out);
+    // normalize outline to our node structure
+    function buildArray(arr, parent=null){
+      for(const it of arr){
+        const title = it.title || it.name || 'Untitled';
+        const notes = it.notes || '';
+        const id = addNode(title, parent, notes, { color: '#062033' });
+        if(Array.isArray(it.children) && it.children.length) buildArray(it.children, id);
+      }
+    }
+    // clear existing map to make space for new
+    nodes = []; rootId = null; pushHistory();
+    if(Array.isArray(outline)) buildArray(outline, null);
+    pushHistory(); render();
+  }catch(e){ alert('Generate error: '+e.message); } finally{ btn.textContent = 'Generate Map ▶'; btn.disabled = false; }
+});
+
+// load saved nodes on boot
+const saved = store('im_nodes'); if(saved){ nodes = saved; rootId = nodes.find(n=>!n.parent)?.id || nodes[0]?.id; pushHistory(); }
+render();
+
+// keyboard shortcuts
+document.addEventListener('keydown', (e)=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='z'){ e.preventDefault(); undo(); }
+  if((e.ctrlKey||e.metaKey) && (e.key.toLowerCase()==='y' || (e.shiftKey && e.key.toLowerCase()==='z'))){ e.preventDefault(); redo(); }
+  if(e.key==='Delete' && selected){ document.getElementById('deleteNode').click(); }
+  if(e.key==='Tab' && selected){ e.preventDefault(); document.getElementById('addChild').click(); }
+});
+
+</script>
+</body>
+</html>

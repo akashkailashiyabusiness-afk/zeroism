@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Power of Now</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .bg-teal-custom {
+            background-color: #23424D;
+        }
+        .text-teal-custom {
+            color: #23424D;
+        }
+        .hover\:bg-teal-custom:hover {
+            background-color: #1A323A; /* Darker teal for hover */
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-100 via-teal-50 to-teal-100 font-sans text-gray-800">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-3xl md:text-4xl font-bold text-center text-teal-custom mb-6 drop-shadow-md">
+            The Power of Now: A Guide to Spiritual Enlightenment
+        </h1>
+
+        <!-- Tabs -->
+        <div class="flex flex-wrap gap-2 mb-6 bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-2 sticky top-0 z-10">
+            <button class="tablink flex-1 py-2 px-4 text-center text-sm md:text-base font-medium rounded-md transition-all duration-300 hover:bg-teal-custom hover:text-white active:bg-teal-custom active:text-white" onclick="openTab(event, 'CoreConcepts')">Core Concepts</button>
+            <button class="tablink flex-1 py-2 px-4 text-center text-sm md:text-base font-medium rounded-md transition-all duration-300 hover:bg-teal-custom hover:text-white active:bg-teal-custom active:text-white" onclick="openTab(event, 'Ego')">The Ego</button>
+            <button class="tablink flex-1 py-2 px-4 text-center text-sm md:text-base font-medium rounded-md transition-all duration-300 hover:bg-teal-custom hover:text-white active:bg-teal-custom active:text-white" onclick="openTab(event, 'PainBody')">The Pain-Body</button>
+            <button class="tablink flex-1 py-2 px-4 text-center text-sm md:text-base font-medium rounded-md transition-all duration-300 hover:bg-teal-custom hover:text-white active:bg-teal-custom active:text-white" onclick="openTab(event, 'Practices')">Practices</button>
+            <button class="tablink flex-1 py-2 px-4 text-center text-sm md:text-base font-medium rounded-md transition-all duration-300 hover:bg-teal-custom hover:text-white active:bg-teal-custom active:text-white" onclick="openTab(event, 'Quiz')">Quiz</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="CoreConcepts" class="tabcontent hidden">
+            <h2 class="text-2xl font-semibold text-teal-custom mb-4">Core Concepts</h2>
+            <div class="space-y-6">
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">The Now</h3>
+                    <p class="mt-2">The only truly real time is the present moment.  The past is memory, the future is anticipation – both exist only in the mind.</p>
+                    <p class="mt-2 italic">Eckhart Tolle emphasizes that dwelling on the past or future creates suffering.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Presence</h3>
+                    <p class="mt-2">Fully inhabiting the present moment, without judgment or resistance.  It's about being aware of your thoughts, feelings, and sensations without getting carried away by them.</p>
+                    <p class="mt-2 italic">Presence is the key to inner peace and liberation.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Identification with the Mind</h3>
+                    <p class="mt-2">The mistaken belief that you *are* your thoughts. Tolle argues that this identification is the root of suffering.</p>
+                    <p class="mt-2 italic">You are the *awareness* behind the thoughts, not the thoughts themselves.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="Ego" class="tabcontent hidden">
+            <h2 class="text-2xl font-semibold text-teal-custom mb-4">Understanding the Ego</h2>
+            <div class="space-y-6">
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">The Pain-Body's Creation</h3>
+                    <p class="mt-2">The ego is a false sense of self, constructed from past experiences, memories, and conditioning. It thrives on identification with possessions, achievements, and social roles.</p>
+                    <p class="mt-2 italic">The ego seeks validation from external sources and fears loss or annihilation.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Ego's Functions</h3>
+                    <p class="mt-2">The ego creates a sense of identity, but it's a limited and often distorted one. It constantly seeks to defend itself and maintain its illusion of control.</p>
+                    <p class="mt-2 italic">The ego is not inherently evil, but it's a source of suffering when it dominates our awareness.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="PainBody" class="tabcontent hidden">
+            <h2 class="text-2xl font-semibold text-teal-custom mb-4">The Pain-Body Explained</h2>
+            <div class="space-y-6">
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">What is the Pain-Body?</h3>
+                    <p class="mt-2">An accumulation of past emotional pain, stored within the energy body. It's a semi-autonomous entity that periodically seeks to be reactivated.</p>
+                    <p class="mt-2 italic">The Pain-Body feeds on negative thoughts and emotions, and it can hijack your mind and behavior.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Recognizing the Pain-Body</h3>
+                    <p class="mt-2">The Pain-Body manifests as a feeling of unease, restlessness, or negativity that arises seemingly out of nowhere. It often triggers negative thoughts and emotions.</p>
+                    <p class="mt-2 italic">The key is to observe the Pain-Body without identifying with it.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="Practices" class="tabcontent hidden">
+            <h2 class="text-2xl font-semibold text-teal-custom mb-4">Practices for Living in the Now</h2>
+            <div class="space-y-6">
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Mindful Breathing</h3>
+                    <p class="mt-2">Focusing your attention on the sensation of your breath. This anchors you in the present moment and calms the mind.</p>
+                    <p class="mt-2 italic">Simple, accessible, and effective for cultivating presence.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Body Scan</h3>
+                    <p class="mt-2">Bringing awareness to different parts of your body, noticing sensations without judgment.</p>
+                    <p class="mt-2 italic">Helps to connect with your physical presence and release tension.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Acceptance</h3>
+                    <p class="mt-2">Acknowledging and accepting the present moment as it is, without resistance. This doesn't mean you have to like it, but it means you stop fighting reality.</p>
+                    <p class="mt-2 italic">Acceptance is the foundation of inner peace.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="Quiz" class="tabcontent hidden">
+            <h2 class="text-2xl font-semibold text-teal-custom mb-4">Interactive Quiz</h2>
+            <div class="space-y-6">
+                <div class="p-4 bg-white rounded-lg shadow-md">
+                    <p class="font-medium">Q1: What is the primary focus of 'The Power of Now'?</p>
+                    <select id="quizAnswer1" class="mt-2 w-full p-2 border rounded-md focus:ring-2 focus:ring-teal-custom">
+                        <option value="A">Planning for the future</option>
+                        <option value="B">Living fully in the present moment</option>
+                        <option value="C">Analyzing the past</option>
+                    </select>
+                    <button onclick="checkAnswer1()" class="mt-2 w-full bg-teal-custom text-white py-2 rounded-md hover:bg-teal-custom transition-all duration-300">Submit</button>
+                    <div id="result1" class="result mt-2 font-semibold"></div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md">
+                    <p class="font-medium">Q2: What is the 'Pain-Body' according to Tolle?</p>
+                    <select id="quizAnswer2" class="mt-2 w-full p-2 border rounded-md focus:ring-2 focus:ring-teal-custom">
+                        <option value="A">A physical illness</option>
+                        <option value="B">Accumulated emotional pain</option>
+                        <option value="C">A positive emotional state</option>
+                    </select>
+                    <button onclick="checkAnswer2()" class="mt-2 w-full bg-teal-custom text-white py-2 rounded-md hover:bg-teal-custom transition-all duration-300">Submit</button>
+                    <div id="result2" class="result mt-2 font-semibold"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            const tabcontent = document.getElementsByClassName("tabcontent");
+            for (let i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.add("hidden");
+                tabcontent[i].classList.remove("fade-in");
+            }
+            const tablinks = document.getElementsByClassName("tablink");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active", "bg-teal-custom", "text-white");
+            }
+            const activeTab = document.getElementById(tabName);
+            activeTab.classList.remove("hidden");
+            activeTab.classList.add("fade-in");
+            evt.currentTarget.classList.add("active", "bg-teal-custom", "text-white");
+        }
+
+        function checkAnswer1() {
+            const answer = document.getElementById("quizAnswer1").value;
+            const result = document.getElementById("result1");
+            if (answer === "B") {
+                result.innerHTML = "Correct! The Power of Now emphasizes living in the present.";
+                result.classList.add("text-green-600");
+                result.classList.remove("text-red-600");
+            } else {
+                result.innerHTML = "Incorrect. The book focuses on the present moment, not the past or future.";
+                result.classList.add("text-red-600");
+                result.classList.remove("text-green-600");
+            }
+        }
+
+        function checkAnswer2() {
+            const answer = document.getElementById("quizAnswer2").value;
+            const result = document.getElementById("result2");
+            if (answer === "B") {
+                result.innerHTML = "Right! The Pain-Body is accumulated emotional pain.";
+                result.classList.add("text-green-600");
+                result.classList.remove("text-red-600");
+            } else {
+                result.innerHTML = "Incorrect. The Pain-Body is a collection of past emotional suffering.";
+                result.classList.add("text-red-600");
+                result.classList.remove("text-green-600");
+            }
+        }
+
+        // Open default tab
+        document.getElementsByClassName("tablink")[0].click();
+    </script>
+</body>
+</html>

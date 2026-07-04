@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Life Toolkit | Master Your Reality</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Instrument Serif', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            gold: '#FFD700',
+                            purple: '#A855F7',
+                            blue: '#3B82F6',
+                            emerald: '#10B981',
+                            slate: '#0F172A',
+                            accent: '#F59E0B'
+                        }
+                    },
+                    animation: {
+                        'shimmer': 'shimmer 2s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #020617;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(168, 85, 247, 0.15) 0, transparent 50%), 
+                radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.1) 0, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(59, 130, 246, 0.05) 0, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* Core Glassmorphism */
+        .glass {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px) saturate(120%);
+            -webkit-backdrop-filter: blur(16px) saturate(120%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .glass-button {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #FFD700, #F59E0B, #A855F7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            opacity: 0.04;
+            z-index: 9999;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .wisdom-transition {
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    </style>
+</head>
+<body class="text-slate-200 selection:bg-brand-gold selection:text-black">
+    <div class="noise-overlay"></div>
+
+    <!-- Load Shared Navigation -->
+    <script src="shared-navigation.js"></script>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-brand-purple/10 rounded-full blur-[140px] animate-pulse-slow"></div>
+            <div class="absolute top-1/4 right-0 w-[500px] h-[500px] bg-brand-gold/5 rounded-full blur-[120px] animate-float"></div>
+        </div>
+
+        <div class="relative z-10 max-w-5xl mx-auto px-6 text-center">
+            <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass mb-10 border-white/20">
+                <span class="relative flex h-2.5 w-2.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-gold opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-gold"></span>
+                </span>
+                <span class="text-[10px] font-black tracking-[0.3em] uppercase text-brand-gold">Evolutionary Interface v4.0</span>
+            </div>
+            
+            <h1 class="font-serif text-6xl md:text-8xl lg:text-9xl mb-10 leading-[0.85] tracking-tighter">
+                Architect Your <span class="italic font-light opacity-60 block md:inline">Internal</span> 
+                <span class="text-gradient font-bold block">Consciousness.</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-14 leading-relaxed font-light">
+                A high-fidelity synthesis of <span class="text-slate-200 font-semibold underline decoration-brand-blue/30 underline-offset-4">Bruce Lee</span>, 
+                <span class="text-slate-200 font-semibold underline decoration-brand-purple/30 underline-offset-4">Osho</span>, 
+                and <span class="text-slate-200 font-semibold underline decoration-brand-gold/30 underline-offset-4">Einstein</span>.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <button onclick="document.getElementById('engine').scrollIntoView()" class="w-full sm:w-auto px-12 py-5 bg-white text-black font-black uppercase text-xs tracking-widest rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-white/10">
+                    Access Intelligence
+                </button>
+                <button class="w-full sm:w-auto px-12 py-5 glass-button text-white font-black uppercase text-xs tracking-widest rounded-2xl hover:scale-105 transition-all">
+                    System Overview
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Wisdom Engine Section -->
+    <section id="engine" class="py-32 relative">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="glass p-12 md:p-24 rounded-[50px] text-center shadow-2xl relative overflow-hidden border-white/10">
+                <!-- Gloss shine effect -->
+                <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/5 to-transparent pointer-events-none"></div>
+                
+                <div id="wisdom-box" class="wisdom-transition">
+                    <div id="wisdom-category" class="text-brand-gold text-[10px] font-black tracking-[0.4em] uppercase mb-10 opacity-70">Transmitting Data...</div>
+                    <h2 id="wisdom-quote" class="font-serif text-3xl md:text-5xl lg:text-6xl mb-12 leading-tight italic font-light tracking-tight">"The key to immortality is first living a life worth remembering."</h2>
+                    <div id="wisdom-author" class="text-lg font-bold tracking-widest uppercase mb-14 text-slate-400">— Bruce Lee</div>
+                    
+                    <div class="flex flex-col items-center gap-8">
+                        <div id="wisdom-action" class="max-w-md mx-auto p-8 glass rounded-3xl border-brand-gold/10 text-brand-gold/80 italic text-sm leading-relaxed">
+                            Contemplate the legacy you are building today. Perform one action that aligns with the person you want to be remembered as.
+                        </div>
+                        <button onclick="generateWisdom()" class="group flex items-center gap-4 text-brand-gold hover:text-white transition-all font-black tracking-[0.2em] uppercase text-[10px]">
+                            <div class="w-10 h-10 glass rounded-full flex items-center justify-center group-hover:bg-brand-gold group-hover:text-black transition-all">
+                                <svg class="w-4 h-4 group-hover:rotate-180 transition-transform duration-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            </div>
+                            Sync Next Insight
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Vault: Masters Section -->
+    <section id="vault" class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
+                <div>
+                    <h2 class="font-serif text-5xl md:text-7xl mb-6">The Master's Vault</h2>
+                    <p class="text-slate-400 text-lg font-light tracking-wide">Deconstructing the DNA of absolute focus and presence.</p>
+                </div>
+                <div class="text-[10px] font-black tracking-[0.4em] opacity-30 uppercase">Neural Archive v4.2</div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- Master Card: Bruce Lee -->
+                <div class="glass-card p-12 rounded-[40px] group relative overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand-blue/5 rounded-full blur-3xl group-hover:bg-brand-blue/20 transition-all duration-700"></div>
+                    <div class="flex justify-between items-start mb-10">
+                        <div class="w-16 h-16 glass text-brand-blue rounded-2xl flex items-center justify-center border-white/20">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <span class="text-[9px] font-black tracking-[0.3em] uppercase opacity-40">Fluidity</span>
+                    </div>
+                    <h3 class="text-4xl font-bold mb-6 font-serif">Bruce Lee</h3>
+                    <p class="text-slate-400 mb-10 leading-relaxed font-light">The pioneer of <strong>Jeet Kune Do</strong>. He stripped away traditional dogmas to find the "formless" peak of human performance.</p>
+                    <div class="space-y-4 mb-12 text-sm font-medium">
+                        <div class="flex items-center gap-4"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></div> Radical Efficiency</div>
+                        <div class="flex items-center gap-4"><div class="w-1.5 h-1.5 bg-brand-blue rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></div> The Style of No Style</div>
+                    </div>
+                    <button class="w-full py-5 rounded-2xl glass-button hover:text-brand-blue transition-all text-[10px] font-black uppercase tracking-widest">Access Bio-Code</button>
+                </div>
+
+                <!-- Master Card: Osho -->
+                <div class="glass-card p-12 rounded-[40px] group relative overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand-purple/5 rounded-full blur-3xl group-hover:bg-brand-purple/20 transition-all duration-700"></div>
+                    <div class="flex justify-between items-start mb-10">
+                        <div class="w-16 h-16 glass text-brand-purple rounded-2xl flex items-center justify-center border-white/20">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21a9 9 0 100-18 9 9 0 000 18z"/><path d="M12 12V7m0 5l3 3m-3-3l-3 3"/></svg>
+                        </div>
+                        <span class="text-[9px] font-black tracking-[0.3em] uppercase opacity-40">Awareness</span>
+                    </div>
+                    <h3 class="text-4xl font-bold mb-6 font-serif">Osho</h3>
+                    <p class="text-slate-400 mb-10 leading-relaxed font-light">Architect of the <strong>New Man</strong>. He blended the silence of the East with the vitality of the West.</p>
+                    <div class="space-y-4 mb-12 text-sm font-medium">
+                        <div class="flex items-center gap-4"><div class="w-1.5 h-1.5 bg-brand-purple rounded-full shadow-[0_0_8px_rgba(168,85,247,0.8)]"></div> Witness Consciousness</div>
+                        <div class="flex items-center gap-4"><div class="w-1.5 h-1.5 bg-brand-purple rounded-full shadow-[0_0_8px_rgba(168,85,247,0.8)]"></div> Zorba the Buddha</div>
+                    </div>
+                    <button class="w-full py-5 rounded-2xl glass-button hover:text-brand-purple transition-all text-[10px] font-black uppercase tracking-widest">Initiate Silence</button>
+                </div>
+
+                <!-- Master Card: Einstein -->
+                <div class="glass-card p-12 rounded-[40px] group relative overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand-gold/5 rounded-full blur-3xl group-hover:bg-brand-gold/20 transition-all duration-700"></div>
+                    <div class="flex justify-between items-start mb-10">
+                        <div class="w-16 h-16 glass text-brand-gold rounded-2xl flex items-center justify-center border-white/20">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                        </div>
+                        <span class="text-[9px] font-black tracking-[0.3em] uppercase opacity-40">Reasoning</span>
+                    </div>
+                    <h3 class="text-4xl font-bold mb-6 font-serif">A. Einstein</h3>
+                    <p class="text-slate-400 mb-10 leading-relaxed font-light">Pioneer of <strong>Theoretical Imagination</strong>. He visualized the curvature of space to redefine reality.</p>
+                    <div class="space-y-4 mb-12 text-sm font-medium">
+                        <div class="flex items-center gap-4"><div class="w-1.5 h-1.5 bg-brand-gold rounded-full shadow-[0_0_8px_rgba(255,215,0,0.8)]"></div> First Principles Thinking</div>
+                        <div class="flex items-center gap-4"><div class="w-1.5 h-1.5 bg-brand-gold rounded-full shadow-[0_0_8px_rgba(255,215,0,0.8)]"></div> Cosmic Curiosity</div>
+                    </div>
+                    <button class="w-full py-5 rounded-2xl glass-button hover:text-brand-gold transition-all text-[10px] font-black uppercase tracking-widest">Simulate Theory</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mental Models Lab -->
+    <section id="models" class="py-32 bg-black/20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-24">
+                <h2 class="font-serif text-5xl md:text-6xl mb-8">Logic Synthesis Lab</h2>
+                <p class="text-slate-400 max-w-xl mx-auto font-light leading-relaxed">High-performance mental models to upgrade your decision-making hardware.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Model Cards -->
+                <div class="p-10 rounded-[35px] glass border-white/5 hover:border-brand-emerald/30 transition-all duration-500 hover:-translate-y-2">
+                    <div class="text-brand-emerald font-black text-[9px] mb-6 tracking-[0.3em] uppercase">Algorithm</div>
+                    <h4 class="text-2xl font-bold mb-4">Inversion</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed font-light">"Avoid stupidity before seeking brilliance." Solves problems by defining and avoiding failure paths.</p>
+                </div>
+                <div class="p-10 rounded-[35px] glass border-white/5 hover:border-brand-purple/30 transition-all duration-500 hover:-translate-y-2">
+                    <div class="text-brand-purple font-black text-[9px] mb-6 tracking-[0.3em] uppercase">Cognition</div>
+                    <h4 class="text-2xl font-bold mb-4">Feynman</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed font-light">The ultimate test of understanding: explaining complexity to a child without technical jargon.</p>
+                </div>
+                <div class="p-10 rounded-[35px] glass border-white/5 hover:border-brand-blue/30 transition-all duration-500 hover:-translate-y-2">
+                    <div class="text-brand-blue font-black text-[9px] mb-6 tracking-[0.3em] uppercase">Impact</div>
+                    <h4 class="text-2xl font-bold mb-4">Pareto</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed font-light">Identifying the vital 20% that generates 80% of value. Ruthless elimination of the trivial many.</p>
+                </div>
+                <div class="p-10 rounded-[35px] glass border-white/5 hover:border-brand-gold/30 transition-all duration-500 hover:-translate-y-2">
+                    <div class="text-brand-gold font-black text-[9px] mb-6 tracking-[0.3em] uppercase">Time</div>
+                    <h4 class="text-2xl font-bold mb-4">2nd Order</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed font-light">Considering the downstream effects of choices. Moving beyond "What happens now?" to "And then what?".</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Daily Rituals Section -->
+    <section id="rituals" class="py-32 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+                <div>
+                    <h2 class="font-serif text-5xl md:text-7xl mb-10 tracking-tight leading-none">Your Daily <span class="text-brand-gold">OS Runtime.</span></h2>
+                    <p class="text-slate-400 text-lg mb-14 font-light leading-relaxed">Structure is the prerequisite for freedom. Code your day for maximum output and minimal friction.</p>
+                    
+                    <div class="space-y-10">
+                        <div class="flex gap-8 items-start group">
+                            <div class="w-14 h-14 rounded-2xl glass flex-shrink-0 flex items-center justify-center font-black text-brand-gold border-white/20 group-hover:bg-brand-gold group-hover:text-black transition-all">01</div>
+                            <div>
+                                <h4 class="font-bold text-2xl mb-3 tracking-tight">The Static Start</h4>
+                                <p class="text-slate-400 text-sm font-light">Zero input morning. 20m silent meditation followed by Einstein's morning curiosity log.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-8 items-start group">
+                            <div class="w-14 h-14 rounded-2xl glass flex-shrink-0 flex items-center justify-center font-black text-brand-gold border-white/20 group-hover:bg-brand-gold group-hover:text-black transition-all">02</div>
+                            <div>
+                                <h4 class="font-bold text-2xl mb-3 tracking-tight">Deep Work Sprints</h4>
+                                <p class="text-slate-400 text-sm font-light">Applying Bruce Lee's focus: 90m blocks of singular attention on the #1 needle-moving objective.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-8 items-start group">
+                            <div class="w-14 h-14 rounded-2xl glass flex-shrink-0 flex items-center justify-center font-black text-brand-gold border-white/20 group-hover:bg-brand-gold group-hover:text-black transition-all">03</div>
+                            <div>
+                                <h4 class="font-bold text-2xl mb-3 tracking-tight">Post-Action Review</h4>
+                                <p class="text-slate-400 text-sm font-light">Evening reflection. "Where did I react instead of acting?" "What did I discard?"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-1 glass rounded-[60px] border-white/10 shadow-3xl">
+                    <div class="bg-slate-900/40 backdrop-blur-3xl p-10 md:p-16 rounded-[59px]">
+                        <h3 class="text-3xl font-bold mb-12 flex items-center gap-4">
+                            <div class="w-10 h-10 glass rounded-xl flex items-center justify-center text-brand-gold border-white/20">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"/></svg>
+                            </div>
+                            The Ritual Grid
+                        </h3>
+                        <div id="checklist" class="space-y-6">
+                            <div class="flex items-center justify-between p-6 glass rounded-2xl cursor-pointer hover:bg-white/10 transition-all border-white/10 group">
+                                <span class="text-sm font-bold tracking-wide group-hover:text-brand-gold transition-colors">15m Breath-Work (Osho)</span>
+                                <div class="w-8 h-8 glass rounded-lg border-white/30 flex items-center justify-center">
+                                    <div class="w-3 h-3 bg-brand-gold rounded-sm opacity-0 check-indicator transition-opacity"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-6 glass rounded-2xl cursor-pointer hover:bg-white/10 transition-all border-white/10 group">
+                                <span class="text-sm font-bold tracking-wide group-hover:text-brand-gold transition-colors">Discard 1 Non-Essential</span>
+                                <div class="w-8 h-8 glass rounded-lg border-white/30 flex items-center justify-center">
+                                    <div class="w-3 h-3 bg-brand-gold rounded-sm opacity-0 check-indicator transition-opacity"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-6 glass rounded-2xl cursor-pointer hover:bg-white/10 transition-all border-white/10 group">
+                                <span class="text-sm font-bold tracking-wide group-hover:text-brand-gold transition-colors">Thought Experiment Session</span>
+                                <div class="w-8 h-8 glass rounded-lg border-white/30 flex items-center justify-center">
+                                    <div class="w-3 h-3 bg-brand-gold rounded-sm opacity-0 check-indicator transition-opacity"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-6 glass rounded-2xl cursor-pointer hover:bg-white/10 transition-all border-white/10 group">
+                                <span class="text-sm font-bold tracking-wide group-hover:text-brand-gold transition-colors">Physical Conditioning Block</span>
+                                <div class="w-8 h-8 glass rounded-lg border-white/30 flex items-center justify-center">
+                                    <div class="w-3 h-3 bg-brand-gold rounded-sm opacity-0 check-indicator transition-opacity"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-24 border-t border-white/5 bg-black/60 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between gap-16 mb-24">
+                <div class="max-w-sm">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-10 h-10 glass rounded-xl flex items-center justify-center border-white/20">
+                            <span class="text-brand-gold font-black text-sm">∞</span>
+                        </div>
+                        <span class="font-serif text-2xl font-bold tracking-tighter">ULT Toolkit</span>
+                    </div>
+                    <p class="text-slate-500 text-sm leading-relaxed font-light">
+                        Built for the autonomous individual. Synthesizing thousands of years of human wisdom into a practical cognitive interface.
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-16">
+                    <div>
+                        <h5 class="text-white font-black text-[10px] uppercase tracking-[0.3em] mb-8">Philosophy</h5>
+                        <ul class="text-slate-500 text-sm space-y-4 font-light">
+                            <li><a href="#" class="hover:text-brand-gold transition-colors">Fluidity</a></li>
+                            <li><a href="#" class="hover:text-brand-gold transition-colors">No-Mind</a></li>
+                            <li><a href="#" class="hover:text-brand-gold transition-colors">Rationality</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="text-white font-black text-[10px] uppercase tracking-[0.3em] mb-8">Navigation</h5>
+                        <ul class="text-slate-500 text-sm space-y-4 font-light">
+                            <li><a href="#vault" class="hover:text-brand-gold transition-colors">The Vault</a></li>
+                            <li><a href="#rituals" class="hover:text-brand-gold transition-colors">Ritual OS</a></li>
+                            <li><a href="#engine" class="hover:text-brand-gold transition-colors">Intelligence</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black tracking-widest text-slate-600 uppercase">
+                <p>© 2026 ULTIMATE LIFE TOOLKIT. OPEN SOURCE CONSCIOUSNESS.</p>
+                <div class="flex gap-8">
+                    <a href="#" class="hover:text-white transition-colors">Neuro-Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Protocol</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const wisdomDb = [
+            {
+                cat: "BRUCE LEE - ADAPTABILITY",
+                quote: "Empty your mind, be formless, shapeless — like water.",
+                author: "Bruce Lee",
+                action: "Identify one area where you are being rigid. Today, practice being 'liquid' by adapting to a frustration instead of fighting it."
+            },
+            {
+                cat: "OSHO - MINDFULNESS",
+                quote: "Courage is a love affair with the unknown.",
+                author: "Osho",
+                action: "Do one small thing today that scares you slightly. Not because it's necessary, but to practice the 'love affair' with uncertainty."
+            },
+            {
+                cat: "EINSTEIN - CURIOSITY",
+                quote: "I have no special talents. I am only passionately curious.",
+                author: "A. Einstein",
+                action: "Pick a mundane object in your room. Research how it was made. Ask 5 'why' questions until you find a mystery."
+            },
+            {
+                cat: "NAVAL - WEALTH & PEACE",
+                quote: "The closer you are to the truth, the more silent you become inside.",
+                author: "Naval Ravikant",
+                action: "Sit for 5 minutes in total silence. If your mind speaks, just observe it. Don't fight the noise, just sink below it."
+            },
+            {
+                cat: "STOICISM - CONTROL",
+                quote: "We suffer more often in imagination than in reality.",
+                author: "Seneca",
+                action: "Write down your biggest worry. Now, write the absolute worst case scenario. Realize you can survive it. Now, let it go."
+            },
+            {
+                cat: "TIM FERRISS - OPTIMIZATION",
+                quote: "Focus on being productive instead of busy.",
+                author: "Tim Ferriss",
+                action: "Eliminate the least important thing on your to-do list right now. Don't defer it—delete it."
+            },
+            {
+                cat: "SYNTHESIS - GROWTH",
+                quote: "Awareness is the sun. When it shines, the ego-snow melts.",
+                author: "Osho",
+                action: "Whenever you feel angry today, stop and say: 'I am observing anger.' This gap between you and the feeling is your freedom."
+            }
+        ];
+
+        function generateWisdom() {
+            const box = document.getElementById('wisdom-box');
+            const cat = document.getElementById('wisdom-category');
+            const quote = document.getElementById('wisdom-quote');
+            const author = document.getElementById('wisdom-author');
+            const action = document.getElementById('wisdom-action');
+
+            // Fade out
+            box.style.opacity = '0';
+            box.style.transform = 'translateY(15px) scale(0.98)';
+
+            setTimeout(() => {
+                const random = wisdomDb[Math.floor(Math.random() * wisdomDb.length)];
+                cat.textContent = random.cat;
+                quote.textContent = `"${random.quote}"`;
+                author.textContent = `— ${random.author}`;
+                action.textContent = random.action;
+
+                // Fade in
+                box.style.opacity = '1';
+                box.style.transform = 'translateY(0) scale(1)';
+            }, 600);
+        }
+
+        // Navbar animation on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('glass', 'h-16');
+                nav.classList.remove('h-20');
+                nav.style.borderColor = 'rgba(255,255,255,0.05)';
+            } else {
+                nav.classList.remove('glass', 'h-16');
+                nav.classList.add('h-20');
+                nav.style.borderColor = 'transparent';
+            }
+        });
+
+        // Ritual Checklist Logic
+        document.querySelectorAll('#checklist > div').forEach(item => {
+            item.addEventListener('click', () => {
+                const indicator = item.querySelector('.check-indicator');
+                const isChecked = indicator.style.opacity === '1';
+                
+                if (isChecked) {
+                    indicator.style.opacity = '0';
+                    item.classList.remove('opacity-50', 'border-brand-gold/30');
+                } else {
+                    indicator.style.opacity = '1';
+                    item.classList.add('opacity-50', 'border-brand-gold/30');
+                }
+            });
+        });
+
+        // Initialize first wisdom
+        window.onload = () => {
+            setTimeout(generateWisdom, 400);
+        };
+    </script>
+</body>
+</html>

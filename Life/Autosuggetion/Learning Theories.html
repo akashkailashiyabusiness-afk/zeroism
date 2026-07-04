@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Theories</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6a7dfe;
+            --secondary-color: #f0f2f5;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            margin: 0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #6a7dfe, #9198e5);
+            color: white;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            font-size: 3rem;
+            margin: 0;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        header p {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+        nav.table-of-contents {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary-color);
+        }
+        nav.table-of-contents h2 {
+            text-align: center;
+            margin-top: 0;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        nav.table-of-contents ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        nav.table-of-contents li {
+            margin: 5px 0;
+        }
+        nav.table-of-contents a {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 20px;
+            transition: background-color 0.3s, color 0.3s;
+            border: 1px solid var(--primary-color);
+        }
+        nav.table-of-contents a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .theories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .card-header {
+            padding: 20px;
+            background: #fdfdff;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #4a4a4a;
+        }
+        .card-header .theorist-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-top: 5px;
+        }
+        .card-body {
+            padding: 25px;
+            flex-grow: 1;
+        }
+        .card-body p {
+            margin: 0;
+            font-size: 0.95rem;
+            text-align: center;
+            color: #555;
+        }
+        .emoji {
+            font-size: 2.5rem;
+            display: block;
+            text-align: center;
+            padding-bottom: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 40px;
+            background: #343a40;
+            color: #f8f9fa;
+        }
+        footer h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+        footer ul {
+            list-style: none;
+            padding: 0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        footer li {
+            margin-bottom: 15px;
+        }
+        footer strong {
+            color: var(--primary-color);
+        }
+        footer a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+            .theories-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>🧠 Learning Theories</h1>
+            <p>An overview of influential theories that shape our understanding of how people learn.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav class="table-of-contents">
+            <h2>📜 Table of Contents</h2>
+            <ul>
+                <li><a href="#behaviorism">Behaviorism</a></li>
+                <li><a href="#constructivism">Constructivism</a></li>
+                <li><a href="#socio-constructivism">Socio-Constructivism</a></li>
+                <li><a href="#meaningful-learning">Meaningful Learning</a></li>
+                <li><a href="#learning-by-discovery">Learning by Discovery</a></li>
+                <li><a href="#social-learning">Social Learning</a></li>
+                <li><a href="#multiple-intelligences">Multiple Intelligences</a></li>
+            </ul>
+        </nav>
+
+        <main class="theories-grid">
+            <div id="behaviorism" class="card">
+                <div class="card-header">
+                    <span class="emoji">🔔</span>
+                    <h2>Behaviorism</h2>
+                    <p class="theorist-name">B.F. Skinner</p>
+                </div>
+                <div class="card-body">
+                    <p>Behaviorism states all stimuli are followed by a response based on the environment in which the individual is. (Positive and negative reinforcement)</p>
+                </div>
+            </div>
+
+            <div id="constructivism" class="card">
+                <div class="card-header">
+                    <span class="emoji">🧱</span>
+                    <h2>Constructivism</h2>
+                    <p class="theorist-name">Jean Piaget</p>
+                </div>
+                <div class="card-body">
+                    <p>Constructivism indicates knowledge is a construction of the human being as a product of its relationship with the environment, its own capabilities, and previous schemes.</p>
+                </div>
+            </div>
+
+            <div id="socio-constructivism" class="card">
+                <div class="card-header">
+                    <span class="emoji">🤝</span>
+                    <h2>Socio-Constructivism</h2>
+                    <p class="theorist-name">Lev Vygotsky</p>
+                </div>
+                <div class="card-body">
+                    <p>Socio-constructivism is characterized by describing learning as a process where social interaction is key to obtaining knowledge.</p>
+                </div>
+            </div>
+
+            <div id="meaningful-learning" class="card">
+                <div class="card-header">
+                    <span class="emoji">🔗</span>
+                    <h2>Meaningful Learning</h2>
+                    <p class="theorist-name">David Ausubel</p>
+                </div>
+                <div class="card-body">
+                    <p>This theory proposes the human being relates the new knowledge with those it already possesses. Meaningful learning is based on obtaining quality learning and understanding of concepts.</p>
+                </div>
+            </div>
+
+            <div id="learning-by-discovery" class="card">
+                <div class="card-header">
+                    <span class="emoji">🔍</span>
+                    <h2>Learning by Discovery</h2>
+                    <p class="theorist-name">Jerome Bruner</p>
+                </div>
+                <div class="card-body">
+                    <p>The Learning by discovery theory considers effective learning is obtained when students face a problem not only to solve it but to transfer it.</p>
+                </div>
+            </div>
+
+            <div id="social-learning" class="card">
+                <div class="card-header">
+                    <span class="emoji">🧑‍🤝‍🧑</span>
+                    <h2>Social Learning</h2>
+                    <p class="theorist-name">Albert Bandura</p>
+                </div>
+                <div class="card-body">
+                    <p>Social learning is obtained as a consequence of mental processes and the relationship with the environment. Modeling is essential in the learning process.</p>
+                </div>
+            </div>
+
+            <div id="multiple-intelligences" class="card">
+                <div class="card-header">
+                    <span class="emoji">🎨🎵</span>
+                    <h2>Multiple Intelligences</h2>
+                    <p class="theorist-name">Howard Gardner</p>
+                </div>
+                <div class="card-body">
+                    <p>The theory proposes every human being has eight intelligences. Not everyone processes information and learns in the same way.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <h2>📚 Sources & Further Reading</h2>
+            <ul>
+                <li><strong>Behaviorism:</strong> <a href="https://oerknowledgecloud.org/sites/oerknowledgecloud.org/files/2021-02/F_id_10_Fall2014.pdf" target="_blank">Educational Learning Theories - Open Oregon Ed Resources</a></li>
+                <li><strong>Constructivism:</strong> <a href="https://edtechbooks.org/lidt/constructivism" target="_blank">Constructivism - EdTech Books</a></li>
+                <li><strong>Socio-Constructivism:</strong> <a href="https://gsi.berkeley.edu/gsi-guide-contents/learning-theory-research/social-constructivism/" target="_blank">Social Constructivism - UC Berkeley GSI Center</a></li>
+                <li><strong>Meaningful Learning:</strong> <a href="https://www.simplypsychology.org/meaningful-learning-ausubel.html" target="_blank">Ausubel's Meaningful Learning Theory - Simply Psychology</a></li>
+                <li><strong>Learning by Discovery:</strong> <a href="https://www.simplypsychology.org/bruner.html" target="_blank">Jerome Bruner's Theory - Simply Psychology</a></li>
+                <li><strong>Social Learning:</strong> <a href="https://www.simplypsychology.org/bandura.html" target="_blank">Albert Bandura's Social Learning Theory - Simply Psychology</a></li>
+                <li><strong>Multiple Intelligences:</strong> <a href="https://www.verywellmind.com/gardners-theory-of-multiple-intelligences-2795161" target="_blank">Gardner's Theory of Multiple Intelligences - Verywell Mind</a></li>
+            </ul>
+        </div>
+    </footer>
+
+</body>
+</html>

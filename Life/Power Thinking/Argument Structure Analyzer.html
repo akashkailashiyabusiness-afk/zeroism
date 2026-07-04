@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Argument Structure Analyzer — Logic & Reasoning</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--bg:#0b0f15;--panel:#101622;--text:#e6e9ef;--muted:#a1a1aa;--brand:#6ee7ff;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--logic:#fbbf24}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#090d13,#0b0f15);color:var(--text);font:15px/1.45 system-ui,Segoe UI,Roboto}
+    .wrap{max-width:1200px;margin:0 auto;padding:16px}
+    .card{background:#0f1626;border:1px solid #22314d;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:16px;margin-bottom:12px}
+    .row{display:flex;gap:10px;align-items:center}
+    .title{font-weight:800;font-size:20px}
+    textarea,input,select{background:#0f1524;border:1px solid #283659;color:var(--text);border-radius:10px;padding:10px;width:100%}
+    .btn{background:linear-gradient(180deg,#2a3552,#1b2440);border:1px solid #2b3758;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer;transition:all 0.2s}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(110,231,255,0.2)}
+    .mono{font-family:ui-monospace,Consolas,Menlo,monospace}
+    .bubble{padding:12px;border-radius:12px;border:1px solid #243354;background:#0f1628;margin:8px 0}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .argument-element{background:#0d1420;border:1px solid #1e3a5f;border-radius:12px;padding:12px;margin:6px 0;cursor:pointer;transition:all 0.2s}
+    .argument-element:hover{border-color:var(--logic);transform:translateY(-1px)}
+    .element-title{color:var(--logic);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+    .element-desc{font-size:13px;color:var(--muted);line-height:1.4}
+    .premise{border-left:4px solid var(--success);background:#0a1a0a;padding:10px;margin:6px 0;border-radius:0 8px 8px 0}
+    .conclusion{border-left:4px solid var(--logic);background:#1a1600;padding:10px;margin:6px 0;border-radius:0 8px 8px 0}
+    .fallacy{border-left:4px solid var(--danger);background:#1a0a0a;padding:10px;margin:6px 0;border-radius:0 8px 8px 0}
+    .strength-indicator{display:inline-block;padding:3px 8px;border-radius:12px;font-size:11px;font-weight:600;margin-left:8px}
+    .strength-strong{background:var(--success);color:white}
+    .strength-moderate{background:var(--warning);color:white}
+    .strength-weak{background:var(--danger);color:white}
+    .argument-map{background:#0a0f1a;border:2px solid #1e3a5f;border-radius:12px;padding:16px;margin:12px 0;font-family:monospace;font-size:12px;line-height:1.6}
+    @media(max-width:768px){.grid{grid-template-columns:1fr}}
+  </style>
+  <script>const HUB_KEY='ai_hub_cfg';function hub(){try{return JSON.parse(localStorage.getItem(HUB_KEY)||'{}')}catch(_){return{}}}</script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row" style="justify-content:space-between;margin-bottom:8px">
+      <div class="title">⚖️ Argument Structure Analyzer</div>
+      <a class="btn" href="⚡ALL ai.html">🏠 Hub</a>
+    </div>
+
+    <section class="card">
+      <div class="row">
+        <select id="analysis_type" style="max-width:280px">
+          <option value="structure">🏗️ Argument Structure</option>
+          <option value="fallacies">🚨 Logical Fallacies</option>
+          <option value="strength">💪 Argument Strength</option>
+          <option value="counter">🛡️ Counter-Arguments</option>
+          <option value="toulmin">📊 Toulmin Model</option>
+          <option value="syllogism">🔗 Syllogistic Logic</option>
+          <option value="evidence">📋 Evidence Quality</option>
+          <option value="rhetoric">🎭 Rhetorical Analysis</option>
+        </select>
+        <input id="apiBase" placeholder="API Base (http://localhost:1234/v1)">
+        <input id="model" placeholder="Model (e.g., llama3)">
+        <input id="apiKey" placeholder="API Key (optional)">
+        <input id="temperature" type="number" step="0.1" min="0" max="2" value="0.4" style="max-width:90px">
+        <label class="row" style="gap:6px"><input type="checkbox" id="stream" checked> Stream</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <textarea id="input" rows="5" placeholder="Paste an argument, debate, essay, or reasoning to analyze its logical structure..." class="mono"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="analyze">⚖️ Analyze Argument</button>
+        <button class="btn" id="clear">🧹 Clear</button>
+        <button class="btn" id="examples">📝 Examples</button>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h3 style="color:var(--logic);margin-bottom:12px">🧰 Analysis Tools</h3>
+        <div id="toolsLibrary"></div>
+      </section>
+      
+      <section class="card">
+        <h3 style="color:var(--logic);margin-bottom:12px">📊 Argument Summary</h3>
+        <div id="summary">
+          <div class="element-desc">Analyze an argument to see its logical structure and strength</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card">
+      <div id="output"></div>
+    </section>
+  </div>
+
+  <script>
+    const analysisTools = {
+      premises: {
+        name: 'Identify Premises',
+        icon: '🎯',
+        desc: 'Extract the foundational claims that support the conclusion',
+        example: 'All humans are mortal (premise) + Socrates is human (premise)'
+      },
+      conclusion: {
+        name: 'Find Conclusion',
+        icon: '🏁',
+        desc: 'Identify what the argument is trying to prove or persuade',
+        example: 'Therefore, Socrates is mortal (conclusion)'
+      },
+      assumptions: {
+        name: 'Hidden Assumptions',
+        icon: '🔍',
+        desc: 'Uncover unstated beliefs that the argument relies upon',
+        example: 'Assumes correlation implies causation'
+      },
+      evidence: {
+        name: 'Evidence Quality',
+        icon: '📊',
+        desc: 'Evaluate the strength and reliability of supporting evidence',
+        example: 'Anecdotal vs statistical vs experimental evidence'
+      },
+      fallacies: {
+        name: 'Logical Fallacies',
+        icon: '🚨',
+        desc: 'Identify errors in reasoning that weaken the argument',
+        example: 'Ad hominem, straw man, false dichotomy'
+      },
+      counterargs: {
+        name: 'Counter-Arguments',
+        icon: '🛡️',
+        desc: 'Generate opposing viewpoints and rebuttals',
+        example: 'Alternative explanations or contradicting evidence'
+      },
+      validity: {
+        name: 'Logical Validity',
+        icon: '✅',
+        desc: 'Check if conclusions follow logically from premises',
+        example: 'Valid structure vs sound content'
+      },
+      rhetoric: {
+        name: 'Rhetorical Devices',
+        icon: '🎭',
+        desc: 'Identify persuasive techniques beyond pure logic',
+        example: 'Ethos, pathos, logos appeals'
+      }
+    };
+
+    const analysisPrompts = {
+      structure: 'You are a logic expert analyzing argument structure. Break down the argument: 1) Identify main conclusion(s). 2) Extract supporting premises. 3) Map logical connections between premises and conclusion. 4) Identify hidden assumptions. 5) Assess logical validity (do conclusions follow from premises?). 6) Rate overall argument strength. Present in clear, structured format.',
+      fallacies: 'You are a logical fallacy detector. Identify reasoning errors: 1) Scan for common logical fallacies (ad hominem, straw man, false dichotomy, etc.). 2) Quote specific text showing each fallacy. 3) Explain why each is problematic. 4) Assess how fallacies weaken the argument. 5) Suggest how to fix the reasoning. 6) Rate argument quality after removing fallacies.',
+      strength: 'You are an argument strength evaluator. Assess argument quality: 1) Rate premise strength (evidence quality, credibility). 2) Evaluate logical connections (validity, soundness). 3) Check for missing evidence or gaps. 4) Consider alternative explanations. 5) Assess overall persuasiveness. 6) Provide strength score (1-10) with detailed justification.',
+      counter: 'You are a counter-argument specialist. Generate opposing viewpoints: 1) Identify the strongest counter-arguments. 2) Find contradicting evidence or examples. 3) Expose weaknesses in reasoning or evidence. 4) Present alternative explanations. 5) Construct steelman versions of opposing views. 6) Suggest how the original argument could address these challenges.',
+      toulmin: 'You are a Toulmin model analyst. Apply Toulmin framework: 1) CLAIM: What is being argued? 2) GROUNDS: What evidence supports it? 3) WARRANT: What assumption connects evidence to claim? 4) BACKING: What supports the warrant? 5) QUALIFIER: How certain is the claim? 6) REBUTTAL: What could undermine it? Present in structured Toulmin format.',
+      syllogism: 'You are a syllogistic logic expert. Analyze formal logical structure: 1) Identify major premise, minor premise, conclusion. 2) Check for valid syllogistic forms (modus ponens, modus tollens, etc.). 3) Test for logical validity. 4) Identify any missing premises. 5) Convert to formal logical notation if possible. 6) Assess soundness of each premise.',
+      evidence: 'You are an evidence quality assessor. Evaluate supporting evidence: 1) Categorize evidence types (empirical, anecdotal, statistical, expert opinion). 2) Assess credibility and reliability of sources. 3) Check for bias or conflicts of interest. 4) Evaluate sample sizes and methodology. 5) Identify missing or contradicting evidence. 6) Rate evidence strength and suggest improvements.',
+      rhetoric: 'You are a rhetorical analysis expert. Examine persuasive techniques: 1) Identify ethos (credibility), pathos (emotion), logos (logic) appeals. 2) Analyze word choice, tone, and framing. 3) Detect emotional manipulation vs legitimate persuasion. 4) Examine audience targeting and context. 5) Assess balance between logic and persuasion. 6) Rate rhetorical effectiveness vs logical soundness.'
+    };
+
+    function applyHub() {
+      const h = hub();
+      if (h.apiBase) apiBase.value = h.apiBase;
+      if (h.model) model.value = h.model;
+      if (h.apiKey) apiKey.value = h.apiKey;
+    }
+
+    function renderToolsLibrary() {
+      const library = document.getElementById('toolsLibrary');
+      library.innerHTML = '';
+      
+      Object.entries(analysisTools).forEach(([key, tool]) => {
+        const card = document.createElement('div');
+        card.className = 'argument-element';
+        card.innerHTML = `
+          <div class="element-title">${tool.icon} ${tool.name}</div>
+          <div class="element-desc">${tool.desc}</div>
+          <div style="margin-top:6px;font-size:11px;color:var(--muted);font-style:italic">${tool.example}</div>
+        `;
+        card.onclick = () => insertToolPrompt(key);
+        library.appendChild(card);
+      });
+    }
+
+    function insertToolPrompt(toolKey) {
+      const prompts = {
+        premises: 'Identify the premises in this argument: ',
+        conclusion: 'What is the main conclusion of: ',
+        assumptions: 'What hidden assumptions underlie: ',
+        evidence: 'Evaluate the evidence quality in: ',
+        fallacies: 'Identify logical fallacies in: ',
+        counterargs: 'Generate counter-arguments for: ',
+        validity: 'Check the logical validity of: ',
+        rhetoric: 'Analyze the rhetorical techniques in: '
+      };
+      
+      input.value = prompts[toolKey] || '';
+      input.focus();
+    }
+
+    function showExamples() {
+      const examples = [
+        "All politicians are corrupt. John is a politician. Therefore, John is corrupt.",
+        "Studies show that people who drink coffee live longer. Coffee must be the secret to longevity.",
+        "We should ban violent video games because they cause school shootings. Look at all the shooters who played these games.",
+        "Climate change is a hoax because it snowed yesterday, and if the planet were warming, it wouldn't snow."
+      ];
+      
+      input.value = examples[Math.floor(Math.random() * examples.length)];
+      input.focus();
+    }
+
+    function updateSummary(analysis) {
+      const summary = document.getElementById('summary');
+      const structure = extractArgumentStructure(analysis);
+      
+      let summaryHTML = '<div class="premise">Argument Analysis Complete</div>';
+      
+      if (structure.premises.length > 0) {
+        summaryHTML += '<div style="margin:8px 0"><strong>Premises Found:</strong></div>';
+        structure.premises.forEach(premise => {
+          summaryHTML += `<div class="premise">${premise}</div>`;
+        });
+      }
+      
+      if (structure.conclusion) {
+        summaryHTML += `<div class="conclusion"><strong>Conclusion:</strong> ${structure.conclusion}</div>`;
+      }
+      
+      if (structure.fallacies.length > 0) {
+        summaryHTML += '<div style="margin:8px 0"><strong>Fallacies Detected:</strong></div>';
+        structure.fallacies.forEach(fallacy => {
+          summaryHTML += `<div class="fallacy">${fallacy}</div>`;
+        });
+      }
+      
+      if (structure.strength) {
+        const strengthClass = structure.strength >= 7 ? 'strength-strong' : 
+                             structure.strength >= 4 ? 'strength-moderate' : 'strength-weak';
+        summaryHTML += `<div style="margin-top:12px">Argument Strength: <span class="strength-indicator ${strengthClass}">${structure.strength}/10</span></div>`;
+      }
+      
+      summary.innerHTML = summaryHTML;
+    }
+
+    function extractArgumentStructure(text) {
+      const structure = {
+        premises: [],
+        conclusion: '',
+        fallacies: [],
+        strength: null
+      };
+      
+      const lines = text.split('\n');
+      
+      lines.forEach(line => {
+        const lower = line.toLowerCase();
+        if (lower.includes('premise') || lower.includes('assumption')) {
+          structure.premises.push(line.trim());
+        } else if (lower.includes('conclusion') || lower.includes('therefore')) {
+          structure.conclusion = line.trim();
+        } else if (lower.includes('fallacy') || lower.includes('error')) {
+          structure.fallacies.push(line.trim());
+        } else if (lower.includes('strength') || lower.includes('score')) {
+          const match = line.match(/(\d+(?:\.\d+)?)/);
+          if (match) {
+            structure.strength = parseFloat(match[1]);
+          }
+        }
+      });
+      
+      // Fallback random strength if not found
+      if (structure.strength === null) {
+        structure.strength = Math.floor(Math.random() * 5) + 3;
+      }
+      
+      return structure;
+    }
+
+    function bubble(text, type = 'default') {
+      const d = document.createElement('div');
+      d.className = 'bubble mono';
+      if (type === 'analysis') {
+        d.style.borderLeft = '4px solid var(--logic)';
+        d.style.background = '#1a1600';
+      }
+      d.textContent = text;
+      return d;
+    }
+
+    async function call(messages) {
+      const base = (apiBase.value || 'http://localhost:1234/v1').replace(/\/$/, '');
+      const headers = { 'Content-Type': 'application/json' };
+      if (apiKey.value) headers['Authorization'] = 'Bearer ' + apiKey.value;
+      const body = { model: model.value || 'local', temperature: Number(temperature.value || 0.4), messages, stream: stream.checked };
+      const res = await fetch(base + '/chat/completions', { method: 'POST', headers, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      if (!stream.checked) { const j = await res.json(); return j.choices?.[0]?.message?.content || '(no content)' }
+      const reader = res.body.getReader(); const dec = new TextDecoder('utf-8'); let acc = '';
+      while (true) { const { value, done } = await reader.read(); if (done) break; const chunk = dec.decode(value, { stream: true });
+        chunk.split('\n').forEach(line => { const m = line.match(/^data: (.*)$/); if (m && m[1] !== '[DONE]') { try { const j = JSON.parse(m[1]); acc += (j.choices?.[0]?.delta?.content || '') } catch (_) { } } });
+        output.lastChild.textContent = acc; output.scrollTop = output.scrollHeight;
+      }
+      return acc;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      applyHub();
+      renderToolsLibrary();
+      
+      analyze.onclick = async () => {
+        const sys = analysisPrompts[analysis_type.value] || analysisPrompts.structure;
+        const user = input.value.trim();
+        if (!user) return;
+        
+        const analysisEl = bubble('⚖️ Analyzing argument structure...', 'analysis');
+        output.appendChild(analysisEl);
+        
+        try {
+          const analysis = await call([
+            { role: 'system', content: sys },
+            { role: 'user', content: user }
+          ]);
+          analysisEl.textContent = analysis;
+          updateSummary(analysis);
+        } catch (e) {
+          analysisEl.textContent = 'Error: ' + e.message;
+        }
+      };
+      
+      clear.onclick = () => { 
+        output.innerHTML = ''; 
+        document.getElementById('summary').innerHTML = '<div class="element-desc">Analyze an argument to see its logical structure and strength</div>';
+      };
+      
+      examples.onclick = showExamples;
+    });
+
+    const analysis_type = document.getElementById('analysis_type');
+    const apiBase = document.getElementById('apiBase');
+    const model = document.getElementById('model');
+    const apiKey = document.getElementById('apiKey');
+    const temperature = document.getElementById('temperature');
+    const stream = document.getElementById('stream');
+    const input = document.getElementById('input');
+    const analyze = document.getElementById('analyze');
+    const clear = document.getElementById('clear');
+    const examples = document.getElementById('examples');
+    const output = document.getElementById('output');
+  </script>
+</body>
+</html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mental Models Library — Thinking Frameworks</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--bg:#0b0f15;--panel:#101622;--text:#e6e9ef;--muted:#a1a1aa;--brand:#6ee7ff;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--purple:#8b5cf6}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#090d13,#0b0f15);color:var(--text);font:15px/1.45 system-ui,Segoe UI,Roboto}
+    .wrap{max-width:1200px;margin:0 auto;padding:16px}
+    .card{background:#0f1626;border:1px solid #22314d;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:16px;margin-bottom:12px}
+    .row{display:flex;gap:10px;align-items:center}
+    .title{font-weight:800;font-size:20px}
+    textarea,input,select{background:#0f1524;border:1px solid #283659;color:var(--text);border-radius:10px;padding:10px;width:100%}
+    .btn{background:linear-gradient(180deg,#2a3552,#1b2440);border:1px solid #2b3758;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer;transition:all 0.2s}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(110,231,255,0.2)}
+    .mono{font-family:ui-monospace,Consolas,Menlo,monospace}
+    .bubble{padding:12px;border-radius:12px;border:1px solid #243354;background:#0f1628;margin:8px 0}
+    .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    .model-card{background:#0d1420;border:1px solid #1e3a5f;border-radius:12px;padding:14px;margin:8px 0;cursor:pointer;transition:all 0.2s;height:fit-content}
+    .model-card:hover{border-color:var(--purple);transform:translateY(-2px);box-shadow:0 8px 20px rgba(139,92,246,0.2)}
+    .model-title{color:var(--purple);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+    .model-desc{font-size:13px;color:var(--muted);line-height:1.4;margin-bottom:8px}
+    .model-example{font-size:11px;color:var(--brand);font-style:italic;background:#0a1420;padding:6px;border-radius:6px}
+    .category{background:#1a0a1a;border-left:4px solid var(--purple);padding:8px;margin:6px 0;border-radius:0 8px 8px 0}
+    .application{border-left:4px solid var(--success);background:#0a1a0a;padding:10px;margin:6px 0;border-radius:0 8px 8px 0}
+    .filter-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+    .filter-tab{padding:8px 16px;border-radius:20px;background:#1e3a5f;color:var(--text);cursor:pointer;transition:all 0.2s;border:1px solid #2a4a6f}
+    .filter-tab.active{background:var(--purple);color:white}
+    @media(max-width:1024px){.grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:768px){.grid{grid-template-columns:1fr}}
+  </style>
+  <script>const HUB_KEY='ai_hub_cfg';function hub(){try{return JSON.parse(localStorage.getItem(HUB_KEY)||'{}')}catch(_){return{}}}</script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row" style="justify-content:space-between;margin-bottom:8px">
+      <div class="title">🧠 Mental Models Library</div>
+      <a class="btn" href="⚡ALL ai.html">🏠 Hub</a>
+    </div>
+
+    <section class="card">
+      <div class="row">
+        <select id="mode" style="max-width:240px">
+          <option value="apply">🎯 Apply Model</option>
+          <option value="compare">⚖️ Compare Models</option>
+          <option value="learn">📚 Learn Model</option>
+          <option value="combine">🔗 Combine Models</option>
+        </select>
+        <input id="apiBase" placeholder="API Base (http://localhost:1234/v1)">
+        <input id="model" placeholder="Model (e.g., llama3)">
+        <input id="apiKey" placeholder="API Key (optional)">
+        <input id="temperature" type="number" step="0.1" min="0" max="2" value="0.7" style="max-width:90px">
+        <label class="row" style="gap:6px"><input type="checkbox" id="stream" checked> Stream</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="filter-tabs" id="filterTabs"></div>
+      <textarea id="input" rows="3" placeholder="Describe your situation, decision, or problem to apply mental models..." class="mono"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="analyze">🧠 Apply Models</button>
+        <button class="btn" id="clear">🧹 Clear</button>
+        <button class="btn" id="random">🎲 Random Model</button>
+      </div>
+    </section>
+
+    <div class="grid" id="modelsGrid"></div>
+
+    <section class="card">
+      <div id="output"></div>
+    </section>
+  </div>
+
+  <script>
+    const mentalModels = {
+      // Decision Making
+      opportunity_cost: {
+        category: 'decision',
+        name: 'Opportunity Cost',
+        icon: '💰',
+        desc: 'The value of the best alternative foregone when making a choice',
+        example: 'Choosing to study means missing social time - what\'s the trade-off worth?',
+        application: 'Use when evaluating options or resource allocation'
+      },
+      sunk_cost: {
+        category: 'decision',
+        name: 'Sunk Cost Fallacy',
+        icon: '🕳️',
+        desc: 'Continuing investment based on previously invested resources rather than future value',
+        example: 'Staying in a bad relationship because you\'ve invested 3 years',
+        application: 'Recognize when to cut losses and move forward'
+      },
+      expected_value: {
+        category: 'decision',
+        name: 'Expected Value',
+        icon: '🎲',
+        desc: 'Probability-weighted average of all possible outcomes',
+        example: '70% chance of $100 + 30% chance of $0 = $70 expected value',
+        application: 'Make decisions under uncertainty with quantified risks'
+      },
+
+      // Systems Thinking
+      feedback_loops: {
+        category: 'systems',
+        name: 'Feedback Loops',
+        icon: '🔄',
+        desc: 'Outputs of a system are routed back as inputs, creating a loop',
+        example: 'Exercise → Feel better → More motivation → More exercise',
+        application: 'Identify reinforcing or balancing cycles in any system'
+      },
+      leverage_points: {
+        category: 'systems',
+        name: 'Leverage Points',
+        icon: '🎯',
+        desc: 'Places within complex systems where small changes produce big impacts',
+        example: 'Changing company culture has more leverage than changing individual behavior',
+        application: 'Find high-impact intervention points in organizations or processes'
+      },
+      emergence: {
+        category: 'systems',
+        name: 'Emergence',
+        icon: '✨',
+        desc: 'Complex systems exhibit properties not present in individual components',
+        example: 'Consciousness emerges from neurons; culture emerges from individuals',
+        application: 'Understand how collective behavior differs from individual behavior'
+      },
+
+      // Psychology
+      confirmation_bias: {
+        category: 'psychology',
+        name: 'Confirmation Bias',
+        icon: '🔍',
+        desc: 'Tendency to search for and interpret information that confirms existing beliefs',
+        example: 'Only reading news sources that align with your political views',
+        application: 'Actively seek disconfirming evidence for important decisions'
+      },
+      loss_aversion: {
+        category: 'psychology',
+        name: 'Loss Aversion',
+        icon: '😰',
+        desc: 'People feel losses more intensely than equivalent gains',
+        example: 'Losing $100 feels worse than gaining $100 feels good',
+        application: 'Frame proposals in terms of avoiding losses rather than gaining benefits'
+      },
+      social_proof: {
+        category: 'psychology',
+        name: 'Social Proof',
+        icon: '👥',
+        desc: 'People copy actions of others in ambiguous situations',
+        example: 'Restaurant with a line seems better than an empty one',
+        application: 'Show others doing desired behavior to influence adoption'
+      },
+
+      // Strategy
+      competitive_advantage: {
+        category: 'strategy',
+        name: 'Competitive Advantage',
+        icon: '🏆',
+        desc: 'Attributes that allow an organization to outperform competitors',
+        example: 'Apple\'s design and ecosystem integration vs competitors',
+        application: 'Identify and build sustainable differentiators'
+      },
+      network_effects: {
+        category: 'strategy',
+        name: 'Network Effects',
+        icon: '🕸️',
+        desc: 'Product becomes more valuable as more people use it',
+        example: 'Social media platforms, phone networks, marketplaces',
+        application: 'Design products that benefit from user growth'
+      },
+      switching_costs: {
+        category: 'strategy',
+        name: 'Switching Costs',
+        icon: '🔒',
+        desc: 'Costs incurred when changing from one supplier/product to another',
+        example: 'Learning new software, transferring data, losing integrations',
+        application: 'Create barriers that make customers sticky'
+      },
+
+      // Learning
+      compound_interest: {
+        category: 'learning',
+        name: 'Compound Interest',
+        icon: '📈',
+        desc: 'Small, consistent improvements compound over time into massive gains',
+        example: '1% daily improvement = 37x better over a year',
+        application: 'Focus on consistent small improvements rather than big leaps'
+      },
+      deliberate_practice: {
+        category: 'learning',
+        name: 'Deliberate Practice',
+        icon: '🎯',
+        desc: 'Focused practice on specific weaknesses with immediate feedback',
+        example: 'Musicians practicing difficult passages slowly with metronome',
+        application: 'Structure learning to target specific skill gaps'
+      },
+      spacing_effect: {
+        category: 'learning',
+        name: 'Spacing Effect',
+        icon: '📅',
+        desc: 'Information is better retained when study sessions are spaced out',
+        example: 'Reviewing material after 1 day, 1 week, 1 month intervals',
+        application: 'Schedule reviews at increasing intervals for long-term retention'
+      },
+
+      // Problem Solving
+      first_principles: {
+        category: 'problem',
+        name: 'First Principles',
+        icon: '🔧',
+        desc: 'Break down complex problems into fundamental truths and build up',
+        example: 'Elon Musk analyzing rocket costs by material components',
+        application: 'Question assumptions and rebuild solutions from basics'
+      },
+      inversion: {
+        category: 'problem',
+        name: 'Inversion',
+        icon: '↩️',
+        desc: 'Approach problems backwards - consider what you want to avoid',
+        example: 'Instead of "how to be happy", ask "how to avoid misery"',
+        application: 'Identify failure modes and work backwards to prevent them'
+      },
+      second_order_thinking: {
+        category: 'problem',
+        name: 'Second-Order Thinking',
+        icon: '🎱',
+        desc: 'Consider consequences of consequences, not just immediate effects',
+        example: 'Subsidizing corn → cheap corn syrup → obesity epidemic',
+        application: 'Think through long-term and indirect effects of decisions'
+      }
+    };
+
+    const categories = {
+      all: { name: 'All Models', icon: '🧠' },
+      decision: { name: 'Decision Making', icon: '🎯' },
+      systems: { name: 'Systems Thinking', icon: '🌐' },
+      psychology: { name: 'Psychology', icon: '🧠' },
+      strategy: { name: 'Strategy', icon: '♟️' },
+      learning: { name: 'Learning', icon: '📚' },
+      problem: { name: 'Problem Solving', icon: '🔧' }
+    };
+
+    const modePrompts = {
+      apply: 'You are a mental models expert. Apply relevant mental models to analyze this situation: 1) Identify 3-5 most applicable mental models. 2) Explain how each model applies specifically. 3) What insights does each model reveal? 4) What actions or decisions does each model suggest? 5) Synthesize into practical recommendations. Be specific and actionable.',
+      compare: 'You are a mental models analyst. Compare different mental models for this situation: 1) Identify competing or complementary models. 2) Analyze what each model emphasizes or ignores. 3) Compare their predictions or recommendations. 4) Identify tensions or trade-offs between models. 5) Suggest when to use each model. Provide nuanced analysis.',
+      learn: 'You are a mental models teacher. Explain relevant models in depth: 1) Define the mental model clearly. 2) Provide multiple examples from different domains. 3) Explain common misapplications or pitfalls. 4) Show how to recognize when this model applies. 5) Practice exercises to internalize the model. Make it educational and memorable.',
+      combine: 'You are a mental models synthesizer. Combine multiple models for deeper insight: 1) Identify 3-4 complementary mental models. 2) Show how they interact and reinforce each other. 3) Create a combined framework or approach. 4) Apply the combined model to the situation. 5) Highlight emergent insights from the combination. Think holistically.'
+    };
+
+    let currentFilter = 'all';
+
+    function applyHub() {
+      const h = hub();
+      if (h.apiBase) apiBase.value = h.apiBase;
+      if (h.model) model.value = h.model;
+      if (h.apiKey) apiKey.value = h.apiKey;
+    }
+
+    function renderFilterTabs() {
+      const tabs = document.getElementById('filterTabs');
+      tabs.innerHTML = '';
+      
+      Object.entries(categories).forEach(([key, cat]) => {
+        const tab = document.createElement('div');
+        tab.className = `filter-tab ${key === currentFilter ? 'active' : ''}`;
+        tab.innerHTML = `${cat.icon} ${cat.name}`;
+        tab.onclick = () => {
+          currentFilter = key;
+          renderFilterTabs();
+          renderModelsGrid();
+        };
+        tabs.appendChild(tab);
+      });
+    }
+
+    function renderModelsGrid() {
+      const grid = document.getElementById('modelsGrid');
+      grid.innerHTML = '';
+      
+      const filteredModels = Object.entries(mentalModels).filter(([key, model]) => 
+        currentFilter === 'all' || model.category === currentFilter
+      );
+      
+      filteredModels.forEach(([key, model]) => {
+        const card = document.createElement('div');
+        card.className = 'model-card';
+        card.innerHTML = `
+          <div class="model-title">${model.icon} ${model.name}</div>
+          <div class="model-desc">${model.desc}</div>
+          <div class="model-example">${model.example}</div>
+          <div style="margin-top:8px;font-size:11px;color:var(--success)">${model.application}</div>
+        `;
+        card.onclick = () => insertModelPrompt(key);
+        grid.appendChild(card);
+      });
+    }
+
+    function insertModelPrompt(modelKey) {
+      const model = mentalModels[modelKey];
+      input.value = `Apply the ${model.name} mental model to analyze: `;
+      input.focus();
+    }
+
+    function getRandomModel() {
+      const keys = Object.keys(mentalModels);
+      const randomKey = keys[Math.floor(Math.random() * keys.length)];
+      const model = mentalModels[randomKey];
+      input.value = `Use the ${model.name} mental model to examine: `;
+      input.focus();
+    }
+
+    function bubble(text, type = 'default') {
+      const d = document.createElement('div');
+      d.className = 'bubble mono';
+      if (type === 'analysis') {
+        d.style.borderLeft = '4px solid var(--purple)';
+        d.style.background = '#1a0a1a';
+      }
+      d.textContent = text;
+      return d;
+    }
+
+    async function call(messages) {
+      const base = (apiBase.value || 'http://localhost:1234/v1').replace(/\/$/, '');
+      const headers = { 'Content-Type': 'application/json' };
+      if (apiKey.value) headers['Authorization'] = 'Bearer ' + apiKey.value;
+      const body = { model: model.value || 'local', temperature: Number(temperature.value || 0.7), messages, stream: stream.checked };
+      const res = await fetch(base + '/chat/completions', { method: 'POST', headers, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      if (!stream.checked) { const j = await res.json(); return j.choices?.[0]?.message?.content || '(no content)' }
+      const reader = res.body.getReader(); const dec = new TextDecoder('utf-8'); let acc = '';
+      while (true) { const { value, done } = await reader.read(); if (done) break; const chunk = dec.decode(value, { stream: true });
+        chunk.split('\n').forEach(line => { const m = line.match(/^data: (.*)$/); if (m && m[1] !== '[DONE]') { try { const j = JSON.parse(m[1]); acc += (j.choices?.[0]?.delta?.content || '') } catch (_) { } } });
+        output.lastChild.textContent = acc; output.scrollTop = output.scrollHeight;
+      }
+      return acc;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      applyHub();
+      renderFilterTabs();
+      renderModelsGrid();
+      
+      analyze.onclick = async () => {
+        const sys = modePrompts[mode.value] || modePrompts.apply;
+        const user = input.value.trim();
+        if (!user) return;
+        
+        const analysisEl = bubble('🧠 Applying mental models...', 'analysis');
+        output.appendChild(analysisEl);
+        
+        try {
+          const analysis = await call([
+            { role: 'system', content: sys },
+            { role: 'user', content: user }
+          ]);
+          analysisEl.textContent = analysis;
+        } catch (e) {
+          analysisEl.textContent = 'Error: ' + e.message;
+        }
+      };
+      
+      clear.onclick = () => { output.innerHTML = ''; };
+      random.onclick = getRandomModel;
+    });
+
+    const mode = document.getElementById('mode');
+    const apiBase = document.getElementById('apiBase');
+    const model = document.getElementById('model');
+    const apiKey = document.getElementById('apiKey');
+    const temperature = document.getElementById('temperature');
+    const stream = document.getElementById('stream');
+    const input = document.getElementById('input');
+    const analyze = document.getElementById('analyze');
+    const clear = document.getElementById('clear');
+    const random = document.getElementById('random');
+    const output = document.getElementById('output');
+  </script>
+</body>
+</html>

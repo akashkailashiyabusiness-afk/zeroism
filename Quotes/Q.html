@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotes Categories</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Sora (for headings) and Inter (for body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Sora:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f0f4f8, #e0e7ff); }
+        .font-sora { font-family: 'Sora', sans-serif; }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes auroraGlow {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.3; }
+            50% { transform: scale(1.2) translate(20px, -20px); opacity: 0.5; }
+            100% { transform: scale(1) translate(0, 0); opacity: 0.3; }
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex flex-col justify-center items-center overflow-x-hidden">
+    <!-- Main container with aurora background -->
+    <div class="relative w-full h-full flex flex-col justify-center items-center isolate">
+        <!-- Aurora Background Shapes with Light Gradients -->
+        <div class="aurora-bg" style="top: 10%; left: 10%; background: linear-gradient(45deg, rgba(144, 202, 249, 0.3), rgba(135, 206, 235, 0.3)); animation: auroraGlow 8s ease-in-out infinite;"></div>
+        <div class="aurora-bg" style="top: 30%; left: 60%; background: linear-gradient(45deg, rgba(255, 182, 193, 0.3), rgba(255, 105, 180, 0.3)); animation: auroraGlow 10s ease-in-out infinite;"></div>
+        <div class="aurora-bg" style="top: 60%; left: 20%; background: linear-gradient(45deg, rgba(152, 251, 152, 0.3), rgba(144, 238, 144, 0.3)); animation: auroraGlow 12s ease-in-out infinite;"></div>
+
+        <div class="container mx-auto max-w-5xl text-center z-10">
+            <!-- Enhanced Title with Hover Effect -->
+            <h1 class="font-sora text-gray-800 text-3xl md:text-5xl font-bold mb-8 uppercase tracking-widest drop-shadow-lg hover:animate-pulse"
+                style="animation: fadeInDown 1s ease-out;">
+                A World of Quotes
+            </h1>
+
+            <!-- Search Bar -->
+            <div class="mb-12">
+                <input type="text" id="searchBar" placeholder="Search categories..." 
+                       class="w-full max-w-md p-3 rounded-full bg-white/80 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-300 backdrop-blur-md transition-all duration-300">
+            </div>
+
+            <!-- Category Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" id="categoryGrid">
+                <!-- Card: History -->
+                <div class="card-wrapper" data-category="History">
+                    <a href="History.html" class="card-content group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6-2.292m0 0v14.25" /></svg>
+                        <span class="card-text">History</span>
+                    </a>
+                </div>
+
+                <!-- Card: Inspirational -->
+                <div class="card-wrapper" data-category="Inspirational">
+                    <a href="Inspirational.html" class="card-content group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                        <span class="card-text">Inspirational</span>
+                    </a>
+                </div>
+
+                <!-- Card: Motivational -->
+                <div class="card-wrapper" data-category="Motivational">
+                    <a href="Motivational.html" class="card-content group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.362-3.797z" /></svg>
+                        <span class="card-text">Motivational</span>
+                    </a>
+                </div>
+
+                <!-- Card: Philosophical -->
+                <div class="card-wrapper" data-category="Philosophical">
+                    <a href="Philosophical.html" class="card-content group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.572L16.5 21.75l-.398-1.178a3.375 3.375 0 00-2.455-2.456L12.75 18l1.178-.398a3.375 3.375 0 002.455-2.456L16.5 14.25l.398 1.178a3.375 3.375 0 002.456 2.456l1.178.398-1.178.398a3.375 3.375 0 00-2.456 2.456z" /></svg>
+                        <span class="card-text">Philosophical</span>
+                    </a>
+                </div>
+
+                <!-- Card: Quality -->
+                <div class="card-wrapper" data-category="Quality">
+                    <a href="Quality.html" class="card-content group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21L-4.5 9.75M12 21l4.5-11.25M12 21V3M12 3L4.5 9.75M12 3l7.5 6.75M4.5 9.75L9 3m7.5 6.75L15 3" /></svg>
+                        <span class="card-text">Quality</span>
+                    </a>
+                </div>
+
+                <!-- Card: Time -->
+                <div class="card-wrapper" data-category="Time">
+                    <a href="Time.html" class="card-content group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span class="card-text">Time</span>
+                    </a>
+                </div>
+
+                <!-- Card: Success -->
+                <div class="card-wrapper" data-category="Success">
+                    <a href="Success.html" class="card-content group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                        <span class="card-text">Success</span>
+                    </a>
+                </div>
+
+                <!-- Card: Work -->
+                <div class="card-wrapper" data-category="Work">
+                    <a href="Work.html" class="card-content group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0-1.1.9-2 2-2s2 .9 2 2-2 2-2 2-2-.9-2-2zM12 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" /></svg>
+                        <span class="card-text">Work</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
+        @layer components {
+            .aurora-bg {
+                @apply absolute w-96 h-96 rounded-full -z-10;
+                filter: blur(120px); /* Enhanced blur for softer glow */
+            }
+
+            .card-wrapper {
+                @apply relative p-px rounded-3xl overflow-hidden;
+                @apply transition-transform duration-500 ease-out;
+            }
+            .card-wrapper:hover {
+                @apply transform -translate-y-3 scale-105;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+            .card-wrapper::before {
+                content: '';
+                @apply absolute -top-1/2 -left-1/2 w-[200%] h-[200%];
+                @apply bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200;
+                animation: spin 6s linear infinite;
+                transition: opacity 0.3s ease-in-out;
+            }
+            .card-wrapper:not(:hover)::before {
+                @apply opacity-0;
+            }
+
+            .card-content {
+                @apply relative w-full h-full flex flex-col items-center justify-center;
+                @apply bg-white/70 text-gray-800 rounded-3xl; /* Increased curve with rounded-3xl */
+                @apply p-8 backdrop-blur-lg;
+                @apply transition-all duration-500 ease-out;
+            }
+            .card-content:hover {
+                @apply bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 text-gray-900;
+            }
+            .card-content svg {
+                @apply text-gray-500 group-hover:text-gray-700 transition-colors duration-300;
+            }
+            .card-text {
+                @apply text-xl font-semibold text-gray-600 group-hover:text-gray-800 transition-colors duration-300;
+            }
+        }
+    </style>
+
+    <script>
+        // Search functionality
+        const searchBar = document.getElementById('searchBar');
+        const categoryCards = document.querySelectorAll('.card-wrapper');
+
+        searchBar.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            categoryCards.forEach(card => {
+                const category = card.getAttribute('data-category').toLowerCase();
+                card.style.display = category.includes(searchTerm) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

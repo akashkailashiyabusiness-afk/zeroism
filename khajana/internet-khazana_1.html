@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internet Ka Asli Khazana</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: #1e1e2e;
+    --accent: #f0c040;
+    --accent2: #40c0f0;
+    --accent3: #f04080;
+    --text: #d0d0e0;
+    --muted: #606080;
+    --card: #13131f;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(240,192,64,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240,192,64,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  header {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .header-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header-tag::before {
+    content: '▶';
+    animation: blink 1.2s infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 8vw, 96px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    font-size: 15px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    margin-top: 16px;
+    max-width: 600px;
+    line-height: 1.6;
+  }
+
+  /* FILTERS */
+  .filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+
+  .filter-btn {
+    padding: 6px 16px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(240,192,64,0.06);
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 48px;
+    padding: 20px 24px;
+    border: 1px solid var(--border);
+    background: var(--card);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 56px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    background: var(--card);
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: #fff;
+  }
+
+  .section-meta {
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* CARDS GRID */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 2px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 24px;
+    transition: all 0.25s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: none;
+  }
+
+  .card.visible { display: block; }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--card-accent, var(--accent));
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.3s;
+  }
+
+  .card:hover {
+    border-color: var(--card-accent, var(--accent));
+    background: #16161f;
+  }
+
+  .card:hover::before { transform: scaleY(1); }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+
+  .card-name {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #fff;
+  }
+
+  .card-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    padding: 3px 8px;
+    border: 1px solid;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  .card-url {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    margin-bottom: 12px;
+    text-decoration: none;
+    display: block;
+  }
+
+  .card-url:hover { text-decoration: underline; }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .card-why {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.5;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.03);
+    border-left: 2px solid var(--card-accent, var(--accent));
+    font-style: italic;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+  }
+
+  .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    padding: 2px 7px;
+    background: rgba(255,255,255,0.05);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* POWER TIER */
+  .tier-bar {
+    display: flex;
+    gap: 4px;
+    margin-top: 12px;
+    align-items: center;
+  }
+
+  .tier-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-right: 4px;
+    letter-spacing: 1px;
+  }
+
+  .tier-dot {
+    width: 8px; height: 8px;
+    background: var(--border);
+    border-radius: 0;
+  }
+
+  .tier-dot.filled { background: var(--card-accent, var(--accent)); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    margin-top: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .footer-accent { color: var(--accent); }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .cards { grid-template-columns: 1fr; }
+    .stats-bar { flex-wrap: wrap; gap: 20px; }
+    h1 { font-size: 48px; }
+  }
+</style>
+    <style>
+      .hub-back-btn{position:fixed;top:12px;left:12px;z-index:9999;display:flex;align-items:center;gap:8px;background:rgba(22,27,34,0.92);border:1px solid rgba(197,160,89,0.25);color:#c5a059;font-family:sans-serif;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:7px 14px;border-radius:999px;text-decoration:none;backdrop-filter:blur(10px);transition:all 0.2s ease;}
+      .hub-back-btn:hover{background:rgba(197,160,89,0.15);border-color:#c5a059;color:#d4af37;}
+    </style></head>
+<body>
+    <a href="/" class="hub-back-btn">&#8592; 0ISM Hub</a>
+<div class="container">
+
+  <header>
+    <div class="header-tag">CLASSIFIED INTELLIGENCE REPORT — INTERNET KA ASLI KHAZANA</div>
+    <h1>INTERNET KA<br><span>ASLI KHAZANA</span></h1>
+    <p class="subtitle">
+      YouTube, Reddit, GitHub ke paar — yahan real insaan hain, real struggles hain,
+      real expertise hai. Filtered. Categorized. Annotated. No fluff.
+    </p>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num" id="totalCount">0</div><div class="stat-label">Sites Mapped</div></div>
+    <div class="stat"><div class="stat-num">8</div><div class="stat-label">Categories</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Real Humans Inside</div></div>
+    <div class="stat"><div class="stat-num">0</div><div class="stat-label">AI Slop</div></div>
+  </div>
+
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-cat="all">All Sites</button>
+  </div>
+
+  <div id="sections-container"></div>
+
+  <footer>
+    <div class="footer-text">COMPILED BY AKASH'S INTELLIGENCE UNIT</div>
+    <div class="footer-text"><span class="footer-accent">// REAL KNOWLEDGE. REAL PEOPLE. REAL SIGNAL.</span></div>
+  </footer>
+</div>
+
+<script>
+const data = [
+  {
+    category: "Q&A / Expert Communities",
+    icon: "🧠",
+    color: "#f0c040",
+    sites: [
+      {
+        name: "Stack Overflow",
+        url: "https://stackoverflow.com",
+        badge: "Dev Bible",
+        desc: "Programming ka real judicial system. Real devs, real errors, real solutions.",
+        why: "Kisi bhi technical problem ka answer yahan pehle aata hai. Google pe jo aata hai, woh yahi se aata hai.",
+        tags: ["coding", "debugging", "technical"],
+        power: 5
+      },
+      {
+        name: "Stack Exchange Network",
+        url: "https://stackexchange.com/sites",
+        badge: "Mega Hub",
+        desc: "170+ specialized communities — Math, Physics, Philosophy, Law, Cooking, History. Har cheez ke experts yahan hain.",
+        why: "Quora ka serious bhai. Yahan log prove karke baat karte hain, sirf baat nahi karte.",
+        tags: ["experts", "niche", "verified"],
+        power: 5
+      },
+      {
+        name: "Hacker News",
+        url: "https://news.ycombinator.com",
+        badge: "Silicon Brain",
+        desc: "YCombinator ka news aggregator. Founders, engineers, researchers daily yahan argue karte hain.",
+        why: "Duniya ka sabse dense intellectual discussion board. Comment section main PHDs ladte hain.",
+        tags: ["startup", "tech", "intellectual"],
+        power: 5
+      },
+      {
+        name: "Lesswrong",
+        url: "https://lesswrong.com",
+        badge: "Rationalists",
+        desc: "AI safety, rationality, epistemology, decision theory ka deepest community online.",
+        why: "Yahan log seriously sochte hain. Eliezer Yudkowsky ne yahan hi AI risk explain kiya tha saalon pehle.",
+        tags: ["rationality", "AI", "philosophy"],
+        power: 4
+      },
+      {
+        name: "Quora Spaces (Niche)",
+        url: "https://quora.com/spaces",
+        badge: "Deep Dive",
+        desc: "General Quora nahi — specific Spaces main actual practitioners likhte hain.",
+        why: "Surface Quora garbage hai. Deep Spaces main IIT professors, ex-VCs, actual doctors hain.",
+        tags: ["experts", "stories", "diverse"],
+        power: 3
+      }
+    ]
+  },
+  {
+    category: "Research & Deep Knowledge",
+    icon: "📡",
+    color: "#40c0f0",
+    sites: [
+      {
+        name: "arXiv",
+        url: "https://arxiv.org",
+        badge: "Raw Science",
+        desc: "Peer-review se pehle ki research — physics, math, CS, biology. Cutting edge yahan aata hai pehle.",
+        why: "ChatGPT jo kuch bolta hai woh yahan se seekha hai. Primary source seedha access karo.",
+        tags: ["research", "science", "preprint"],
+        power: 5
+      },
+      {
+        name: "Semantic Scholar",
+        url: "https://semanticscholar.org",
+        badge: "Smart Search",
+        desc: "AI-powered academic search. Paper ka impact, citations, related work sab ek jagah.",
+        why: "Google Scholar ka smarter version. Real researchers yahi use karte hain.",
+        tags: ["academic", "papers", "AI"],
+        power: 4
+      },
+      {
+        name: "Internet Archive",
+        url: "https://archive.org",
+        badge: "Time Machine",
+        desc: "800 billion web pages, millions of books, old software, TV shows, music. Deleted internet yahan zinda hai.",
+        why: "Kuch bhi delete hua internet se? Yahan milega. History ka digital vault.",
+        tags: ["archive", "history", "preservation"],
+        power: 5
+      },
+      {
+        name: "Wikipedia (Talk Pages)",
+        url: "https://en.wikipedia.org/wiki/Wikipedia:Talk_page_guidelines",
+        badge: "Hidden Gold",
+        desc: "Wikipedia articles nahi — unke Talk Pages. Yahan editors real arguments karte hain sources pe.",
+        why: "Ye woh jagah hai jahan facts ki ladaai hoti hai. Epistemology ka live battlefield.",
+        tags: ["debate", "sources", "meta"],
+        power: 3
+      },
+      {
+        name: "Project Gutenberg",
+        url: "https://gutenberg.org",
+        badge: "Free Classics",
+        desc: "70,000+ copyright-free books. History ke sabse important minds free main padho.",
+        why: "Marcus Aurelius, Darwin, Tolstoy — seedha. Koi paywall nahi.",
+        tags: ["books", "free", "classics"],
+        power: 4
+      }
+    ]
+  },
+  {
+    category: "Builders & Makers",
+    icon: "⚙️",
+    color: "#a0f040",
+    sites: [
+      {
+        name: "Indie Hackers",
+        url: "https://indiehackers.com",
+        badge: "Bootstrappers",
+        desc: "Solo founders jo real revenue numbers share karte hain. $0 se $10K MRR ki real stories.",
+        why: "Startup advice nahi — actual P&L sharers. Transparency level dekh ke rona aata hai (good tears).",
+        tags: ["startup", "revenue", "indie"],
+        power: 4
+      },
+      {
+        name: "Product Hunt",
+        url: "https://producthunt.com",
+        badge: "Launch Pad",
+        desc: "Daily new products launch hote hain. Founders khud present karte hain, community rate karti hai.",
+        why: "Naya idea validate karna ho ya market trends dekhne ho — daily 30 min yahan.",
+        tags: ["products", "launch", "trends"],
+        power: 4
+      },
+      {
+        name: "Dev.to",
+        url: "https://dev.to",
+        badge: "Dev Blog",
+        desc: "Developers ke personal blogs ka aggregator. Real experiences, tutorials, opinions.",
+        why: "Medium ka technical version jahan actual code wale likhte hain, marketer nahi.",
+        tags: ["coding", "tutorials", "community"],
+        power: 3
+      },
+      {
+        name: "Lobste.rs",
+        url: "https://lobste.rs",
+        badge: "Invite Only",
+        desc: "Hacker News ka invite-only, higher signal version. Spam zero, quality high.",
+        why: "Qualification se andar aate hain log. Discussion quality consequently 2x better.",
+        tags: ["curated", "tech", "signal"],
+        power: 4
+      }
+    ]
+  },
+  {
+    category: "Professional Networks (Real Data)",
+    icon: "💼",
+    color: "#c040f0",
+    sites: [
+      {
+        name: "LinkedIn (Proper Use)",
+        url: "https://linkedin.com",
+        badge: "Signal Noise",
+        desc: "Surface LinkedIn garbage hai. Filter karo: 'People you may know' chodo, niche hashtags follow karo.",
+        why: "Industry-specific intel ke liye — job moves, funding rounds, real career transitions. Raw data.",
+        tags: ["professional", "network", "intel"],
+        power: 3
+      },
+      {
+        name: "AngelList / Wellfound",
+        url: "https://wellfound.com",
+        badge: "Startup DNA",
+        desc: "Startup jobs, founder profiles, funding data. Who is building what.",
+        why: "Startup ecosystem ka actual ground truth. Founders directly yahan hote hain.",
+        tags: ["startup", "hiring", "founders"],
+        power: 4
+      },
+      {
+        name: "Glassdoor",
+        url: "https://glassdoor.com",
+        badge: "Inside View",
+        desc: "Employees ka anonymous feedback — real salaries, real culture, real interview questions.",
+        why: "Company join karne se pehle seedha employees ki baat suno. Insider intel for free.",
+        tags: ["jobs", "culture", "salary"],
+        power: 3
+      }
+    ]
+  },
+  {
+    category: "Curated Learning",
+    icon: "📚",
+    color: "#f04080",
+    sites: [
+      {
+        name: "MIT OpenCourseWare",
+        url: "https://ocw.mit.edu",
+        badge: "Free MIT",
+        desc: "MIT ke actual courses — lectures, assignments, exams. Free. Forever.",
+        why: "World class education. Zero dollars. Jo MIT students ne pay kiya, tum free main loge.",
+        tags: ["courses", "free", "academic"],
+        power: 5
+      },
+      {
+        name: "Khan Academy",
+        url: "https://khanacademy.org",
+        badge: "Foundation",
+        desc: "Math, science, economics fundamentals. First principles level se samjhao.",
+        why: "Kisi bhi subject ki neev pakki karni ho. Sal Khan ka pedagogy world class hai.",
+        tags: ["fundamentals", "free", "structured"],
+        power: 4
+      },
+      {
+        name: "Coursera / edX",
+        url: "https://coursera.org",
+        badge: "Structured",
+        desc: "University-backed courses. Audit free. Certificates paid.",
+        why: "Real professors, real syllabus. Audit mode main practically sab free hai.",
+        tags: ["courses", "certificates", "structured"],
+        power: 3
+      },
+      {
+        name: "Substack",
+        url: "https://substack.com",
+        badge: "Expert Blogs",
+        desc: "Independent writers ka platform. Subject matter experts seedha likhte hain, no algorithm.",
+        why: "Sach mein best thinkers yahan hain. Twitter se zyada depth, newsletter se zyada frecuency.",
+        tags: ["newsletters", "experts", "independent"],
+        power: 4
+      },
+      {
+        name: "Gwern.net",
+        url: "https://gwern.net",
+        badge: "Deep Rabbit",
+        desc: "One person ka encyclopedic research blog. AI, psychology, statistics, nootropics. Depth = insane.",
+        why: "Internet ka sabse underrated research blog. References cite karta hai, opinions prove karta hai.",
+        tags: ["research", "depth", "personal"],
+        power: 4
+      }
+    ]
+  },
+  {
+    category: "Forums & Niche Communities",
+    icon: "🌐",
+    color: "#40f0c0",
+    sites: [
+      {
+        name: "Discord Servers (Niche)",
+        url: "https://disboard.org",
+        badge: "Real-time",
+        desc: "Har field ka Discord server hai. AI, finance, philosophy, fitness — real-time experts.",
+        why: "Ye woh log hain jo Reddit pe answer dene ka time nahi dete. Seedha unse baat karo.",
+        tags: ["community", "real-time", "niche"],
+        power: 4
+      },
+      {
+        name: "Metaculus",
+        url: "https://metaculus.com",
+        badge: "Forecasting",
+        desc: "Community predictions on world events. Calibrated probability, not opinions.",
+        why: "Log yahan sochke predict karte hain. Crowd wisdom ka real measurement.",
+        tags: ["forecasting", "probability", "future"],
+        power: 4
+      },
+      {
+        name: "Marginal Revolution",
+        url: "https://marginalrevolution.com",
+        badge: "Econ Blog",
+        desc: "Tyler Cowen aur Alex Tabarrok ka economics blog. Daily posts, global view.",
+        why: "Real economists daily likhte hain. No jargon wall, actual insights.",
+        tags: ["economics", "policy", "intellectual"],
+        power: 4
+      },
+      {
+        name: "Ribbonfarm",
+        url: "https://ribbonfarm.com",
+        badge: "Long Think",
+        desc: "Venkatesh Rao ka long-form thinking platform. Concepts like Gervais Principle yahan bane.",
+        why: "Agar real mental models chahiye — business, society, psychology — yahan padhna padega.",
+        tags: ["mental models", "long-form", "strategy"],
+        power: 4
+      },
+      {
+        name: "Zettelkasten.de",
+        url: "https://zettelkasten.de/posts/overview",
+        badge: "Knowledge OS",
+        desc: "Note-taking, knowledge management, thinking systems ka deepest community.",
+        why: "Ye log seriously sochte hain ki sochne ka system kya hona chahiye. Meta-cognition at peak.",
+        tags: ["PKM", "systems", "notes"],
+        power: 3
+      }
+    ]
+  },
+  {
+    category: "Data, Tools & Intelligence",
+    icon: "📊",
+    color: "#f08040",
+    sites: [
+      {
+        name: "Statista",
+        url: "https://statista.com",
+        badge: "Data Hub",
+        desc: "1M+ statistics across industries. Charts, reports, market data.",
+        why: "Jab argument mein data chahiye — actual numbers, not vibes.",
+        tags: ["data", "statistics", "markets"],
+        power: 4
+      },
+      {
+        name: "Our World in Data",
+        url: "https://ourworldindata.org",
+        badge: "Global Truth",
+        desc: "Oxford-backed visual data on global trends — health, poverty, education, climate.",
+        why: "News pe mat bharo. Actual long-term trends yahan hain. Data ke saath visualized.",
+        tags: ["global", "trends", "evidence"],
+        power: 5
+      },
+      {
+        name: "Observatory of Economic Complexity",
+        url: "https://oec.world",
+        badge: "Trade Intel",
+        desc: "Duniya ka trade network visualized. Kon kya export/import karta hai, kahan se.",
+        why: "Geopolitics samajhna ho, business opportunity dhundhni ho — raw economic data.",
+        tags: ["economics", "trade", "geopolitics"],
+        power: 4
+      },
+      {
+        name: "Crunchbase",
+        url: "https://crunchbase.com",
+        badge: "Startup Intel",
+        desc: "Company funding, investors, founders ka public database.",
+        why: "Startup ecosystem ki ground reality. Kaun invest kar raha, kahan paise ja rahe.",
+        tags: ["startups", "funding", "investors"],
+        power: 4
+      }
+    ]
+  },
+  {
+    category: "The Unexpected Gold",
+    icon: "💎",
+    color: "#f0f040",
+    sites: [
+      {
+        name: "The Long Now Foundation",
+        url: "https://longnow.org/seminars",
+        badge: "500yr Thinking",
+        desc: "World's best thinkers ka long-form seminar archive. Stewart Brand, Brian Eno, etc.",
+        why: "Agar 10,000 year thinking chahiye — literally. Best seminar archive on the internet.",
+        tags: ["philosophy", "future", "deep"],
+        power: 5
+      },
+      {
+        name: "Edge.org",
+        url: "https://edge.org",
+        badge: "Intellectual",
+        desc: "Richard Dawkins, Daniel Kahneman, Nassim Taleb jaise log ek sawaal pe likhte hain annually.",
+        why: "Annual question ka jawab duniya ke 200 best minds dete hain. Context mein sochna sikhao.",
+        tags: ["science", "philosophy", "thinkers"],
+        power: 5
+      },
+      {
+        name: "Farnam Street",
+        url: "https://fs.blog",
+        badge: "Mental Models",
+        desc: "Shane Parrish ka mental models, decision making, reading blog.",
+        why: "Charlie Munger ki thinking ko accessible banaya. Har article ek framework deta hai.",
+        tags: ["mental models", "decisions", "wisdom"],
+        power: 5
+      },
+      {
+        name: "SlateStarCodex / Astral Codex Ten",
+        url: "https://astralcodexten.com",
+        badge: "Polymathic",
+        desc: "Scott Alexander ka blog — psychiatry, rationality, AI, policy, culture. Depth pe depth.",
+        why: "Internet ka sabse well-reasoned generalist. Arguments aisi tarah build karta hai ki mind blow ho.",
+        tags: ["rationality", "analysis", "polymathic"],
+        power: 5
+      },
+      {
+        name: "Nautilus Magazine",
+        url: "https://nautil.us",
+        badge: "Science Lit",
+        desc: "Science ko storytelling se explain karte hain. Not dumbed down — elevated.",
+        why: "Scientists aur writers collaborate karte hain. Complexity ko accessible banana iska kaam hai.",
+        tags: ["science", "stories", "accessible"],
+        power: 4
+      }
+    ]
+  }
+];
+
+// Build categories and count
+let totalSites = 0;
+const allCategories = data.map(d => d.category);
+data.forEach(d => totalSites += d.sites.length);
+document.getElementById('totalCount').textContent = totalSites;
+
+// Build filter buttons
+const filtersEl = document.getElementById('filters');
+data.forEach(cat => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-btn';
+  btn.dataset.cat = cat.category;
+  btn.textContent = cat.icon + ' ' + cat.category.split(' ')[0];
+  filtersEl.appendChild(btn);
+});
+
+// Build sections
+const container = document.getElementById('sections-container');
+
+data.forEach(section => {
+  const sec = document.createElement('div');
+  sec.className = 'section';
+  sec.dataset.category = section.category;
+
+  sec.innerHTML = `
+    <div class="section-header">
+      <div class="section-icon">${section.icon}</div>
+      <div class="section-title">${section.category}</div>
+      <div class="section-meta">${section.sites.length} sites</div>
+    </div>
+    <div class="cards" id="cards-${section.category.replace(/\s+/g,'-')}">
+      ${section.sites.map(site => `
+        <div class="card visible" data-category="${section.category}" style="--card-accent: ${section.color}">
+          <div class="card-top">
+            <div class="card-name">${site.name}</div>
+            <div class="card-badge" style="color:${section.color}; border-color:${section.color}22; background:${section.color}11">${site.badge}</div>
+          </div>
+          <a href="${site.url}" target="_blank" class="card-url">${site.url.replace('https://','')}</a>
+          <div class="card-desc">${site.desc}</div>
+          <div class="card-why">"${site.why}"</div>
+          <div class="tier-bar">
+            <span class="tier-label">Signal</span>
+            ${[1,2,3,4,5].map(i => `<div class="tier-dot ${i <= site.power ? 'filled' : ''}" style="${i <= site.power ? `background:${section.color}` : ''}"></div>`).join('')}
+          </div>
+          <div class="card-tags">${site.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  container.appendChild(sec);
+});
+
+// Filter logic
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.cat;
+
+    document.querySelectorAll('.section').forEach(sec => {
+      if (cat === 'all' || sec.dataset.category === cat) {
+        sec.style.display = 'block';
+      } else {
+        sec.style.display = 'none';
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>

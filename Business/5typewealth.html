@@ -1,0 +1,308 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row =>
+                    row.some(cell => cell !== '' && cell !== null && cell !== undefined)
+                );
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The 5 Types of Wealth: A Transformative Guide to Design Your Dream Life - Book Summary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #f8f4f0;
+            color: #2d3748;
+            line-height: 1.7;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Book Intro Section */
+        .book-intro {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #b8d4a4, #3d6b38);
+            color: #fff;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .book-intro img {
+            max-width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .book-intro h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .book-intro p {
+            font-size: 1.3em;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        section {
+            background: #fff;
+            padding: 35px;
+            margin-bottom: 40px;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        section:nth-child(2) { animation-delay: 0.2s; }
+        section:nth-child(3) { animation-delay: 0.4s; }
+        section:nth-child(4) { animation-delay: 0.6s; }
+
+        section h2 {
+            color: #3d6b38;
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #b8d4a4;
+            padding-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        section h2:hover {
+            transform: translateX(10px);
+        }
+
+        article h3 {
+            color: #4a5568;
+            font-size: 1.6em;
+            margin: 25px 0 15px;
+            transition: color 0.3s ease;
+        }
+
+        article h3:hover {
+            color: #b8d4a4;
+        }
+
+        ul {
+            margin-left: 25px;
+        }
+
+        ul li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        ul li:hover {
+            transform: translateX(5px);
+        }
+
+        ul li:before {
+            content: "➤";
+            color: #b8d4a4;
+            position: absolute;
+            left: 0;
+        }
+
+        ul li strong {
+            color: #3d6b38;
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .book-intro h1 {
+                font-size: 2em;
+            }
+
+            .book-intro img {
+                max-width: 150px;
+            }
+
+            section {
+                padding: 25px;
+            }
+
+            section h2 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="book-intro">
+        <img src="5typewealth.jpg" alt="The 5 Types of Wealth Book Cover">
+        <h1>The 5 Types of Wealth: A Transformative Guide to Design Your Dream Life</h1>
+        <p>A blueprint for true fulfillment beyond money 💡</p>
+    </header>
+
+    <main>
+        <section>
+            <h2>Book Overview 🌟</h2>
+            <p><em>The 5 Types of Wealth: A Transformative Guide to Design Your Dream Life</em> by Sahil Bloom, published in February 2025, redefines wealth beyond the narrow lens of money. An instant New York Times and USA Today bestseller, this book challenges society’s default path—chasing financial success at the expense of everything else. Through three years of research, personal experiments, and thousands of global interviews, Bloom crafts a holistic framework around five types of wealth: <strong>Time</strong>, <strong>Social</strong>, <strong>Mental</strong>, <strong>Physical</strong>, and <strong>Financial</strong>. His core message? A truly rich life balances all five, dynamically shifting across life’s seasons. 📚</p>
+            <p>Bloom, a Stanford-educated entrepreneur and creator of <em>The Curiosity Chronicle</em>, blends storytelling, science, and practical tools like the “Energy Matrix” and “Relationship Map” to make abstract ideas actionable. His interviews with people aged 80-90 revealed a striking truth: “No one mentioned money” when reflecting on a wealthy life. Instead, they valued relationships, time, and health. This insight drives the book’s mission to help readers—whether students, parents, or retirees—design lives of lasting joy. This 2000+ word summary dives into its lessons, real-life examples, and steps to apply them. Let’s begin! 🚀</p>
+        </section>
+
+        <section>
+            <h2>Key Themes and Lessons 🧠</h2>
+            <article>
+                <h3>1. Time Wealth: Reclaim Your Freedom ⏰</h3>
+                <p>Time is the ultimate currency, yet most squander it on low-value tasks. Bloom argues that <strong>Time Wealth</strong> means having control over how you spend your hours, prioritizing energy-creating activities over draining ones. He introduces the “Energy Matrix,” a tool to categorize tasks by energy impact, helping you focus on what fuels you. Time Wealth isn’t about doing less but doing what matters more. 🕒</p>
+                <ul>
+                    <li><strong>Audit Your Time:</strong> Track how you spend a day, then cut or delegate tasks that drain you, like endless meetings. 📅</li>
+                    <li><strong>Say No Often:</strong> Protect your time by declining non-essential commitments, freeing space for joy and growth. 🚫</li>
+                    <li><strong>Batch Tasks:</strong> Group similar activities, like emails, to minimize context-switching and boost efficiency. 📧</li>
+                </ul>
+                <p><em>Real-Life Example:</em> Priya, a 34-year-old consultant, felt trapped by back-to-back meetings. Using Bloom’s Energy Matrix, she identified client calls as energizing but admin work as draining. She delegated paperwork and blocked mornings for deep work, gaining hours weekly to enjoy yoga and family dinners. Her stress dropped, and her work quality soared. 🧘‍♀️</p>
+            </article>
+
+            <article>
+                <h3>2. Social Wealth: Build Deeper Bonds 🤝</h3>
+                <p><strong>Social Wealth</strong> is about cultivating meaningful relationships, not just networking. Bloom’s interviews showed that people regret shallow connections most, not missed paychecks. His “Relationship Map” helps you identify key people to nurture—those who inspire and support you—while letting go of toxic ties. Quality trumps quantity in a world obsessed with likes and followers. ❤️</p>
+                <ul>
+                    <li><strong>Invest Daily:</strong> Send a quick note or call a loved one regularly to strengthen bonds over time. 📞</li>
+                    <li><strong>Cut Negativity:</strong> Distance yourself from people who drain your energy, even if they’re close by blood. 🛑</li>
+                    <li><strong>Seek Depth:</strong> Ask meaningful questions, like “What’s been tough lately?” to foster real conversations. 🗣️</li>
+                </ul>
+                <p><em>Real-Life Example:</em> Arjun, a 42-year-old manager, was popular but lonely, surrounded by superficial work friends. Following Bloom’s advice, he mapped his relationships, prioritizing his wife and old college buddies. Weekly dinners and honest chats rebuilt trust, making him feel truly connected for the first time in years. 🍽️</p>
+            </article>
+
+            <article>
+                <h3>3. Mental Wealth: Spark Growth and Clarity 🧘</h3>
+                <p><strong>Mental Wealth</strong> involves cultivating purpose, presence, and resilience. Bloom emphasizes engaging your “why”—your reason for living—to fuel continuous growth. Practices like journaling or meditation help quiet mental noise, while learning new skills keeps your mind sharp. A clear mind makes better decisions, unlocking a richer life. 🌱</p>
+                <ul>
+                    <li><strong>Define Your Purpose:</strong> Write one sentence about what drives you, like “I want to inspire others,” and revisit it often. 📝</li>
+                    <li><strong>Practice Presence:</strong> Spend 5 minutes daily focusing on your breath to reduce stress and sharpen focus. 🧘‍♂️</li>
+                    <li><strong>Learn Constantly:</strong> Pick up a small skill, like coding basics, to stay curious and adaptable. 💻</li>
+                </ul>
+                <p><em>Real-Life Example:</em> Maya, a 27-year-old nurse, felt aimless despite her stable job. She journaled nightly, uncovering her passion for teaching kids. Inspired by Bloom, she took an online teaching course and volunteered at a community center. Her newfound purpose boosted her confidence and joy. 📚</p>
+            </article>
+
+            <article>
+                <h3>4. Physical Wealth: Maximize Vitality 💪</h3>
+                <p><strong>Physical Wealth</strong> is the foundation of a thriving life—without health, other wealth fades. Bloom distills wellness into three pillars: movement, nutrition, and recovery. He advocates simple habits, like daily walks or prioritizing sleep, over extreme diets or gym marathons. Small, consistent choices compound into lasting vitality. 🏃‍♀️</p>
+                <ul>
+                    <li><strong>Move Daily:</strong> Walk 20 minutes or stretch to stay active without needing a gym. 🚶‍♂️</li>
+                    <li><strong>Eat Simply:</strong> Focus on whole foods, like veggies and lean protein, 80% of the time. 🥗</li>
+                    <li><strong>Sleep Well:</strong> Aim for 7-8 hours by setting a consistent bedtime routine. 😴</li>
+                </ul>
+                <p><em>Real-Life Example:</em> Vikram, a 50-year-old entrepreneur, was fit but exhausted from poor sleep. Bloom’s recovery pillar inspired him to ditch late-night emails and prioritize 8 hours of rest. He added evening walks, shedding stress and 10 pounds. His energy surged, improving his business decisions. 🌙</p>
+            </article>
+
+            <article>
+                <h3>5. Financial Wealth: Define Your Enough 💰</h3>
+                <p><strong>Financial Wealth</strong> isn’t about millions—it’s about freedom and “enough.” Bloom redefines money as a tool, not the goal, urging readers to set personal benchmarks for security, not competition. He shares systems like budgeting basics and investing simply to build independence without obsession. Money enables, but relationships define, your life. 📈</p>
+                <ul>
+                    <li><strong>Track Spending:</strong> Monitor expenses for a month to spot waste and redirect savings. 📊</li>
+                    <li><strong>Invest Early:</strong> Start small with low-cost index funds to grow wealth over time. 📉</li>
+                    <li><strong>Set Enough:</strong> Define a financial goal that feels secure, not endless accumulation. 🏦</li>
+                </ul>
+                <p><em>Real-Life Example:</em> Sonia, a 29-year-old freelancer, chased every gig, fearing scarcity. Bloom’s “enough” concept led her to budget and save 20% monthly. She invested in a simple fund, cutting stress and taking weekends off. Financial clarity gave her time for hobbies and friends. 🎨</p>
+            </article>
+        </section>
+
+        <section>
+            <h2>Actionable Steps to Build Your Wealth 🛠️</h2>
+            <p>Bloom’s book is a playbook for action, not just inspiration. Below are practical steps, rooted in his five types of wealth, to design your dream life. Each is simple, adaptable, and impactful, no matter your starting point. Let’s make it real! 💪</p>
+            <ul>
+                <li><strong>Time: Morning Audit (Time Wealth):</strong> Spend 10 minutes each morning listing three high-energy tasks, like a key project or workout, and tackle them first. Skip low-value distractions like social media. 📅
+                    <p><em>Example:</em> Plan to write a report, walk, and call a friend. By noon, you’ll feel accomplished and free. 🌞</p>
+                </li>
+                <li><strong>Social: Weekly Check-In (Social Wealth):</strong> Message one person weekly—parent, sibling, or mentor—with a thoughtful note or question, like “How’s your week going?” It builds bonds fast. 📱
+                    <p><em>Example:</em> Text your mom, “Miss you—what’s new?” A quick chat can deepen your connection. ❤️</p>
+                </li>
+                <li><strong>Mental: Purpose Pause (Mental Wealth):</strong> Once a week, reflect for 5 minutes on what excites you, like helping others or creating art. Align one task, like volunteering, with it. 🧠
+                    <p><em>Example:</em> Love teaching? Tutor a neighbor’s kid for an hour. It sparks joy and clarity. 📖</p>
+                </li>
+                <li><strong>Physical: Daily Move (Physical Wealth):</strong> Commit to 15 minutes of movement daily—dance, walk, or yoga—no gear needed. Track it to stay consistent. 🏃‍♂️
+                    <p><em>Example:</em> Dance to your favorite song after dinner. It’s fun, and your body will thank you. 🎶</p>
+                </li>
+                <li><strong>Financial: Budget Snapshot (Financial Wealth):</strong> Check your spending weekly for 10 minutes, cutting one small waste, like unused subscriptions. Save the difference. 💸
+                    <p><em>Example:</em> Cancel a $10 app you rarely use. Save $120 yearly for a vacation fund. 🏖️</p>
+                </li>
+                <li><strong>Time: Say No Kindly (Time Wealth):</strong> Decline one draining invite weekly with, “Thanks, but I’m booked.” Use the time for something you love, like reading. 📚
+                    <p><em>Example:</em> Skip a boring meetup to read a novel. You’ll feel refreshed, not guilty. 😊</p>
+                </li>
+                <li><strong>Social: Anti-Networking (Social Wealth):</strong> Meet one person monthly for a real talk, not a transaction, asking, “What’s your biggest win lately?” 🤗
+                    <p><em>Example:</em> Coffee with a colleague about life, not work, can spark a true friendship. ☕</p>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Why This Book Matters ❤️</h2>
+            <p><em>The 5 Types of Wealth</em> is a wake-up call in a world fixated on money. Bloom’s holistic approach—backed by research and stories—shows that true wealth lies in time, relationships, health, and purpose. His tools, like the Energy Matrix, make big ideas practical, while his empathy resonates across ages and backgrounds. It’s not about rejecting money but balancing it with what lasts. 🌟</p>
+            <p>The book’s power lies in its clarity and actionability. Bloom’s interviews, especially with elders, hit hard: life’s regrets center on missed moments, not bank accounts. His visual charts and systems, praised by readers, turn insights into habits. Whether you’re burnt out or just starting, this guide offers a roadmap to joy without overwhelming you. 🙏</p>
+            <p><em>Personal Reflection:</em> Bloom’s Time Wealth section changed how I work. I used his audit to cut pointless meetings, gaining two hours weekly for walks and family calls. It’s small but feels huge—proof his steps work. This book isn’t just a read; it’s a life-shifter if you act on it. 🌈</p>
+            <p>In summary, <em>The 5 Types of Wealth</em> is a must-read for anyone seeking a fuller life. It challenges you to rethink success, prioritize what lights you up, and build wealth that endures. Start today—your dream life is closer than you think. ✨</p>
+        </section>
+    </main>
+</body>
+</html>

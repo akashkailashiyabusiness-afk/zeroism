@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health & Longevity Ka Real Khazana</title>
+<link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Manrope:wght@300;400;600;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050a08;
+  --panel: #0a1410;
+  --panel-hover: #0f1c16;
+  --border: #142e20;
+  --accent: #00ff88;
+  --accent-dim: #008f4c;
+  --accent-2: #00b8ff;
+  --text-main: #e2f5ec;
+  --text-muted: #84a696;
+  --danger: #ff3366;
+  --card-bg: #070e0a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text-main);
+  font-family: 'Manrope', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Biometric grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0, 255, 136, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.02) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
+/* HEADER */
+header {
+  padding: 80px 0 50px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.h-eyebrow {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.h-eyebrow::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: var(--accent);
+}
+
+.h-title {
+  font-family: 'Syncopate', sans-serif;
+  font-size: clamp(32px, 6vw, 72px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -2px;
+  color: #fff;
+}
+
+.h-title span { color: var(--accent); }
+
+.h-sub {
+  margin-top: 24px;
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 700px;
+  line-height: 1.8;
+  font-weight: 300;
+}
+
+/* DNA Animation Element */
+.dna-loader {
+  position: absolute;
+  top: 80px;
+  right: 40px;
+  width: 60px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  opacity: 0.5;
+}
+
+.dna-strand {
+  width: 100%;
+  height: 2px;
+  background: var(--accent-dim);
+  position: relative;
+  animation: wave 2s infinite ease-in-out alternate;
+}
+.dna-strand:nth-child(2) { animation-delay: 0.2s; }
+.dna-strand:nth-child(3) { animation-delay: 0.4s; }
+.dna-strand:nth-child(4) { animation-delay: 0.6s; }
+.dna-strand:nth-child(5) { animation-delay: 0.8s; }
+
+@keyframes wave {
+  0% { transform: scaleX(0.2); opacity: 0.3; }
+  100% { transform: scaleX(1); opacity: 1; }
+}
+
+/* NAV */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(5, 10, 8, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 16px 0;
+  margin-bottom: 40px;
+}
+.nav::-webkit-scrollbar { display: none; }
+
+.nav-tab {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  border-radius: 4px;
+}
+
+.nav-tab:hover {
+  background: var(--panel-hover);
+  color: var(--text-main);
+  border-color: var(--accent-dim);
+}
+
+.nav-tab.on {
+  background: rgba(0, 255, 136, 0.1);
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.1);
+}
+
+/* SECTIONS */
+.section { display: none; margin-bottom: 80px; }
+.section.active { display: block; animation: fadeIn 0.4s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sec-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.sec-title {
+  font-family: 'Syncopate', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.sec-count {
+  margin-left: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 10px;
+  color: var(--accent-dim);
+  background: rgba(0, 143, 76, 0.1);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--card-color, var(--accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--card-color, var(--accent));
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+}
+
+.card:hover::after { transform: scaleX(1); }
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.card-name {
+  font-family: 'Manrope', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.badge {
+  font-family: 'Fira Code', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.05);
+  white-space: nowrap;
+}
+
+.card-url {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  color: var(--accent-2);
+  text-decoration: none;
+}
+
+.card-url:hover { text-decoration: underline; }
+
+.card-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: 4px;
+}
+
+.card-why {
+  font-size: 13px;
+  color: var(--text-main);
+  line-height: 1.6;
+  padding: 12px;
+  background: rgba(255,255,255,0.02);
+  border-left: 2px solid var(--card-color, var(--accent));
+  margin-top: 8px;
+  border-radius: 0 4px 4px 0;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.tag {
+  font-family: 'Fira Code', monospace;
+  font-size: 9px;
+  padding: 3px 8px;
+  background: var(--border);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 12px;
+}
+
+/* QUOTE BLOCK */
+.quote-block {
+  margin: 40px 0;
+  padding: 32px 40px;
+  border: 1px solid var(--border);
+  background: rgba(0, 255, 136, 0.02);
+  border-radius: 8px;
+  position: relative;
+}
+.quote-block::before {
+  content: '"';
+  position: absolute;
+  top: 20px; left: 20px;
+  font-family: 'Syncopate', sans-serif;
+  font-size: 60px;
+  color: var(--border);
+  line-height: 1;
+}
+.quote-text {
+  font-family: 'Manrope', sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  color: #fff;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+.quote-attr {
+  margin-top: 16px;
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0 20px; }
+  .dna-loader { display: none; }
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+    <style>
+      .hub-back-btn{position:fixed;top:12px;left:12px;z-index:9999;display:flex;align-items:center;gap:8px;background:rgba(22,27,34,0.92);border:1px solid rgba(197,160,89,0.25);color:#c5a059;font-family:sans-serif;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:7px 14px;border-radius:999px;text-decoration:none;backdrop-filter:blur(10px);transition:all 0.2s ease;}
+      .hub-back-btn:hover{background:rgba(197,160,89,0.15);border-color:#c5a059;color:#d4af37;}
+    </style></head>
+<body>
+    <a href="/" class="hub-back-btn">&#8592; 0ISM Hub</a>
+
+<div class="container">
+  <header>
+    <div class="h-eyebrow">Classified Intelligence Brief — Biological Layer</div>
+    <h1 class="h-title">Health Ka<br><span>Real Khazana</span></h1>
+    <p class="h-sub">
+      Pseudo-science, Instagram diets, aur crash courses nahi. Yeh actual human biology, clinical protocols, longevity metrics, aur evidence-based optimization ka vault hai. Apne physical vessel ko master karne ka system.
+    </p>
+    
+    <div class="dna-loader">
+      <div class="dna-strand"></div>
+      <div class="dna-strand"></div>
+      <div class="dna-strand"></div>
+      <div class="dna-strand"></div>
+      <div class="dna-strand"></div>
+    </div>
+  </header>
+
+  <nav class="nav" id="nav">
+    <button class="nav-tab on" data-sec="clinical">🔬 Primary Science & Data</button>
+    <button class="nav-tab" data-sec="longevity">🧬 Longevity Protocols</button>
+    <button class="nav-tab" data-sec="experts">🧠 Experts & Labs</button>
+    <button class="nav-tab" data-sec="sleep">🌙 Sleep & Circadian</button>
+    <button class="nav-tab" data-sec="nutrition">🥑 Nutrition & Biochem</button>
+    <button class="nav-tab" data-sec="metrics">📊 Biomarkers & Tools</button>
+  </nav>
+
+  <!-- CLINICAL -->
+  <div class="section active" id="clinical">
+    <div class="sec-head">
+      <div class="sec-title">Primary Science & Data</div>
+      <div class="sec-count">EVIDENCE LAYER</div>
+    </div>
+    
+    <div class="quote-block">
+      <div class="quote-text">If you can't measure it, you can't manage it. Health influencers claim karte hain, lekin clinical databases prove karte hain. Trust the data, not the guru.</div>
+      <div class="quote-attr">— Empirical Rule</div>
+    </div>
+
+    <div class="grid" id="clinical-grid"></div>
+  </div>
+
+  <!-- LONGEVITY -->
+  <div class="section" id="longevity">
+    <div class="sec-head">
+      <div class="sec-title">Longevity Protocols</div>
+      <div class="sec-count">LIFESPAN & HEALTHSPAN</div>
+    </div>
+    <div class="grid" id="longevity-grid"></div>
+  </div>
+
+  <!-- EXPERTS -->
+  <div class="section" id="experts">
+    <div class="sec-head">
+      <div class="sec-title">Experts & Labs</div>
+      <div class="sec-count">HIGH SIGNAL THINKERS</div>
+    </div>
+    <div class="grid" id="experts-grid"></div>
+  </div>
+
+  <!-- SLEEP -->
+  <div class="section" id="sleep">
+    <div class="sec-head">
+      <div class="sec-title">Sleep & Circadian</div>
+      <div class="sec-count">RECOVERY OS</div>
+    </div>
+    <div class="grid" id="sleep-grid"></div>
+  </div>
+
+  <!-- NUTRITION -->
+  <div class="section" id="nutrition">
+    <div class="sec-head">
+      <div class="sec-title">Nutrition & Biochem</div>
+      <div class="sec-count">FUEL SYSTEMS</div>
+    </div>
+    <div class="grid" id="nutrition-grid"></div>
+  </div>
+
+  <!-- METRICS -->
+  <div class="section" id="metrics">
+    <div class="sec-head">
+      <div class="sec-title">Biomarkers & Tools</div>
+      <div class="sec-count">MEASUREMENT LAYER</div>
+    </div>
+    <div class="grid" id="metrics-grid"></div>
+  </div>
+
+</div>
+
+<script>
+const DB = {
+  clinical: [
+    {n:"Examine.com", u:"https://examine.com", b:"Supplement Data", c:"#00b8ff", d:"Independent, ad-free database analyzing clinical trials for supplements and nutrition.", w:"Agar ashwagandha ya creatine lene ka soch rahe ho, pehle yahan check karo ki actual science kya kehti hai. No BS.", t:["supplements", "clinical trials", "unbiased"]},
+    {n:"PubMed", u:"https://pubmed.ncbi.nlm.nih.gov", b:"Primary Source", c:"#00ff88", d:"The US National Library of Medicine. Millions of biomedical literature citations.", w:"The ultimate truth layer. Jab influencer koi claim kare, seedha PubMed pe us disease/supplement ka research padho.", t:["database", "peer-reviewed", "medicine"]},
+    {n:"Cochrane Library", u:"https://www.cochranelibrary.com", b:"Meta-Analysis", c:"#00b8ff", d:"Systematic reviews of primary research in human health care and health policy.", w:"Gold standard for evidence-based medicine. Ek study se kuch nahi hota, Cochrane meta-analysis dekho.", t:["meta-analysis", "evidence-based", "healthcare"]},
+    {n:"FoundMyFitness (Dr. Rhonda Patrick)", u:"https://www.foundmyfitness.com", b:"Biochem Deep Dive", c:"#00ff88", d:"Extremely dense, heavily cited reports on micronutrients, sauna, cold exposure, and aging.", w:"Rhonda Patrick scientific papers ko decode karti hai directly. Best place for mechanism of action of any health habit.", t:["biochemistry", "longevity", "nutrition"]}
+  ],
+  longevity: [
+    {n:"Outlive by Peter Attia", u:"https://peterattiamd.com/outlive/", b:"The Bible", c:"#00ff88", d:"Medicine 3.0 approach. Focuses on Healthspan (quality) vs Lifespan (length). Deals with the 4 Horsemen of chronic diseases.", w:"Is book ne longevity landscape change kiya hai. Focuses heavily on VO2 Max, ApoB, and preventative metrics.", t:["book", "healthspan", "preventative"]},
+    {n:"Blueprint by Bryan Johnson", u:"https://blueprint.bryanjohnson.com", b:"Protocol", c:"#00b8ff", d:"Tech CEO spending millions to reverse aging. Open sources his entire protocol (diet, sleep, pills).", w:"Extremist approach hai, par free public data goldmine hai on what actually works for biomarker optimization.", t:["bio-hacking", "data-driven", "extreme"]},
+    {n:"Lifespan by David Sinclair", u:"https://lifespanbook.com", b:"Research", c:"#00ff88", d:"Harvard geneticist's book on why we age and why we don't have to. Information theory of aging.", w:"Explains NAD+, Resveratrol, and cellular senescence. Thoda controversial hai academia mein, par foundational read hai.", t:["genetics", "aging", "harvard"]},
+    {n:"The Drive Podcast (Attia)", u:"https://peterattiamd.com/podcast/", b:"Audio Masterclass", c:"#00b8ff", d:"Peter Attia interviewing world-class scientists on metabolic health, exercise physiology, and neuroscience.", w:"Podcasts usually shallow hote hain, ye wala PhD level ka hai. Deepest health podcast on the internet.", t:["podcast", "physiology", "metabolism"]}
+  ],
+  experts: [
+    {n:"Huberman Lab", u:"https://www.hubermanlab.com", b:"Neuroscience", c:"#00b8ff", d:"Stanford neuroscientist Dr. Andrew Huberman explains how brain and body connections control health.", w:"Protocols (like morning sunlight) jo completely free hain par highly effective. Biology ko actionable banata hai.", t:["neuroscience", "protocols", "stanford"]},
+    {n:"Dr. Andy Galpin", u:"https://www.andygalpin.com", b:"Muscle & Physio", c:"#00ff88", d:"Professor of Kinesiology. World expert on muscle physiology and strength/hypertrophy mechanics.", w:"Gym bro science nahi. Actual cellular mechanism of how muscle grows and why strength = longevity.", t:["hypertrophy", "kinesiology", "fitness"]},
+    {n:"Dr. Matthew Walker", u:"https://www.sleepdiplomat.com", b:"Sleep Expert", c:"#00b8ff", d:"Author of 'Why We Sleep'. Unarguably the most prominent public voice on the science of sleep.", w:"Sleep is the ultimate bio-hack. He explains why sleeping less than 7 hours systematically destroys your DNA.", t:["sleep", "recovery", "neuroscience"]},
+    {n:"Dr. Satchin Panda", u:"https://salk.edu/scientist/satchidananda-panda/", b:"Circadian Rhythms", c:"#00ff88", d:"Salk Institute researcher who pioneered Time-Restricted Eating (Intermittent Fasting) and circadian biology.", w:"Sirf kya khana hai nahi, *kab* khana hai ispe duniya ka best researcher.", t:["circadian", "fasting", "biology"]}
+  ],
+  sleep: [
+    {n:"Why We Sleep", u:"https://archive.org/search?query=why+we+sleep+matthew+walker", b:"Must Read", c:"#00b8ff", d:"Comprehensive analysis of how sleep impacts learning, mood, energy levels, and hormones.", w:"Is book ko padhne ke baad aap kabhi apna sleep compromise nahi karenge. Changes your entire OS.", t:["book", "sleep", "recovery"]},
+    {n:"Huberman Sleep Toolkit", u:"https://www.hubermanlab.com/newsletter/toolkit-for-sleep", b:"Free Protocol", c:"#00ff88", d:"Actionable steps: Morning sunlight, temperature drops, NSDR, and exact supplement stack (Magnesium Threonate/Apigenin).", w:"Without buying any tracker, just implement this free protocol to fix your circadian rhythm in 7 days.", t:["protocol", "free", "actionable"]},
+    {n:"Circadian Clock Mechanism", u:"https://www.nobelprize.org/prizes/medicine/2017/press-release/", b:"Nobel Prize", c:"#00b8ff", d:"2017 Nobel Prize in Physiology was awarded for discoveries of molecular mechanisms controlling circadian rhythm.", w:"Read the actual press release/summary to understand why light and timing fundamentally control your cells.", t:["science", "circadian", "nobel"]}
+  ],
+  nutrition: [
+    {n:"The Obesity Code", u:"https://archive.org/search?query=obesity+code+jason+fung", b:"Hormonal Theory", c:"#00ff88", d:"Dr. Jason Fung. Explains why calorie counting fails and how Insulin is the primary driver of fat storage.", w:"Completely changes how you view food. It's not about CICO (Calories In, Calories Out), it's about hormonal response.", t:["insulin", "fasting", "diet"]},
+    {n:"Valter Longo (FMD)", u:"https://www.valterlongo.com", b:"Fasting Protocols", c:"#00b8ff", d:"Director of Longevity Institute at USC. Creator of the Fasting-Mimicking Diet (FMD).", w:"How to trigger Autophagy (cellular cleanup) without completely starving yourself. Deep clinical evidence.", t:["autophagy", "fasting", "longevity"]},
+    {n:"Cronometer", u:"https://cronometer.com", b:"Tracking Tool", c:"#00ff88", d:"Most accurate nutrition tracker. Uses NCCDB and USDA databases. Tracks 80+ micronutrients.", w:"MyFitnessPal is garbage compared to this. Yeh actual vitamins, minerals, aur amino acids track karta hai.", t:["app", "micronutrients", "tracking"]}
+  ],
+  metrics: [
+    {n:"InsideTracker", u:"https://www.insidetracker.com", b:"Blood Analysis", c:"#00b8ff", d:"Analyzes blood biomarkers and DNA to provide personalized nutrition and lifestyle interventions.", w:"Reference ranges vs Optimal ranges. Medicine wants you 'normal', this wants you 'optimal'.", t:["bloodwork", "biomarkers", "optimization"]},
+    {n:"Oura / Whoop Data", u:"https://ouraring.com", b:"Wearables", c:"#00ff88", d:"Continuous tracking of HRV (Heart Rate Variability), RHR, Sleep architecture (REM/Deep), and temperature.", w:"HRV is the best proxy for your nervous system's recovery. You need objective data to see if a habit is working.", t:["wearables", "HRV", "sleep"]},
+    {n:"VO2 Max & Grip Strength", u:"https://peterattiamd.com/how-to-train-for-the-centenarian-decathlon/", b:"Physical Metrics", c:"#00b8ff", d:"Attia's metrics for longevity: VO2 Max (cardiorespiratory fitness) and Grip Strength/Muscle Mass.", w:"These two metrics have the highest correlation with living a long, independent life. Stop just doing bicep curls.", t:["VO2 max", "strength", "metrics"]}
+  ]
+};
+
+// Render Cards
+Object.keys(DB).forEach(key => {
+  const grid = document.getElementById(key + '-grid');
+  DB[key].forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.setProperty('--card-color', item.c);
+    
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-name">${item.n}</div>
+        <div class="badge" style="color: ${item.c}; border: 1px solid ${item.c}">${item.b}</div>
+      </div>
+      <a href="${item.u}" target="_blank" class="card-url">${item.u.replace('https://', '')}</a>
+      <div class="card-desc">${item.d}</div>
+      <div class="card-why">${item.w}</div>
+      <div class="card-tags">
+        ${item.t.map(tag => `<span class="tag">${tag}</span>`).join('')}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+});
+
+// Navigation Logic
+const tabs = document.querySelectorAll('.nav-tab');
+const sections = document.querySelectorAll('.section');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.getAttribute('data-sec');
+    
+    tabs.forEach(t => t.classList.remove('on'));
+    tab.classList.add('on');
+    
+    sections.forEach(sec => {
+      if(sec.id === target) {
+        sec.classList.add('active');
+      } else {
+        sec.classList.remove('active');
+      }
+    });
+    
+    // Scroll slightly up so the title is visible below nav
+    const y = document.getElementById(target).getBoundingClientRect().top + window.scrollY - 100;
+    window.scrollTo({top: y, behavior: 'smooth'});
+  });
+});
+</script>
+</body>
+</html>

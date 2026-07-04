@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psychology Ka Real Khazana</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#11151c;
+  --panel:#161b24;
+  --panel2:#1b212c;
+  --border:#262e3a;
+  --sage:#8ba888;
+  --sage-lt:#a9c2a6;
+  --flesh:#d99b6c;
+  --flesh-lt:#e8b48f;
+  --text:#e8e4dc;
+  --muted:#6b7480;
+  --dim:#444c58;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+}
+
+header{
+  padding:64px 56px 0;
+  position:relative;
+  border-bottom:1px solid var(--border);
+}
+.h-eyebrow{
+  font-family:'Space Mono',monospace;
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--flesh);margin-bottom:18px;
+  display:flex;align-items:center;gap:10px;
+}
+.h-eyebrow::after{content:'';flex:1;height:1px;background:var(--border);max-width:120px}
+.h-title{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:clamp(40px,7vw,82px);
+  line-height:1.0;
+  letter-spacing:-1px;
+  color:#fff;
+}
+.h-title i{font-style:italic;font-weight:500;color:var(--sage-lt)}
+.h-sub{
+  margin:22px 0 40px;
+  font-size:14.5px;line-height:1.8;
+  color:var(--muted);max-width:600px;font-weight:300;
+}
+
+.depth-scale{
+  display:flex;align-items:flex-end;gap:0;
+  height:64px;margin-bottom:0;
+  border-bottom:1px solid var(--border);
+}
+.depth-tick{
+  flex:1;position:relative;
+  border-left:1px solid var(--border);
+  height:100%;
+  display:flex;align-items:flex-end;
+  cursor:pointer;
+}
+.depth-tick:last-child{border-right:1px solid var(--border)}
+.depth-fill{
+  width:100%;
+  background:linear-gradient(180deg,transparent,var(--sage) 400%);
+  opacity:0.15;
+  transition:opacity .2s;
+}
+.depth-tick:hover .depth-fill{opacity:0.35}
+.depth-label{
+  position:absolute;bottom:8px;left:8px;right:8px;
+  font-family:'Space Mono',monospace;
+  font-size:9px;letter-spacing:1px;text-transform:uppercase;
+  color:var(--muted);
+}
+
+.nav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(17,21,28,0.95);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  display:flex;overflow-x:auto;scrollbar-width:none;
+  padding:0 56px;
+}
+.nav::-webkit-scrollbar{display:none}
+.nav-tab{
+  font-family:'Space Mono',monospace;
+  font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--muted);
+  padding:16px 18px;border:none;background:none;cursor:pointer;
+  border-bottom:2px solid transparent;white-space:nowrap;
+  transition:all .2s;
+}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.on{color:var(--flesh-lt);border-bottom-color:var(--flesh)}
+
+.layout{max-width:1280px;margin:0 auto;padding:0 56px 90px;}
+.section{display:none;margin-top:52px}
+.section.active{display:block}
+
+.sec-head{
+  display:flex;align-items:baseline;gap:18px;
+  margin-bottom:8px;
+}
+.sec-depth{
+  font-family:'Space Mono',monospace;font-size:10px;
+  color:var(--flesh);letter-spacing:2px;
+  border:1px solid var(--flesh);
+  padding:3px 9px;
+}
+.sec-title{
+  font-family:'Fraunces',serif;font-weight:600;
+  font-size:30px;color:#fff;
+}
+.sec-desc{
+  font-size:13.5px;color:var(--muted);
+  margin:6px 0 30px;max-width:620px;line-height:1.7;font-weight:300;
+}
+
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));
+  gap:1px;background:var(--border);border:1px solid var(--border);
+}
+.card{
+  background:var(--panel);padding:23px 25px;
+  display:flex;flex-direction:column;gap:9px;
+  transition:background .15s;position:relative;
+}
+.card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--card-color,var(--sage));
+  transform:scaleY(0);transform-origin:bottom;transition:transform .3s;
+}
+.card:hover{background:var(--panel2)}
+.card:hover::before{transform:scaleY(1)}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.card-name{font-family:'Fraunces',serif;font-weight:600;font-size:16.5px;color:#fff;line-height:1.25}
+.badge{
+  font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;
+  padding:3px 8px;border:1px solid;flex-shrink:0;white-space:nowrap;
+}
+.card-url{font-family:'Space Mono',monospace;font-size:11px;color:var(--sage-lt);text-decoration:none;word-break:break-all}
+.card-url:hover{text-decoration:underline}
+.card-desc{font-size:13px;color:#b8b3a8;line-height:1.65;font-weight:300}
+.card-why{
+  font-size:12px;color:var(--text);font-style:italic;line-height:1.55;
+  padding:8px 12px;border-left:2px solid var(--card-color,var(--sage));
+  background:rgba(139,168,136,0.05);margin-top:2px;
+}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.tag{
+  font-family:'Space Mono',monospace;font-size:9px;padding:2px 7px;
+  background:rgba(255,255,255,0.04);color:var(--muted);
+  text-transform:uppercase;letter-spacing:.5px;
+}
+
+.note{
+  margin:36px 0;padding:24px 30px;
+  border-left:3px solid var(--flesh);
+  background:rgba(217,155,108,0.05);
+}
+.note-text{font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:#fff;line-height:1.55}
+.note-attr{margin-top:10px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+
+@media(max-width:700px){
+  header,.nav,.layout{padding-left:20px;padding-right:20px}
+  header{padding-top:40px}
+  .grid{grid-template-columns:1fr}
+  .depth-label{font-size:7px}
+}
+</style>
+    <style>
+      .hub-back-btn{position:fixed;top:12px;left:12px;z-index:9999;display:flex;align-items:center;gap:8px;background:rgba(22,27,34,0.92);border:1px solid rgba(197,160,89,0.25);color:#c5a059;font-family:sans-serif;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:7px 14px;border-radius:999px;text-decoration:none;backdrop-filter:blur(10px);transition:all 0.2s ease;}
+      .hub-back-btn:hover{background:rgba(197,160,89,0.15);border-color:#c5a059;color:#d4af37;}
+    </style></head>
+<body>
+    <a href="/" class="hub-back-btn">&#8592; 0ISM Hub</a>
+
+<header>
+  <div class="h-eyebrow">Field Manual — Psychology Edition</div>
+  <h1 class="h-title">Psychology Ka<br><i>Real Khazana</i></h1>
+  <p class="h-sub">
+    Self-help books nahi. Real research, real archives, real frameworks — surface behavior se lekar unconscious tak.
+    Yahan psychology ek subject hai, ek vibe nahi.
+  </p>
+
+  <div class="depth-scale" id="depthScale">
+    <div class="depth-tick" data-sec="surface" style="height:30%"><div class="depth-fill" style="height:100%"></div><div class="depth-label">Surface</div></div>
+    <div class="depth-tick" data-sec="behavior" style="height:45%"><div class="depth-fill" style="height:100%"></div><div class="depth-label">Behavior</div></div>
+    <div class="depth-tick" data-sec="cognition" style="height:60%"><div class="depth-fill" style="height:100%"></div><div class="depth-label">Cognition</div></div>
+    <div class="depth-tick" data-sec="clinical" style="height:75%"><div class="depth-fill" style="height:100%"></div><div class="depth-label">Clinical</div></div>
+    <div class="depth-tick" data-sec="research" style="height:88%"><div class="depth-fill" style="height:100%"></div><div class="depth-label">Research</div></div>
+    <div class="depth-tick" data-sec="unconscious" style="height:100%"><div class="depth-fill" style="height:100%"></div><div class="depth-label">Unconscious</div></div>
+  </div>
+</header>
+
+<nav class="nav" id="nav">
+  <button class="nav-tab on" data-sec="surface">Surface · Pop Psych</button>
+  <button class="nav-tab" data-sec="behavior">Behavior · Habits</button>
+  <button class="nav-tab" data-sec="cognition">Cognition · Bias</button>
+  <button class="nav-tab" data-sec="clinical">Clinical · Therapy</button>
+  <button class="nav-tab" data-sec="research">Research · Primary</button>
+  <button class="nav-tab" data-sec="unconscious">Unconscious · Depth</button>
+</nav>
+
+<div class="layout">
+
+<div class="section active" id="surface">
+  <div class="sec-head"><div class="sec-depth">DEPTH 1</div><div class="sec-title">Surface — Pop Psychology Done Right</div></div>
+  <p class="sec-desc">Accessible entry points jo dumb nahi hain. Yahan se shuru karo, lekin yahin mat ruko.</p>
+  <div class="grid" id="surface-grid"></div>
+</div>
+
+<div class="section" id="behavior">
+  <div class="sec-head"><div class="sec-depth">DEPTH 2</div><div class="sec-title">Behavior — Habits, Motivation, Decision-Making</div></div>
+  <p class="sec-desc">Log kya karte hain aur kyun. Behavioral psychology ka practical layer.</p>
+  <div class="grid" id="behavior-grid"></div>
+</div>
+
+<div class="section" id="cognition">
+  <div class="sec-head"><div class="sec-depth">DEPTH 3</div><div class="sec-title">Cognition — Biases, Heuristics, Thinking Errors</div></div>
+  <p class="sec-desc">Dimaag kaise galtiyan karta hai systematically. Kahneman-level thinking.</p>
+  <div class="grid" id="cognition-grid"></div>
+
+  <div class="note">
+    <div class="note-text">"The first principle is that you must not fool yourself — and you are the easiest person to fool."</div>
+    <div class="note-attr">— Richard Feynman (cognitive bias literature ka unofficial motto)</div>
+  </div>
+</div>
+
+<div class="section" id="clinical">
+  <div class="sec-head"><div class="sec-depth">DEPTH 4</div><div class="sec-title">Clinical — Therapy Models, Disorders, Treatment</div></div>
+  <p class="sec-desc">Real clinical frameworks. Self-diagnose mat karo — samajhne ke liye padho.</p>
+  <div class="grid" id="clinical-grid"></div>
+</div>
+
+<div class="section" id="research">
+  <div class="sec-head"><div class="sec-depth">DEPTH 5</div><div class="sec-title">Research — Primary Sources, Journals, Data</div></div>
+  <p class="sec-desc">Jahan claims actually test hote hain. Replication crisis ke baad ka filtered, trustworthy layer.</p>
+  <div class="grid" id="research-grid"></div>
+</div>
+
+<div class="section" id="unconscious">
+  <div class="sec-head"><div class="sec-depth">DEPTH 6</div><div class="sec-title">Unconscious — Psychoanalysis, Depth Psychology, Archetypes</div></div>
+  <p class="sec-desc">Jung, Freud, shadow work — contested science lekin powerful frameworks for meaning-making.</p>
+  <div class="grid" id="unconscious-grid"></div>
+
+  <div class="note">
+    <div class="note-text">"Until you make the unconscious conscious, it will direct your life and you will call it fate."</div>
+    <div class="note-attr">— Carl Jung</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const DB = {
+  surface:[
+    {n:"Psychology Today",u:"https://psychologytoday.com",b:"General",c:"#8ba888",d:"Articles by licensed therapists. Mix quality but consistently accessible.",w:"Starting point — par har article ke author credentials check karo.",t:["general","accessible","articles"]},
+    {n:"The School of Life",u:"https://theschooloflife.com",b:"Philosophy+Psych",c:"#d99b6c",d:"Alain de Botton ka platform. Emotional intelligence, relationships, philosophy mix.",w:"Therapy-adjacent content jo deeply thoughtful hai, fluffy nahi.",t:["emotional","philosophy","accessible"]},
+    {n:"Big Think — Psychology",u:"https://bigthink.com/the-present/psychology",b:"Video+Article",c:"#8ba888",d:"Experts directly explain concepts. Short format, credible sources.",w:"5-min videos jo actual researchers banate hain — entertainment nahi.",t:["video","experts","short"]},
+    {n:"r/psychology",u:"https://reddit.com/r/psychology",b:"Community",c:"#d99b6c",d:"Peer-reviewed studies discuss hoti hain. Moderation strict hai pop-psych ke against.",w:"Sirf studies-backed content allowed. Reddit ka best psychology sub.",t:["community","studies","moderated"]},
+    {n:"Psyche (Aeon)",u:"https://psyche.co",b:"Long-form",c:"#8ba888",d:"Aeon ka psychology + philosophy magazine. Deep essays by experts.",w:"Long-form jo dumb down nahi karta. Real thinking, accessible writing.",t:["essays","aeon","deep"]}
+  ],
+  behavior:[
+    {n:"James Clear's Blog",u:"https://jamesclear.com",b:"Habits",c:"#8ba888",d:"Habit formation, behavior change. Atomic Habits ka source material free.",w:"Habit loops samajhna ho — yahan se shuru karo. Practical, evidence-aware.",t:["habits","behavior change","free"]},
+    {n:"BJ Fogg's Behavior Model",u:"https://behaviormodel.org",b:"Stanford Model",c:"#d99b6c",d:"Stanford researcher ka model — Motivation, Ability, Prompt. Behavior design ka framework.",w:"Habits kyun fail hote hain — yeh model exactly batata hai.",t:["stanford","model","design"]},
+    {n:"Chicago Booth — Decision Research",u:"https://www.chicagobooth.edu/research/center-for-decision-research",b:"Behavioral Econ",c:"#8ba888",d:"Nudge theory ka academic home. Choice architecture research.",w:"Kaise environment decisions shape karta hai — academic grounding ke saath.",t:["nudge","economics","choices"]},
+    {n:"Self-Determination Theory",u:"https://selfdeterminationtheory.org",b:"Motivation",c:"#d99b6c",d:"Deci & Ryan ka motivation framework — autonomy, competence, relatedness.",w:"Intrinsic vs extrinsic motivation ka academic-grade explanation.",t:["motivation","academic","framework"]},
+    {n:"The Power of Habit (Archive)",u:"https://archive.org/search?query=power+of+habit+duhigg",b:"Book",c:"#8ba888",d:"Charles Duhigg. Habit loop — cue, routine, reward. Journalist's deep research.",w:"Storytelling ke saath science. Most accessible habit book.",t:["habits","book","storytelling"]}
+  ],
+  cognition:[
+    {n:"Thinking, Fast and Slow (Archive)",u:"https://archive.org/search?query=thinking+fast+and+slow+kahneman",b:"Foundational",c:"#8ba888",d:"Daniel Kahneman. System 1 vs System 2. Nobel Prize-winning cognitive science.",w:"Cognitive bias literature ka foundation text. Sab kuch yahan se nikalta hai.",t:["kahneman","biases","foundational"]},
+    {n:"Decision Lab",u:"https://thedecisionlab.com",b:"Applied",c:"#d99b6c",d:"Behavioral science applied to real-world decisions. Free articles, biases explained.",w:"Har bias ka real-world example milta hai — abstract nahi rehta.",t:["applied","biases","examples"]},
+    {n:"LessWrong — Cognitive Biases",u:"https://www.lesswrong.com/tag/cognitive-biases",b:"Deep Community",c:"#8ba888",d:"Rationalist community ka cognitive bias deep-dive. Technical, rigorous.",w:"Jab basic biases samajh aa jaayein — yahan advanced layer milta hai.",t:["rationality","advanced","biases"]},
+    {n:"Wikipedia — List of Cognitive Biases",u:"https://en.wikipedia.org/wiki/List_of_cognitive_biases",b:"Reference",c:"#d99b6c",d:"175+ biases catalogued with sources. Comprehensive single reference page.",w:"Quick lookup ke liye best single resource. Sources verified.",t:["reference","comprehensive","wiki"]},
+    {n:"Daniel Kahneman Interviews",u:"https://www.youtube.com/results?search_query=daniel+kahneman+interview",b:"Video",c:"#8ba888",d:"Kahneman khud apne research explain karte hain. Multiple long interviews available.",w:"Book se zyada conversational. Concepts seedha creator se suno.",t:["kahneman","interviews","video"]}
+  ],
+  clinical:[
+    {n:"NIMH",u:"https://www.nimh.nih.gov",b:"US Govt Official",c:"#8ba888",d:"Official mental health research, disorder information, treatment data. Free.",w:"Disorders ke baare mein authentic info — WebMD nahi, actual NIMH.",t:["official","disorders","government"]},
+    {n:"PsychDB",u:"https://psychdb.com",b:"Clinical Reference",c:"#d99b6c",d:"Psychiatry residents ke liye banaya gaya. DSM criteria, treatment algorithms.",w:"Medical-student grade clinical detail. Free, comprehensive.",t:["clinical","DSM","psychiatry"]},
+    {n:"Beck Institute (CBT)",u:"https://beckinstitute.org",b:"CBT Founder",c:"#8ba888",d:"Aaron Beck ne CBT banaya. Institute ka free resources on cognitive behavioral therapy.",w:"CBT ka original source. Most evidence-backed therapy model ka home.",t:["CBT","therapy","evidence-based"]},
+    {n:"APA — Topics",u:"https://www.apa.org/topics",b:"Official Body",c:"#d99b6c",d:"American Psychological Association. Topic-wise free resources, research summaries.",w:"Field ka official governing body. Credible, peer-reviewed basis.",t:["APA","official","topics"]},
+    {n:"WHO — Mental Health",u:"https://www.who.int/health-topics/mental-health",b:"Global",c:"#8ba888",d:"Global mental health data, disorder prevalence, treatment guidelines.",w:"Cultural context ke saath — sirf Western lens nahi.",t:["global","WHO","data"]},
+    {n:"IFS Institute",u:"https://ifs-institute.com",b:"Modern Model",c:"#d99b6c",d:"Richard Schwartz ka Internal Family Systems model — parts work, self-leadership.",w:"Modern therapy framework jo accessible hai bina dumb-down kiye.",t:["IFS","trauma","modern"]}
+  ],
+  research:[
+    {n:"PubMed Central — Psychology",u:"https://www.ncbi.nlm.nih.gov/pmc/?term=psychology",b:"Primary",c:"#8ba888",d:"Free full-text psychology research papers. NIH-backed database.",w:"Claims verify karne ka primary source. Peer-reviewed, free access.",t:["primary","research","free"]},
+    {n:"Open Science Framework",u:"https://osf.io",b:"Replication",c:"#d99b6c",d:"Replication crisis ke baad bana platform — pre-registered studies, open data.",w:"Psychology mein replication crisis hua hai. Ye platform trustworthy research surface karta hai.",t:["replication","open science","trustworthy"]},
+    {n:"Google Scholar — Psychology",u:"https://scholar.google.com",b:"Search",c:"#8ba888",d:"Academic search engine. Citation counts, related papers, free PDF links.",w:"Kisi bhi psychology claim ko trace karne ka starting point.",t:["search","citations","academic"]},
+    {n:"PsyArXiv",u:"https://psyarxiv.com",b:"Preprints",c:"#d99b6c",d:"Psychology preprints before peer review. Cutting edge findings.",w:"Latest research peer review se pehle. arXiv ka psychology version.",t:["preprints","latest","psychology"]},
+    {n:"Replication Index",u:"https://replicationindex.com",b:"Watchdog",c:"#8ba888",d:"Ulrich Schimmack ka blog — psychology studies ki replicability statistically check karta hai.",w:"Famous studies (Power Pose, Ego Depletion) — kya woh actually replicate hote hain? Yahan pata chalta hai.",t:["replication","watchdog","statistics"]},
+    {n:"Journal of Personality and Social Psychology",u:"https://www.apa.org/pubs/journals/psp",b:"Top Journal",c:"#d99b6c",d:"APA ka flagship journal. Abstracts free, full papers often accessible via Unpaywall.",w:"Field ka most cited journal. Personality + social psych ka gold standard.",t:["journal","APA","top tier"]}
+  ],
+  unconscious:[
+    {n:"Carl Jung — Collected Works",u:"https://archive.org/search?query=carl+jung+collected+works",b:"Primary Text",c:"#8ba888",d:"Jung ke complete works free archive pe. Archetypes, shadow, individuation.",w:"Secondary sources se zyada — Jung khud kya likha woh padho.",t:["jung","archetypes","primary"]},
+    {n:"Sigmund Freud — Complete Works",u:"https://archive.org/search?query=sigmund+freud+complete+works",b:"Primary Text",c:"#d99b6c",d:"Freud's original texts. Interpretation of Dreams, Ego and Id — free download.",w:"Modern psychology critique karta hai Freud ko, lekin foundational hai history ke liye.",t:["freud","psychoanalysis","historical"]},
+    {n:"Maps of Meaning Lectures",u:"https://www.youtube.com/results?search_query=jordan+peterson+maps+of+meaning",b:"Lecture Series",c:"#8ba888",d:"Jungian psychology + mythology lectures. University of Toronto course recorded free.",w:"Jung ko modern, accessible framing mein. Polarizing figure but content solid hai.",t:["jung","mythology","lectures"]},
+    {n:"The Society of Analytical Psychology",u:"https://thesap.org.uk",b:"UK Institute",c:"#d99b6c",d:"Jungian analysis training institute. Free articles, lecture archives.",w:"Practicing Jungian analysts ka professional body — academic rigor.",t:["jungian","institute","UK"]},
+    {n:"Joseph Campbell Foundation",u:"https://www.jcf.org",b:"Mythology+Psyche",c:"#8ba888",d:"Hero's Journey, comparative mythology — Campbell ka work jo Jung se deeply connected hai.",w:"Mythology ko psychology se jodta hai. Archetypal patterns across cultures.",t:["mythology","archetypes","campbell"]},
+    {n:"Stanford Encyclopedia — Freud",u:"https://plato.stanford.edu/entries/freud",b:"Academic Critique",c:"#d99b6c",d:"Philosophical, critical examination of Freudian theory — strengths aur weaknesses dono.",w:"Balanced view chahiye — fanboy ya hater nahi, academic critique.",t:["academic","critique","balanced"]}
+  ]
+};
+
+Object.keys(DB).forEach(key=>{
+  const el = document.getElementById(key+'-grid');
+  DB[key].forEach(item=>{
+    const div = document.createElement('div');
+    div.className='card';
+    div.style.setProperty('--card-color',item.c);
+    div.innerHTML=`
+      <div class="card-top">
+        <div class="card-name">${item.n}</div>
+        <div class="badge" style="color:${item.c};border-color:${item.c}55;background:${item.c}11">${item.b}</div>
+      </div>
+      <a href="${item.u}" target="_blank" class="card-url">${item.u.replace('https://','').split('/')[0]}</a>
+      <div class="card-desc">${item.d}</div>
+      <div class="card-why">${item.w}</div>
+      <div class="card-tags">${item.t.map(x=>`<span class="tag">${x}</span>`).join('')}</div>
+    `;
+    el.appendChild(div);
+  });
+});
+
+function activate(sec){
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.toggle('on', b.dataset.sec===sec));
+  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id===sec));
+  document.querySelector('.nav').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+document.querySelectorAll('.nav-tab').forEach(btn=>{
+  btn.addEventListener('click',()=>activate(btn.dataset.sec));
+});
+document.querySelectorAll('.depth-tick').forEach(t=>{
+  t.addEventListener('click',()=>activate(t.dataset.sec));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Mastery Hub - Complete Wisdom Collection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Playfair Display', 'Georgia', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            purple: '#8B5CF6',
+                            blue: '#3B82F6',
+                            gold: '#F59E0B',
+                            green: '#10B981',
+                            red: '#EF4444',
+                            orange: '#F97316',
+                            pink: '#EC4899',
+                            cyan: '#06B6D4',
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s ease-out',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #8B5CF6, #3B82F6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white font-sans antialiased">
+    <!-- Load Shared Navigation -->
+    <script src="shared-navigation.js"></script>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900">
+        <!-- Animated Background Elements -->
+        <div class="absolute inset-0 opacity-30">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-purple rounded-full filter blur-3xl animate-pulse-slow"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-blue rounded-full filter blur-3xl animate-float"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-6xl mx-auto px-4 text-center animate-fade-in-up">
+            <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight">
+                Complete Life <span class="gradient-text">Mastery</span> System
+            </h1>
+            <p class="text-xl md:text-2xl text-slate-300 mb-12 max-w-4xl mx-auto font-light leading-relaxed">
+                Ancient wisdom meets modern tools. Live like Osho, focus like Bruce Lee, think like Einstein. 
+                The ultimate collection for mastering your mind, solving any problem, and living your best life.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="master-life-system.html" class="group bg-gradient-to-r from-brand-purple to-brand-blue text-white px-8 py-4 rounded-full font-semibold text-lg hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-brand-purple/25">
+                    <span class="flex items-center justify-center gap-2">
+                        🚀 Start Your Journey
+                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </span>
+                </a>
+                <button onclick="generateRandomWisdom()" class="border-2 border-brand-purple text-brand-purple px-8 py-4 rounded-full font-semibold text-lg hover:bg-brand-purple hover:text-white transition-all duration-300">
+                    🧠 Get Daily Wisdom
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Core Systems Section -->
+    <section id="systems" class="section">
+        <div class="section-header">
+            <h2 class="section-title">Core <span class="gradient-text">Systems</span></h2>
+            <p class="section-subtitle">Integrated tools for complete life optimization</p>
+        </div>
+
+        <div class="grid grid-3">
+            <!-- Master Life System -->
+            <a href="master-life-system.html" class="glass-card glass-hover">
+                <div class="text-center mb-6">
+                    <div style="width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 2rem;">∞</div>
+                </div>
+                <h3 class="text-2xl font-bold text-purple mb-4 text-center">Master Life System</h3>
+                <p class="text-secondary text-center">Complete integrated dashboard with wisdom engine, problem solver, habit tracker, and life designer.</p>
+            </a>
+
+            <!-- Ultimate Life Toolkit -->
+            <a href="ultimate-life-toolkit.html" class="glass-card glass-hover">
+                <div class="text-center mb-6">
+                    <div style="width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent-yellow), var(--accent-orange)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 2rem;">🧠</div>
+                </div>
+                <h3 class="text-2xl font-bold text-yellow mb-4 text-center">Ultimate Life Toolkit</h3>
+                <p class="text-secondary text-center">Learn from the masters: Osho, Bruce Lee, Einstein, Naval, Tim Ferriss, and Stoic philosophers.</p>
+            </a>
+
+            <!-- Truth Finder System -->
+            <a href="truth-finder-system.html" class="glass-card glass-hover">
+                <div class="text-center mb-6">
+                    <div style="width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 2rem;">🎯</div>
+                </div>
+                <h3 class="text-2xl font-bold text-green mb-4 text-center">Truth Finder System</h3>
+                <p class="text-secondary text-center">Universal problem solver that analyzes any challenge using multiple philosophical perspectives.</p>
+            </a>
+        </div>
+    </section>
+    <!-- Individual Master Pages -->
+    <section id="masters" class="section" style="background: rgba(255, 255, 255, 0.02);">
+        <div class="section-header">
+            <h2 class="section-title">Individual <span class="gradient-text">Masters</span></h2>
+            <p class="section-subtitle">Deep dive into the wisdom of each master</p>
+        </div>
+
+        <div class="grid grid-3">
+            <!-- Osho -->
+            <a href="osho.html" class="glass-card glass-hover">
+                <div class="text-center mb-4">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent-orange), var(--accent-red)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.5rem;">🧘</div>
+                </div>
+                <h3 class="text-xl font-bold text-orange mb-3 text-center">Osho - The Art of Awareness</h3>
+                <p class="text-secondary text-sm text-center">Master meditation, witness consciousness, and live in the present moment.</p>
+            </a>
+
+            <!-- Bruce Lee -->
+            <a href="bruslee.html" class="glass-card glass-hover">
+                <div class="text-center mb-4">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent-yellow), var(--accent-orange)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.5rem;">⚡</div>
+                </div>
+                <h3 class="text-xl font-bold text-yellow mb-3 text-center">Bruce Lee - The Focused Warrior</h3>
+                <p class="text-secondary text-sm text-center">Develop absolute focus, discipline, and the philosophy of Jeet Kune Do.</p>
+            </a>
+
+            <!-- How To Think -->
+            <a href="How To Think.html" class="glass-card glass-hover">
+                <div class="text-center mb-4">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.5rem;">🤔</div>
+                </div>
+                <h3 class="text-xl font-bold text-purple mb-3 text-center">How To Think</h3>
+                <p class="text-secondary text-sm text-center">Philosophical frameworks and modern thinking methods from great minds.</p>
+            </a>
+
+            <!-- Solve Any Problem -->
+            <a href="Solve Any Problem.html" class="glass-card glass-hover">
+                <div class="text-center mb-4">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.5rem;">🧩</div>
+                </div>
+                <h3 class="text-xl font-bold text-blue mb-3 text-center">Solve Any Problem</h3>
+                <p class="text-secondary text-sm text-center">5 mental models for problem-solving from Eric Partaker.</p>
+            </a>
+
+            <!-- Life OS -->
+            <a href="lifeos.html" class="glass-card glass-hover">
+                <div class="text-center mb-4">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.5rem;">💻</div>
+                </div>
+                <h3 class="text-xl font-bold text-green mb-3 text-center">Life OS</h3>
+                <p class="text-secondary text-sm text-center">Operating system for life with body, mind, and wealth principles.</p>
+            </a>
+
+            <!-- Daily Practice Tracker -->
+            <a href="daily-practice-tracker.html" class="glass-card glass-hover">
+                <div class="text-center mb-4">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent-pink), var(--accent-red)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.5rem;">📊</div>
+                </div>
+                <h3 class="text-xl font-bold text-pink mb-3 text-center">Daily Practice Tracker</h3>
+                <p class="text-secondary text-sm text-center">Track your daily practices and build mastery habits.</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Additional Resources -->
+    <section id="resources" class="section">
+        <div class="section-header">
+            <h2 class="section-title">Additional <span class="gradient-text">Resources</span></h2>
+            <p class="section-subtitle">More wisdom and practical tools for life mastery</p>
+        </div>
+
+        <div class="grid grid-4">
+            <a href="Psychological Lifehacks.html" class="glass-card glass-hover">
+                <h4 class="font-bold text-cyan mb-2">🧠 Psychological Lifehacks</h4>
+                <p class="text-sm text-secondary">Mental shortcuts and psychological insights</p>
+            </a>
+
+            <a href="Public Speaking.html" class="glass-card glass-hover">
+                <h4 class="font-bold text-blue mb-2">🎤 Public Speaking</h4>
+                <p class="text-sm text-secondary">Master the art of communication</p>
+            </a>
+
+            <a href="Learning Theories.html" class="glass-card glass-hover">
+                <h4 class="font-bold text-green mb-2">📚 Learning Theories</h4>
+                <p class="text-sm text-secondary">How to learn anything effectively</p>
+            </a>
+
+            <a href="Thinking Traps.html" class="glass-card glass-hover">
+                <h4 class="font-bold text-red mb-2">🪤 Thinking Traps</h4>
+                <p class="text-sm text-secondary">Avoid common cognitive biases</p>
+            </a>
+
+            <a href="money.html" class="glass-card glass-hover">
+                <h4 class="font-bold text-yellow mb-2">💰 Money Wisdom</h4>
+                <p class="text-sm text-secondary">Financial principles and wealth building</p>
+            </a>
+
+            <a href="life perspective.html" class="glass-card glass-hover">
+                <h4 class="font-bold text-purple mb-2">🌅 Life Perspective</h4>
+                <p class="text-sm text-secondary">Shift your viewpoint, change your life</p>
+            </a>
+
+            <a href="man with a hammer.html" class="glass-card glass-hover">
+                <h4 class="font-bold text-orange mb-2">🔨 Mental Models</h4>
+                <p class="text-sm text-secondary">Tools for better thinking and decision making</p>
+            </a>
+
+            <a href="#" onclick="generateRandomWisdom()" class="glass-card glass-hover" style="cursor: pointer;">
+                <h4 class="font-bold text-purple mb-2">🎲 Random Wisdom</h4>
+                <p class="text-sm text-secondary">Get instant insight from any master</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Quick Wisdom Generator -->
+    <section class="section" style="background: rgba(255, 255, 255, 0.02);">
+        <div class="section-header">
+            <h2 class="section-title">Daily <span class="gradient-text">Wisdom</span> Generator</h2>
+        </div>
+        
+        <div class="glass-card" style="max-width: 800px; margin: 0 auto; min-height: 300px; display: flex; flex-direction: column; justify-content: center;">
+            <div id="wisdom-content" class="text-center" style="display: none;">
+                <div class="mb-4">
+                    <span id="wisdom-master" class="glass-button" style="background: rgba(139, 92, 246, 0.2); border-color: var(--accent-purple); color: var(--accent-purple);"></span>
+                </div>
+                <blockquote id="wisdom-quote" class="text-2xl font-serif mb-6 text-center"></blockquote>
+                <p id="wisdom-insight" class="text-lg text-secondary mb-6 text-center"></p>
+            </div>
+            <div id="wisdom-initial" class="text-center">
+                <div style="width: 96px; height: 96px; background: linear-gradient(135deg, var(--accent-yellow), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; font-size: 3rem;">🧠</div>
+                <h3 class="text-2xl font-serif mb-4">Ready for Daily Wisdom?</h3>
+                <p class="text-secondary mb-8">Get personalized insights from the greatest minds</p>
+            </div>
+            <div class="text-center">
+                <button onclick="generateRandomWisdom()" class="glass-button primary">
+                    <span>✨</span> Generate Wisdom
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="mb-8">
+                <h3 class="text-2xl font-serif font-bold gradient-text mb-2">Complete Life Mastery System</h3>
+                <p class="text-muted">Ancient wisdom meets modern tools for complete life optimization</p>
+            </div>
+            
+            <div class="footer-links">
+                <span class="text-muted">🧘 Osho</span>
+                <span class="text-muted">⚡ Bruce Lee</span>
+                <span class="text-muted">🧠 Einstein</span>
+                <span class="text-muted">💎 Naval</span>
+                <span class="text-muted">⚙️ Tim Ferriss</span>
+                <span class="text-muted">🏛️ Stoics</span>
+            </div>
+            
+            <p class="text-dim text-sm">&copy; 2026 Complete Life Mastery System. Synthesizing wisdom for modern living.</p>
+        </div>
+    </footer>
+
+    <script>
+        const allWisdom = [
+            {
+                master: "Osho - The Awakened One",
+                quote: "Life is not a problem to be solved, but a mystery to be lived.",
+                insight: "Stop trying to figure everything out. Embrace the unknown and find joy in the journey itself."
+            },
+            {
+                master: "Bruce Lee - The Focused Warrior", 
+                quote: "Be like water making its way through cracks. Do not be assertive, but adjust to the object.",
+                insight: "Adaptability is strength. Flow around obstacles instead of fighting them head-on."
+            },
+            {
+                master: "Einstein - The Curious Mind",
+                quote: "Imagination is more important than knowledge. Knowledge is limited, imagination embraces the entire world.",
+                insight: "Don't just accumulate facts. Use your imagination to see possibilities others miss."
+            },
+            {
+                master: "Naval - The Modern Sage",
+                quote: "You're not going to get rich renting out your time. You must own equity in a business to gain your financial freedom.",
+                insight: "Build assets that work for you. Your time is finite, but your creations can generate value indefinitely."
+            },
+            {
+                master: "Tim Ferriss - The Optimizer",
+                quote: "What we fear doing most is usually what we most need to do.",
+                insight: "Your biggest fears often point to your biggest opportunities for growth."
+            },
+            {
+                master: "Marcus Aurelius - The Stoic Emperor",
+                quote: "You have power over your mind - not outside events. Realize this, and you will find strength.",
+                insight: "Focus on what you can control. Your thoughts and reactions are your domain of power."
+            }
+        ];
+
+        let lastWisdomIndex = -1;
+
+        function generateRandomWisdom() {
+            const wisdomContent = document.getElementById('wisdom-content');
+            const wisdomInitial = document.getElementById('wisdom-initial');
+            const masterEl = document.getElementById('wisdom-master');
+            const quoteEl = document.getElementById('wisdom-quote');
+            const insightEl = document.getElementById('wisdom-insight');
+
+            // Get random wisdom
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * allWisdom.length);
+            } while (newIndex === lastWisdomIndex && allWisdom.length > 1);
+            
+            lastWisdomIndex = newIndex;
+            const wisdom = allWisdom[newIndex];
+
+            // Update content
+            masterEl.textContent = wisdom.master;
+            quoteEl.textContent = `"${wisdom.quote}"`;
+            insightEl.textContent = wisdom.insight;
+
+            // Show wisdom content
+            wisdomInitial.classList.add('hidden');
+            wisdomContent.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100+ Best Motivational Quotes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-bg: #fdfaf6;
+            --card-bg: #ffffff;
+            --text-color: #3d3d3d;
+            --accent-color: #E67E22; /* A motivational, fiery orange */
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --font-heading: 'Montserrat', sans-serif;
+            --font-quote: 'Lora', serif;
+        }
+
+        body {
+            font-family: var(--font-quote);
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+
+        h1 {
+            color: var(--accent-color);
+            text-align: center;
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2.5rem;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-box {
+            flex-grow: 1;
+            max-width: 500px;
+            padding: 0.9rem 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-family: var(--font-quote);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(230, 126, 34, 0.3);
+        }
+
+        .btn {
+            padding: 0.9rem 2rem;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+            font-size: 1rem;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(230, 126, 34, 0.5);
+        }
+
+        .quote-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 2rem;
+        }
+
+        .quote-card {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 4px solid var(--accent-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .quote-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .quote-card blockquote {
+            margin: 0;
+            font-size: 1.25rem;
+            font-style: italic;
+            text-align: center;
+            flex-grow: 1;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quote-card blockquote::before {
+            content: '“';
+            font-size: 3rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            display: block;
+            line-height: 1;
+        }
+
+        .quote-card figcaption {
+            text-align: center;
+            font-weight: bold;
+            color: #555;
+            font-family: var(--font-heading);
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+        
+        .no-results {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #777;
+            padding: 2rem;
+            grid-column: 1 / -1; /* Span all grid columns */
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        <h1>Motivational Quotes</h1>
+        
+        <div class="controls">
+            <input type="text" class="search-box" id="searchInput" placeholder="Search for inspiration...">
+            <button class="btn" id="randomBtn">Random Quote</button>
+        </div>
+
+        <section class="quote-container" id="quoteContainer"></section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // -- RAW DATA --
+            // This list contains many duplicates, which will be cleaned up below.
+            const rawQuotes = [
+                { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+                { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+                { text: "Your limitation—it's only your imagination.", author: "Unknown" },
+                { text: "Push yourself, because no one else is going to do it for you.", author: "Unknown" },
+                { text: "Great things never come from comfort zones.", author: "Unknown" },
+                { text: "Dream bigger. Do bigger.", author: "Unknown" },
+                { text: "Don’t stop when you’re tired. Stop when you’re done.", author: "Unknown" },
+                { text: "Wake up with determination. Go to bed with satisfaction.", author: "Unknown" },
+                { text: "Do something today that your future self will thank you for.", author: "Unknown" },
+                { text: "Little things make big days.", author: "Unknown" },
+                { text: "It’s going to be hard, but hard does not mean impossible.", author: "Unknown" },
+                { text: "Don’t wait for opportunity. Create it.", author: "Unknown" },
+                { text: "Sometimes we’re tested not to show our weaknesses, but to discover our strengths.", author: "Unknown" },
+                { text: "The key to success is to focus on goals, not obstacles.", author: "Unknown" },
+                { text: "Success doesn’t just find you. You have to go out and get it.", author: "Unknown" },
+                { text: "The harder you work for something, the greater you’ll feel when you achieve it.", author: "Unknown" },
+                { text: "Dream it. Wish it. Do it.", author: "Unknown" },
+                { text: "Success is not for the lazy.", author: "Unknown" },
+                { text: "You don’t have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+                { text: "The only person you are destined to become is the person you decide to be.", author: "Ralph Waldo Emerson" },
+                { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+                { text: "What lies behind us and what lies before us are tiny matters compared to what lies within us.", author: "Ralph Waldo Emerson" },
+                { text: "You miss 100% of the shots you don’t take.", author: "Wayne Gretzky" },
+                { text: "The future belongs to those who prepare for it today.", author: "Malcolm X" },
+                { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
+                { text: "Don’t count the days, make the days count.", author: "Muhammad Ali" },
+                { text: "The only limit to our realization of tomorrow is our doubts of today.", author: "Franklin D. Roosevelt" },
+                { text: "If you can dream it, you can do it.", author: "Walt Disney" },
+                { text: "Success is walking from failure to failure with no loss of enthusiasm.", author: "Winston Churchill" },
+                { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+                { text: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
+                { text: "What we think, we become.", author: "Buddha" },
+                { text: "The best revenge is massive success.", author: "Frank Sinatra" },
+                { text: "Success is not in what you have, but who you are.", author: "Bo Bennett" },
+                { text: "The only way to achieve the impossible is to believe it is possible.", author: "Charles Kingsleigh" },
+                { text: "Success is not how high you have climbed, but how you make a positive difference to the world.", author: "Roy T. Bennett" },
+                { text: "Act as if what you do makes a difference. It does.", author: "William James" },
+                { text: "The harder you work, the luckier you get.", author: "Gary Player" },
+                { text: "Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.", author: "Albert Schweitzer" },
+                { text: "You are braver than you believe, stronger than you seem, and smarter than you think.", author: "A.A. Milne" },
+                { text: "What we fear doing most is usually what we most need to do.", author: "Tim Ferriss" },
+                { text: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
+                { text: "The best way to predict your future is to create it.", author: "Abraham Lincoln" },
+                { text: "The more you give, the more you receive.", author: "Unknown" },
+                { text: "Your only limit is you.", author: "Unknown" },
+                { text: "You must be the change you wish to see in the world.", author: "M ahatma Gandhi" }, // Typo to be fixed
+            ];
+
+            // -- DATA CLEANUP (Fix Typos and Remove Duplicates) --
+            const cleanedQuotes = rawQuotes.map(q => ({
+                ...q,
+                author: q.author.replace(/\s+/g, ' ').trim() // Fixes "M ahatma Gandhi"
+            }));
+            const uniqueQuotes = Array.from(new Map(cleanedQuotes.map(q => [q.text.toLowerCase(), q])).values());
+
+            // -- DOM ELEMENTS --
+            const quoteContainer = document.getElementById('quoteContainer');
+            const searchInput = document.getElementById('searchInput');
+            const randomBtn = document.getElementById('randomBtn');
+            
+            // -- FUNCTIONS --
+            const renderQuotes = (quotesToRender) => {
+                quoteContainer.innerHTML = '';
+                if (quotesToRender.length === 0) {
+                    quoteContainer.innerHTML = `<p class="no-results">No quotes found matching your search.</p>`;
+                    return;
+                }
+
+                quotesToRender.forEach(quote => {
+                    const card = document.createElement('article');
+                    card.className = 'quote-card';
+                    card.innerHTML = `
+                        <figure>
+                            <blockquote>${quote.text}</blockquote>
+                            <figcaption>— ${quote.author} —</figcaption>
+                        </figure>
+                    `;
+                    quoteContainer.appendChild(card);
+                });
+            };
+
+            const filterAndRender = () => {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const filtered = uniqueQuotes.filter(quote => 
+                    quote.text.toLowerCase().includes(searchTerm) ||
+                    quote.author.toLowerCase().includes(searchTerm)
+                );
+                renderQuotes(filtered);
+            };
+
+            const showRandomQuote = () => {
+                const randomIndex = Math.floor(Math.random() * uniqueQuotes.length);
+                searchInput.value = ''; // Clear search field
+                renderQuotes([uniqueQuotes[randomIndex]]);
+            };
+
+            // -- EVENT LISTENERS --
+            searchInput.addEventListener('input', filterAndRender);
+            randomBtn.addEventListener('click', showRandomQuote);
+
+            // -- INITIAL RENDER --
+            renderQuotes(uniqueQuotes);
+        });
+    </script>
+</body>
+</html>

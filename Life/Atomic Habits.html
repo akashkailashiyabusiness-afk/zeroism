@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atomic Habits - Interactive Guide</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .bg-teal-custom {
+            background-color: #23424D;
+        }
+        .text-teal-custom {
+            color: #23424D;
+        }
+        .hover\:bg-teal-custom:hover {
+            background-color: #1A323A; /* Darker teal for hover */
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-100 via-teal-50 to-teal-100 font-sans text-gray-800">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-3xl md:text-4xl font-bold text-center text-teal-custom mb-6 drop-shadow-md">
+            Atomic Habits
+        </h1>
+
+        <!-- Tabs -->
+        <div class="flex flex-wrap gap-2 mb-6 bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-2 sticky top-0 z-10">
+            <button class="tablink flex-1 py-2 px-4 text-center text-sm md:text-base font-medium rounded-md transition-all duration-300 hover:bg-teal-custom hover:text-white active:bg-teal-custom active:text-white" onclick="openTab(event, 'Core')">Core Concepts</button>
+            <button class="tablink flex-1 py-2 px-4 text-center text-sm md:text-base font-medium rounded-md transition-all duration-300 hover:bg-teal-custom hover:text-white active:bg-teal-custom active:text-white" onclick="openTab(event, 'Laws')">Four Laws</button>
+            <button class="tablink flex-1 py-2 px-4 text-center text-sm md:text-base font-medium rounded-md transition-all duration-300 hover:bg-teal-custom hover:text-white active:bg-teal-custom active:text-white" onclick="openTab(event, 'Strategies')">Strategies</button>
+            <button class="tablink flex-1 py-2 px-4 text-center text-sm md:text-base font-medium rounded-md transition-all duration-300 hover:bg-teal-custom hover:text-white active:bg-teal-custom active:text-white" onclick="openTab(event, 'Quiz')">Quiz</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="Core" class="tabcontent hidden">
+            <h2 class="text-2xl font-semibold text-teal-custom mb-4">Core Concepts</h2>
+            <div class="space-y-6">
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">The 1% Rule</h3>
+                    <p class="mt-2">Small improvements compound over time.</p>
+                    <p class="mt-2 italic">Example: 1% better daily = 37x better in a year.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Habit Loop</h3>
+                    <p class="mt-2">Cue → Craving → Response → Reward.</p>
+                    <p class="mt-2 italic">Example: Phone buzz (cue) → Check it (response).</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Identity-Based Habits</h3>
+                    <p class="mt-2">Focus on who you want to become.</p>
+                    <p class="mt-2 italic">Example: “I’m a reader” vs. “I’ll read a book.”</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="Laws" class="tabcontent hidden">
+            <h2 class="text-2xl font-semibold text-teal-custom mb-4">Four Laws of Behavior Change</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">1. Make it Obvious</h3>
+                    <p class="mt-2">Cue habits with environment design.</p>
+                    <p class="mt-2 italic">Example: Place running shoes by the door.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">2. Make it Attractive</h3>
+                    <p class="mt-2">Pair habits with enjoyment.</p>
+                    <p class="mt-2 italic">Example: Listen to music while exercising.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">3. Make it Easy</h3>
+                    <p class="mt-2">Reduce friction to start.</p>
+                    <p class="mt-2 italic">Example: Start with 2 push-ups.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">4. Make it Satisfying</h3>
+                    <p class="mt-2">Reward yourself to reinforce.</p>
+                    <p class="mt-2 italic">Example: Check off a habit tracker.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="Strategies" class="tabcontent hidden">
+            <h2 class="text-2xl font-semibold text-teal-custom mb-4">Actionable Strategies</h2>
+            <div class="space-y-6">
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Tiny Habits</h3>
+                    <p class="mt-2">Start small with the 2-minute rule.</p>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li>“Run for 30 minutes” → “Put on running shoes”</li>
+                        <li>“Read a book” → “Read one page”</li>
+                    </ul>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Habit Stacking</h3>
+                    <p class="mt-2">Link new habits to existing ones.</p>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li>After coffee → Meditate 1 minute</li>
+                        <li>After brushing → Do 5 squats</li>
+                    </ul>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Track & Reflect</h3>
+                    <p class="mt-2">Monitor progress and adjust.</p>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li>Use a habit tracker app or paper</li>
+                        <li>Review weekly: What’s working?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="Quiz" class="tabcontent hidden">
+            <h2 class="text-2xl font-semibold text-teal-custom mb-4">Interactive Quiz</h2>
+            <div class="space-y-6">
+                <div class="p-4 bg-white rounded-lg shadow-md">
+                    <p class="font-medium">Q1: What’s the first step to make a habit stick?</p>
+                    <select id="quizAnswer1" class="mt-2 w-full p-2 border rounded-md focus:ring-2 focus:ring-teal-custom">
+                        <option value="A">Make it big</option>
+                        <option value="B">Make it obvious</option>
+                        <option value="C">Make it hard</option>
+                    </select>
+                    <button onclick="checkAnswer1()" class="mt-2 w-full bg-teal-custom text-white py-2 rounded-md hover:bg-teal-custom transition-all duration-300">Submit</button>
+                    <div id="result1" class="result mt-2 font-semibold"></div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md">
+                    <p class="font-medium">Q2: How long to form a habit?</p>
+                    <input type="number" id="quizAnswer2" class="mt-2 w-full p-2 border rounded-md focus:ring-2 focus:ring-teal-custom" placeholder="Days">
+                    <button onclick="checkAnswer2()" class="mt-2 w-full bg-teal-custom text-white py-2 rounded-md hover:bg-teal-custom transition-all duration-300">Submit</button>
+                    <div id="result2" class="result mt-2 font-semibold"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            const tabcontent = document.getElementsByClassName("tabcontent");
+            for (let i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.add("hidden");
+                tabcontent[i].classList.remove("fade-in");
+            }
+            const tablinks = document.getElementsByClassName("tablink");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active", "bg-teal-custom", "text-white");
+            }
+            const activeTab = document.getElementById(tabName);
+            activeTab.classList.remove("hidden");
+            activeTab.classList.add("fade-in");
+            evt.currentTarget.classList.add("active", "bg-teal-custom", "text-white");
+        }
+
+        function checkAnswer1() {
+            const answer = document.getElementById("quizAnswer1").value;
+            const result = document.getElementById("result1");
+            if (answer === "B") {
+                result.innerHTML = "Correct! Making it obvious cues the habit.";
+                result.classList.add("text-green-600");
+                result.classList.remove("text-red-600");
+            } else {
+                result.innerHTML = "Nope. It’s ‘Make it obvious,’ not big or hard.";
+                result.classList.add("text-red-600");
+                result.classList.remove("text-green-600");
+            }
+        }
+
+        function checkAnswer2() {
+            const answer = parseInt(document.getElementById("quizAnswer2").value);
+            const result = document.getElementById("result2");
+            if (answer >= 18 && answer <= 254) {
+                result.innerHTML = "Good estimate! Clear says 66 days on average, but it varies (18-254).";
+                result.classList.add("text-green-600");
+                result.classList.remove("text-orange-600");
+            } else {
+                result.innerHTML = "Not quite. It’s about 66 days, ranging 18-254.";
+                result.classList.add("text-orange-600");
+                result.classList.remove("text-green-600");
+            }
+        }
+
+        // Open default tab
+        document.getElementsByClassName("tablink")[0].click();
+    </script>
+</body>
+</html>

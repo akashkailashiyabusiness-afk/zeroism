@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Thinking Enhancement System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🧠 Thinking Enhancement System</h1>
+                <p>Transform knowledge into wisdom through multiple perspectives</p>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
+            <button class="tab-btn" data-tab="books">📚 Books</button>
+            <button class="tab-btn" data-tab="connections">🕸️ Connections</button>
+            <button class="tab-btn" data-tab="perspectives">🔄 Perspectives</button>
+            <button class="tab-btn" data-tab="questions">❓ Power Questions</button>
+            <button class="tab-btn" data-tab="ai-prompts">🤖 AI Prompts</button>
+            <button class="tab-btn" data-tab="synthesis">⚡ Synthesis</button>
+        </nav>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>📈 Learning Progress</h3>
+                    <div class="progress-stats">
+                        <div class="stat">
+                            <span class="stat-number" id="books-count">8</span>
+                            <span class="stat-label">Books Summarized</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" id="insights-count">47</span>
+                            <span class="stat-label">Insights Applied</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" id="habits-count">12</span>
+                            <span class="stat-label">Mental Models</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🧠 Thinking Tools</h3>
+                    <div class="thinking-tools">
+                        <button class="tool-btn" onclick="openTool('multi-lens')">🔍 Multi-Lens Analyzer</button>
+                        <button class="tool-btn" onclick="openTool('assumption-hunter')">🕵️ Assumption Hunter</button>
+                        <button class="tool-btn" onclick="openTool('bias-detector')">🚨 Bias Detective</button>
+                        <button class="tool-btn" onclick="openTool('consequence-mapper')">🗺️ Consequence Mapper</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🔗 Knowledge Connections</h3>
+                    <div id="connection-network" class="connection-network">
+                        <div class="connection-item" onclick="exploreConnections()">
+                            <span class="connection-count">24</span>
+                            <span class="connection-label">Book Connections</span>
+                        </div>
+                        <div class="connection-item" onclick="showMentalModels()">
+                            <span class="connection-count">18</span>
+                            <span class="connection-label">Mental Models</span>
+                        </div>
+                        <div class="connection-item" onclick="showPatterns()">
+                            <span class="connection-count">6</span>
+                            <span class="connection-label">Cross-Domain Patterns</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🎯 Daily Practice</h3>
+                    <div class="daily-practice">
+                        <div class="practice-item">
+                            <input type="checkbox" id="morning-reflection">
+                            <label for="morning-reflection">Morning Perspective Check</label>
+                        </div>
+                        <div class="practice-item">
+                            <input type="checkbox" id="bias-check">
+                            <label for="bias-check">Bias Detection Review</label>
+                        </div>
+                        <div class="practice-item">
+                            <input type="checkbox" id="evening-synthesis">
+                            <label for="evening-synthesis">Evening Insight Synthesis</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Books Tab -->
+        <div id="books" class="tab-content">
+            <div class="books-header">
+                <h2>📚 Book Summary Library</h2>
+                <button class="add-btn" onclick="addNewBook()">+ Add Book</button>
+            </div>
+            
+            <div class="search-filter">
+                <input type="text" id="book-search" placeholder="🔍 Search books..." onkeyup="filterBooks()">
+                <select id="category-filter" onchange="filterBooks()">
+                    <option value="">All Categories</option>
+                    <option value="cognitive">🧠 Cognitive Enhancement</option>
+                    <option value="professional">💼 Professional Growth</option>
+                    <option value="relationships">🤝 Relationships</option>
+                    <option value="personal">🏃‍♂️ Personal Development</option>
+                    <option value="life">🏠 Life Management</option>
+                </select>
+            </div>
+
+            <div id="books-grid" class="books-grid">
+                <!-- Books will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Perspectives Tab -->
+        <div id="perspectives" class="tab-content">
+            <div class="perspective-analyzer">
+                <h2>🔄 Multi-Perspective Analyzer</h2>
+                <div class="analyzer-input">
+                    <textarea id="problem-input" placeholder="Describe your problem, decision, or situation..."></textarea>
+                    <button onclick="analyzePerspectives()" class="analyze-btn">Analyze Perspectives</button>
+                </div>
+                
+                <div id="perspective-results" class="perspective-grid">
+                    <!-- Results will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Questions Tab -->
+        <div id="questions" class="tab-content">
+            <div class="questions-section">
+                <h2>❓ Power Questions Generator</h2>
+                <div class="question-categories">
+                    <button class="category-btn" onclick="showQuestions('analysis')">🔍 Analysis</button>
+                    <button class="category-btn" onclick="showQuestions('decision')">🎯 Decision Making</button>
+                    <button class="category-btn" onclick="showQuestions('learning')">🧠 Learning</button>
+                    <button class="category-btn" onclick="showQuestions('relationships')">🤝 Relationships</button>
+                    <button class="category-btn" onclick="showQuestions('innovation')">🌱 Innovation</button>
+                    <button class="category-btn" onclick="showQuestions('ethics')">⚖️ Ethics</button>
+                </div>
+                
+                <div id="questions-display" class="questions-display">
+                    <!-- Questions will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Connections Tab -->
+        <div id="connections" class="tab-content">
+            <div class="connections-section">
+                <h2>🕸️ Knowledge Connections</h2>
+                <div class="connection-controls">
+                    <button class="connection-btn" onclick="showBookConnections()">📚 Book Network</button>
+                    <button class="connection-btn" onclick="showMentalModelMap()">🧠 Mental Models</button>
+                    <button class="connection-btn" onclick="showConceptClusters()">🔗 Concept Clusters</button>
+                </div>
+                
+                <div id="connection-visualization" class="connection-viz">
+                    <div class="network-container">
+                        <div class="network-node" data-book="1">Thinking Fast & Slow</div>
+                        <div class="network-node" data-book="2">Atomic Habits</div>
+                        <div class="network-node" data-book="3">Deep Work</div>
+                        <div class="network-node" data-book="4">Predictably Irrational</div>
+                        <div class="network-edge" data-connection="1-4">Cognitive Biases</div>
+                        <div class="network-edge" data-connection="2-3">Focus & Habits</div>
+                    </div>
+                </div>
+                
+                <div id="connection-details" class="connection-details">
+                    <h3>Connection Insights</h3>
+                    <p>Select nodes to explore relationships between concepts, books, and mental models.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Prompts Tab -->
+        <div id="ai-prompts" class="tab-content">
+            <div class="prompts-section">
+                <h2>🤖 AI System Prompts</h2>
+                <div class="prompts-grid">
+                    <div class="prompt-card" onclick="usePrompt('multi-lens')">
+                        <h3>🔍 Multi-Lens Analyzer</h3>
+                        <p>Analyze any topic through 6 different perspectives</p>
+                    </div>
+                    <div class="prompt-card" onclick="usePrompt('assumption-hunter')">
+                        <h3>🕵️ Assumption Hunter</h3>
+                        <p>Identify and test hidden assumptions</p>
+                    </div>
+                    <div class="prompt-card" onclick="usePrompt('bias-detector')">
+                        <h3>🚨 Bias Detective</h3>
+                        <p>Detect cognitive biases in your thinking</p>
+                    </div>
+                    <div class="prompt-card" onclick="usePrompt('consequence-mapper')">
+                        <h3>🗺️ Consequence Mapper</h3>
+                        <p>Map short and long-term consequences</p>
+                    </div>
+                    <div class="prompt-card" onclick="usePrompt('innovation-catalyst')">
+                        <h3>💡 Innovation Catalyst</h3>
+                        <p>Generate breakthrough ideas through constraint removal</p>
+                    </div>
+                    <div class="prompt-card" onclick="usePrompt('decision-architect')">
+                        <h3>🏗️ Decision Architect</h3>
+                        <p>Systematic decision-making framework</p>
+                    </div>
+                </div>
+                
+                <div id="prompt-display" class="prompt-display">
+                    <!-- Selected prompt will be displayed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Synthesis Tab -->
+        <div id="synthesis" class="tab-content">
+            <div class="synthesis-section">
+                <h2>⚡ Insight Synthesis</h2>
+                
+                <div class="synthesis-input">
+                    <h3>🎯 Current Challenge or Goal</h3>
+                    <textarea id="synthesis-input" placeholder="Describe what you're working on or thinking about..."></textarea>
+                    <button onclick="generateSynthesis()" class="synthesis-btn">Generate Integrated Insights</button>
+                </div>
+                
+                <div id="synthesis-results" class="synthesis-results">
+                    <div class="synthesis-card">
+                        <h4>📚 Relevant Books</h4>
+                        <div id="relevant-books"></div>
+                    </div>
+                    
+                    <div class="synthesis-card">
+                        <h4>🧠 Mental Models</h4>
+                        <div id="relevant-models"></div>
+                    </div>
+                    
+                    <div class="synthesis-card">
+                        <h4>❓ Key Questions</h4>
+                        <div id="relevant-questions"></div>
+                    </div>
+                    
+                    <div class="synthesis-card">
+                        <h4>🔄 Perspectives</h4>
+                        <div id="relevant-perspectives"></div>
+                    </div>
+                    
+                    <div class="synthesis-card">
+                        <h4>🎯 Action Steps</h4>
+                        <div id="action-steps"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="book-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('book-modal')">&times;</span>
+            <div id="book-details">
+                <!-- Book details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

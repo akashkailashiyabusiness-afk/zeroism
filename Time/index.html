@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="hi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="जानें कि आपके जीवन का कितना हिस्सा बीत चुका है और कितना समय बचा हो सकता है।" />
+    <meta name="theme-color" content="#0a0c10" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Time Machine" />
+    <title>Time Machine — जीवन की असली कीमत</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <style>
+      .hub-back-btn {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(22,27,34,0.92);
+        border: 1px solid rgba(197,160,89,0.25);
+        color: #c5a059;
+        font-family: 'Outfit', sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 7px 14px;
+        border-radius: 999px;
+        text-decoration: none;
+        backdrop-filter: blur(10px);
+        transition: all 0.2s ease;
+      }
+      .hub-back-btn:hover {
+        background: rgba(197,160,89,0.15);
+        border-color: #c5a059;
+        color: #d4af37;
+      }
+      .hub-back-btn svg { width: 13px; height: 13px; fill: currentColor; }
+    </style>
+  </head>
+  <body>
+    <!-- Back to 0ISM Hub -->
+    <a href="/" class="hub-back-btn">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      0ISM Hub
+    </a>
+    <div id="install-banner" class="pwa-banner pwa-banner--install" hidden>
+      <p><strong>Time Machine</strong> होम स्क्रीन पर जोड़ें — रोज़ जीवन की कीमत याद रहेगी।</p>
+      <div class="pwa-banner__actions">
+        <button type="button" id="btn-install" class="btn-primary btn-sm">इंस्टॉल करें</button>
+        <button type="button" id="btn-install-dismiss" class="btn-ghost btn-sm">बाद में</button>
+      </div>
+    </div>
+
+    <div id="update-banner" class="pwa-banner pwa-banner--update" hidden>
+      <p>नया वर्ज़न तैयार है।</p>
+      <div class="pwa-banner__actions">
+        <button type="button" id="btn-reload" class="btn-primary btn-sm">अपडेट करें</button>
+        <button type="button" id="btn-update-later" class="btn-ghost btn-sm">बाद में</button>
+      </div>
+    </div>
+
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="header">
+      <p class="eyebrow">Time Machine</p>
+      <h1>जीवन की <em>असली</em> कीमत</h1>
+      <p class="tagline">
+        घड़ी समय बताती है — यह मशीन बताती है कि आपके पास <strong>कितना जीवन</strong> बचा है।
+      </p>
+    </header>
+
+    <main class="layout">
+      <section class="panel setup" aria-labelledby="setup-title">
+        <h2 id="setup-title">अपनी ज़िंदगी सेट करें</h2>
+
+        <label class="field">
+          <span>जन्म तिथि</span>
+          <input type="date" id="dob" required />
+        </label>
+
+        <label class="field">
+          <span>उम्मीदित आयु (वर्ष)</span>
+          <div class="range-row">
+            <input type="range" id="lifespan" min="50" max="100" value="78" />
+            <output id="lifespan-out">78</output>
+          </div>
+        </label>
+
+        <button type="button" id="btn-start" class="btn-primary">
+          समय यात्रा शुरू करें
+        </button>
+
+        <p class="hint">डेटा सिर्फ आपके ब्राउज़र में रहती है — कहीं नहीं भेजी जाती।</p>
+      </section>
+
+      <section class="panel wheel-section hidden" id="machine" aria-live="polite">
+        <div class="life-meter">
+          <div class="meter-track" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+            <div class="meter-fill" id="life-fill"></div>
+          </div>
+          <p class="meter-label">
+            <span id="life-percent">0</span>% जीवन बीत चुका
+          </p>
+        </div>
+
+        <div class="clock-wrap">
+          <div class="clock" id="clock">
+            <div><div data-clock="life-years" data-numbers="81" class="clock-face"></div></div>
+            <div><div data-clock="seasons" data-numbers="4" class="clock-face"></div></div>
+            <div><div data-clock="months" data-numbers="12" class="clock-face"></div></div>
+            <div><div data-clock="weeks" data-numbers="52" class="clock-face"></div></div>
+            <div><div data-clock="days" data-numbers="7" class="clock-face"></div></div>
+            <div><div data-clock="hours" data-numbers="24" class="clock-face"></div></div>
+            <div><div data-clock="minutes" data-numbers="60" class="clock-face"></div></div>
+            <button type="button" id="center-btn" class="center-btn" title="सेटिंग बदलें">
+              <span id="center-age">—</span>
+              <small>वर्ष</small>
+            </button>
+          </div>
+        </div>
+
+        <p class="wheel-legend">
+          बाहर → अंदर: जीवन के वर्ष · मौसम · महीने · सप्ताह · दिन · घंटे · मिनट
+        </p>
+      </section>
+
+      <section class="panel stats hidden" id="stats-panel">
+        <h2>जीवन का हिसाब-किताब</h2>
+        <p class="stats-intro" id="stats-intro"></p>
+
+        <ul class="stat-grid" id="stat-grid"></ul>
+
+        <blockquote class="wisdom" id="wisdom"></blockquote>
+
+        <button type="button" id="btn-edit" class="btn-ghost">जन्म तिथि बदलें</button>
+      </section>
+
+      <section class="panel compass hidden" id="compass-panel">
+        <h2>Real Value Compass</h2>
+        <p class="compass-intro">
+          Research-backed reminders: किस चीज़ की असली कीमत है, और आज आपको किस पर फोकस करना चाहिए।
+        </p>
+
+        <div class="research-list" id="research-list"></div>
+
+        <div class="focus-plan">
+          <h3 id="focus-heading">आज का फोकस</h3>
+          <ul id="focus-prompts" class="focus-prompts"></ul>
+        </div>
+
+        <div class="what-you-have">
+          <h3>हमारे पास जो है, उसे कैसे जिएं</h3>
+          <ul id="use-what-you-have" class="use-list"></ul>
+        </div>
+      </section>
+
+      <section class="panel ultimate hidden" id="ultimate-panel"></section>
+
+      <section class="panel ai-guide hidden" id="ai-panel"></section>
+    </main>
+
+    <footer class="footer">
+      <p>हर टिक एक मौका कम — हर आज एक निवेश।</p>
+    </footer>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>

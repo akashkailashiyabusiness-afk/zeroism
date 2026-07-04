@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Extraordinary Productivity • Mini Suite</title>
+  <style>
+    :root{--bg:#0f1724;--card:#111827;--muted:#9ca3af;--accent:#7c3aed;--glass:rgba(255,255,255,0.04)}
+    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    body{margin:0;background:linear-gradient(180deg,#071124 0%, #071824 100%);color:#e6eef8;min-height:100vh;padding:28px}
+    .wrap{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 420px;gap:20px}
+    header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+    h1{font-size:20px;margin:0}
+    p.lead{color:var(--muted);margin:4px 0 0}
+    .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 6px 24px rgba(2,6,23,.6);border:1px solid rgba(255,255,255,0.03)}
+    .section{margin-bottom:14px}
+    label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
+    input[type=text],textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:var(--glass);color:inherit}
+    button{background:var(--accent);border:none;padding:8px 12px;border-radius:10px;color:white;cursor:pointer}
+    .small{font-size:13px;color:var(--muted)}
+    ul.priorities{list-style:none;padding:0;margin:0}
+    ul.priorities li{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:8px;margin-bottom:8px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)}
+    .pill{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03)}
+    .tools-right{display:flex;flex-direction:column;gap:12px}
+    .timer{display:flex;align-items:center;gap:12px}
+    .big{font-size:34px;font-weight:700}
+    .energy-track{display:flex;gap:8px;align-items:center}
+    .habit-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+    .habit-grid button{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent}
+    .on{background:linear-gradient(90deg,var(--accent),#4f46e5)}
+    .meta{display:flex;gap:8px;align-items:center}
+    .footer{grid-column:1/-1;text-align:center;color:var(--muted);font-size:13px;margin-top:14px}
+    .export{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px;border-radius:10px;color:var(--muted)}
+    .task-list{max-height:220px;overflow:auto}
+    @media (max-width:980px){.wrap{grid-template-columns:1fr;}
+      .tools-right{flex-direction:row}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Extraordinary Productivity — Mini Suite ⚡</h1>
+        <p class="lead">Clear priorities • Simple systems • Deep work • Energy & habits — one single-file web tool.</p>
+      </div>
+      <div class="meta">
+        <button id="saveBtn">Save</button>
+        <button id="exportBtn" class="export">Export JSON</button>
+      </div>
+    </header>
+
+    <main class="card">
+      <div class="section">
+        <label>Top 3 Priorities for Today 🥇</label>
+        <ul class="priorities" id="prioList"></ul>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <input id="prioInput" type="text" placeholder="Add priority — e.g., Finish pitch deck" />
+          <button id="addPrio">➕</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <label>Simple Daily System Template 🗓️</label>
+        <select id="systemTemplate">
+          <option value="lean">Lean: Plan • Deep Work • Review</option>
+          <option value="pack">Pack: Morning Ritual • 2 Deep Blocks • Admin</option>
+          <option value="focus">Focus: Single-Task Focus + Micro-breaks</option>
+        </select>
+        <div style="margin-top:8px" class="small">Click "Apply" to populate today's system.</div>
+        <div style="display:flex;gap:8px;margin-top:8px"><button id="applySystem">Apply</button><button id="clearSystem" class="export">Clear</button></div>
+        <div style="margin-top:10px" id="systemPreview" class="small"></div>
+      </div>
+
+      <div class="section">
+        <label>Focused Deep Work ⏱️</label>
+        <div class="timer">
+          <div>
+            <div id="timerDisplay" class="big">25:00</div>
+            <div class="small">Sessions done: <span id="sessionsDone">0</span></div>
+          </div>
+          <div style="margin-left:auto;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;gap:8px">
+              <button id="startTimer">Start</button>
+              <button id="pauseTimer" class="export">Pause</button>
+              <button id="resetTimer" class="export">Reset</button>
+            </div>
+            <div class="small">Length: <input id="pomMinutes" type="number" value="25" style="width:72px;padding:6px;border-radius:8px;background:var(--glass);border:1px solid rgba(255,255,255,0.03)"/> minutes</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <label>Strategic Leverage — Tasks to Delegate / Automate 🤝</label>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input id="taskInput" placeholder="Task to delegate/automate"/>
+          <button id="addTask">Add</button>
+        </div>
+        <div class="task-list" id="taskList"></div>
+      </div>
+
+    </main>
+
+    <aside style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="section">
+          <label>Energy Management ⚡</label>
+          <div class="energy-track">
+            <div style="flex:1">
+              <div class="small">Morning</div>
+              <input type="range" id="energyMorning" min="0" max="10" value="7"/>
+            </div>
+            <div style="flex:1">
+              <div class="small">Afternoon</div>
+              <input type="range" id="energyAfternoon" min="0" max="10" value="6"/>
+            </div>
+            <div style="flex:1">
+              <div class="small">Evening</div>
+              <input type="range" id="energyEvening" min="0" max="10" value="5"/>
+            </div>
+          </div>
+          <div class="small" style="margin-top:8px">Tip: schedule deep work during your highest energy block.</div>
+        </div>
+
+        <div class="section">
+          <label>Long-term Consistency — Habit Streaks 🔁</label>
+          <div class="habit-grid" id="habitGrid"></div>
+          <div style="margin-top:8px;display:flex;gap:8px"><input id="habitName" placeholder="Habit name (e.g., Read)"/><button id="addHabit">Add</button></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section">
+          <label>Quick Metrics</label>
+          <div class="small">Today's priorities completed: <span id="doneCount">0</span></div>
+          <div class="small">Total deep sessions this week: <span id="weekSessions">0</span></div>
+          <div style="margin-top:10px"><button id="resetAll" class="export">Reset All Data</button></div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="footer">Built for action — export, evolve, repeat. ✨</div>
+  </div>
+
+  <script>
+    // Simple state & persistence
+    const state = JSON.parse(localStorage.getItem('ep_state')||'{}');
+    const prioList = document.getElementById('prioList');
+    const prioInput = document.getElementById('prioInput');
+    const addPrio = document.getElementById('addPrio');
+    const saveBtn = document.getElementById('saveBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const applySystem = document.getElementById('applySystem');
+    const systemPreview = document.getElementById('systemPreview');
+    const systemTemplate = document.getElementById('systemTemplate');
+    const pomMinutes = document.getElementById('pomMinutes');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const startTimer = document.getElementById('startTimer');
+    const pauseTimer = document.getElementById('pauseTimer');
+    const resetTimer = document.getElementById('resetTimer');
+    const sessionsDone = document.getElementById('sessionsDone');
+    const sessionsCountKey = 'sessionsCount';
+    const taskList = document.getElementById('taskList');
+    const addTask = document.getElementById('addTask');
+    const taskInput = document.getElementById('taskInput');
+    const habitGrid = document.getElementById('habitGrid');
+    const addHabit = document.getElementById('addHabit');
+    const habitName = document.getElementById('habitName');
+    const doneCount = document.getElementById('doneCount');
+    const weekSessions = document.getElementById('weekSessions');
+    const resetAll = document.getElementById('resetAll');
+
+    // initialize
+    state.priorities = state.priorities||[];
+    state.tasks = state.tasks||[];
+    state.habits = state.habits||[];
+    state.sessions = state.sessions||[]; // timestamps
+
+    function renderPriorities(){
+      prioList.innerHTML='';
+      state.priorities.forEach((p,i)=>{
+        const li=document.createElement('li');
+        li.innerHTML=`<div style="display:flex;gap:12px;align-items:center"><div class="pill">${i+1}</div><div>${escapeHtml(p.title)}</div></div><div style="display:flex;gap:8px"><button data-i="${i}" class="doneBtn">✅</button><button data-i="${i}" class="delBtn">✖️</button></div>`;
+        prioList.appendChild(li);
+      });
+    }
+
+    function renderTasks(){
+      taskList.innerHTML='';
+      state.tasks.forEach((t,i)=>{
+        const d=document.createElement('div');
+        d.style.display='flex';d.style.justifyContent='space-between';d.style.alignItems='center';d.style.padding='8px';d.style.borderRadius='8px';d.style.marginBottom='6px';
+        d.innerHTML=`<div><div style='font-size:14px'>${escapeHtml(t.text)}</div><div class='small'>${t.note||''}</div></div><div style='display:flex;gap:8px'><button data-i='${i}' class='delegate'>Delegate</button><button data-i='${i}' class='delTask'>Del</button></div>`;
+        taskList.appendChild(d);
+      });
+    }
+
+    function renderHabits(){
+      habitGrid.innerHTML='';
+      state.habits.forEach((h,hi)=>{
+        const btn=document.createElement('button');
+        btn.textContent=h.name+ (h.streak? ' ('+h.streak+')':'');
+        if(h.today) btn.classList.add('on');
+        btn.addEventListener('click',()=>{ h.today = !h.today; if(h.today) h.streak=(h.streak||0)+1; else h.streak=Math.max(0,(h.streak||0)-1); save(); renderAll();});
+        habitGrid.appendChild(btn);
+      });
+    }
+
+    function renderAll(){ renderPriorities(); renderTasks(); renderHabits(); sessionsDone.textContent = state.sessions.length||0; doneCount.textContent = state.priorities.filter(p=>p.done).length || 0; weekSessions.textContent = state.sessions.filter(ts=>new Date(ts) > (Date.now()-7*24*60*60*1000)).length; }
+
+    addPrio.addEventListener('click',()=>{ const v=prioInput.value.trim(); if(!v) return; state.priorities.push({title:v,done:false}); prioInput.value=''; save(); renderAll(); });
+    document.addEventListener('click',e=>{ if(e.target.matches('.delBtn')){ const i=+e.target.dataset.i; state.priorities.splice(i,1); save(); renderAll(); } if(e.target.matches('.doneBtn')){ const i=+e.target.dataset.i; state.priorities[i].done = !state.priorities[i].done; save(); renderAll(); } if(e.target.matches('.delTask')){ state.tasks.splice(+e.target.dataset.i,1); save(); renderAll(); } if(e.target.matches('.delegate')){ const i=+e.target.dataset.i; state.tasks[i].delegated = !state.tasks[i].delegated; alert(state.tasks[i].delegated? 'Marked for delegation ✅' : 'Unmarked'); save(); renderAll(); } });
+
+    addTask.addEventListener('click', ()=>{ const v=taskInput.value.trim(); if(!v) return; state.tasks.push({text:v,delegated:false}); taskInput.value=''; save(); renderAll(); });
+
+    applySystem.addEventListener('click', ()=>{
+      const t=systemTemplate.value;
+      let text='';
+      if(t==='lean') text='Morning review (15m) → Deep Work 90m → Break → Admin (30m) → Review 10m';
+      if(t==='pack') text='Ritual (30m) → Deep Block A (60m) → Quick Lunch → Deep Block B (60m) → Wrap up';
+      if(t==='focus') text='Single Key Result focus: 2×25min deep blocks with micro-breaks';
+      systemPreview.textContent=text; alert('System applied to today — copy it to priorities or notes.');
+    });
+
+    saveBtn.addEventListener('click', save);
+    exportBtn.addEventListener('click', ()=>{ const data = JSON.stringify(state, null, 2); const blob = new Blob([data],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='ep_state.json'; a.click(); URL.revokeObjectURL(url); });
+
+    function save(){ localStorage.setItem('ep_state', JSON.stringify(state)); }
+
+    // Timer (basic Pomodoro)
+    let timer=null; let remaining=25*60; function format(sec){ const m=Math.floor(sec/60).toString().padStart(2,'0'); const s=(sec%60).toString().padStart(2,'0'); return `${m}:${s}`; }
+    function tick(){ if(remaining<=0){ clearInterval(timer); timer=null; state.sessions.push(new Date().toISOString()); save(); renderAll(); alert('Session complete ✅'); return; } remaining--; timerDisplay.textContent=format(remaining); }
+    startTimer.addEventListener('click', ()=>{ if(timer) return; const mins = Math.max(1,parseInt(pomMinutes.value||25)); remaining = mins*60; timerDisplay.textContent=format(remaining); timer=setInterval(tick,1000); });
+    pauseTimer.addEventListener('click', ()=>{ if(timer) clearInterval(timer); timer=null; });
+    resetTimer.addEventListener('click', ()=>{ if(timer) clearInterval(timer); timer=null; remaining = Math.max(1,parseInt(pomMinutes.value||25))*60; timerDisplay.textContent=format(remaining); });
+
+    // habits
+    addHabit.addEventListener('click', ()=>{ const n=habitName.value.trim(); if(!n) return; state.habits.push({name:n,today:false,streak:0}); habitName.value=''; save(); renderAll(); });
+
+    // reset
+    resetAll.addEventListener('click', ()=>{ if(confirm('Reset ALL saved data?')){ localStorage.removeItem('ep_state'); location.reload(); } });
+
+    // helpers
+    function escapeHtml(s){ return s.replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]}); }
+
+    // initial render
+    renderAll();
+  </script>
+</body>
+</html>

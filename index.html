@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>0ISM | Pure Knowledge</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#c5a059">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="0ISM">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap');
+:root {
+  --bg-main: #0a0a0c;
+  --surface: #161b22;
+  --surface-light: #21262d;
+  --accent: #c5a059;
+  --accent-glow: rgba(197,160,89,0.3);
+  --text-primary: #e2e8f0;
+  --text-muted: #8b949e;
+  --border: rgba(197,160,89,0.15);
+}
+body { background-color: var(--bg-main); color: var(--text-primary); font-family: 'Inter', sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+.serif { font-family: 'Crimson Pro', serif; }
+.glass { background: rgba(22,27,34,0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); }
+.gold-text { color: var(--accent); }
+.nav-item.active { background: rgba(197,160,89,0.1); color: var(--accent); border-right: 3px solid var(--accent); }
+@media (max-width: 767px) { .nav-item.active { border-right: none; border-top: 2px solid var(--accent); background: transparent; } }
+.card-hover { background: var(--surface); border: 1px solid var(--border); transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+.card-hover:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 10px 30px -10px var(--accent-glow); }
+.gold-btn { background: var(--accent); color: #000; font-weight: 700; transition: all 0.3s ease; }
+.gold-btn:hover { background: #d4af37; box-shadow: 0 0 20px var(--accent-glow); }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: var(--surface-light); border-radius: 10px; }
+.view-container { height: calc(100vh - 64px); }
+@media (max-width: 767px) { .view-container { height: calc(100vh - 128px); } }
+@keyframes pulse-gold { 0% { border-color: var(--border); } 50% { border-color: var(--accent); } 100% { border-color: var(--border); } }
+.active-session { animation: pulse-gold 3s infinite; }
+.algo-terminal { font-family: 'JetBrains Mono', monospace; background: #0d1117; color: #c5a059; border: 1px solid var(--border); }
+.book-card { background: var(--surface); border: 1px solid var(--border); transition: all 0.3s ease; cursor: pointer; text-decoration: none; display: block; }
+.book-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 10px 30px -10px var(--accent-glow); }
+.book-cover { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; }
+.book-cover-placeholder { width: 100%; aspect-ratio: 3/4; background: #0d1117; border: 1px solid #30363d; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.cat-btn { border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); transition: all 0.2s; padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; }
+.cat-btn.active, .cat-btn:hover { background: rgba(197,160,89,0.1); color: var(--accent); border-color: var(--accent); }
+input[type=text], input[type=search] { color: white; }
+input::placeholder { color: var(--text-muted); }
+</style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen max-h-screen overflow-hidden">
+
+<!-- Desktop Sidebar -->
+<aside class="w-64 bg-[#161b22] border-r border-[#30363d] hidden md:flex flex-col sticky top-0 h-screen z-50">
+  <div class="p-8">
+    <h1 class="text-2xl font-bold gold-text tracking-tighter serif">0ISM</h1>
+    <p class="text-[10px] text-[#8b949e] tracking-widest uppercase mt-1 font-bold">Zero Ego. Zero Limits.</p>
+  </div>
+  <nav class="flex-1 px-4 space-y-2 mt-4">
+    <button onclick="showView('dashboard')" class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all hover:bg-white/5" id="nav-dashboard"><i class="fas fa-chess-rook w-5 text-sm"></i><span class="text-sm font-semibold">Command Center</span></button>
+    <button onclick="showView('knowledge')" class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all hover:bg-white/5" id="nav-knowledge"><i class="fas fa-scroll w-5 text-sm"></i><span class="text-sm font-semibold">PowerBooks</span></button>
+    <a href="Wikipedia/index.html" class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all hover:bg-white/5"><i class="fas fa-gem w-5 text-sm"></i><span class="text-sm font-semibold">Diamond Collection</span></a>
+    <button onclick="showView('ai')" class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all hover:bg-white/5" id="nav-ai"><i class="fas fa-brain w-5 text-sm"></i><span class="text-sm font-semibold">PowerThinking AI</span></button>
+    <button onclick="showView('lab')" class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all hover:bg-white/5" id="nav-lab"><i class="fas fa-vial w-5 text-sm"></i><span class="text-sm font-semibold">Neural Lab</span></button>
+    <button onclick="showView('mindset')" class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all hover:bg-white/5" id="nav-mindset"><i class="fas fa-eye w-5 text-sm"></i><span class="text-sm font-semibold">Autosuggestion</span></button>
+    
+    <div class="pt-4 mt-4 border-t border-[#30363d]">
+      <p class="text-[9px] text-[#8b949e] uppercase font-bold tracking-widest px-4 mb-2">Connected Hubs</p>
+      <a href="https://welth-0.web.app" target="_blank" class="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-all hover:bg-white/5 text-emerald-500 hover:text-emerald-400"><i class="fas fa-chart-line w-5 text-xs"></i><span class="text-xs font-semibold">Wealth Hub</span></a>
+      <a href="https://mbrain-0.web.app" target="_blank" class="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-all hover:bg-white/5 text-purple-500 hover:text-purple-400"><i class="fas fa-brain w-5 text-xs"></i><span class="text-xs font-semibold">Mind Brain Hub</span></a>
+      <a href="Wikipedia/index.html" class="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-all hover:bg-white/5 text-amber-500 hover:text-amber-400"><i class="fas fa-gem w-5 text-xs"></i><span class="text-xs font-semibold">Diamond Collection</span></a>
+      <a href="Time/index.html" class="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-all hover:bg-white/5 text-rose-500 hover:text-rose-400"><i class="fas fa-hourglass-half w-5 text-xs"></i><span class="text-xs font-semibold">Time Machine</span></a>
+      <a href="khajana/index.html" class="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-all hover:bg-white/5 text-yellow-500 hover:text-yellow-400"><i class="fas fa-coins w-5 text-xs"></i><span class="text-xs font-semibold">Khazana Hub</span></a>
+    </div>
+  </nav>
+  <div class="p-6 mt-auto border-t border-[#30363d] bg-[#0d1117]/50">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-lg bg-[#c5a059] text-black flex items-center justify-center font-bold shadow-lg">0</div>
+      <div class="overflow-hidden">
+        <p class="text-sm font-bold truncate">Zero_01</p>
+        <p class="text-[10px] text-[#c5a059] font-bold uppercase">Zero Ego. Zero Limits.</p>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<div class="flex-1 flex flex-col min-h-0">
+  <!-- Top Bar -->
+  <header class="h-16 bg-[#0a0a0c] flex items-center justify-between px-4 md:px-8 border-b border-[#30363d] z-40">
+    <div class="flex items-center space-x-3">
+      <button id="mob-back" onclick="showView('dashboard')" class="md:hidden w-8 h-8 rounded bg-[#161b22] border border-[#30363d] flex items-center justify-center text-[#8b949e] hidden"><i class="fas fa-arrow-left text-xs"></i></button>
+      <div class="md:hidden w-8 h-8 rounded bg-[#c5a059] flex items-center justify-center text-black text-[10px] font-bold" id="mob-logo">0</div>
+      <h2 id="view-title" class="text-lg md:text-xl font-bold tracking-tight gold-text serif uppercase">Command Center</h2>
+    </div>
+    <div class="flex items-center space-x-6">
+      <div class="hidden sm:flex items-center space-x-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#c5a059] animate-pulse"></span>
+        <span class="text-[10px] text-[#8b949e] uppercase font-bold tracking-tighter">Zero Loop: Active</span>
+      </div>
+      <div id="clock" class="font-mono text-xs md:text-sm text-[#8b949e] font-bold tracking-widest">12:00:00</div>
+    </div>
+  </header>
+
+  <!-- Views -->
+  <main class="flex-1 overflow-y-auto view-container p-4 md:p-8 bg-[#0a0a0c]">
+
+    <!-- DASHBOARD VIEW -->
+    <div id="view-dashboard" class="space-y-6 md:space-y-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div class="card-hover p-6 rounded-2xl">
+          <p class="text-[#8b949e] text-[10px] font-bold uppercase tracking-widest mb-2">Knowledge Velocity</p>
+          <div class="flex items-baseline justify-between">
+            <h3 class="text-4xl font-bold serif gold-text" id="stat-books">0</h3>
+            <span class="text-emerald-500 text-[10px] font-bold">Books</span>
+          </div>
+          <div class="w-full bg-[#0d1117] h-1.5 rounded-full mt-4"><div class="bg-[#c5a059] h-1.5 rounded-full" id="stat-bar" style="width:0%"></div></div>
+        </div>
+        <div class="card-hover p-6 rounded-2xl">
+          <p class="text-[#8b949e] text-[10px] font-bold uppercase tracking-widest mb-2">Categories</p>
+          <h3 class="text-4xl font-bold serif gold-text">6</h3>
+          <div class="flex space-x-1.5 mt-4">
+            <div class="h-4 w-2 bg-[#c5a059] rounded-sm"></div>
+            <div class="h-4 w-2 bg-[#c5a059]/70 rounded-sm"></div>
+            <div class="h-4 w-2 bg-[#c5a059]/40 rounded-sm"></div>
+            <div class="h-4 w-2 bg-[#30363d] rounded-sm"></div>
+          </div>
+        </div>
+        <div class="card-hover p-6 rounded-2xl sm:col-span-2 lg:col-span-1">
+          <p class="text-[#8b949e] text-[10px] font-bold uppercase tracking-widest mb-2">Current Archetype</p>
+          <h3 class="text-xl font-bold text-[#e2e8f0] truncate serif italic tracking-tight">The Zero Ego Sovereign</h3>
+          <p class="text-[10px] gold-text mt-2 font-bold uppercase">Zero Limits Active</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+        <div class="space-y-4">
+          <h3 class="text-sm font-bold uppercase tracking-widest text-[#8b949e] flex items-center gap-2"><i class="fas fa-fire gold-text text-xs"></i> Strategic Focus</h3>
+          <div class="bg-[#161b22] rounded-2xl p-6 border border-[#30363d] active-session">
+            <div class="flex justify-between items-start mb-6">
+              <div>
+                <h4 class="text-2xl font-bold text-white serif">System Structural Analysis</h4>
+                <p class="text-[#8b949e] text-xs mt-1">Foundational Source: <span class="gold-text italic">Thinking in Systems</span></p>
+              </div>
+              <span class="bg-[#c5a059]/10 text-[#c5a059] text-[9px] px-3 py-1 rounded-full border border-[#c5a059]/20 uppercase font-bold tracking-tighter">Elite Phase</span>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button onclick="showView('knowledge')" class="flex-1 gold-btn py-3.5 rounded-xl text-xs uppercase tracking-widest shadow-lg">Open Library</button>
+              <button onclick="showView('ai')" class="flex-1 bg-white/5 text-white hover:bg-white/10 py-3.5 rounded-xl text-xs font-bold transition-all border border-[#30363d]">Consult AI</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <h3 class="text-sm font-bold uppercase tracking-widest text-[#8b949e] flex items-center gap-2"><i class="fas fa-bolt gold-text text-xs"></i> Intelligence Stream</h3>
+          <div id="quote-feed" class="space-y-3">
+            <div class="bg-[#161b22] p-5 rounded-xl border border-[#30363d] flex gap-4 items-start">
+              <div class="w-10 h-10 rounded-lg bg-[#c5a059]/10 flex items-center justify-center shrink-0 border border-[#c5a059]/20"><i class="fas fa-quote-right gold-text text-xs"></i></div>
+              <p class="text-xs text-slate-300 leading-relaxed italic">Loading wisdom from the archive...</p>
+            </div>
+          </div>
+          <h3 class="text-sm font-bold uppercase tracking-widest text-[#8b949e] flex items-center gap-2 pt-2"><i class="fas fa-bolt gold-text text-xs"></i> Quick Access</h3>
+          <div class="space-y-3">
+            <a href="khajana/index.html" class="bg-[#161b22] p-5 rounded-xl border border-[#30363d] flex gap-4 items-start shadow-sm hover:border-[#c5a059] transition-all block">
+              <div class="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center shrink-0 border border-yellow-500/20"><i class="fas fa-coins text-yellow-500 text-xs"></i></div>
+              <div><p class="text-sm font-bold text-white">Khazana Hub</p><p class="text-xs text-[#8b949e] mt-1">???? ????? — health, wealth, psychology, deep internet & more</p></div>
+            </a>
+            <a href="Wikipedia/index.html" class="bg-[#161b22] p-5 rounded-xl border border-[#30363d] flex gap-4 items-start shadow-sm hover:border-[#c5a059] transition-all block">
+              <div class="w-10 h-10 rounded-lg bg-[#c5a059]/10 flex items-center justify-center shrink-0 border border-[#c5a059]/20"><i class="fas fa-gem gold-text text-xs"></i></div>
+              <div><p class="text-sm font-bold text-white">Diamond Collection</p><p class="text-xs text-[#8b949e] mt-1">15 essential Wikipedia pages that define human knowledge</p></div>
+            </a>
+            <a href="Life/Power Thinking/index.html" class="bg-[#161b22] p-5 rounded-xl border border-[#30363d] flex gap-4 items-start shadow-sm hover:border-[#c5a059] transition-all block">
+              <div class="w-10 h-10 rounded-lg bg-[#c5a059]/10 flex items-center justify-center shrink-0 border border-[#c5a059]/20"><i class="fas fa-bolt gold-text text-xs"></i></div>
+              <div><p class="text-sm font-bold text-white">Power Thinking Hub</p><p class="text-xs text-[#8b949e] mt-1">Mental models, decision frameworks & AI tools</p></div>
+            </a>
+            <a href="Life/Autosuggetion/index.html" class="bg-[#161b22] p-5 rounded-xl border border-[#30363d] flex gap-4 items-start shadow-sm hover:border-[#c5a059] transition-all block">
+              <div class="w-10 h-10 rounded-lg bg-[#c5a059]/10 flex items-center justify-center shrink-0 border border-[#c5a059]/20"><i class="fas fa-eye gold-text text-xs"></i></div>
+              <div><p class="text-sm font-bold text-white">Autosuggestion System</p><p class="text-xs text-[#8b949e] mt-1">Identity reprogramming & life OS</p></div>
+            </a>
+            <a href="Quotes/Q.html" class="bg-[#161b22] p-5 rounded-xl border border-[#30363d] flex gap-4 items-start shadow-sm hover:border-[#c5a059] transition-all block">
+              <div class="w-10 h-10 rounded-lg bg-[#c5a059]/10 flex items-center justify-center shrink-0 border border-[#c5a059]/20"><i class="fas fa-quote-right gold-text text-xs"></i></div>
+              <div><p class="text-sm font-bold text-white">Quote Archive</p><p class="text-xs text-[#8b949e] mt-1">Wisdom from history's greatest minds</p></div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connected Hubs -->
+      <div>
+        <h3 class="text-sm font-bold uppercase tracking-widest text-[#8b949e] mb-4 flex items-center gap-2"><i class="fas fa-network-wired gold-text text-xs"></i> Connected Hubs</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+          <a href="https://welth-0.web.app" target="_blank" class="card-hover p-5 rounded-xl group hover:no-underline">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shrink-0">
+                <i class="fas fa-chart-line text-emerald-500"></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-white serif">Wealth Hub</p>
+                <p class="text-[9px] text-emerald-500 uppercase font-bold tracking-wider">Financial Intelligence</p>
+              </div>
+            </div>
+            <p class="text-xs text-[#8b949e] leading-relaxed">Master wealth creation, investment strategies, and financial freedom.</p>
+          </a>
+          <a href="https://mbrain-0.web.app" target="_blank" class="card-hover p-5 rounded-xl group hover:no-underline">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20 shrink-0">
+                <i class="fas fa-brain text-purple-500"></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-white serif">Mind Brain Hub</p>
+                <p class="text-[9px] text-purple-500 uppercase font-bold tracking-wider">Cognitive Mastery</p>
+              </div>
+            </div>
+            <p class="text-xs text-[#8b949e] leading-relaxed">Peak mental performance, neuroscience insights, and cognitive optimization.</p>
+          </a>
+          <a href="Wikipedia/index.html" class="card-hover p-5 rounded-xl group hover:no-underline">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 shrink-0">
+                <i class="fas fa-gem text-amber-500"></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-white serif">Diamond Collection</p>
+                <p class="text-[9px] text-amber-500 uppercase font-bold tracking-wider">Essential Wikipedia</p>
+              </div>
+            </div>
+            <p class="text-xs text-[#8b949e] leading-relaxed">15 essential Wikipedia pages that define human knowledge.</p>
+          </a>
+          <a href="Time/index.html" class="card-hover p-5 rounded-xl group hover:no-underline">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center border border-rose-500/20 shrink-0">
+                <i class="fas fa-hourglass-half text-rose-500"></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-white serif">Time Machine</p>
+                <p class="text-[9px] text-rose-500 uppercase font-bold tracking-wider">???? ?? ???? ????</p>
+              </div>
+            </div>
+            <p class="text-xs text-[#8b949e] leading-relaxed">Discover how much life you have left. Every tick is one less chance.</p>
+          </a>
+          <a href="khajana/index.html" class="card-hover p-5 rounded-xl group hover:no-underline">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center border border-yellow-500/20 shrink-0">
+                <i class="fas fa-coins text-yellow-500"></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-white serif">Khazana Hub</p>
+                <p class="text-[9px] text-yellow-500 uppercase font-bold tracking-wider">???? ????? ?? ??????</p>
+              </div>
+            </div>
+            <p class="text-xs text-[#8b949e] leading-relaxed">Free knowledge universe — health, wealth, psychology, deep internet & more.</p>
+          </a>
+          <a href="/" class="card-hover p-5 rounded-xl group hover:no-underline border-2 border-[#c5a059]/30">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-[#c5a059]/10 flex items-center justify-center border border-[#c5a059]/20 shrink-0">
+                <i class="fas fa-book-open text-[#c5a059]"></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-white serif">0ISM Knowledge</p>
+                <p class="text-[9px] text-[#c5a059] uppercase font-bold tracking-wider">Current Hub</p>
+              </div>
+            </div>
+            <p class="text-xs text-[#8b949e] leading-relaxed">Pure knowledge archive. Zero ego. Zero limits.</p>
+          </a>
+        </div>
+      </div>
+
+      <!-- Category Quick Nav -->
+      <div>
+        <h3 class="text-sm font-bold uppercase tracking-widest text-[#8b949e] mb-4 flex items-center gap-2"><i class="fas fa-layer-group gold-text text-xs"></i> Category Vaults</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <button onclick="showView('knowledge');filterCat('ai')" class="card-hover p-4 rounded-xl text-center group">
+            <i class="fas fa-robot text-2xl gold-text mb-2 block"></i>
+            <p class="text-xs font-bold text-white">AI & Tech</p>
+          </button>
+          <button onclick="showView('knowledge');filterCat('business')" class="card-hover p-4 rounded-xl text-center group">
+            <i class="fas fa-chart-line text-2xl gold-text mb-2 block"></i>
+            <p class="text-xs font-bold text-white">Business</p>
+          </button>
+          <button onclick="showView('knowledge');filterCat('brain')" class="card-hover p-4 rounded-xl text-center group">
+            <i class="fas fa-brain text-2xl gold-text mb-2 block"></i>
+            <p class="text-xs font-bold text-white">Brain</p>
+          </button>
+          <button onclick="showView('knowledge');filterCat('health')" class="card-hover p-4 rounded-xl text-center group">
+            <i class="fas fa-heartbeat text-2xl gold-text mb-2 block"></i>
+            <p class="text-xs font-bold text-white">Health</p>
+          </button>
+          <button onclick="showView('knowledge');filterCat('life')" class="card-hover p-4 rounded-xl text-center group">
+            <i class="fas fa-infinity text-2xl gold-text mb-2 block"></i>
+            <p class="text-xs font-bold text-white">Life</p>
+          </button>
+          <button onclick="showView('knowledge');filterCat('power')" class="card-hover p-4 rounded-xl text-center group">
+            <i class="fas fa-crown text-2xl gold-text mb-2 block"></i>
+            <p class="text-xs font-bold text-white">Power Tools</p>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- KNOWLEDGE / POWERBOOKS VIEW -->
+    <div id="view-knowledge" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h3 class="text-3xl font-bold text-white serif">Zero Archive</h3>
+          <p class="text-sm text-[#8b949e]">Pure knowledge. No noise. No ceiling.</p>
+        </div>
+        <div class="relative">
+          <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-[#8b949e] text-xs"></i>
+          <input type="search" id="book-search" placeholder="Search books..." oninput="filterBooks()" class="bg-[#161b22] border border-[#30363d] rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#c5a059] transition-all w-64">
+        </div>
+      </div>
+
+      <!-- Category Filter -->
+      <div class="flex flex-wrap gap-2" id="cat-filters">
+        <button class="cat-btn active" onclick="filterCat('all')" data-cat="all">All <span id="cnt-all" class="opacity-60"></span></button>
+        <button class="cat-btn" onclick="filterCat('ai')" data-cat="ai"><i class="fas fa-robot mr-1"></i>AI & Tech <span id="cnt-ai" class="opacity-60"></span></button>
+        <button class="cat-btn" onclick="filterCat('business')" data-cat="business"><i class="fas fa-chart-line mr-1"></i>Business <span id="cnt-business" class="opacity-60"></span></button>
+        <button class="cat-btn" onclick="filterCat('brain')" data-cat="brain"><i class="fas fa-brain mr-1"></i>Brain <span id="cnt-brain" class="opacity-60"></span></button>
+        <button class="cat-btn" onclick="filterCat('health')" data-cat="health"><i class="fas fa-heartbeat mr-1"></i>Health <span id="cnt-health" class="opacity-60"></span></button>
+        <button class="cat-btn" onclick="filterCat('life')" data-cat="life"><i class="fas fa-infinity mr-1"></i>Life <span id="cnt-life" class="opacity-60"></span></button>
+        <button class="cat-btn" onclick="filterCat('power')" data-cat="power"><i class="fas fa-crown mr-1"></i>Power Tools <span id="cnt-power" class="opacity-60"></span></button>
+      </div>
+
+      <div id="books-count" class="text-[10px] text-[#8b949e] font-bold uppercase tracking-widest"></div>
+
+      <!-- Books Grid -->
+      <div id="books-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6"></div>
+    </div>
+
+    <!-- AI VIEW -->
+    <div id="view-ai" class="hidden h-full flex flex-col">
+      <div class="flex-1 bg-[#161b22] rounded-2xl border border-[#30363d] flex flex-col overflow-hidden shadow-2xl" style="max-height: calc(100vh - 180px);">
+        <div id="chat-box" class="flex-1 p-6 overflow-y-auto space-y-8">
+          <div class="flex gap-4">
+            <div class="w-10 h-10 rounded-lg bg-[#c5a059] text-black flex items-center justify-center text-xs font-bold shrink-0 shadow-lg">AI</div>
+            <div class="bg-[#0d1117] p-6 rounded-2xl rounded-tl-none max-w-[85%] border border-[#30363d]">
+              <p class="text-base leading-relaxed text-slate-300 serif italic">"Zero ego. Zero limits. The archive is open — pure knowledge, no noise. What do you seek?"</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-6 border-t border-[#30363d] bg-[#0d1117]/50">
+          <div class="flex flex-wrap gap-2 mb-3">
+            <button onclick="chipPrompt('strategy')" class="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full border border-[#30363d] text-[#8b949e] hover:border-[#c5a059] hover:text-[#c5a059] transition-all">Strategy</button>
+            <button onclick="chipPrompt('habits')" class="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full border border-[#30363d] text-[#8b949e] hover:border-[#c5a059] hover:text-[#c5a059] transition-all">Habits</button>
+            <button onclick="chipPrompt('money')" class="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full border border-[#30363d] text-[#8b949e] hover:border-[#c5a059] hover:text-[#c5a059] transition-all">Money</button>
+            <button onclick="chipPrompt('sleep')" class="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full border border-[#30363d] text-[#8b949e] hover:border-[#c5a059] hover:text-[#c5a059] transition-all">Sleep</button>
+            <button onclick="chipPrompt('brain')" class="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full border border-[#30363d] text-[#8b949e] hover:border-[#c5a059] hover:text-[#c5a059] transition-all">Brain</button>
+            <button onclick="chipPrompt('power')" class="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full border border-[#30363d] text-[#8b949e] hover:border-[#c5a059] hover:text-[#c5a059] transition-all">Power</button>
+            <button onclick="chipPrompt('health')" class="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full border border-[#30363d] text-[#8b949e] hover:border-[#c5a059] hover:text-[#c5a059] transition-all">Health</button>
+            <button onclick="chipPrompt('ai')" class="text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full border border-[#30363d] text-[#8b949e] hover:border-[#c5a059] hover:text-[#c5a059] transition-all">AI</button>
+          </div>
+          <div class="relative flex items-center gap-4">
+            <input type="text" id="ai-input" placeholder="Consult the PowerThinking Core..." class="flex-1 bg-[#0d1117] border border-[#30363d] rounded-xl py-4 px-6 focus:outline-none focus:border-[#c5a059] text-sm transition-all shadow-inner font-medium">
+            <button onclick="sendMessage()" class="gold-btn w-14 h-14 rounded-xl flex items-center justify-center shrink-0 shadow-xl"><i class="fas fa-paper-plane text-sm"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAB VIEW -->
+    <div id="view-lab" class="hidden space-y-6">
+      <div class="mb-8">
+        <h3 class="text-3xl font-bold text-white serif">Neural Algorithm Lab</h3>
+        <p class="text-[10px] gold-text font-bold uppercase tracking-[0.3em] mt-2">Precision Decision Scripts</p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="bg-[#161b22] p-8 rounded-2xl border border-[#30363d] flex flex-col shadow-xl">
+          <div class="flex items-center gap-5 mb-6">
+            <div class="w-12 h-12 rounded-xl bg-[#c5a059] flex items-center justify-center text-black shadow-lg"><i class="fas fa-atom text-xl"></i></div>
+            <div><h4 class="font-bold text-white serif text-xl">First Principles Script</h4><p class="text-[10px] gold-text font-bold uppercase tracking-wider">Logic Deconstructor</p></div>
+          </div>
+          <div class="space-y-4 flex-1">
+            <input type="text" id="fp-input" placeholder="Goal (e.g. Total Market Disruption)" class="w-full bg-[#0d1117] border border-[#30363d] rounded-xl p-4 text-sm focus:border-[#c5a059] outline-none font-medium">
+            <div id="fp-output" class="algo-terminal text-[12px] p-6 rounded-xl h-44 overflow-y-auto leading-relaxed border border-[#30363d]">> Awaiting logic input sequence...</div>
+            <button onclick="runFirstPrinciples()" class="w-full gold-btn py-4 rounded-xl text-xs uppercase tracking-widest shadow-lg">Initiate Deconstruction</button>
+          </div>
+        </div>
+        <div class="bg-[#161b22] p-8 rounded-2xl border border-[#30363d] shadow-xl">
+          <div class="flex items-center gap-5 mb-6">
+            <div class="w-12 h-12 rounded-xl bg-[#c5a059] flex items-center justify-center text-black shadow-lg"><i class="fas fa-wave-square text-xl"></i></div>
+            <div><h4 class="font-bold text-white serif text-xl">S-Curve Projection</h4><p class="text-[10px] gold-text font-bold uppercase tracking-wider">Scaling Dynamics</p></div>
+          </div>
+          <div class="space-y-6">
+            <div class="flex items-center gap-8">
+              <div class="flex-1"><label class="text-[10px] font-bold uppercase text-[#8b949e] block mb-3 tracking-widest">Cognitive Effort</label><input type="range" id="scurve-effort" min="1" max="100" value="50" class="w-full accent-[#c5a059]" oninput="drawSCurve()"></div>
+              <div class="flex-1"><label class="text-[10px] font-bold uppercase text-[#8b949e] block mb-3 tracking-widest">Time Delta</label><input type="range" id="scurve-time" min="1" max="100" value="70" class="w-full accent-[#c5a059]" oninput="drawSCurve()"></div>
+            </div>
+            <div class="h-40 bg-[#0d1117] rounded-xl relative overflow-hidden border border-[#30363d] flex items-end px-4 gap-1.5" id="scurve-canvas"></div>
+            <div class="flex justify-between text-[11px] text-[#8b949e] font-bold uppercase tracking-widest">
+              <span>Phase: <span id="scurve-phase" class="gold-text">Inception</span></span>
+              <span>Output: <span id="scurve-output" class="text-white">Calculating...</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Power Thinking Tools Links -->
+      <div>
+        <h3 class="text-sm font-bold uppercase tracking-widest text-[#8b949e] mb-4 flex items-center gap-2"><i class="fas fa-tools gold-text text-xs"></i> Advanced Tools</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <a href="Life/Power Thinking/Decision Making Framework.html" class="card-hover p-4 rounded-xl flex items-center gap-3 hover:no-underline">
+            <i class="fas fa-sitemap gold-text"></i><span class="text-sm font-semibold text-white">Decision Framework</span>
+          </a>
+          <a href="Life/Power Thinking/Mental Models Library.html" class="card-hover p-4 rounded-xl flex items-center gap-3 hover:no-underline">
+            <i class="fas fa-project-diagram gold-text"></i><span class="text-sm font-semibold text-white">Mental Models Library</span>
+          </a>
+          <a href="Life/Power Thinking/Systems Thinking Analyzer.html" class="card-hover p-4 rounded-xl flex items-center gap-3 hover:no-underline">
+            <i class="fas fa-cogs gold-text"></i><span class="text-sm font-semibold text-white">Systems Thinking</span>
+          </a>
+          <a href="Life/Power Thinking/Cognitive Bias Detector.html" class="card-hover p-4 rounded-xl flex items-center gap-3 hover:no-underline">
+            <i class="fas fa-exclamation-triangle gold-text"></i><span class="text-sm font-semibold text-white">Bias Detector</span>
+          </a>
+          <a href="Life/Power Thinking/Creative Problem Solver.html" class="card-hover p-4 rounded-xl flex items-center gap-3 hover:no-underline">
+            <i class="fas fa-lightbulb gold-text"></i><span class="text-sm font-semibold text-white">Problem Solver</span>
+          </a>
+          <a href="Life/Power Thinking/charlie_munger_mental.html" class="card-hover p-4 rounded-xl flex items-center gap-3 hover:no-underline">
+            <i class="fas fa-chess gold-text"></i><span class="text-sm font-semibold text-white">Munger Mental Models</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- MINDSET / AUTOSUGGESTION VIEW -->
+    <div id="view-mindset" class="hidden space-y-6">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h3 class="text-3xl font-bold text-white serif">Zero Core</h3>
+          <p class="text-sm text-[#8b949e] italic serif">"The ego is the enemy of mastery. Strip it. What remains is pure signal."</p>
+        </div>
+        <a href="Life/Autosuggetion/master-life-system-new.html" class="gold-btn px-8 py-3 rounded-full text-xs uppercase tracking-widest shadow-xl">Alpha Protocol</a>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <a href="Life/Autosuggetion/index.html" class="bg-[#161b22] p-6 rounded-2xl border border-[#30363d] flex justify-between items-center group cursor-pointer hover:bg-[#1c222a] transition-all shadow-lg hover:border-[#c5a059]">
+          <div class="pr-6"><p class="text-white text-lg font-bold serif leading-tight">Autosuggestion System</p><p class="text-[10px] gold-text mt-3 uppercase font-bold tracking-[0.2em]">Identity Reprogramming Hub</p></div>
+          <i class="fas fa-eye text-[#c5a059]/40 group-hover:text-[#c5a059] transition-colors text-xl"></i>
+        </a>
+        <a href="Life/Autosuggetion/lifeos.html" class="bg-[#161b22] p-6 rounded-2xl border border-[#30363d] flex justify-between items-center group cursor-pointer hover:bg-[#1c222a] transition-all shadow-lg hover:border-[#c5a059]">
+          <div class="pr-6"><p class="text-white text-lg font-bold serif leading-tight">Life OS</p><p class="text-[10px] gold-text mt-3 uppercase font-bold tracking-[0.2em]">Operating System for Life</p></div>
+          <i class="fas fa-microchip text-[#c5a059]/40 group-hover:text-[#c5a059] transition-colors text-xl"></i>
+        </a>
+        <a href="Life/Autosuggetion/Psychological Lifehacks.html" class="bg-[#161b22] p-6 rounded-2xl border border-[#30363d] flex justify-between items-center group cursor-pointer hover:bg-[#1c222a] transition-all shadow-lg hover:border-[#c5a059]">
+          <div class="pr-6"><p class="text-white text-lg font-bold serif leading-tight">Psychological Lifehacks</p><p class="text-[10px] gold-text mt-3 uppercase font-bold tracking-[0.2em]">Cognitive Edge Protocols</p></div>
+          <i class="fas fa-bolt text-[#c5a059]/40 group-hover:text-[#c5a059] transition-colors text-xl"></i>
+        </a>
+        <a href="Life/Autosuggetion/How To Think.html" class="bg-[#161b22] p-6 rounded-2xl border border-[#30363d] flex justify-between items-center group cursor-pointer hover:bg-[#1c222a] transition-all shadow-lg hover:border-[#c5a059]">
+          <div class="pr-6"><p class="text-white text-lg font-bold serif leading-tight">How To Think</p><p class="text-[10px] gold-text mt-3 uppercase font-bold tracking-[0.2em]">Thinking Mastery Framework</p></div>
+          <i class="fas fa-brain text-[#c5a059]/40 group-hover:text-[#c5a059] transition-colors text-xl"></i>
+        </a>
+        <a href="Life/Autosuggetion/Solve Any Problem.html" class="bg-[#161b22] p-6 rounded-2xl border border-[#30363d] flex justify-between items-center group cursor-pointer hover:bg-[#1c222a] transition-all shadow-lg hover:border-[#c5a059]">
+          <div class="pr-6"><p class="text-white text-lg font-bold serif leading-tight">Solve Any Problem</p><p class="text-[10px] gold-text mt-3 uppercase font-bold tracking-[0.2em]">Universal Problem Framework</p></div>
+          <i class="fas fa-puzzle-piece text-[#c5a059]/40 group-hover:text-[#c5a059] transition-colors text-xl"></i>
+        </a>
+        <a href="Life/Autosuggetion/ultimate-life-toolkit.html" class="bg-[#161b22] p-6 rounded-2xl border border-[#30363d] flex justify-between items-center group cursor-pointer hover:bg-[#1c222a] transition-all shadow-lg hover:border-[#c5a059]">
+          <div class="pr-6"><p class="text-white text-lg font-bold serif leading-tight">Ultimate Life Toolkit</p><p class="text-[10px] gold-text mt-3 uppercase font-bold tracking-[0.2em]">Complete Life Arsenal</p></div>
+          <i class="fas fa-toolbox text-[#c5a059]/40 group-hover:text-[#c5a059] transition-colors text-xl"></i>
+        </a>
+      </div>
+
+      <!-- Quotes Section -->
+      <div>
+        <h3 class="text-sm font-bold uppercase tracking-widest text-[#8b949e] mb-4 flex items-center gap-2"><i class="fas fa-quote-right gold-text text-xs"></i> Quote Vaults</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          <a href="Quotes/Motivational.html" class="card-hover p-4 rounded-xl text-center hover:no-underline"><p class="text-xs font-bold text-white">Motivational</p></a>
+          <a href="Quotes/Inspirational.html" class="card-hover p-4 rounded-xl text-center hover:no-underline"><p class="text-xs font-bold text-white">Inspirational</p></a>
+          <a href="Quotes/Philosophical.html" class="card-hover p-4 rounded-xl text-center hover:no-underline"><p class="text-xs font-bold text-white">Philosophical</p></a>
+          <a href="Quotes/Success.html" class="card-hover p-4 rounded-xl text-center hover:no-underline"><p class="text-xs font-bold text-white">Success</p></a>
+          <a href="Quotes/History.html" class="card-hover p-4 rounded-xl text-center hover:no-underline"><p class="text-xs font-bold text-white">History</p></a>
+          <a href="Quotes/Work.html" class="card-hover p-4 rounded-xl text-center hover:no-underline"><p class="text-xs font-bold text-white">Work</p></a>
+          <a href="Quotes/Time.html" class="card-hover p-4 rounded-xl text-center hover:no-underline"><p class="text-xs font-bold text-white">Time</p></a>
+          <a href="Quotes/Quality.html" class="card-hover p-4 rounded-xl text-center hover:no-underline"><p class="text-xs font-bold text-white">Quality</p></a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="md:hidden bg-[#161b22] border-t border-[#30363d] flex items-center justify-around h-16 z-50">
+    <button onclick="showView('dashboard')" id="mob-dashboard" class="flex flex-col items-center gap-1 text-[#8b949e] p-2"><i class="fas fa-chess-rook text-lg"></i><span class="text-[9px] uppercase font-bold">Center</span></button>
+    <button onclick="showView('knowledge')" id="mob-knowledge" class="flex flex-col items-center gap-1 text-[#8b949e] p-2"><i class="fas fa-scroll text-lg"></i><span class="text-[9px] uppercase font-bold">Library</span></button>
+    <button onclick="showView('ai')" id="mob-ai" class="flex flex-col items-center gap-1 text-[#8b949e] p-2"><i class="fas fa-brain text-lg"></i><span class="text-[9px] uppercase font-bold">Thinking</span></button>
+    <button onclick="showView('lab')" id="mob-lab" class="flex flex-col items-center gap-1 text-[#8b949e] p-2"><i class="fas fa-vial text-lg"></i><span class="text-[9px] uppercase font-bold">Neural</span></button>
+    <button onclick="showView('mindset')" id="mob-mindset" class="flex flex-col items-center gap-1 text-[#8b949e] p-2"><i class="fas fa-eye text-lg"></i><span class="text-[9px] uppercase font-bold">Core</span></button>
+  </nav>
+</div>
+
+<script src="books.js"></script>
+<script type="module">
+// Import Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCFsl1-dyNSK61K7GNJN6vH3cDTNSMavsY",
+  authDomain: "zer0ism.firebaseapp.com",
+  projectId: "zer0ism",
+  storageBucket: "zer0ism.firebasestorage.app",
+  messagingSenderId: "360346291696",
+  appId: "1:360346291696:web:6c47105fda8ba77f6c6135",
+  measurementId: "G-5HMTHK0R7B"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+</script>
+<script>
+// -- CAT COLORS ---------------------------------------------------------------
+const CAT_COLORS = {ai:'#c5a059',business:'#4ade80',brain:'#818cf8',health:'#f472b6',life:'#38bdf8',power:'#fb923c'};
+
+// -- CATEGORY COUNTS ----------------------------------------------------------
+function initCounts() {
+  const cats = ['all','ai','business','brain','health','life','power'];
+  cats.forEach(c => {
+    const el = document.getElementById(`cnt-${c}`);
+    if(!el) return;
+    const n = c === 'all' ? BOOKS.length : BOOKS.filter(b=>b.cat===c).length;
+    el.textContent = `(${n})`;
+  });
+}
+
+// -- DASHBOARD STATS ----------------------------------------------------------
+function initStats() {
+  const withImg = BOOKS.filter(b=>b.img).length;
+  document.getElementById('stat-books').innerText = withImg;
+  document.getElementById('stat-bar').style.width = Math.min(100, (withImg / BOOKS.length) * 100) + '%';
+  // Category breakdown bars
+  const cats = ['ai','business','brain','health','life','power'];
+  const barsEl = document.querySelector('#view-dashboard .flex.space-x-1\\.5');
+  if(barsEl) {
+    const max = Math.max(...cats.map(c=>BOOKS.filter(b=>b.cat===c).length));
+    barsEl.innerHTML = cats.map(c=>{
+      const pct = Math.round((BOOKS.filter(b=>b.cat===c).length/max)*100);
+      return `<div title="${c}: ${BOOKS.filter(b=>b.cat===c).length}" class="rounded-sm" style="height:${Math.max(8,pct*0.16)}px;width:8px;background:${CAT_COLORS[c]};opacity:0.8"></div>`;
+    }).join('');
+  }
+}
+
+// -- INTELLIGENCE STREAM (random quotes via fetch) ----------------------------
+const QUOTE_FILES = ['Quotes/Motivational.html','Quotes/Inspirational.html','Quotes/Philosophical.html','Quotes/Success.html'];
+async function loadQuoteFeed() {
+  const feed = document.getElementById('quote-feed');
+  if(!feed) return;
+  const icons = ['fa-quote-right','fa-bolt','fa-star','fa-fire','fa-eye'];
+  const collected = [];
+  for(const file of QUOTE_FILES.slice(0,2)) {
+    try {
+      const r = await fetch(file);
+      const txt = await r.text();
+      const doc = new DOMParser().parseFromString(txt,'text/html');
+      doc.querySelectorAll('blockquote,p,li,.quote,q').forEach(el=>{
+        const t = el.textContent.trim();
+        if(t.length > 30 && t.length < 200) collected.push(t);
+      });
+    } catch(e) {}
+  }
+  if(collected.length < 2) {
+    collected.push(
+      "The impediment to action advances action. What stands in the way becomes the way. — Marcus Aurelius",
+      "An investment in knowledge pays the best interest. — Benjamin Franklin",
+      "The man who does not read has no advantage over the man who cannot read. — Mark Twain"
+    );
+  }
+  const picks = collected.sort(()=>Math.random()-0.5).slice(0,3);
+  feed.innerHTML = picks.map((q,i)=>`
+    <div class="bg-[#161b22] p-5 rounded-xl border border-[#30363d] flex gap-4 items-start shadow-sm">
+      <div class="w-10 h-10 rounded-lg bg-[#c5a059]/10 flex items-center justify-center shrink-0 border border-[#c5a059]/20">
+        <i class="fas ${icons[i%icons.length]} gold-text text-xs"></i>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed italic">${q}</p>
+    </div>`).join('');
+}
+
+// -- RENDER BOOKS -------------------------------------------------------------
+let currentCat = 'all';
+function renderBooks(list) {
+  const grid = document.getElementById('books-grid');
+  const count = document.getElementById('books-count');
+  count.textContent = `${list.length} books`;
+  grid.innerHTML = '';
+  list.forEach(b => {
+    const a = document.createElement('a');
+    a.href = b.url;
+    a.className = 'book-card rounded-2xl p-3 group';
+    const color = CAT_COLORS[b.cat] || '#c5a059';
+    const imgHtml = b.img
+      ? `<img src="${b.img}" alt="${b.title}" loading="lazy" class="book-cover mb-3" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`+
+        `<div class="book-cover-placeholder mb-3" style="display:none"><i class="fas fa-book text-3xl" style="color:${color};opacity:0.3"></i></div>`
+      : `<div class="book-cover-placeholder mb-3"><i class="fas fa-tools text-3xl" style="color:${color};opacity:0.4"></i></div>`;
+    a.innerHTML = `${imgHtml}
+      <p class="text-xs font-bold text-white leading-tight truncate serif">${b.title}</p>
+      <span class="text-[9px] font-bold uppercase tracking-widest mt-1 block" style="color:${color}">${b.tag}</span>`;
+    grid.appendChild(a);
+  });
+}
+
+function filterCat(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.cat === cat));
+  applyFilters();
+}
+function filterBooks() { applyFilters(); }
+function applyFilters() {
+  const q = (document.getElementById('book-search')?.value || '').toLowerCase();
+  let list = currentCat === 'all' ? BOOKS : BOOKS.filter(b=>b.cat===currentCat);
+  if(q) list = list.filter(b=>b.title.toLowerCase().includes(q)||b.tag.toLowerCase().includes(q));
+  renderBooks(list);
+}
+
+// -- NAVIGATION + localStorage ------------------------------------------------
+const VIEWS = ['dashboard','knowledge','ai','lab','mindset'];
+const TITLES = {dashboard:'Command Center',knowledge:'Zero Archive',ai:'0ISM Intelligence',lab:'Neural Algorithm Lab',mindset:'Zero Core'};
+
+function showView(viewId) {
+  VIEWS.forEach(v => {
+    document.getElementById(`view-${v}`).classList.add('hidden');
+    const d = document.getElementById(`nav-${v}`); if(d) d.classList.remove('active');
+    const m = document.getElementById(`mob-${v}`);
+    if(m) { m.classList.remove('gold-text'); m.classList.add('text-[#8b949e]'); }
+  });
+  document.getElementById(`view-${viewId}`).classList.remove('hidden');
+  const d = document.getElementById(`nav-${viewId}`); if(d) d.classList.add('active');
+  const m = document.getElementById(`mob-${viewId}`);
+  if(m) { m.classList.add('gold-text'); m.classList.remove('text-[#8b949e]'); }
+  document.getElementById('view-title').innerText = TITLES[viewId];
+  // Mobile back button — show on all views except dashboard
+  const backBtn = document.getElementById('mob-back');
+  const logo = document.getElementById('mob-logo');
+  if(backBtn && logo) {
+    const isDash = viewId === 'dashboard';
+    backBtn.classList.toggle('hidden', isDash);
+    logo.classList.toggle('hidden', !isDash);
+  }
+  if(viewId === 'lab') setTimeout(drawSCurve, 50);
+  if(viewId === 'knowledge') applyFilters();
+  localStorage.setItem('eliteOS_view', viewId);
+}
+
+// -- CLOCK --------------------------------------------------------------------
+function updateClock() { document.getElementById('clock').innerText = new Date().toTimeString().split(' ')[0]; }
+setInterval(updateClock, 1000); updateClock();
+
+// -- LAB: FIRST PRINCIPLES ----------------------------------------------------
+function runFirstPrinciples() {
+  const input = document.getElementById('fp-input').value;
+  const output = document.getElementById('fp-output');
+  if(!input) return;
+  output.innerHTML = '> INITIATING ELITE DECONSTRUCTION SEQUENCE...<br>';
+  const steps = [
+    `> TARGETING OBJECTIVE: ${input.toUpperCase()}`,
+    '> STRIPPING HEURISTIC BIASES...',
+    '> ISOLATING CORE ATOMIC TRUTHS...',
+    '> ATOM 1: RESOURCE THERMODYNAMICS',
+    '> ATOM 2: FIRST-ORDER LOGIC CONSTRAINTS',
+    '> ATOM 3: COGNITIVE OVERHEAD MINIMIZATION',
+    '> SYNTHESIZING REFINED PATHWAY...',
+    '> CONCLUSION: MAXIMIZE LEVERAGE AT NODE ZERO.'
+  ];
+  let i = 0;
+  const iv = setInterval(()=>{
+    output.innerHTML += `<span style="color:#c5a059">${steps[i]}</span><br>`;
+    output.scrollTop = output.scrollHeight;
+    if(++i >= steps.length) clearInterval(iv);
+  }, 300);
+}
+
+// -- LAB: S-CURVE -------------------------------------------------------------
+function drawSCurve() {
+  const effort = document.getElementById('scurve-effort')?.value||50;
+  const time = document.getElementById('scurve-time')?.value||70;
+  const canvas = document.getElementById('scurve-canvas'); if(!canvas) return;
+  canvas.innerHTML = '';
+  for(let i=0;i<30;i++){
+    const y=100/(1+Math.exp(-(effort/20)*((i/30)*10-5)));
+    const active=(i/30)*100<=time;
+    const bar=document.createElement('div');
+    bar.style.cssText=`height:${y}%;width:calc(100%/30);background:${active?'#c5a059':'#30363d'};border-radius:2px 2px 0 0;transition:all 0.4s`;
+    canvas.appendChild(bar);
+  }
+  const p=document.getElementById('scurve-phase'),o=document.getElementById('scurve-output');
+  if(time<30){p.innerText='Inception';o.innerText='Foundational';}
+  else if(time<75){p.innerText='Hyper-Growth';o.innerText='Exponential';}
+  else{p.innerText='Saturation';o.innerText='Dominance';}
+}
+
+// -- AI CHAT -------------------------------------------------------------------
+// Book-title keyword map — title fragments ? response
+const BOOK_RESPONSES = {
+  'atomic habits':    'Atomic Habits (Clear): Every action is a vote for the type of person you wish to become. Stack identity-based habits — the 1% improvements compound into transformation.',
+  'psychology of money': 'Psychology of Money (Housel): Wealth is what you don\'t spend. Getting rich and staying rich are different skills. Time in the market beats timing the market.',
+  'sapiens':          'Sapiens (Harari): Homo sapiens dominate Earth because we alone can cooperate flexibly in large numbers through shared myths — money, nations, corporations.',
+  'outlive':          'Outlive (Attia): The four horsemen — heart disease, cancer, dementia, metabolic dysfunction — are best fought decades before symptoms appear. Zone 2 cardio is the foundation.',
+  'why we sleep':     'Why We Sleep (Walker): 8 hours is non-negotiable. Sleep deprivation compounds like debt — and the interest rate is your cognitive performance and lifespan.',
+  'deep work':        'Deep Work (Newport): The ability to focus without distraction is becoming rare and valuable. Shallow work is visible but rarely creates real value.',
+  'zero to one':      'Zero to One (Thiel): Competition is for losers. Every great business is built on a secret — something important and true that most people disagree with.',
+  'rich dad':         'Rich Dad Poor Dad (Kiyosaki): The rich don\'t work for money — they make money work for them. Assets put money in your pocket; liabilities take it out.',
+  'mastery':          'Mastery (Greene): The path to mastery requires 10,000+ hours of deep practice, a mentor, and the ability to see your field as a living system.',
+  'flow':             'Flow (Csikszentmihalyi): Optimal experience occurs when challenge and skill are in perfect balance. Design your life to maximize flow states.',
+  'thinking fast':    'Thinking Fast & Slow (Kahneman): System 1 is fast, intuitive, emotional. System 2 is slow, deliberate, logical. Most errors come from System 1 overriding System 2.',
+  'power of habit':   'Power of Habit (Duhigg): Every habit has a cue-routine-reward loop. Change the routine while keeping the cue and reward to rewire any behavior.',
+  '7 habits':         '7 Habits (Covey): Begin with the end in mind. Sharpen the saw. Seek first to understand, then to be understood. These principles are timeless.',
+  'nexus':            'Nexus (Harari): Information networks shape civilizations. The question isn\'t whether AI will change society — it\'s whether we can maintain human agency in the process.',
+  'master algorithm': 'Master Algorithm (Domingos): All of machine learning can be unified under a single learner. The five tribes — symbolists, connectionists, evolutionaries, Bayesians, analogizers — each hold a piece.',
+};
+
+const DOMAIN_RESPONSES = {
+  strategy:  'Law 29: Plan all the way to the end. The ending is everything. It takes the brilliance of a master to see the final outcome before the first move.',
+  power:     'Strategic leverage: Apply Meadows\' stock-and-flow analysis. Focus on reinforcing feedback loops to scale power effectively. Control the chokepoints.',
+  habit:     'Habit architecture: Cue ? Routine ? Reward. Stack new habits onto existing ones. Identity-based habits outlast motivation-based ones every time.',
+  brain:     'Your Brain archive holds 35+ books. Core insight: neuroplasticity means your cognitive architecture is always under construction. Build deliberately.',
+  health:    'Outlive framework: The four horsemen are best fought with Zone 2 cardio, strength training, sleep optimization, and metabolic health. Start now.',
+  business:  'Zero to One principle: Competition is for losers. Seek monopoly through unique value creation, not incremental improvement.',
+  ai:        'The Master Algorithm thesis: All of machine learning can be unified under a single learner. The question is which one — and who controls it.',
+  sleep:     'Why We Sleep: 8 hours is non-negotiable. Sleep deprivation compounds like debt — and the interest rate is your cognitive performance.',
+  money:     'Psychology of Money: Wealth is what you don\'t spend. The goal is not to be rich, but to have enough to never be forced to do something you hate.',
+  mindset:   'Mindset (Dweck): The growth mindset sees failure as data, not identity. Every expert was once a beginner who refused to stop.',
+  learning:  'How to Learn: Spaced repetition + active recall beats passive re-reading by 400%. Interleave subjects. Embrace desirable difficulty.',
+};
+
+function chipPrompt(topic) {
+  document.getElementById('ai-input').value = topic;
+  sendMessage();
+}
+
+function sendMessage() {
+  const input = document.getElementById('ai-input');
+  const chatBox = document.getElementById('chat-box');
+  if(!input.value.trim()) return;
+  const userMsg = document.createElement('div');
+  userMsg.className = 'flex gap-4 justify-end';
+  userMsg.innerHTML = `<div class="bg-white/5 text-white p-5 rounded-2xl rounded-tr-none max-w-[85%] border border-[#30363d]"><p class="text-sm font-medium italic">${input.value}</p></div>`;
+  chatBox.appendChild(userMsg);
+  const val = input.value.toLowerCase(); input.value = '';
+  chatBox.scrollTop = chatBox.scrollHeight;
+  setTimeout(()=>{
+    let resp = null;
+    // Check book titles first
+    for(const [k,v] of Object.entries(BOOK_RESPONSES)) { if(val.includes(k)) { resp=v; break; } }
+    // Then domain keywords
+    if(!resp) for(const [k,v] of Object.entries(DOMAIN_RESPONSES)) { if(val.includes(k)) { resp=v; break; } }
+    // Fallback
+    if(!resp) resp = `Zero ego. Zero limits. ${BOOKS.length} books in the archive. Ask about a title or topic: strategy, habits, money, sleep, brain, health, AI, power, mindset, or learning.`;
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'flex gap-4';
+    aiMsg.innerHTML = `<div class="w-10 h-10 rounded-lg bg-[#c5a059] text-black flex items-center justify-center text-xs font-bold shrink-0">AI</div><div class="bg-[#0d1117] p-6 rounded-2xl rounded-tl-none max-w-[85%] border border-[#30363d]"><p class="text-base serif italic text-slate-200 leading-relaxed">"${resp}"</p></div>`;
+    chatBox.appendChild(aiMsg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, 600);
+}
+document.getElementById('ai-input').addEventListener('keypress', e=>{ if(e.key==='Enter') sendMessage(); });
+
+// -- INIT ----------------------------------------------------------------------
+initCounts();
+initStats();
+loadQuoteFeed();
+const savedView = localStorage.getItem('eliteOS_view') || 'dashboard';
+showView(savedView);
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

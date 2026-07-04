@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Advanced Thinking Tools</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .tool-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+        
+        .tool-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tool-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+        
+        .tool-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .tool-description {
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .tool-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-family: inherit;
+        }
+        
+        .tool-button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .tool-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .tool-output {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border-left: 4px solid #3498db;
+            display: none;
+        }
+        
+        .tool-output.show {
+            display: block;
+        }
+        
+        .mental-model-card {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-left: 4px solid #1976d2;
+        }
+        
+        .connection-line {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0;
+            padding: 0.8rem;
+            background: #f0f8ff;
+            border-radius: 6px;
+        }
+        
+        .strength-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+        
+        .strength-high { background: #27ae60; }
+        .strength-medium { background: #f39c12; }
+        .strength-low { background: #e74c3c; }
+        
+        .scenario-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+        
+        .probability-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        
+        .probability-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #f39c12, #27ae60);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="header-content">
+                <h1>🧠 Advanced Thinking Tools</h1>
+                <p>Powerful cognitive enhancement tools for better thinking</p>
+            </div>
+        </header>
+
+        <div class="tab-content active" style="padding: 2rem;">
+            <div class="tools-grid">
+                
+                <!-- Mental Model Connector -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">🕸️</div>
+                        <div>
+                            <div class="tool-title">Mental Model Connector</div>
+                        </div>
+                    </div>
+                    <div class="tool-description">
+                        Find connections between different mental models and concepts to enhance your understanding.
+                    </div>
+                    <input type="text" class="tool-input" id="model-input" placeholder="Enter a concept or problem...">
+                    <button class="tool-button" onclick="connectMentalModels()">🔍 Find Connections</button>
+                    <div id="model-output" class="tool-output"></div>
+                </div>
+
+                <!-- Assumption Excavator -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">⛏️</div>
+                        <div>
+                            <div class="tool-title">Assumption Excavator</div>
+                        </div>
+                    </div>
+                    <div class="tool-description">
+                        Uncover hidden assumptions in your thinking and test their validity.
+                    </div>
+                    <textarea class="tool-input" id="assumption-input" placeholder="Describe your belief, plan, or statement..." rows="3"></textarea>
+                    <button class="tool-button" onclick="excavateAssumptions()">⛏️ Excavate Assumptions</button>
+                    <div id="assumption-output" class="tool-output"></div>
+                </div>
+
+                <!-- Consequence Simulator -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">🔮</div>
+                        <div>
+                            <div class="tool-title">Consequence Simulator</div>
+                        </div>
+                    </div>
+                    <div class="tool-description">
+                        Explore potential consequences of decisions across different time horizons.
+                    </div>
+                    <textarea class="tool-input" id="decision-input" placeholder="Describe your decision or action..." rows="3"></textarea>
+                    <button class="tool-button" onclick="simulateConsequences()">🔮 Simulate Consequences</button>
+                    <div id="consequence-output" class="tool-output"></div>
+                </div>
+
+                <!-- Pattern Recognition Engine -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">🎯</div>
+                        <div>
+                            <div class="tool-title">Pattern Recognition Engine</div>
+                        </div>
+                    </div>
+                    <div class="tool-description">
+                        Identify patterns across different domains and experiences.
+                    </div>
+                    <textarea class="tool-input" id="pattern-input" placeholder="Describe situations, experiences, or data..." rows="3"></textarea>
+                    <button class="tool-button" onclick="recognizePatterns()">🎯 Find Patterns</button>
+                    <div id="pattern-output" class="tool-output"></div>
+                </div>
+
+                <!-- Cognitive Load Optimizer -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">⚡</div>
+                        <div>
+                            <div class="tool-title">Cognitive Load Optimizer</div>
+                        </div>
+                    </div>
+                    <div class="tool-description">
+                        Optimize your mental resources and attention allocation.
+                    </div>
+                    <input type="text" class="tool-input" id="task-input" placeholder="Describe your current tasks or challenges...">
+                    <button class="tool-button" onclick="optimizeCognitiveLoad()">⚡ Optimize Load</button>
+                    <div id="load-output" class="tool-output"></div>
+                </div>
+
+                <!-- Wisdom Distillation System -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">💎</div>
+                        <div>
+                            <div class="tool-title">Wisdom Distillation System</div>
+                        </div>
+                    </div>
+                    <div class="tool-description">
+                        Extract key principles and lessons from your experiences.
+                    </div>
+                    <textarea class="tool-input" id="experience-input" placeholder="Describe a recent experience or challenge..." rows="3"></textarea>
+                    <button class="tool-button" onclick="distillWisdom()">💎 Distill Wisdom</button>
+                    <div id="wisdom-output" class="tool-output"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="advanced-tools.js"></script>
+</body>
+</html>

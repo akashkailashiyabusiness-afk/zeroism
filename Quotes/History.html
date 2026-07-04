@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History Quotes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-bg: #f4f1ea;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --accent-color: #8B4513; /* SaddleBrown */
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --font-en: 'Merriweather', serif;
+            --font-hi: 'Noto Sans Devanagari', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-en);
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            transition: font-family 0.3s ease;
+        }
+
+        .lang-hi body {
+            font-family: var(--font-hi);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px var(--shadow-color);
+        }
+
+        h1 {
+            color: var(--accent-color);
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-box {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid #ccc;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            min-width: 200px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 5px rgba(139, 69, 19, 0.5);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            background-color: var(--accent-color);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #a0522d; /* Peru */
+            transform: translateY(-2px);
+        }
+        
+        .language-switcher {
+            display: flex;
+            gap: 0.5rem;
+            background-color: var(--primary-bg);
+            border-radius: 25px;
+            padding: 5px;
+        }
+
+        .language-switcher input[type="radio"] {
+            display: none;
+        }
+
+        .language-switcher label {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .language-switcher input[type="radio"]:checked + label {
+            background-color: var(--accent-color);
+            color: white;
+            box-shadow: 0 2px 5px var(--shadow-color);
+        }
+
+        .quote-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .quote-card {
+            background-color: var(--primary-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 5px solid var(--accent-color);
+            box-shadow: 0 4px 6px var(--shadow-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .quote-card blockquote {
+            margin: 0;
+            font-size: 1.15rem;
+            font-style: italic;
+            flex-grow: 1;
+            padding-bottom: 1rem;
+        }
+
+        .quote-card figcaption {
+            text-align: right;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-top: 1rem;
+        }
+        
+        .quote-card figcaption::before {
+            content: "— ";
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .container {
+                padding: 1rem;
+            }
+            .quote-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        <h1 id="page-title">History Quotes</h1>
+        
+        <div class="controls">
+            <input type="text" class="search-box" id="searchInput" placeholder="Search quotes or authors...">
+            
+            <div class="language-switcher">
+                <input type="radio" id="lang-en" name="language" value="en" checked>
+                <label for="lang-en">English</label>
+                <input type="radio" id="lang-hi" name="language" value="hi">
+                <label for="lang-hi">हिन्दी</label>
+            </div>
+            
+            <button class="btn" id="randomBtn">Random Quote</button>
+        </div>
+
+        <section class="quote-container" id="quoteContainer"></section>
+        
+    </main>
+    
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // -- DATA --
+            const quotes = [
+                {
+                    en: { text: "History is written by the victors.", author: "Winston Churchill" },
+                    hi: { text: "इतिहास विजेताओं द्वारा लिखा जाता है।", author: "विंस्टन चर्चिल" }
+                },
+                {
+                    en: { text: "Those who cannot remember the past are condemned to repeat it.", author: "George Santayana" },
+                    hi: { text: "जो लोग अतीत को याद नहीं कर सकते, वे इसे दोहराने के लिए अभिशप्त हैं।", author: "जॉर्ज सैंटायना" }
+                },
+                {
+                    en: { text: "History is not a burden on the memory but an illumination of the soul.", author: "Lord Acton" },
+                    hi: { text: "इतिहास स्मृति पर एक बोझ नहीं है, बल्कि आत्मा का प्रकाश है।", author: "लॉर्ड एक्टन" }
+                },
+                {
+                    en: { text: "History is a vast early warning system.", author: "Norman Cousins" },
+                    hi: { text: "इतिहास एक विशाल प्रारंभिक चेतावनी प्रणाली है।", author: "नॉर्मन कज़िन्स" }
+                },
+                {
+                    en: { text: "History is the version of past events that people have decided to agree upon.", author: "Napoleon Bonaparte" },
+                    hi: { text: "इतिहास उन अतीत की घटनाओं का संस्करण है जिस पर लोगों ने सहमति बनाने का निर्णय लिया है।", author: "नेपोलियन बोनापार्ट" }
+                },
+                {
+                    en: { text: "The study of history is the beginning of political wisdom.", author: "Jean Bodin" },
+                    hi: { text: "इतिहास का अध्ययन राजनीतिक ज्ञान की शुरुआत है।", author: "जीन बोडिन" }
+                },
+                {
+                    en: { text: "A generation which ignores history has no past and no future.", author: "Robert Heinlein" },
+                    hi: { text: "जो पीढ़ी इतिहास की उपेक्षा करती है, उसका कोई अतीत और कोई भविष्य नहीं होता।", author: "रॉबर्ट हेनलेन" }
+                },
+                {
+                    en: { text: "The past cannot be changed. The future is yet in your power.", author: "Unknown" },
+                    hi: { text: "अतीत को नहीं बदला जा सकता। भविष्य अभी आपके हाथ में है।", author: "अज्ञात" }
+                },
+                {
+                    en: { text: "History is a great teacher.", author: "Unknown" },
+                    hi: { text: "इतिहास एक महान शिक्षक है।", author: "अज्ञात" }
+                },
+                {
+                    en: { text: "History is the key to understanding the present.", author: "Unknown" },
+                    hi: { text: "इतिहास वर्तमान को समझने की कुंजी है।", author: "अज्ञात" }
+                }
+            ];
+
+            // -- DOM ELEMENTS --
+            const quoteContainer = document.getElementById('quoteContainer');
+            const searchInput = document.getElementById('searchInput');
+            const randomBtn = document.getElementById('randomBtn');
+            const langRadios = document.querySelectorAll('input[name="language"]');
+            const pageTitle = document.getElementById('page-title');
+            const htmlTag = document.documentElement;
+
+            // -- STATE --
+            let currentLanguage = 'en';
+            let currentFilter = '';
+
+            // -- TRANSLATIONS for UI elements --
+            const uiText = {
+                en: {
+                    title: "History Quotes",
+                    searchPlaceholder: "Search quotes or authors...",
+                    randomButton: "Random Quote"
+                },
+                hi: {
+                    title: "इतिहास के उद्धरण",
+                    searchPlaceholder: "उद्धरण या लेखक खोजें...",
+                    randomButton: "यादृच्छिक उद्धरण"
+                }
+            };
+            
+            // -- FUNCTIONS --
+            const renderQuotes = (quotesToRender) => {
+                quoteContainer.innerHTML = '';
+                if (quotesToRender.length === 0) {
+                    quoteContainer.innerHTML = `<p>No quotes found matching your search.</p>`;
+                    return;
+                }
+
+                quotesToRender.forEach(quote => {
+                    const quoteData = quote[currentLanguage];
+                    const card = document.createElement('div');
+                    card.className = 'quote-card';
+                    card.innerHTML = `
+                        <figure>
+                            <blockquote>${quoteData.text}</blockquote>
+                            <figcaption>${quoteData.author}</figcaption>
+                        </figure>
+                    `;
+                    quoteContainer.appendChild(card);
+                });
+            };
+
+            const filterQuotes = () => {
+                const searchTerm = currentFilter.toLowerCase();
+                const filtered = quotes.filter(quote => 
+                    quote.en.text.toLowerCase().includes(searchTerm) ||
+                    quote.en.author.toLowerCase().includes(searchTerm) ||
+                    quote.hi.text.toLowerCase().includes(searchTerm) ||
+                    quote.hi.author.toLowerCase().includes(searchTerm)
+                );
+                renderQuotes(filtered);
+            };
+
+            const showRandomQuote = () => {
+                const randomIndex = Math.floor(Math.random() * quotes.length);
+                searchInput.value = ''; // Clear search
+                currentFilter = '';
+                renderQuotes([quotes[randomIndex]]);
+            };
+
+            const updateLanguage = (lang) => {
+                currentLanguage = lang;
+                htmlTag.className = `lang-${lang}`;
+                
+                // Update UI text
+                pageTitle.textContent = uiText[lang].title;
+                searchInput.placeholder = uiText[lang].searchPlaceholder;
+                randomBtn.textContent = uiText[lang].randomButton;
+                
+                // Re-render quotes with the new language
+                filterQuotes(); 
+            };
+
+            // -- EVENT LISTENERS --
+            searchInput.addEventListener('input', (e) => {
+                currentFilter = e.target.value;
+                filterQuotes();
+            });
+
+            randomBtn.addEventListener('click', showRandomQuote);
+            
+            langRadios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    updateLanguage(e.target.value);
+                });
+            });
+
+            // -- INITIAL RENDER --
+            updateLanguage('en'); // Sets up the initial language and renders all quotes
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Smart File Manager — Local</title>
+<style>
+:root{--bg:#071029;--panel:#0d1624;--muted:#9fb0c8;--text:#e6eef8;--accent:#7c3aed}
+*{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+body{margin:0;height:100vh;background:linear-gradient(180deg,#031226,#071029);color:var(--text);display:flex;flex-direction:column}
+.header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.03)}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#60a5fa);display:grid;place-items:center;font-weight:800}
+.controls{display:flex;gap:8px;align-items:center}
+.btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px;color:var(--text);cursor:pointer}
+.btn.primary{background:var(--accent);border-color:transparent}
+.container{display:grid;grid-template-columns:300px 1fr 360px;gap:12px;padding:12px;flex:1;overflow:hidden}
+.sidebar{background:var(--panel);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);overflow:auto}
+.panel{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);height:100%;overflow:auto}
+.search{display:flex;gap:8px;margin-bottom:12px}
+.input{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)}
+.results{display:flex;flex-direction:column;gap:8px}
+.file-card{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.02);display:flex;flex-direction:column;background:rgba(255,255,255,0.01)}
+.file-meta{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.small{font-size:12px;color:var(--muted)}
+.tag{padding:4px 8px;border-radius:999px;background:rgba(255,255,255,0.02);font-size:12px}
+.badge{font-weight:700;color:var(--accent)}
+.preview{white-space:pre-wrap;max-height:240px;overflow:auto;background:rgba(0,0,0,0.25);padding:8px;border-radius:8px;margin-top:8px;border:1px solid rgba(255,255,255,0.02)}
+.footer{padding:8px 12px;border-top:1px solid rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center}
+.notice{font-size:13px;color:var(--muted)}
+.opt{display:flex;gap:8px;align-items:center;margin-top:8px}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="brand">
+    <div class="logo">SM</div>
+    <div>
+      <div style="font-weight:800">Smart File Manager — Local</div>
+      <div class="small">Upload • Index • Search • Summarize — all on your machine 🔒</div>
+    </div>
+  </div>
+  <div class="controls">
+    <label class="btn">📁 Add files<input id="file-input" type="file" multiple webkitdirectory directory style="display:none"/></label>
+    <button class="btn" id="btn-index">⚡ Index files</button>
+    <button class="btn" id="btn-clear">🗑️ Clear</button>
+    <button class="btn primary" id="btn-export">⬇️ Export index</button>
+  </div>
+</header>
+
+<div class="container">
+  <aside class="sidebar">
+    <div class="panel">
+      <div class="section-title" style="font-weight:700;margin-bottom:8px">Files • Library</div>
+      <div id="file-list" class="results"></div>
+      <div style="height:12px"></div>
+      <div class="small">Supported: .txt .md .json .html .js .py .java .css .csv .mdx. PDFs show filename (no text extraction yet).</div>
+    </div>
+  </aside>
+
+  <main class="panel">
+    <div class="search">
+      <input id="query" class="input" placeholder="Ask anything about your files… (natural language search) ✨"/>
+      <button class="btn primary" id="btn-search">Search</button>
+    </div>
+    <div style="display:flex;gap:12px;align-items:flex-start">
+      <div style="flex:1">
+        <div class="section-title" style="font-weight:700;margin-bottom:8px">Results</div>
+        <div id="results" class="results"></div>
+      </div>
+      <div style="width:320px">
+        <div style="font-weight:700;margin-bottom:8px">Selected Preview</div>
+        <div id="preview" class="preview small">Select a result to preview text or generate a summary.</div>
+        <div class="opt">
+          <button class="btn" id="btn-summarize">📝 Summarize (local LLM)</button>
+          <button class="btn" id="btn-tags">🏷️ Auto-tag</button>
+        </div>
+        <div style="height:12px"></div>
+        <div class="small">LLM URL (optional):</div>
+        <input id="llm-url" class="input" placeholder="http://localhost:1234 (leave empty to skip LLM calls)"/>
+        <div style="height:8px"></div>
+        <div class="small">Model (if using LM Studio):</div>
+        <input id="llm-model" class="input" placeholder="model name (like llama-3-8b-instruct)"/>
+      </div>
+    </div>
+  </main>
+
+  <aside class="panel">
+    <div style="font-weight:700;margin-bottom:8px">Inspector</div>
+    <div class="small">Indexed items: <span id="count">0</span></div>
+    <div style="height:8px"></div>
+    <div class="small">Search mode:</div>
+    <select id="mode" class="input" style="margin-top:8px">
+      <option value="tfidf">TF-IDF (fast, local)</option>
+      <option value="fuzzy">Fuzzy (substring)</option>
+    </select>
+    <div style="height:12px"></div>
+    <div class="small">Quick filters:</div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn" id="filter-code">Code files</button>
+      <button class="btn" id="filter-docs">Docs</button>
+      <button class="btn" id="filter-md">Markdown</button>
+    </div>
+    <div style="height:12px"></div>
+    <div style="font-weight:700;margin-bottom:8px">Actions</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn" id="export-json">Export JSON</button>
+      <button class="btn" id="import-json">Import JSON</button>
+    </div>
+  </aside>
+</div>
+
+<footer class="footer">
+  <div class="notice">Tip: You can drag a folder into the file picker (webkitdirectory) or drop files directly into the page.</div>
+  <div class="small">Made for privacy 🔒 · Use optional local LLM for summarization</div>
+</footer>
+
+<script>
+// Smart File Manager — lightweight local index + TF-IDF search + optional LLM summarization
+const files = []; // {id,name,type,text,tags,vec}
+const index = { vocab: {}, docs: {}, idf: {}, vectors: {} }
+
+const extCode = ['js','py','java','ts','cpp','c','go','rs','html','css'];
+const extDocs = ['txt','md','json','csv','html','mdx'];
+
+function uid(){ return 'f_'+Date.now()+'_'+Math.floor(Math.random()*9999) }
+
+function humanBytes(n){ if(n<1024) return n+' B'; if(n<1024*1024) return (n/1024).toFixed(1)+' KB'; return (n/1024/1024).toFixed(2)+' MB' }
+
+// File parsing
+document.getElementById('file-input').addEventListener('change', async (e)=>{
+  const fl = Array.from(e.target.files);
+  if(!fl.length) return;
+  for(const f of fl){
+    const id = uid();
+    const name = f.webkitRelativePath || f.name;
+    const ext = (name.split('.').pop()||'').toLowerCase();
+    let text = '';
+    try{
+      if(ext==='pdf'){ text = '[PDF] Binary file — text extraction not supported in this build.' }
+      else if(['txt','md','json','csv','html','mdx','xml'].includes(ext)){ text = await f.text(); }
+      else if(extCode.includes(ext)){ text = await f.text(); }
+      else { text = await f.text().catch(()=>'[Binary or unsupported]'); }
+    }catch(err){ text = '[Failed to read file]' }
+    files.push({ id, name, size:f.size, type:ext, text: text.slice(0,200000), tags:[], meta:{raw:f} })
+  }
+  renderFileList(); alert('Loaded '+fl.length+' files. Now click Index files ⚡ to build search index.')
+})
+
+// Render file list
+function renderFileList(){
+  const root = document.getElementById('file-list'); root.innerHTML='';
+  for(const f of files){
+    const div = document.createElement('div'); div.className='file-card';
+    div.innerHTML = `<div class="file-meta"><div style="font-weight:700">${f.name}</div><div class="small">${humanBytes(f.size||0)} • <span class="badge">${f.type||''}</span></div></div><div class="small" style="margin-top:6px">${(f.text||'').slice(0,200).replace(/\\n/g,' ')}${(f.text&&f.text.length>200)?'...':''}</div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" onclick="previewFile('${f.id}')">Preview</button><button class="btn" onclick="tagFilePrompt('${f.id}')">Tag</button></div>`;
+    root.appendChild(div);
+  }
+  document.getElementById('count').textContent = files.length;
+}
+
+// Basic tokenizer
+function tokenize(s){
+  return (s||'').toLowerCase().replace(/[^a-z0-9\\s]/g,' ').split(/\\s+/).filter(Boolean);
+}
+
+// Build TF-IDF index
+document.getElementById('btn-index').addEventListener('click', ()=>{
+  // build vocab and doc-term freq
+  index.vocab = {}; index.docs = {}; index.idf = {}; index.vectors = {};
+  files.forEach((f,i)=>{
+    const tokens = tokenize(f.text).slice(0,5000); // limit
+    const freqs = {};
+    tokens.forEach(t=> freqs[t]=(freqs[t]||0)+1);
+    index.docs[f.id]=freqs;
+    for(const t of Object.keys(freqs)){ index.vocab[t]=(index.vocab[t]||0)+1 }
+  });
+  // idf
+  const N = files.length;
+  for(const t of Object.keys(index.vocab)){ index.idf[t]=Math.log( (N+1)/(index.vocab[t]+1) ) }
+  // vectors (tf-idf normalized)
+  for(const f of files){
+    const freqs = index.docs[f.id]||{};
+    const vec = {};
+    let norm = 0;
+    for(const [t,tf] of Object.entries(freqs)){
+      const val = (1+Math.log(tf)) * (index.idf[t]||0);
+      vec[t]=val; norm += val*val;
+    }
+    norm = Math.sqrt(norm)||1;
+    for(const t of Object.keys(vec)) vec[t] = vec[t]/norm;
+    index.vectors[f.id]=vec;
+    f.vec = vec;
+  }
+  alert('Indexed '+files.length+' files. You can now search with TF-IDF (local).');
+})
+
+// Cosine similarity between query and doc vecs
+function scoreQuery(q){
+  const tokens = tokenize(q);
+  const freqs = {}; tokens.forEach(t=>freqs[t]=(freqs[t]||0)+1);
+  const qvec = {}; let norm=0;
+  for(const [t,tf] of Object.entries(freqs)){
+    const val = (1+Math.log(tf)) * (index.idf[t]||0);
+    qvec[t]=val; norm += val*val;
+  }
+  norm = Math.sqrt(norm)||1;
+  for(const t of Object.keys(qvec)) qvec[t]=qvec[t]/norm;
+  const scores = files.map(f=>{
+    const vec = index.vectors[f.id] || {};
+    let s=0;
+    for(const [t,val] of Object.entries(qvec)){ if(vec[t]) s += val*vec[t]; }
+    return {id:f.id,score:s};
+  }).sort((a,b)=>b.score-a.score);
+  return scores;
+}
+
+// Search
+document.getElementById('btn-search').addEventListener('click', ()=>performSearch())
+
+function renderResults(arr){
+  const root = document.getElementById('results'); root.innerHTML='';
+  if(!arr.length) return root.innerHTML='<div class="small">No results</div>';
+  for(const r of arr){
+    const f = files.find(x=>x.id===r.id);
+    const div = document.createElement('div'); div.className='file-card';
+    div.innerHTML = `<div class="file-meta"><div style="font-weight:700">${f.name}</div><div class="small">${(r.score||0).toFixed(3)}</div></div><div class="small">${(f.text||'').slice(0,300).replace(/\\n/g,' ')}${(f.text&&f.text.length>300)?'...':''}</div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" onclick="previewFile('${f.id}')">Preview</button><button class="btn" onclick="summarizeFile('${f.id}')">Summarize</button><button class="btn" onclick="copyText('${f.id}')">Copy</button></div>`;
+    root.appendChild(div);
+  }
+}
+
+function performSearch(){
+  const q = document.getElementById('query').value.trim();
+  const mode = document.getElementById('mode').value;
+  if(!q) return alert('Type a query');
+  if(mode==='tfidf'){
+    const scores = scoreQuery(q).filter(x=>x.score>0).slice(0,30);
+    renderResults(scores);
+  } else {
+    // fuzzy substring
+    const arr = files.map(f=>({id:f.id,score: (f.text||'').toLowerCase().includes(q.toLowerCase())?1:0})).filter(x=>x.score>0);
+    renderResults(arr);
+  }
+}
+
+// Preview
+function previewFile(id){
+  const f = files.find(x=>x.id===id);
+  const p = document.getElementById('preview');
+  if(!f) return;
+  p.textContent = f.text || '[no text available]';
+}
+
+// Copy text
+function copyText(id){ const f=files.find(x=>x.id===id); if(!f) return; navigator.clipboard.writeText(f.text||''); alert('Copied text to clipboard'); }
+
+// Tag file
+function tagFilePrompt(id){ const tag = prompt('Add comma-separated tags'); if(!tag) return; const f = files.find(x=>x.id===id); f.tags = (f.tags||[]).concat(tag.split(',').map(t=>t.trim()).filter(Boolean)); renderFileList(); }
+
+// Auto-tag (simple): extract top tokens from file
+document.getElementById('btn-tags').addEventListener('click', ()=>{
+  const sel = window.getSelection().toString().trim();
+  const target = sel || prompt('Auto-tag for which file? Enter filename (or leave blank to tag all)');
+  if(!target){ alert('Cancelled'); return; }
+  const matches = files.filter(f=>f.name.includes(target) || f.id===target);
+  if(!matches.length){ alert('No matching files'); return; }
+  for(const f of matches){
+    const tokens = tokenize(f.text).slice(0,2000);
+    const freqs = {}; tokens.forEach(t=>freqs[t]=(freqs[t]||0)+1);
+    const top = Object.entries(freqs).sort((a,b)=>b[1]-a[1]).slice(0,8).map(x=>x[0]);
+    f.tags = Array.from(new Set([...(f.tags||[]), ...top]));
+  }
+  alert('Auto-tagged '+matches.length+' files');
+  renderFileList();
+})
+
+// Summarize via local LLM (optional)
+async function summarizeFile(id){
+  const f = files.find(x=>x.id===id); if(!f) return alert('Not found');
+  const base = document.getElementById('llm-url').value.trim();
+  const model = document.getElementById('llm-model').value.trim();
+  if(!base){ return alert('Set Local LLM URL to use summarization (or copy text manually)') }
+  try{
+    document.getElementById('preview').textContent = 'Summarizing…';
+    const system = 'You are a concise helpful assistant. Summarize the following document into 6 bullet points and a 2-sentence TL;DR.';
+    const messages = [{role:'system',content:system},{role:'user',content:`File: ${f.name}\n\n${(f.text||'').slice(0,20000)}`}];
+    const url = base.replace(/\/$/,'') + '/v1/chat/completions';
+    const body = { model: model||'llama-3', messages, max_tokens:600, temperature:0.2, stream:false };
+    const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const j = await res.json();
+    const text = j.choices?.[0]?.message?.content || JSON.stringify(j);
+    document.getElementById('preview').textContent = text;
+  }catch(err){ document.getElementById('preview').textContent = 'Summarization failed: '+err.message }
+}
+
+// Summarize selected preview
+document.getElementById('btn-summarize').addEventListener('click', ()=>{
+  const txt = document.getElementById('preview').textContent || '';
+  if(!txt) return alert('Preview empty');
+  // create temporary pseudo-file and call LLM
+  const tempId = uid(); files.push({id:tempId,name:'_preview',text:txt,tags:[]}); summarizeFile(tempId)
+})
+
+// Filters
+document.getElementById('filter-code').addEventListener('click', ()=>{
+  renderResults(files.filter(f=>extCode.includes(f.type)).map(f=>({id:f.id,score:1})));
+});
+document.getElementById('filter-docs').addEventListener('click', ()=>{
+  renderResults(files.filter(f=>extDocs.includes(f.type)).map(f=>({id:f.id,score:1})));
+});
+document.getElementById('filter-md').addEventListener('click', ()=>{
+  renderResults(files.filter(f=>f.type==='md').map(f=>({id:f.id,score:1})));
+});
+
+// Export/Import JSON index
+document.getElementById('export-json').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(files.map(f=>({id:f.id,name:f.name,size:f.size,type:f.type,tags:f.tags})),null,2)],{type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='sfm_index.json'; a.click(); URL.revokeObjectURL(a.href);
+});
+document.getElementById('import-json').addEventListener('click', ()=>{
+  const inp = document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange=(e)=>{
+    const f = e.target.files[0]; const r=new FileReader(); r.onload=()=>{
+      try{ const arr = JSON.parse(r.result); for(const it of arr){ files.push({id:it.id||uid(),name:it.name,text:it.text||'',size:it.size||0,type:it.type||'',tags:it.tags||[]}) } renderFileList(); alert('Imported '+arr.length+' items') }catch(e){ alert('Invalid file') }
+    }; r.readAsText(f);
+  }; inp.click();
+})
+
+// Clear
+document.getElementById('btn-clear').addEventListener('click', ()=>{ if(confirm('Clear loaded files?')){ files.length=0; renderFileList(); document.getElementById('results').innerHTML=''; document.getElementById('preview').textContent=''; document.getElementById('count').textContent='0' } })
+
+// Export index (full)
+document.getElementById('btn-export').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify({files, index},null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='sfm_full_export.json'; a.click(); URL.revokeObjectURL(a.href);
+})
+
+// Drag & Drop support
+document.body.addEventListener('dragover', e=>{ e.preventDefault(); });
+document.body.addEventListener('drop', async (e)=>{
+  e.preventDefault();
+  const fl = Array.from(e.dataTransfer.files || []);
+  if(!fl.length) return;
+  for(const f of fl){
+    const id = uid();
+    const name = f.name;
+    const ext = (name.split('.').pop()||'').toLowerCase();
+    let text='';
+    try{ if(ext==='pdf') text='[PDF] Binary — text extraction not supported'; else text = await f.text(); }catch(e){ text='[Failed]' }
+    files.push({id,name,size:f.size,type:ext,text:text.slice(0,200000),tags:[]});
+  }
+  renderFileList(); alert('Dropped '+fl.length+' files. Click Index to build search.');
+})
+
+</script>
+</body>
+</html>

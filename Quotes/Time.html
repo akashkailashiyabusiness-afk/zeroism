@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Quotes</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body 
+    class="bg-gray-900 text-gray-200 antialiased"
+    x-data="{
+        lang: 'en',
+        search: '',
+        quotes: [
+            { en: { text: 'Time is what we want most, but what we use worst.', author: 'William Penn' }, hi: { text: 'समय वह चीज़ है जिसे हम सबसे ज्यादा चाहते हैं, लेकिन जिसका हम सबसे खराब उपयोग करते हैं।', author: 'विलियम पेन' }},
+            { en: { text: 'The two most powerful warriors are patience and time.', author: 'Leo Tolstoy' }, hi: { text: 'सबसे शक्तिशाली योद्धा धैर्य और समय हैं।', author: 'लियो टॉल्स्टॉय' }},
+            { en: { text: 'Time flies over us, but leaves its shadow behind.', author: 'Nathaniel Hawthorne' }, hi: { text: 'समय हमारे ऊपर उड़ता है, लेकिन अपनी छाया पीछे छोड़ जाता है।', author: 'नथानिएल हॉथोर्न' }},
+            { en: { text: 'Time is money.', author: 'Benjamin Franklin' }, hi: { text: 'समय पैसे के बराबर है।', author: 'बेंजामिन फ्रैंकलिन' }},
+            { en: { text: 'Lost time is never found again.', author: 'Benjamin Franklin' }, hi: { text: 'खोया हुआ समय कभी वापस नहीं मिलता।', author: 'बेंजामिन फ्रैंकलिन' }},
+            { en: { text: 'The future is something we create.', author: 'Leonard I. Sweet' }, hi: { text: 'भविष्य वह है जिसे हम बनाते हैं।', author: 'लियोनार्ड आई. स्वीट' }},
+            { en: { text: 'To say \'I don\'t have time,\' is to say, \'I don\'t want to.\'', author: 'Lao Tzu' }, hi: { text: 'यह कहना कि \'मेरे पास समय नहीं है,\' यह कहने के बराबर है कि \'मैं नहीं चाहता।\'', author: 'लाओ त्ज़ु' }},
+            { en: { text: 'The key is in not spending time, but in investing it.', author: 'Stephen R. Covey' }, hi: { text: 'चाबी समय खर्च करने में नहीं, बल्कि इसे निवेश करने में है।', author: 'स्टीफन आर. कोवे' }},
+            { en: { text: 'Time is the wisest counselor of all.', author: 'Pericles' }, hi: { text: 'समय सबसे बुद्धिमान सलाहकार है।', author: 'पेरिक्लेस' }},
+            { en: { text: 'Time changes everything.', author: 'Unknown' }, hi: { text: 'समय सब कुछ बदल देता है।', author: 'अज्ञात' }},
+            { en: { text: 'The future depends on what you do today.', author: 'Mahatma Gandhi' }, hi: { text: 'भविष्य इस पर निर्भर करता है कि आप आज क्या करते हैं।', author: 'महात्मा गांधी' }},
+            { en: { text: 'Time is the longest distance between two places.', author: 'Tennessee Williams' }, hi: { text: 'समय दो स्थानों के बीच सबसे लंबी दूरी है।', author: 'टेनेसी विलियम्स' }}
+        ],
+        
+        get filteredQuotes() {
+            if (this.search.trim() === '') return this.quotes;
+            const term = this.search.toLowerCase();
+            return this.quotes.filter(q => 
+                q.en.text.toLowerCase().includes(term) ||
+                q.en.author.toLowerCase().includes(term) ||
+                q.hi.text.includes(term) ||
+                q.hi.author.includes(term)
+            );
+        },
+        
+        showRandom() {
+            const randomIndex = Math.floor(Math.random() * this.quotes.length);
+            const randomQuote = this.quotes[randomIndex];
+            this.search = randomQuote.en.text;
+        }
+    }"
+>
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+        <h1 class="text-4xl md:text-6xl font-bold text-center mb-8 text-cyan-300 tracking-tighter" x-text="lang === 'en' ? 'Time Quotes' : 'समय पर उद्धरण'"></h1>
+
+        <!-- Controls -->
+        <div class="sticky top-4 z-10 p-4 mb-10 bg-gray-800/80 backdrop-blur-lg rounded-xl shadow-lg ring-1 ring-white/10 flex flex-col sm:flex-row gap-4 items-center">
+            <div class="relative w-full flex-grow">
+                <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                </svg>
+                <input 
+                    type="text" 
+                    x-model.debounce.300ms="search" 
+                    :placeholder="lang === 'en' ? 'Search quotes...' : 'उद्धरण खोजें...'"
+                    class="w-full p-3 pl-10 border border-gray-600 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 focus:outline-none transition">
+            </div>
+            <div class="flex items-center gap-2">
+                <!-- Language Switcher -->
+                <div class="flex rounded-lg bg-gray-700 p-1">
+                    <button @click="lang = 'en'" :class="lang === 'en' ? 'bg-cyan-500 text-white' : 'text-gray-300'" class="px-3 py-1.5 text-sm font-semibold rounded-md transition-colors">EN</button>
+                    <button @click="lang = 'hi'" :class="lang === 'hi' ? 'bg-cyan-500 text-white' : 'text-gray-300'" class="px-3 py-1.5 text-sm font-semibold rounded-md transition-colors">HI</button>
+                </div>
+                <!-- Random Button -->
+                <button @click="showRandom()" class="px-5 py-2.5 rounded-lg bg-cyan-500 text-white font-semibold hover:bg-cyan-600 active:scale-95 transition-all">
+                    <span x-text="lang === 'en' ? 'Random' : 'यादृच्छिक'"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Quote Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <template x-for="quote in filteredQuotes" :key="quote.en.text">
+                <div class="bg-gray-800 rounded-lg shadow-md p-6 flex flex-col border-t-2 border-cyan-400 hover:shadow-cyan-400/20 hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300">
+                    <blockquote class="text-lg flex-grow mb-4" x-text="quote[lang].text"></blockquote>
+                    <figcaption class="text-right font-semibold text-cyan-300 mt-2" x-text="'— ' + quote[lang].author"></figcaption>
+                </div>
+            </template>
+            
+            <!-- No results message -->
+            <div x-show="filteredQuotes.length === 0" class="md:col-span-2 lg:col-span-3 text-center py-10 text-gray-500">
+                <p class="text-xl" x-text="lang === 'en' ? 'No quotes found.' : 'कोई उद्धरण नहीं मिला।'"></p>
+                <button @click="search = ''" class="mt-4 text-cyan-400 hover:underline" x-text="lang === 'en' ? 'Clear search' : 'खोज साफ़ करें'"></button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

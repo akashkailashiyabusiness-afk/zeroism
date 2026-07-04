@@ -1,0 +1,667 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blueprint Health Tool 🚀</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(to bottom, #e6f0fa, #c9e0f5);
+            color: #1a1a1a;
+            line-height: 1.7;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-mode {
+            background: linear-gradient(to bottom, #121212, #1e2a44);
+            color: #e6e6e6;
+        }
+        header {
+            text-align: center;
+            padding: 70px 20px;
+            background: linear-gradient(135deg, #007bff, #00ddeb);
+            color: white;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        h1 {
+            font-size: 3.2em;
+            margin: 0;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(to right, #ffffff, #b3e5fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .toggle-mode {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2em;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .toggle-mode:hover {
+            transform: rotate(20deg);
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 30px 0;
+            gap: 15px;
+        }
+        nav button {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.3s;
+        }
+        nav button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        section {
+            display: none;
+            margin: 40px auto;
+            max-width: 1200px;
+            padding: 50px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.6s ease-in;
+        }
+        body.dark-mode section {
+            background: #1e1e1e;
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+        }
+        section.active {
+            display: block;
+        }
+        h2 {
+            font-size: 2.2em;
+            color: #007bff;
+            border-bottom: 5px solid #00c6ff;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            background: linear-gradient(to right, #007bff, #00ddeb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.dark-mode h2 {
+            background: linear-gradient(to right, #00c6ff, #80deea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p, li {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.2em;
+            color: #1a1a1a;
+            transition: color 0.3s;
+        }
+        body.dark-mode p, body.dark-mode li {
+            color: #d9d9d9;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #e3f2fd;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, background 0.3s;
+        }
+        li:hover {
+            transform: translateX(8px);
+        }
+        body.dark-mode li {
+            background: #2c2c2c;
+        }
+        .highlight {
+            background: linear-gradient(135deg, #ff6f61, #ffab91);
+            padding: 5px 10px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            display: inline-block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            font-family: 'Roboto', sans-serif;
+        }
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 16px;
+            text-align: left;
+        }
+        th {
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+            color: white;
+            font-weight: 700;
+        }
+        body.dark-mode th {
+            background: linear-gradient(135deg, #0056b3, #00a3cc);
+        }
+        form {
+            display: grid;
+            gap: 30px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        label {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 1.2em;
+        }
+        body.dark-mode label {
+            color: #e6e6e6;
+        }
+        input, textarea {
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            margin-top: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input:focus, textarea:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+            outline: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 15px;
+            background: #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #28a745, #7ed321);
+            width: 0;
+            transition: width 0.4s ease;
+        }
+        button[type="button"] {
+            padding: 18px;
+            background: linear-gradient(135deg, #28a745, #7ed321);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.3em;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        button[type="button"]:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        #suggestions, #download-report {
+            margin-top: 30px;
+            padding: 30px;
+            background: #e3f2fd;
+            border-radius: 12px;
+            border-left: 8px solid #007bff;
+            animation: fadeIn 0.6s ease-in;
+        }
+        body.dark-mode #suggestions, body.dark-mode #download-report {
+            background: #2c2c2c;
+            border-left-color: #00c6ff;
+        }
+        #suggestions h3 {
+            font-size: 1.8em;
+            color: #007bff;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #007bff, #00ddeb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.dark-mode #suggestions h3 {
+            background: linear-gradient(to right, #00c6ff, #80deea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #suggestions .plan-section {
+            background: #f5faff;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+        body.dark-mode #suggestions .plan-section {
+            background: #3a3a3a;
+        }
+        #suggestions .plan-section h4 {
+            font-size: 1.4em;
+            color: #ff6f61;
+            margin-bottom: 10px;
+        }
+        #suggestions .plan-section ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        #suggestions .plan-section li {
+            list-style-type: disc;
+            background: none;
+            box-shadow: none;
+            padding: 5px 0;
+            margin: 5px 0;
+        }
+        #download-report button {
+            background: linear-gradient(135deg, #ff6f61, #ffab91);
+        }
+        #download-report button:hover {
+            background: linear-gradient(135deg, #e65a50, #ff8c66);
+        }
+        canvas {
+            max-width: 100%;
+            margin: 30px 0;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            color: #555;
+            font-family: 'Roboto', sans-serif;
+        }
+        body.dark-mode footer {
+            color: #999;
+        }
+        .indian-adaptation {
+            background: linear-gradient(135deg, #ff6f61, #ffab91);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            header { padding: 50px 15px; }
+            h1 { font-size: 2.5em; }
+            nav { flex-direction: column; gap: 10px; }
+            section { padding: 30px; }
+            form { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Blueprint Health Tool 🚀</h1>
+        <p>Unlock Longevity with Bryan Johnson's Blueprint Protocol 🌱 | AI-Powered Health Plans for India 🧠</p>
+        <button class="toggle-mode" onclick="toggleDarkMode()"><i class="fas fa-moon"></i></button>
+    </header>
+
+    <nav>
+        <button onclick="showSection('philosophy')">Philosophy 🌍</button>
+        <button onclick="showSection('measurements')">Biomarkers 📊</button>
+        <button onclick="showSection('diet')">Diet & Supplements 🥗</button>
+        <button onclick="showSection('exercise')">Exercise 💪</button>
+        <button onclick="showSection('therapies')">Therapies 🧬</button>
+        <button onclick="showSection('sleep')">Sleep 😴</button>
+        <button onclick="showSection('challenges')">Challenges ⚠️</button>
+        <button onclick="showSection('ai')">AI Suggestions 🤖</button>
+    </nav>
+
+    <section id="philosophy" class="active">
+        <h2>Blueprint Philosophy 🌟</h2>
+        <p class="highlight">Transform your health with <strong>Zeroism</strong>, Bryan Johnson's philosophy to reject self-destructive habits and embrace data-driven longevity. Align your body’s 35+ trillion cells for a vibrant, future-ready life. 🌱🚀</p>
+        <ul>
+            <li><i class="fas fa-lightbulb"></i> <strong>Core Principle:</strong> Self-destruction is irrational; empower your body with precise measurements and systems. 📊</li>
+            <li><i class="fas fa-cogs"></i> <strong>Systems Over Willpower:</strong> Automation and data-driven decisions ensure sustainable health. ⚙️</li>
+            <li><i class="fas fa-globe"></i> <strong>Investment:</strong> Millions spent over 3 years to develop a scalable, evidence-guided protocol. 💰</li>
+            <li><i class="fas fa-handshake"></i> <strong>Mission:</strong> Optimize health for a better planet and AI-driven future. 🌍</li>
+        </ul>
+    </section>
+
+    <section id="measurements">
+        <h2>Routine Measurements & Biomarkers 📊</h2>
+        <p class="highlight">Monitor your health with <strong>hundreds of biomarkers</strong> to track biological age and performance (updated August 25, 2025). 📈</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Biomarker</th>
+                    <th>Result</th>
+                    <th>Age Equivalent</th>
+                    <th>Optimal Range</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>ALT</td><td>18</td><td>-</td><td>&lt;15</td><td>Liver function 🩺</td></tr>
+                <tr><td>BMI</td><td>22.8</td><td>-</td><td>&lt;22.5</td><td>Body composition 📏</td></tr>
+                <tr><td>Fasting Plasma Glucose</td><td>82</td><td>28</td><td>&lt;95</td><td>Max reduction 🍬</td></tr>
+                <tr><td>Body Fat %</td><td>6.9%</td><td>16</td><td>&lt;10%</td><td>Max reduction 💪</td></tr>
+                <tr><td>Cholesterol (total)</td><td>158</td><td>-</td><td>-</td><td>Optimal 🩺</td></tr>
+                <tr><td>DHEA</td><td>149</td><td>25</td><td>&lt; age 50</td><td>Hormone health 🌿</td></tr>
+                <tr><td>Free Testosterone Index</td><td>0.39</td><td>41</td><td>&lt; age 50</td><td>-</td></tr>
+                <tr><td>GGT</td><td>13</td><td>-</td><td>&lt;14</td><td>Liver health 🩺</td></tr>
+                <tr><td>Glutathione</td><td>227</td><td>29</td><td>&lt; age 30</td><td>Antioxidant 🛡️</td></tr>
+                <tr><td>Grip Strength</td><td>134 lbs</td><td>18</td><td>Top 10%</td><td>Dominant hand 💪</td></tr>
+                <tr><td>Resting HR</td><td>44 bpm</td><td>40 (HRV 54)</td><td>-</td><td>Cardiovascular ❤️</td></tr>
+                <tr><td>VO2 Max</td><td>58.7 mL/(kg·min)</td><td>18</td><td>Top 10%</td><td>Aerobic fitness 🏃‍♂️</td></tr>
+                <tr><td>Max HR</td><td>183 bpm</td><td>37</td><td>-</td><td>Stalled gains 📉</td></tr>
+                <tr><td>Kidneys RRI</td><td>0.46/0.49</td><td>25</td><td>-</td><td>Renal health 🩺</td></tr>
+                <tr><td>Thyroid Volume</td><td>20.9 mL</td><td>23</td><td>-</td><td>Endocrine 🦋</td></tr>
+                <tr><td>Prostate Volume</td><td>19.14 mL</td><td>30</td><td>-</td><td>Westerner standard 🩺</td></tr>
+                <tr><td>Skin Face Age</td><td>41</td><td>Spots 10, Wrinkles 10</td><td>-</td><td>Multispectral ✨</td></tr>
+                <tr><td>Pulse Wave Velocity</td><td>5.7</td><td>Top 5% (45+)</td><td>-</td><td>Arterial stiffness 🩺</td></tr>
+                <tr><td>Blood Urea Nitrogen</td><td>13 mg/dL</td><td>21</td><td>-</td><td>Kidney function 🩺</td></tr>
+            </tbody>
+        </table>
+        <canvas id="biomarkerChart"></canvas>
+        <p><strong>Additional Metrics:</strong> Whole-body MRI (no cancer 🩺), sensory nervous system (age 30 🧠), blood glucose steady at 90 mg/dL 🍬, waist 82.8 cm (age 25 📏), lung capacity (age 20 🫁), bone mineral density (age 20 🦴).</p>
+    </section>
+
+    <section id="diet">
+        <h2>Diet & Supplements 🥗</h2>
+        <p class="highlight">Fuel your body with a <strong>vegan, 2,250-calorie diet</strong> (~10% caloric restriction). Includes 3 meals and <strong>100+ pills</strong> daily, backed by science. 🌱</p>
+        <ul>
+            <li><i class="fas fa-carrot"></i> <strong>Meals:</strong> Super Veggie (broccoli, cauliflower, mushrooms, garlic, ginger), Nutty Pudding (nuts, seeds, berries, cocoa), Third Dish (customizable veggies). Over 70 lbs of vegetables monthly. 🍽️</li>
+            <li><i class="fas fa-pills"></i> <strong>Supplements:</strong> 54 pills morning (Green Giant drink), 34 evening. Includes NAD+ boosters, rapamycin alternatives, omega-3, vitamin D3, etc. Cost ~$361/month. 💊</li>
+            <li><i class="fas fa-flask"></i> <strong>Science-Driven:</strong> Ingredients selected from peer-reviewed studies and clinical guidelines. 🧪</li>
+            <li class="indian-adaptation"><i class="fas fa-leaf"></i> <strong>Indian Adaptation:</strong> Replace costly supplements with superfoods: amla (vitamin C), turmeric (anti-inflammatory), lentils (protein), moringa (micronutrients). 🥄🇮🇳</li>
+        </ul>
+    </section>
+
+    <section id="exercise">
+        <h2>Exercise Routine 💪</h2>
+        <p class="highlight"><strong>1 hour daily</strong>, 7 hours weekly across 25 exercises. Achieve elite fitness with targeted heart rate zones. 🏃‍♂️</p>
+        <ul>
+            <li><i class="fas fa-dumbbell"></i> <strong>Exercises:</strong> Backwards sled (2 min), posture exercises, tricep extensions (1x25), face pulls (1x15), butterfly (1x15), band pull aparts (1x15), back extensions (1x25), obliques (1x25 each), stretches, leg raises (1x50), seated calf raises (1x25), Poliquin step ups (3x10 each), slant board squats (3x15), ATG split squats (3x10), Nordics (1x10), reverse Nordics (1x10), tibialis raises (1x25), IsoTib ankle rotations (1x15 each), pull-ups (1x15), chin-ups (1x15), 10-min HIIT (M/W/F), hiking, basketball, tennis. 🏋️‍♂️</li>
+            <li><i class="fas fa-trophy"></i> <strong>Fitness Scores:</strong> Bench press 240 lbs, VO2 max 58.7 mL/(kg·min), leg press 800 lbs, 60 push-ups, YMCA sit & reach 26.5 in, grip strength 60 kg (top 10% for 18-year-olds). 🥇</li>
+            <li class="indian-adaptation"><i class="fas fa-yin-yang"></i> <strong>Indian Adaptation:</strong> Use bodyweight exercises (surya namaskar, yoga), affordable gym equipment, or outdoor activities like brisk walking. 🧘🇮🇳</li>
+        </ul>
+    </section>
+
+    <section id="therapies">
+        <h2>Therapies 🧬</h2>
+        <p class="highlight">Cutting-edge but <strong>experimental therapies</strong> to boost longevity. Always consult a physician before attempting. ⚠️🩺</p>
+        <ul>
+            <li><i class="fas fa-dna"></i> <strong>Gene Therapy:</strong> 160% follistatin increase (extends mouse lifespan 30%) via Minicircle.io. Long-term effects unknown. 🧬</li>
+            <li><i class="fas fa-bone"></i> <strong>Joint Therapy:</strong> 300M mesenchymal stem cells injected into knees, shoulders, hips for mobility and pain relief. 🦴</li>
+            <li><i class="fas fa-hair"></i> <strong>Hair:</strong> Custom topical (caffeine 1%, finasteride 0.25%, minoxidil 5%, etc.), daily. 10% discount via Roots by GA. 💇‍♂️</li>
+            <li><i class="fas fa-spa"></i> <strong>Skin:</strong> Non-bleeding microneedling, LED therapy (630nm/830nm, 3x weekly), Cutera/Fotona treatments. ✨</li>
+            <li><i class="fas fa-eye"></i> <strong>Eye:</strong> Drusen volume 0, IOP 13 mmHg, no macular degeneration. 👁️</li>
+            <li><i class="fas fa-syringe"></i> <strong>Discontinued:</strong> Plasma transfusions, growth hormone (no benefits observed). 🚫</li>
+            <li class="indian-adaptation"><i class="fas fa-leaf"></i> <strong>Indian Adaptation:</strong> Use ayurvedic oils (e.g., bhringraj for hair), yoga for joint health, and avoid unproven therapies like gene therapy. 🌿🇮🇳</li>
+        </ul>
+    </section>
+
+    <section id="sleep">
+        <h2>Sleep Optimization 😴</h2>
+        <p class="highlight">Achieve <strong>perfect sleep</strong> with a 100% sleep score for 6 months (Whoop, top 1.4% recovery). 🌙</p>
+        <ul>
+            <li><i class="fas fa-bed"></i> <strong>Routine:</strong> Blacked-out room, blue light-blocking glasses, temperature-controlled mattress, consistent bedtime. 🛌</li>
+            <li><i class="fas fa-heartbeat"></i> <strong>Metrics:</strong> HR, HRV, deep/REM sleep, respiration, body temp. 📈</li>
+            <li class="indian-adaptation"><i class="fas fa-yin-yang"></i> <strong>Indian Adaptation:</strong> Use affordable cooling mats, limit screen time, practice pranayama or meditation for relaxation. 🧘🇮🇳</li>
+        </ul>
+    </section>
+
+    <section id="challenges">
+        <h2>Challenges & Updates ⚠️</h2>
+        <p class="highlight">Despite stellar results, some <strong>challenges persist</strong> (updated August 25, 2025). Ongoing research aims to address them. 🔍</p>
+        <ul>
+            <li><i class="fas fa-exclamation-triangle"></i> <strong>IJV Stenosis:</strong> Congenital bilateral (RIJV 70-80%, LIJV 100%), impacts blood flow. 🩺</li>
+            <li><i class="fas fa-lungs"></i> <strong>Lung B Lines:</strong> 9 (ideal 2), potential lung issues. 🫁</li>
+            <li><i class="fas fa-hair"></i> <strong>Gray Hair:</strong> Linked to stress/depression, under treatment. 💇‍♂️</li>
+            <li><i class="fas fa-chart-line"></i> <strong>Stalled Max HR:</strong> Plateaued at 183 bpm; investigation ongoing. 📉</li>
+            <li><i class="fas fa-flask"></i> <strong>Experimental Risks:</strong> Gene therapy, stem cells lack long-term human data. ⚠️</li>
+            <li><i class="fas fa-newspaper"></i> <strong>Updates:</strong> New 2025 studies on biological age tests, sensory nervous system focus, refined supplement formulas. 📰</li>
+        </ul>
+    </section>
+
+    <section id="ai">
+        <h2>Personalized Health Suggestions 🤖</h2>
+        <p class="highlight">Get a <strong>tailored health plan</strong> using Blueprint data via local AI (LM Studio at http://localhost:1234). Optimized for India with affordable options. 🇮🇳🧠</p>
+        <form id="health-form" oninput="updateProgress()">
+            <label>Age: <input type="number" id="age" value="25" required></label>
+            <label>Weight (kg): <input type="number" id="weight" value="45" required></label>
+            <label>Height (cm): <input type="number" id="height" required></label>
+            <label>Goals: <textarea id="goals" required>Mass Gain & Health Improvement</textarea></label>
+            <label>Health Data (e.g., BMI, conditions): <textarea id="health-data"></textarea></label>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            <button type="button" onclick="getSuggestions()">Get Your AI Plan <i class="fas fa-brain"></i></button>
+        </form>
+        <div id="suggestions">
+            <h3>Your Personalized Health Plan 🤖</h3>
+            <div class="plan-section">
+                <h4>Diet Plan 🥗</h4>
+                <ul>
+                    <li>Calorie Surplus: Aim for 2,500–2,800 calories daily to support mass gain (500–800 kcal above maintenance). Focus on nutrient-dense foods for health. 🍽️</li>
+                    <li>Protein-Rich Foods: Consume 1.6–2.2g protein/kg body weight (72–99g daily). Include lentils (dal), chickpeas, paneer, tofu, and eggs (if non-vegetarian). Add 1–2 scoops of plant-based protein powder (e.g., pea protein). 🥚🥜</li>
+                    <li>Complex Carbs: Use brown rice, quinoa, oats, or millets (ragi, jowar) for sustained energy. Aim for 4–6g carbs/kg (180–270g daily). Try 1 cup ragi porridge or 2 multigrain rotis per meal. 🍚</li>
+                    <li>Healthy Fats: Include 0.8–1g fat/kg (36–45g daily) from almonds, peanuts, mustard oil, or ghee (in moderation). Add 1 tbsp flaxseed oil to smoothies. 🥑</li>
+                    <li>Indian Superfoods: Incorporate amla (vitamin C), turmeric (anti-inflammatory), and moringa (micronutrients) for health benefits. Try 1 tsp amla powder daily. 🌿</li>
+                    <li>Meal Plan Example: Breakfast (2 moong dal cheelas, 1 glass milk with protein powder), Mid-Morning (handful almonds, 1 banana), Lunch (1 cup chana masala, 2 multigrain rotis, 1 cup veggies), Evening (1 cup sprout salad, green tea), Dinner (1 cup paneer bhurji, 1 cup brown rice, 1 cup dal). 🥗</li>
+                </ul>
+            </div>
+            <div class="plan-section">
+                <h4>Exercise Plan 💪</h4>
+                <ul>
+                    <li>Strength Training: 4–5 days/week, 45–60 min. Focus on compound exercises (e.g., squats, push-ups, pull-ups) to build muscle. Start with bodyweight: 3 sets of 10–12 push-ups, 3x10 bodyweight squats. 🏋️‍♂️</li>
+                    <li>Yoga for Flexibility: 2 days/week, 20–30 min surya namaskar (10 rounds) and poses like warrior II, tree pose to improve mobility and recovery. 🧘</li>
+                    <li>Cardio: 2–3 days/week, 20 min brisk walking or cycling (heart rate 120–150 bpm) to boost stamina without burning excess calories. 🚴</li>
+                    <li>Progressive Overload: Gradually increase weights or reps (e.g., add dumbbells after 4 weeks). Use affordable resistance bands if gym access is limited. 💪</li>
+                    <li>Indian Adaptation: Practice yoga at home or join community fitness groups for low-cost workouts. Walk in local parks for cardio. 🌳🇮🇳</li>
+                </ul>
+            </div>
+            <div class="plan-section">
+                <h4>Lifestyle Tips 😴</h4>
+                <ul>
+                    <li>Sleep: Aim for 7–8 hours nightly in a cool, dark room. Use cotton sheets and limit screen time 1 hour before bed. Practice pranayama (e.g., anulom vilom) for relaxation. 🛌</li>
+                    <li>Stress Management: Meditate 10 min daily using apps like Calm or simple deep breathing. Join local yoga classes for mindfulness. 🧘</li>
+                    <li>Hydration: Drink 2.5–3 liters of water daily. Add lemon or mint for flavor. 💧</li>
+                    <li>Indian Adaptation: Use affordable cooling mats, practice ayurvedic rituals like oil pulling, and maintain a consistent sleep schedule. 🌿🇮🇳</li>
+                </ul>
+            </div>
+            <div class="plan-section">
+                <h4>Warnings ⚠️</h4>
+                <ul>
+                    <li>Experimental Therapies: Avoid Blueprint’s gene therapy and stem cell injections due to unproven safety and high costs. Stick to evidence-based practices like diet and exercise. 🧬</li>
+                    <li>Supplements: Limit to basic multivitamins and protein powders; consult a doctor before using costly Blueprint supplements (e.g., NAD+ boosters). 💊</li>
+                    <li>Health Check: At 45kg, ensure no underlying conditions (e.g., thyroid issues) before starting a mass gain plan. Consult a physician for blood tests. 🩺</li>
+                </ul>
+            </div>
+        </div>
+        <div id="download-report">
+            <button onclick="downloadReport()">Download Plan as PDF 📥</button>
+        </div>
+    </section>
+
+    <footer>
+        <p>⚠️ <strong>Disclaimer:</strong> For educational purposes only. Consult a physician before adopting any protocol. Data sourced from <a href="https://protocol.bryanjohnson.com" style="color: #007bff;">protocol.bryanjohnson.com</a>. 🌐</p>
+    </footer>
+
+    <script>
+        // Section Navigation
+        function showSection(id) {
+            document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo({ top: document.getElementById(id).offsetTop - 100, behavior: 'smooth' });
+        }
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.querySelector('.toggle-mode i');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        }
+
+        // Form Progress Bar
+        function updateProgress() {
+            const inputs = document.querySelectorAll('#health-form input, #health-form textarea');
+            let filled = 0;
+            inputs.forEach(input => { if (input.value) filled++; });
+            const progress = (filled / inputs.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+
+        // AI Suggestions
+        function getSuggestions() {
+            const age = document.getElementById('age').value;
+            const weight = document.getElementById('weight').value;
+            const height = document.getElementById('height').value;
+            const goals = document.getElementById('goals').value;
+            const healthData = document.getElementById('health-data').value;
+
+            const blueprintSummary = `
+Philosophy: Zeroism - Systems over willpower, data-driven health. 🌍
+Measurements: Biomarkers like VO2 Max (age 18), Body Fat 6.9%, steady glucose. 📊
+Diet: 2250 cal vegan, 70+ lbs veggies, 100+ pills (NAD+, omega-3). 🥗
+Exercise: 1h daily strength/HIIT, top scores (e.g., bench 240 lbs). 💪
+Therapies: Gene therapy, stem cells (experimental), hair/skin treatments. 🧬
+Sleep: 100% score via Whoop, optimized environment. 😴
+Challenges: IJV stenosis, lung B lines, gray hair, stalled HR. ⚠️
+Updates: 2025 studies on age tests, new sensory focus. 📰
+            `;
+
+            const prompt = `Using Bryan Johnson's Blueprint protocol: ${blueprintSummary}
+User: Age ${age}, Weight ${weight}kg, Height ${height}cm, Goals: ${goals}, Health: ${healthData}.
+Provide a detailed health plan optimized for India, focusing on mass gain and health improvement for a 25-year-old at 45kg. Include:
+- Diet Plan: Affordable, high-calorie Indian foods (e.g., dal, paneer) for muscle gain.
+- Exercise Plan: Accessible strength training and yoga for mass gain.
+- Lifestyle Tips: Sleep and stress management with Indian practices.
+- Warnings: Risks of experimental therapies.
+Format with clear headings, bullet points, and emojis. Avoid using asterisks or hashtags in headings.`;
+
+            fetch('http://localhost:1234/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: 'gpt-3.5-turbo', // Adjust to your local model
+                    messages: [{ role: 'user', content: prompt }],
+                    temperature: 0.7
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const suggestion = data.choices[0].message.content.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/##/g, '');
+                document.getElementById('suggestions').innerHTML = `
+                    <h3>Your Personalized Health Plan 🤖</h3>
+                    <div class="plan-section">${suggestion}</div>
+                `;
+                document.getElementById('download-report').style.display = 'block';
+            })
+            .catch(error => {
+                document.getElementById('suggestions').innerHTML = `
+                    <h3>Error ⚠️</h3>
+                    <div class="plan-section">Could not fetch suggestions: ${error.message}. Ensure LM Studio is running at localhost:1234.</div>
+                `;
+                document.getElementById('download-report').style.display = 'none';
+            });
+        }
+
+        // Download PDF Report (Simulated)
+        function downloadReport() {
+            const suggestions = document.getElementById('suggestions').innerText;
+            const blob = new Blob([suggestions], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Blueprint_Health_Plan.txt'; // PDF requires jsPDF
+            a.click();
+            URL.revokeObjectURL(url);
+            alert('Report downloaded as text. For PDF, integrate jsPDF library.');
+        }
+
+        // Biomarker Chart
+        const ctx = document.getElementById('biomarkerChart').getContext('2d');
+        const biomarkerChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['VO2 Max', 'Body Fat %', 'Resting HR', 'Max HR', 'Glucose', 'Cholesterol'],
+                datasets: [{
+                    label: 'Biomarker Values',
+                    data: [58.7, 6.9, 44, 183, 82, 158],
+                    backgroundColor: ['#007bff', '#28a745', '#ff6f61', '#00c6ff', '#f1c40f', '#9b59b6'],
+                    borderColor: ['#0056b3', '#218838', '#e65a50', '#00a3cc', '#d4ac0d', '#8e44ad'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: 'Value', font: { size: 14 } } },
+                    x: { title: { display: true, text: 'Biomarkers', font: { size: 14 } } }
+                },
+                plugins: { legend: { display: true, position: 'top', labels: { font: { size: 12 } } } }
+            }
+        });
+
+        // Initialize form with provided data
+        updateProgress();
+    </script>
+</body>
+</html>

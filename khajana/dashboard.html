@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Awakening Hub — Active Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #030306;
+  --panel: rgba(13, 13, 20, 0.6);
+  --panel-hover: rgba(22, 22, 34, 0.8);
+  --border: rgba(255, 255, 255, 0.05);
+  --border-focus: rgba(0, 245, 212, 0.4);
+  --accent: #00f5d4; /* Neon Teal */
+  --accent-secondary: #ff007f; /* Hot Pink */
+  --accent-glow: rgba(0, 245, 212, 0.15);
+  --text-main: #f1f1f6;
+  --text-muted: #8e92a8;
+  --card-bg: rgba(20, 20, 30, 0.4);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(0, 245, 212, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(255, 0, 127, 0.02) 0%, transparent 40%);
+  overflow-x: hidden;
+}
+
+/* Scrollbar Style */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 280px;
+  border-right: 1px solid var(--border);
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo-area {
+  padding: 30px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+}
+.logo span { color: var(--accent); }
+
+.nav-links {
+  padding: 20px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-grow: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: none;
+  border: 1px solid transparent;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.nav-item:hover, .nav-item.active {
+  color: #fff;
+  background: rgba(0, 245, 212, 0.04);
+  border-color: rgba(0, 245, 212, 0.1);
+  box-shadow: 0 0 15px rgba(0, 245, 212, 0.05);
+}
+.nav-item.active {
+  border-left: 3px solid var(--accent);
+  color: #fff;
+  background: rgba(0, 245, 212, 0.08);
+}
+
+/* MAIN CONTENT */
+.main {
+  flex-grow: 1;
+  padding: 40px;
+  z-index: 1;
+  overflow-y: auto;
+}
+
+header {
+  margin-bottom: 40px;
+}
+
+h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.subtitle {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* STATS BANNER */
+.stats-banner {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+.stat-card {
+  background: var(--panel);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.stat-val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.stat-lbl {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.view-section { display: none; }
+.view-section.active { display: block; animation: fadeIn 0.4s ease-out; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 30-DAY ACTION PLAN */
+.progress-bar-container {
+  background: rgba(255, 255, 255, 0.02);
+  height: 10px;
+  border-radius: 5px;
+  margin-bottom: 30px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #0df);
+  width: 0%;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+.week-container {
+  margin-bottom: 25px;
+  background: var(--panel);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.week-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+.week-title span:last-child {
+  color: var(--accent);
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 16px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.task-item:hover {
+  border-color: var(--border-focus);
+  background: var(--panel-hover);
+  transform: translateX(4px);
+}
+
+.task-item input[type="checkbox"] {
+  margin-top: 4px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.task-item.checked {
+  opacity: 0.5;
+}
+.task-item.checked .task-text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.task-text {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* JOURNAL */
+.journal-card {
+  background: var(--panel);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 40px;
+}
+
+.question-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  border-left: 4px solid var(--accent-secondary);
+  padding-left: 15px;
+}
+
+textarea {
+  width: 100%;
+  height: 150px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 15px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+  margin-bottom: 20px;
+  transition: border-color 0.3s;
+}
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.btn {
+  background: var(--accent);
+  color: #030306;
+  border: none;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn:hover {
+  background: #33ecff;
+  box-shadow: 0 0 15px rgba(0, 245, 212, 0.4);
+}
+
+.btn-secondary {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  margin-left: 10px;
+}
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--text-muted);
+}
+
+.logs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.log-item {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.log-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.log-text {
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  color: #d1d1d8;
+}
+
+/* RESOURCES & SEARCH */
+.search-container {
+  margin-bottom: 30px;
+}
+.search-box {
+  width: 100%;
+  padding: 16px 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  font-family: inherit;
+  transition: all 0.3s;
+}
+.search-box:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 15px rgba(0, 245, 212, 0.1);
+}
+
+.filter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+.tag-btn {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.tag-btn:hover, .tag-btn.active {
+  color: #fff;
+  border-color: var(--accent);
+  background: rgba(0, 245, 212, 0.05);
+}
+
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.res-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 250px;
+}
+.res-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 245, 212, 0.05);
+}
+
+.res-header {
+  margin-bottom: 15px;
+}
+.res-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.res-category {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+}
+
+.res-desc {
+  font-size: 13px;
+  color: #a0a0b0;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.res-why {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  font-size: 12px;
+  border-left: 2px solid var(--accent-secondary);
+  color: var(--text-main);
+  margin-bottom: 20px;
+  border-radius: 0 6px 6px 0;
+  line-height: 1.5;
+}
+
+.res-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  transition: transform 0.2s;
+}
+.res-link:hover {
+  transform: translateX(4px);
+}
+
+/* SILENCED GENIUSES */
+.geniuses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+.gen-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 280px;
+  transition: all 0.3s;
+}
+.gen-card:hover {
+  border-color: var(--accent-secondary);
+  transform: translateY(-4px);
+}
+.gen-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.gen-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 15px;
+}
+.gen-what {
+  font-size: 13px;
+  color: var(--text-main);
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+.gen-fate {
+  background: rgba(255, 0, 127, 0.05);
+  border-left: 2px solid var(--accent-secondary);
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #ffb3d1;
+  border-radius: 0 6px 6px 0;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+/* FACT CHECKS TABLE */
+.fact-table-container {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.fact-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+.fact-table th {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 16px 20px;
+  font-weight: 600;
+  color: #fff;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Space Grotesk', sans-serif;
+}
+.fact-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.6;
+}
+.fact-table tr:hover {
+  background: rgba(255, 255, 255, 0.01);
+}
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.badge.true {
+  background: rgba(0, 245, 212, 0.1);
+  color: #00f5d4;
+}
+.badge.false {
+  background: rgba(255, 0, 127, 0.1);
+  color: #ff007f;
+}
+.badge.disputed {
+  background: rgba(255, 179, 0, 0.1);
+  color: #ffb300;
+}
+.fact-source {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+</style>
+    <style>
+      .hub-back-btn{position:fixed;top:12px;left:12px;z-index:9999;display:flex;align-items:center;gap:8px;background:rgba(22,27,34,0.92);border:1px solid rgba(197,160,89,0.25);color:#c5a059;font-family:sans-serif;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:7px 14px;border-radius:999px;text-decoration:none;backdrop-filter:blur(10px);transition:all 0.2s ease;}
+      .hub-back-btn:hover{background:rgba(197,160,89,0.15);border-color:#c5a059;color:#d4af37;}
+    </style></head>
+<body>
+    <a href="/" class="hub-back-btn">&#8592; 0ISM Hub</a>
+
+<div class="sidebar">
+  <div class="logo-area">
+    <div class="logo"><span>💡</span> KHAJANA <span>HUB</span></div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-item active" onclick="switchView('action-plan')">📅 30-Day Plan</button>
+    <button class="nav-item" onclick="switchView('journal')">🧠 Daily Journal</button>
+    <button class="nav-item" onclick="switchView('resources')">🔍 Search Resources</button>
+    <button class="nav-item" onclick="switchView('geniuses')">🔬 Silenced Geniuses</button>
+    <button class="nav-item" onclick="switchView('fact-checks')">🔍 Fact Verification</button>
+    <button class="nav-item" onclick="switchView('awakening-maps')">🗺️ Awakening Maps</button>
+    <button class="nav-item" onclick="switchView('reality-lenses')">🎭 Reality Lenses</button>
+  </div>
+</div>
+
+<div class="main">
+  <!-- STATS BANNER -->
+  <div class="stats-banner">
+    <div class="stat-card">
+      <span class="stat-val" id="stat-resources-count">0</span>
+      <span class="stat-lbl">Total Resources</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-val" id="stat-geniuses-count">0</span>
+      <span class="stat-lbl">Silenced Geniuses</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-val" id="stat-checks-count">0</span>
+      <span class="stat-lbl">Fact Checks</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-val" id="stat-progress-val">0%</span>
+      <span class="stat-lbl">Plan Progress</span>
+    </div>
+  </div>
+
+  <!-- ACTION PLAN VIEW -->
+  <div id="action-plan" class="view-section active">
+    <header>
+      <h1>30-Day Freedom Plan</h1>
+      <div class="subtitle">Complete your weekly milestones to reclaim personal sovereignty</div>
+    </header>
+    
+    <div class="progress-bar-container">
+      <div id="progress-fill" class="progress-fill"></div>
+    </div>
+    
+    <div class="week-container">
+      <div class="week-title">
+        <span>Week 1: Mental Reset (मानसिक रीसेट)</span>
+        <span id="week1-progress">0%</span>
+      </div>
+      <div class="task-list">
+        <div class="task-item" onclick="toggleTask(this, 'w1t1')">
+          <input type="checkbox" id="w1t1" onclick="event.stopPropagation(); updateProgress();">
+          <div class="task-text">रोज़ सोशल मीडिया और रील्स का उपयोग केवल 30 मिनट तक सीमित करें (Digital Detox)।</div>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'w1t2')">
+          <input type="checkbox" id="w1t2" onclick="event.stopPropagation(); updateProgress();">
+          <div class="task-text">मास्टर रीडिंग लिस्ट से कोई एक पुस्तक पढ़ना शुरू करें (जैसे *Rich Dad Poor Dad* या *Freedom from the Known*)।</div>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'w1t3')">
+          <input type="checkbox" id="w1t3" onclick="event.stopPropagation(); updateProgress();">
+          <div class="task-text">रोज़ सुबह 15 मिनट प्राणायाम या ध्यान का अभ्यास करें।</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="week-container">
+      <div class="week-title">
+        <span>Week 2: Financial Audit (वित्तीय ऑडिट)</span>
+        <span id="week2-progress">0%</span>
+      </div>
+      <div class="task-list">
+        <div class="task-item" onclick="toggleTask(this, 'w2t1')">
+          <input type="checkbox" id="w2t1" onclick="event.stopPropagation(); updateProgress();">
+          <div class="task-text">अपने सभी फालतू सबस्क्रिप्शन और अनावश्यक खर्चे बंद करें।</div>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'w2t2')">
+          <input type="checkbox" id="w2t2" onclick="event.stopPropagation(); updateProgress();">
+          <div class="task-text">अपने सभी कर्ज़ों (Debts) की लिस्ट बनाएं और उन्हें जल्द चुकाने की योजना तैयार करें।</div>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'w2t3')">
+          <input type="checkbox" id="w2t3" onclick="event.stopPropagation(); updateProgress();">
+          <div class="task-text">फ्रीलांसिंग वेबसाइट्स (Upwork, Fiverr) पर अपनी प्रोफाइल बनाएं और स्किल्स लिस्ट करें।</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="week-container">
+      <div class="week-title">
+        <span>Week 3: Health Reset (स्वास्थ्य रीसेट)</span>
+        <span id="week3-progress">0%</span>
+      </div>
+      <div class="task-list">
+        <div class="task-item" onclick="toggleTask(this, 'w3t1')">
+          <input type="checkbox" id="w3t1" onclick="event.stopPropagation(); updateProgress();">
+          <div class="task-text">रसोई से रिफाइंड तेल, पैकेट बंद जंक फूड और अत्यधिक चीनी का डिब्बा बाहर फेंकें।</div>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'w3t2')">
+          <input type="checkbox" id="w3t2" onclick="event.stopPropagation(); updateProgress();">
+          <div class="task-text">रोज़ ताज़ा भोजन करें, गुनगुना पानी पिएं और दिन में 30 मिनट पैदल चलें।</div>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'w3t3')">
+          <input type="checkbox" id="w3t3" onclick="event.stopPropagation(); updateProgress();">
+          <div class="task-text">घरेलू नुस्खों (हल्दी, अजवाइन, तुलसी) से छोटी समस्याओं का इलाज करें।</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="week-container">
+      <div class="week-title">
+        <span>Week 4: Economic Action (स्वतंत्रता की शुरुआत)</span>
+        <span id="week4-progress">0%</span>
+      </div>
+      <div class="task-list">
+        <div class="task-item" onclick="toggleTask(this, 'w4t1')">
+          <input type="checkbox" id="w4t1" onclick="event.stopPropagation(); updateProgress();">
+          <div class="task-text">स्थानीय छोटे दुकानदारों और किसानों से सीधे सामान खरीदना शुरू करें (स्वदेशी)।</div>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'w4t2')">
+          <input type="checkbox" id="w4t2" onclick="event.stopPropagation(); updateProgress();">
+          <div class="task-text">अपने फ्रीलांसिंग प्लेटफार्म पर अपने पहले क्लाइंट को पिच करें या कोई साइड बिज़नेस प्लान शुरू करें।</div>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'w4t3')">
+          <input type="checkbox" id="w4t3" onclick="event.stopPropagation(); updateProgress();">
+          <div class="task-text">परिवार के साथ बैठकर खुलकर इन विषयों (माइंड कंट्रोल, सिस्टम का मायाजाल) पर चर्चा करें।</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JOURNAL VIEW -->
+  <div id="journal" class="view-section">
+    <header>
+      <h1>Critical Thinking Journal</h1>
+      <div class="subtitle">Record your thoughts on key questions to break conditioning</div>
+    </header>
+    
+    <div class="journal-card">
+      <div id="question-box" class="question-text">Loading question...</div>
+      <textarea id="journal-input" placeholder="अपने विचार यहाँ लिखें... इस सवाल पर गहराई से सोचें और अपनी राय दर्ज करें।"></textarea>
+      <button class="btn" onclick="saveLog()">Save Log</button>
+      <button class="btn btn-secondary" onclick="nextQuestion()">Next Question</button>
+    </div>
+
+    <h2>Past Entries</h2>
+    <br>
+    <div id="logs-container" class="logs-list">
+      <!-- Logs render here -->
+    </div>
+  </div>
+
+  <!-- RESOURCES VIEW -->
+  <div id="resources" class="view-section">
+    <header>
+      <h1>Curated Web Resources</h1>
+      <div class="subtitle">Search and filter compiled knowledge resources</div>
+    </header>
+    <div class="search-container">
+      <input type="text" id="search-input" class="search-box" placeholder="सर्च करें (e.g. OSINT, selfhosted, TED, Bogle, Osho, raw data)..." oninput="search()">
+    </div>
+    
+    <div class="filter-tags" id="filter-tags-container">
+      <button class="tag-btn active" onclick="filterCategory('All', this)">All Categories</button>
+      <!-- Auto tags render here -->
+    </div>
+    
+    <div id="resources-root" class="resources-grid">
+      <!-- Resources render here -->
+    </div>
+  </div>
+
+  <!-- GENIUSES VIEW -->
+  <div id="geniuses" class="view-section">
+    <header>
+      <h1>Silenced Geniuses & suppressed inventions</h1>
+      <div class="subtitle">Scientific and technical innovators who challenged the system</div>
+    </header>
+    <div class="search-container">
+      <input type="text" id="search-geniuses-input" class="search-box" placeholder="वैज्ञानिक, आविष्कार या श्रेणी खोजें..." oninput="searchGeniuses()">
+    </div>
+    <div id="geniuses-root" class="geniuses-grid">
+      <!-- Geniuses render here -->
+    </div>
+  </div>
+
+  <!-- FACT CHECKS VIEW -->
+  <div id="fact-checks" class="view-section">
+    <header>
+      <h1>Fact Verification Database</h1>
+      <div class="subtitle">Cross-verified claims with official sources and references</div>
+    </header>
+    
+    <div class="fact-table-container">
+      <table class="fact-table">
+        <thead>
+          <tr>
+            <th>File Module</th>
+            <th>Claim (दावा)</th>
+            <th>Status</th>
+            <th>Source / Reference</th>
+          </tr>
+        </thead>
+        <tbody id="facts-root">
+          <!-- Facts render here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- AWAKENING MAPS VIEW -->
+  <div id="awakening-maps" class="view-section">
+    <header>
+      <h1>Awakening & Sovereignty Frameworks</h1>
+      <div class="subtitle">Understand the stages of decoupling from the Matrix and calculate your sovereignty score</div>
+    </header>
+
+    <!-- 6 STAGES CARD LIST -->
+    <h2 style="font-family: 'Space Grotesk', sans-serif; margin-bottom: 20px; color: #fff;">जागृति के 6 चरण (6 Stages of Awakening)</h2>
+    <div class="week-container" style="border-color: var(--accent);">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+        <div class="task-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+          <div style="font-weight: 700; color: var(--text-muted);">Stage 1</div>
+          <div style="font-weight: 700; color: #fff;">गहन निद्रा (Deep Sleep)</div>
+          <div style="font-size: 12px; color: var(--text-muted);">व्यवस्था के नैरेटिव पर आंख मूंदकर भरोसा करना।</div>
+        </div>
+        <div class="task-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+          <div style="font-weight: 700; color: #0055ff;">Stage 2</div>
+          <div style="font-weight: 700; color: #fff;">संदेह का उदय (Spark of Doubt)</div>
+          <div style="font-size: 12px; color: var(--text-muted);">महंगाई, दवा व्यापार और शिक्षा प्रणाली पर सवाल उठना।</div>
+        </div>
+        <div class="task-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+          <div style="font-weight: 700; color: var(--accent-secondary);">Stage 3</div>
+          <div style="font-weight: 700; color: #fff;">खरगोश का बिल (Rabbit Hole)</div>
+          <div style="font-size: 12px; color: var(--text-muted);">दमित वैज्ञानिक, बैंकिंग साज़िश और विकीलीक्स खंगालना (क्रोध-भय)।</div>
+        </div>
+        <div class="task-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+          <div style="font-weight: 700; color: #ff8000;">Stage 4</div>
+          <div style="font-weight: 700; color: #fff;">मोहभंग (The Void)</div>
+          <div style="font-size: 12px; color: var(--text-muted);">कंडीशनिंग टूटना, अकेलापन और सिस्टम के विरुद्ध लाचारी महसूस करना।</div>
+        </div>
+        <div class="task-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+          <div style="font-weight: 700; color: var(--accent);">Stage 5</div>
+          <div style="font-weight: 700; color: #fff;">संप्रभुता (Sovereignty)</div>
+          <div style="font-size: 12px; color: var(--text-muted);">डिजिटल डिटॉक्स, जैविक भोजन, सोने-चांदी में बचत (ऑफ-ग्रिड)।</div>
+        </div>
+        <div class="task-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+          <div style="font-weight: 700; color: #00e5ff;">Stage 6</div>
+          <div style="font-weight: 700; color: #fff;">एकीकरण (Integration)</div>
+          <div style="font-size: 12px; color: var(--text-muted);">स्वतंत्र प्रणालियां (Open Source/Community) बनाना व सहयोग करना।</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOVEREIGNTY CALCULATOR -->
+    <h2 style="font-family: 'Space Grotesk', sans-serif; margin-bottom: 20px; color: #fff; margin-top: 40px;">संप्रभुता स्कोरकार्ड (Sovereignty Index Scorecard)</h2>
+    <div class="journal-card" style="border-color: var(--accent-secondary);">
+      <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">
+        चेकबॉक्सेस पर टिक करके अपना लाइव स्वतंत्रता स्कोरकार्ड (Sovereignty Rating) जानें:
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 30px;">
+        <!-- Food -->
+        <div>
+          <h3 style="color: var(--accent); font-family: 'Space Grotesk', sans-serif; margin-bottom: 12px; font-size: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">🌾 खाद्य संप्रभुता (Food)</h3>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> रिफाइंड तेल, मैदा और पैकेट जंक फ़ूड बंद है (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> अनाज/सब्जियां सीधे किसानों से खरीदते हैं (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> घर में खड़े मसाले/आटा स्वयं तैयार करते हैं (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> घर पर थोड़े बहुत फल-सब्जियां/हर्ब्स उगाते हैं (+5)</label>
+          </div>
+        </div>
+
+        <!-- Finance -->
+        <div>
+          <h3 style="color: var(--accent); font-family: 'Space Grotesk', sans-serif; margin-bottom: 12px; font-size: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">💰 आर्थिक संप्रभुता (Finance)</h3>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> कोई क्रेडिट कार्ड या उपभोक्ता लोन/EMI नहीं है (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> 6 महीने का खर्च नकद/इमरजेंसी फंड में है (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> बचत का हिस्सा असली सोने/चांदी में है (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> आय के एक से अधिक स्वतंत्र स्रोत हैं (+5)</label>
+          </div>
+        </div>
+
+        <!-- Health -->
+        <div>
+          <h3 style="color: var(--accent); font-family: 'Space Grotesk', sans-serif; margin-bottom: 12px; font-size: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">🌿 स्वास्थ्य संप्रभुता (Health)</h3>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> छोटी बीमारी में सीधे रासायनिक दवा नहीं खाते (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> दैनिक प्राणायाम, योग या ध्यान करते हैं (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> घरेलू चिकित्सा/डिटॉक्स/आयुर्वेद का ज्ञान है (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> ताजे फलों और प्राकृतिक भोजन को दवा मानते हैं (+5)</label>
+          </div>
+        </div>
+
+        <!-- Cognitive -->
+        <div>
+          <h3 style="color: var(--accent); font-family: 'Space Grotesk', sans-serif; margin-bottom: 12px; font-size: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">🧠 मानसिक संप्रभुता (Cognitive)</h3>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> मुख्यधारा का टीवी न्यूज देखना पूरी तरह बंद है (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> सोशल मीडिया/रील्स का उपयोग 45 मिनट से कम है (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> राय बनाने से पहले स्वयं स्वतंत्र शोध करते हैं (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> रोज 15 मिनट मौन या एकांत में बिताते हैं (+5)</label>
+          </div>
+        </div>
+
+        <!-- Off-Grid -->
+        <div>
+          <h3 style="color: var(--accent); font-family: 'Space Grotesk', sans-serif; margin-bottom: 12px; font-size: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">⚡ बुनियादी आत्मनिर्भरता (Off-Grid)</h3>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> जल संचयन या वैकल्पिक ऊर्जा (सोलर) का उपयोग है (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> पासवर्ड/डाटा को Vaultwarden/Brave से सुरक्षित रखा है (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> स्थानीय और स्वदेशी कारीगरों का समर्थन करते हैं (+5)</label>
+            <label style="display:flex; gap:10px; font-size:13px; cursor:pointer;"><input type="checkbox" class="sov-check" value="5" onchange="calculateSovereignty()"> किसी जागरूक स्वतंत्र समुदाय/नेटवर्क के सदस्य हैं (+5)</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Banner -->
+      <div style="background: rgba(0, 0, 0, 0.3); border: 1px dashed var(--accent); padding: 20px; border-radius: 8px; text-align: center;">
+        <div style="font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 5px;">
+          Your Sovereignty Score: <span id="sov-score-val" style="color: var(--accent);">0%</span>
+        </div>
+        <div id="sov-rating-val" style="font-size: 14px; color: var(--text-muted); font-weight: 600;">
+          Status: System Dependent (गुलाम चेतना)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REALITY LENSES VIEW -->
+  <div id="reality-lenses" class="view-section">
+    <header>
+      <h1>Multi-Lens Reality Analyzer</h1>
+      <div class="subtitle">Evaluate world events through 7 multidisciplinary lenses to see the objective truth</div>
+    </header>
+
+    <div class="journal-card" style="border-color: var(--accent);">
+      <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">
+        एक वैश्विक घटना (Global Event) चुनें और उसे 7 बहु-आयामी दृष्टिकोणों (Lenses) से विश्लेषित होते हुए देखें:
+      </p>
+      
+      <div class="filter-tags" style="margin-bottom: 25px;">
+        <button class="tag-btn active" id="btn-case-ai" onclick="switchCaseStudy('ai')">🤖 कृत्रिम बुद्धिमत्ता (Artificial Intelligence)</button>
+        <button class="tag-btn" id="btn-case-pandemic" onclick="switchCaseStudy('pandemic')">🦠 वैश्विक महामारी (Global Pandemic)</button>
+        <button class="tag-btn" id="btn-case-cbdc" onclick="switchCaseStudy('cbdc')">💳 सेंट्रल बैंक डिजिटल करेंसी (CBDC)</button>
+      </div>
+
+      <div class="resources-grid" id="lenses-cards-container">
+        <!-- Lenses render dynamically -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const RESOURCES = [{"name": "Hacker News", "url": "https://news.ycombinator.com", "desc": "Y Combinator dwara chalaya gaya forum. Duniya ke top founders, engineers aur scientists yahan daily news discuss karte hain.", "why": "Agar aapko tech industry ki asli pulse janni hai, toh HN se better kuch nahi. No memes, pure high-intellect discussion.", "tags": [], "category": "Forums & Communities"}, {"name": "LessWrong", "url": "https://www.lesswrong.com", "desc": "A community dedicated to improving human reasoning and understanding cognitive biases. Deep focus on AI alignment.", "why": "Inke articles aur discussions aapke sochne ka tarika (Mental Models) completely badal denge. Hardcore logic.", "tags": [], "category": "Forums & Communities"}, {"name": "Lobste.rs", "url": "https://lobste.rs", "desc": "A highly curated, invite-only community for computing and software development.", "why": "Reddit ke programming subreddits ab basic ho gaye hain. Lobsters par actual hardcore engineers system design discuss karte hain.", "tags": [], "category": "Forums & Communities"}, {"name": "Tildes", "url": "https://tildes.net", "desc": "A non-profit, ad-free alternative to Reddit focused on high-quality discussion and extreme moderation.", "why": "Reddit ka purana, better version jahan log actually long-form thoughtful comments likhte hain, trolls nahi.", "tags": [], "category": "Forums & Communities"}, {"name": "Stack Exchange Network", "url": "https://stackexchange.com/sites", "desc": "Stack Overflow ke alava, Inke paas Math, Physics, Cryptography, aur Reverse Engineering ke 170+ expert Q&A sites hain.", "why": "Quora par ab bots aur fake stories hain. Stack Exchange par real experts point-to-point technical answers dete hain.", "tags": [], "category": "Forums & Communities"}, {"name": "Stack Overflow", "url": "https://stackoverflow.com", "desc": "Programming ka real judicial system. Real devs, real errors, real solutions.", "why": "Kisi bhi technical problem ka answer yahan pehle aata hai. Google pe jo aata hai, woh yahi se aata hai.", "tags": ["coding", "debugging", "technical"], "category": "Forums & Communities"}, {"name": "Lesswrong", "url": "https://lesswrong.com", "desc": "AI safety, rationality, epistemology, decision theory ka deepest community online.", "why": "Yahan log seriously sochte hain. Eliezer Yudkowsky ne yahan hi AI risk explain kiya tha saalon pehle.", "tags": ["rationality", "AI", "philosophy"], "category": "Forums & Communities"}, {"name": "Quora Spaces (Niche)", "url": "https://quora.com/spaces", "desc": "General Quora nahi — specific Spaces main actual practitioners likhte hain.", "why": "Surface Quora garbage hai. Deep Spaces main IIT professors, ex-VCs, actual doctors hain.", "tags": ["experts", "stories", "diverse"], "category": "Forums & Communities"}, {"name": "Quora Space: The Philosophy Space", "url": "https://www.quora.com/q/philosophy", "desc": "Curated Q&A community discussing existentialism, epistemology, and ethics.", "why": "Contains high-quality, long-form explanations of complex philosophical systems.", "tags": ["quora", "philosophy", "ethics", "rationality"], "category": "Forums & Communities"}, {"name": "Quora Space: Macroeconomics & Central Banking", "url": "https://www.quora.com/topic/Macroeconomics", "desc": "Discussions on fiat money, federal reserve audits, inflation, and monetary policies.", "why": "Read deep explanations of under-the-hood financial mechanics without academic filter.", "tags": ["quora", "economics", "central banking", "money"], "category": "Forums & Communities"}, {"name": "OSSU (Open Source Society)", "url": "https://github.com/ossu/computer-science", "desc": "A complete computer science education using only free online materials (Harvard, MIT, etc.).", "why": "Kahin se CS degree ya paid bootcamp lene ki zarurat nahi. Is path ko follow karo, ye kisi bhi paid course ko beat karta hai.", "tags": [], "category": "Education & Learning"}, {"name": "Teach Yourself CS", "url": "https://teachyourselfcs.com", "desc": "A curated list of the absolute best textbooks and video lectures for 9 core CS subjects.", "why": "Self-taught developers hamesha fundamentals me fail hote hain. Ye site batati hai exact kaunsi book aur video lecture dekhna hai.", "tags": [], "category": "Education & Learning"}, {"name": "MIT OpenCourseWare", "url": "https://ocw.mit.edu", "desc": "MIT ke saare courses ka syllabus, video lectures, assignments aur exams completely free.", "why": "Duniya ki best tech university ka course material free. Agar aapko Linear Algebra ya Algorithms sikhna hai, start here.", "tags": [], "category": "Education & Learning"}, {"name": "Roadmap.sh", "url": "https://roadmap.sh", "desc": "Community-driven roadmaps, articles, and resources for developers (Frontend, Backend, DevOps, AI).", "why": "Bhatakne ki zarurat nahi hai. Ek path select karo, aur step-by-step free resources par click karke sikhte jao.", "tags": [], "category": "Education & Learning"}, {"name": "The Odin Project", "url": "https://www.theodinproject.com", "desc": "Full stack web development curriculum. Completely free, open-source, and project-based.", "why": "Udemy ke $15 courses ya $10k bootcamps se 100x better hai. Yeh aapko real-world projects banana sikhata hai.", "tags": [], "category": "Education & Learning"}, {"name": "OSINT Framework", "url": "https://osintframework.com", "desc": "The ultimate web-based map of OSINT (Open Source Intelligence) tools.", "why": "Email address, username, phone number, ya IP address ke through kisi ko bhi track/investigate karne ke saare tools ek jagah interconnected hain.", "tags": [], "category": "Education & Learning"}, {"name": "Khan Academy", "url": "https://khanacademy.org", "desc": "Math, science, economics, computing, history. Foundation se advanced. Best pedagogy online.", "why": "Kisi bhi subject ki neev pakki karni ho — yahan shuru karo.", "tags": ["beginner", "math", "science"], "category": "Education & Learning"}, {"name": "Coursera (Audit Mode)", "url": "https://coursera.org", "desc": "Top university courses audit karke free padho. Stanford, Johns Hopkins, Google sab yahan.", "why": "Enroll → Audit option → poora course free. Certificate sirf paid hai.", "tags": ["audit", "university", "structured"], "category": "Education & Learning"}, {"name": "edX (Audit Mode)", "url": "https://edx.org", "desc": "Harvard, MIT, Berkeley ke courses. Audit mode main sab free.", "why": "Same as Coursera — certificate pay, content free.", "tags": ["audit", "harvard", "mit"], "category": "Education & Learning"}, {"name": "Paul's Online Math Notes", "url": "https://tutorial.math.lamar.edu", "desc": "Calculus, Algebra, Differential Equations — professor ne likha, students ke liye. Clearest math notes online.", "why": "Koi textbook nahi chahiye agar ye hai. Literally better than most paid courses.", "tags": ["math", "calculus", "free"], "category": "Education & Learning"}, {"name": "The Feynman Lectures (Physics)", "url": "https://feynmanlectures.caltech.edu", "desc": "Richard Feynman ke physics lectures. Complete 3-volume set. Free online. HTML format.", "why": "Physics ka sabse entertaining teacher ne likha. Caltech ne free release kiya.", "tags": ["physics", "feynman", "classic"], "category": "Education & Learning"}, {"name": "Stanford Encyclopedia of Philosophy", "url": "https://plato.stanford.edu", "desc": "Academic philosophy ka most authoritative free reference. Peer-reviewed. Continuously updated.", "why": "Har philosophical concept yahan properly explain hai. Citation ke saath.", "tags": ["philosophy", "academic", "reference"], "category": "Education & Learning"}, {"name": "CrashCourse (YouTube)", "url": "https://www.youtube.com/@crashcourse", "desc": "History, science, literature, economics — animated explainers. John Green bhi hai.", "why": "Complex topics ko visual format mein. Fast learning ke liye.", "tags": ["visual", "youtube", "overview"], "category": "Education & Learning"}, {"name": "NPTEL (IIT Lectures)", "url": "https://nptel.ac.in", "desc": "IIT ke professors ke lectures. Engineering, management, science — 1000+ courses in Hindi bhi.", "why": "India ka best free technical education. Hindi mein bhi available.", "tags": ["IIT", "hindi", "engineering"], "category": "Education & Learning"}, {"name": "FreeCodeCamp", "url": "https://freecodecamp.org", "desc": "Web dev, Python, data science, machine learning — full curriculum. Certification free.", "why": "Lakhs of developers yahan se sikhe hain. Udemy se better for self-learners.", "tags": ["coding", "web", "data science"], "category": "Education & Learning"}, {"name": "The Odin Project", "url": "https://theodinproject.com", "desc": "Full-stack web development curriculum. Project-based. Community-backed.", "why": "Coding bootcamp ka free alternative. Real projects banate ho.", "tags": ["coding", "web dev", "projects"], "category": "Education & Learning"}, {"name": "CS50 (Harvard)", "url": "https://cs50.harvard.edu/x", "desc": "Harvard ka intro CS course. David Malan. Best intro to CS ever made. Free forever.", "why": "Duniya ka sabse watched CS course. Beginners ke liye entry point.", "tags": ["CS", "harvard", "beginner"], "category": "Education & Learning"}, {"name": "Notion (Free)", "url": "https://notion.so", "desc": "Notes, databases, wikis, project management. Free tier bahut generous hai.", "why": "Personal knowledge OS. Tera khud ka second brain.", "tags": ["notes", "database", "productivity"], "category": "Education & Learning"}, {"name": "Obsidian (Free)", "url": "https://obsidian.md", "desc": "Local markdown notes with bi-directional linking. Free forever for personal use.", "why": "Zettelkasten ka tool. Notes ke beech connections dikhata hai.", "tags": ["notes", "PKM", "markdown"], "category": "Education & Learning"}, {"name": "Anki", "url": "https://apps.ankiweb.net", "desc": "Spaced repetition flashcards. Most scientifically proven learning tool.", "why": "Medical students, language learners — jo bhi yaad rakhna ho permanently.", "tags": ["flashcards", "memory", "learning"], "category": "Education & Learning"}, {"name": "Logseq (Free)", "url": "https://logseq.com", "desc": "Open source note-taking with knowledge graph. Privacy-first.", "why": "Obsidian + Roam ka open source alternative. Daily journaling + knowledge.", "tags": ["notes", "graph", "open source"], "category": "Education & Learning"}, {"name": "Perplexity AI (Free)", "url": "https://perplexity.ai", "desc": "AI-powered research tool. Real-time web search + synthesis. Free tier solid.", "why": "Research ko fast karo. Citations ke saath answers. Student ka best friend.", "tags": ["AI", "research", "search"], "category": "Education & Learning"}, {"name": "Zotero", "url": "https://zotero.org", "desc": "Free research paper manager. Browser extension se seedha save karo. Citations auto-generate.", "why": "Research papers organize karna ho — Mendeley ka free better version.", "tags": ["research", "citations", "organize"], "category": "Education & Learning"}, {"name": "DeepL (Free)", "url": "https://deepl.com", "desc": "Best AI translator. 30+ languages. Free tier: 500K characters.", "why": "Google Translate se significantly better. Academic texts ke liye especially.", "tags": ["translation", "language", "AI"], "category": "Education & Learning"}, {"name": "Duolingo (Free)", "url": "https://duolingo.com", "desc": "40+ languages. Gamified daily practice. App + web.", "why": "Habit banana easy hai. Beginner ke liye best starting point.", "tags": ["language", "gamified", "beginner"], "category": "Education & Learning"}, {"name": "Anki Decks (Languages)", "url": "https://ankiweb.net/shared/decks/language", "desc": "Community-made language decks. Spaced repetition for vocabulary.", "why": "Grammar app se zyada vocabulary important hai. Anki + frequency lists.", "tags": ["vocabulary", "spaced rep", "language"], "category": "Education & Learning"}, {"name": "Language Transfer", "url": "https://languagetransfer.org", "desc": "Audio courses for Spanish, French, German, Italian, Swahili. Thinking Method.", "why": "Ek teacher ne banaya aur free release kiya. Better than paid courses.", "tags": ["audio", "free", "thinking method"], "category": "Education & Learning"}, {"name": "Clozemaster", "url": "https://clozemaster.com", "desc": "Intermediate vocabulary via fill-in-the-blank. Context mein words seekho.", "why": "Duolingo ke baad yahan ao. Real sentences mein vocabulary build karo.", "tags": ["vocabulary", "intermediate", "context"], "category": "Education & Learning"}, {"name": "italki (Free Resources)", "url": "https://italki.com/community", "desc": "Language exchange community. Free conversation partners dhundo worldwide.", "why": "Native speakers ke saath practice karo. Free language exchange.", "tags": ["speaking", "exchange", "community"], "category": "Education & Learning"}, {"name": "3Blue1Brown", "url": "https://www.youtube.com/@3blue1brown", "desc": "Math concepts — calculus, linear algebra, neural nets — visually explained.", "why": "Math mein real intuition milti hai. Grant Sanderson = genius teacher.", "tags": ["math", "visual", "youtube"], "category": "Education & Learning"}, {"name": "Veritasium", "url": "https://www.youtube.com/@veritasium", "desc": "Physics, psychology, science — deep dives. Derek Muller ke saath.", "why": "Education + entertainment = perfectly balanced. Real science.", "tags": ["physics", "science", "youtube"], "category": "Education & Learning"}, {"name": "Andrej Karpathy (YouTube)", "url": "https://www.youtube.com/@AndrejKarpathy", "desc": "OpenAI ex-research director. Neural networks, AI — ground-up explanations.", "why": "GPT ko scratch se banana sikhata hai. Best AI education online.", "tags": ["AI", "neural nets", "deep"], "category": "Education & Learning"}, {"name": "Lex Fridman Podcast", "url": "https://lexfridman.com/podcast", "desc": "Scientists, researchers, CEOs ke saath 3-4 ghante ke interviews.", "why": "Yahan koi shallow nahi. Musk, Hawking, Hinton — actual depth.", "tags": ["interviews", "science", "AI"], "category": "Education & Learning"}, {"name": "TED-Ed", "url": "https://ed.ted.com", "desc": "5-10 minute animated educational videos. Thousands of topics.", "why": "Quick concepts grasp karne ke liye. High production quality.", "tags": ["animated", "quick", "educational"], "category": "Education & Learning"}, {"name": "The Coding Train", "url": "https://www.youtube.com/@TheCodingTrain", "desc": "Daniel Shiffman. Creative coding, algorithms, p5.js, machine learning.", "why": "Coding ko fun banata hai. Projects see results dete hain.", "tags": ["coding", "creative", "algorithms"], "category": "Education & Learning"}, {"name": "Indie Hackers", "url": "https://indiehackers.com", "desc": "Solo founders jo real revenue numbers share karte hain. $0 se $10K MRR ki real stories.", "why": "Startup advice nahi — actual P&L sharers. Transparency level dekh ke rona aata hai (good tears).", "tags": ["startup", "revenue", "indie"], "category": "Education & Learning"}, {"name": "Product Hunt", "url": "https://producthunt.com", "desc": "Daily new products launch hote hain. Founders khud present karte hain, community rate karti hai.", "why": "Naya idea validate karna ho ya market trends dekhne ho — daily 30 min yahan.", "tags": ["products", "launch", "trends"], "category": "Education & Learning"}, {"name": "Dev.to", "url": "https://dev.to", "desc": "Developers ke personal blogs ka aggregator. Real experiences, tutorials, opinions.", "why": "Medium ka technical version jahan actual code wale likhte hain, marketer nahi.", "tags": ["coding", "tutorials", "community"], "category": "Education & Learning"}, {"name": "LinkedIn (Proper Use)", "url": "https://linkedin.com", "desc": "Surface LinkedIn garbage hai. Filter karo: 'People you may know' chodo, niche hashtags follow karo.", "why": "Industry-specific intel ke liye — job moves, funding rounds, real career transitions. Raw data.", "tags": ["professional", "network", "intel"], "category": "Education & Learning"}, {"name": "AngelList / Wellfound", "url": "https://wellfound.com", "desc": "Startup jobs, founder profiles, funding data. Who is building what.", "why": "Startup ecosystem ka actual ground truth. Founders directly yahan hote hain.", "tags": ["startup", "hiring", "founders"], "category": "Education & Learning"}, {"name": "Glassdoor", "url": "https://glassdoor.com", "desc": "Employees ka anonymous feedback — real salaries, real culture, real interview questions.", "why": "Company join karne se pehle seedha employees ki baat suno. Insider intel for free.", "tags": ["jobs", "culture", "salary"], "category": "Education & Learning"}, {"name": "Substack", "url": "https://substack.com", "desc": "Independent writers ka platform. Subject matter experts seedha likhte hain, no algorithm.", "why": "Sach mein best thinkers yahan hain. Twitter se zyada depth, newsletter se zyada frecuency.", "tags": ["newsletters", "experts", "independent"], "category": "Education & Learning"}, {"name": "Gwern.net", "url": "https://gwern.net", "desc": "One person ka encyclopedic research blog. AI, psychology, statistics, nootropics. Depth = insane.", "why": "Internet ka sabse underrated research blog. References cite karta hai, opinions prove karta hai.", "tags": ["research", "depth", "personal"], "category": "Education & Learning"}, {"name": "Discord Servers (Niche)", "url": "https://disboard.org", "desc": "Har field ka Discord server hai. AI, finance, philosophy, fitness — real-time experts.", "why": "Ye woh log hain jo Reddit pe answer dene ka time nahi dete. Seedha unse baat karo.", "tags": ["community", "real-time", "niche"], "category": "Education & Learning"}, {"name": "Metaculus", "url": "https://metaculus.com", "desc": "Community predictions on world events. Calibrated probability, not opinions.", "why": "Log yahan sochke predict karte hain. Crowd wisdom ka real measurement.", "tags": ["forecasting", "probability", "future"], "category": "Education & Learning"}, {"name": "Marginal Revolution", "url": "https://marginalrevolution.com", "desc": "Tyler Cowen aur Alex Tabarrok ka economics blog. Daily posts, global view.", "why": "Real economists daily likhte hain. No jargon wall, actual insights.", "tags": ["economics", "policy", "intellectual"], "category": "Education & Learning"}, {"name": "Ribbonfarm", "url": "https://ribbonfarm.com", "desc": "Venkatesh Rao ka long-form thinking platform. Concepts like Gervais Principle yahan bane.", "why": "Agar real mental models chahiye — business, society, psychology — yahan padhna padega.", "tags": ["mental models", "long-form", "strategy"], "category": "Education & Learning"}, {"name": "Zettelkasten.de", "url": "https://zettelkasten.de/posts/overview", "desc": "Note-taking, knowledge management, thinking systems ka deepest community.", "why": "Ye log seriously sochte hain ki sochne ka system kya hona chahiye. Meta-cognition at peak.", "tags": ["PKM", "systems", "notes"], "category": "Education & Learning"}, {"name": "Statista", "url": "https://statista.com", "desc": "1M+ statistics across industries. Charts, reports, market data.", "why": "Jab argument mein data chahiye — actual numbers, not vibes.", "tags": ["data", "statistics", "markets"], "category": "Education & Learning"}, {"name": "Our World in Data", "url": "https://ourworldindata.org", "desc": "Oxford-backed visual data on global trends — health, poverty, education, climate.", "why": "News pe mat bharo. Actual long-term trends yahan hain. Data ke saath visualized.", "tags": ["global", "trends", "evidence"], "category": "Education & Learning"}, {"name": "Observatory of Economic Complexity", "url": "https://oec.world", "desc": "Duniya ka trade network visualized. Kon kya export/import karta hai, kahan se.", "why": "Geopolitics samajhna ho, business opportunity dhundhni ho — raw economic data.", "tags": ["economics", "trade", "geopolitics"], "category": "Education & Learning"}, {"name": "Crunchbase", "url": "https://crunchbase.com", "desc": "Company funding, investors, founders ka public database.", "why": "Startup ecosystem ki ground reality. Kaun invest kar raha, kahan paise ja rahe.", "tags": ["startups", "funding", "investors"], "category": "Education & Learning"}, {"name": "The Long Now Foundation", "url": "https://longnow.org/seminars", "desc": "World's best thinkers ka long-form seminar archive. Stewart Brand, Brian Eno, etc.", "why": "Agar 10,000 year thinking chahiye — literally. Best seminar archive on the internet.", "tags": ["philosophy", "future", "deep"], "category": "Education & Learning"}, {"name": "Edge.org", "url": "https://edge.org", "desc": "Richard Dawkins, Daniel Kahneman, Nassim Taleb jaise log ek sawaal pe likhte hain annually.", "why": "Annual question ka jawab duniya ke 200 best minds dete hain. Context mein sochna sikhao.", "tags": ["science", "philosophy", "thinkers"], "category": "Education & Learning"}, {"name": "Farnam Street", "url": "https://fs.blog", "desc": "Shane Parrish ka mental models, decision making, reading blog.", "why": "Charlie Munger ki thinking ko accessible banaya. Har article ek framework deta hai.", "tags": ["mental models", "decisions", "wisdom"], "category": "Education & Learning"}, {"name": "SlateStarCodex / Astral Codex Ten", "url": "https://astralcodexten.com", "desc": "Scott Alexander ka blog — psychiatry, rationality, AI, policy, culture. Depth pe depth.", "why": "Internet ka sabse well-reasoned generalist. Arguments aisi tarah build karta hai ki mind blow ho.", "tags": ["rationality", "analysis", "polymathic"], "category": "Education & Learning"}, {"name": "Nautilus Magazine", "url": "https://nautil.us", "desc": "Science ko storytelling se explain karte hain. Not dumbed down — elevated.", "why": "Scientists aur writers collaborate karte hain. Complexity ko accessible banana iska kaam hai.", "tags": ["science", "stories", "accessible"], "category": "Education & Learning"}, {"name": "Center for Humane Technology (CHT)", "url": "https://www.humanetech.com", "desc": "Social media aur big tech companies dwara human attention aur dopamine loop ko hijack karne par studies.", "why": "Digital addiction se mukti paane aur focus reclaim karne ka solid database.", "tags": ["mind control", "dopamine", "humane tech", "mental health"], "category": "Education & Learning"}, {"name": "Permaculture Research Institute", "url": "https://permaculturenews.org", "desc": "Bina chemical fertilizers ke swadeshi tarike se kheti karne aur food supply par dependency khatam karne ki practical guide.", "why": "Food supply chain par corporate control ko todne aur self-reliance seekhne ka zariya.", "tags": ["permaculture", "farming", "self-reliance", "organic"], "category": "Education & Learning"}, {"name": "Biodynamic Association (Rudolf Steiner Agriculture)", "url": "https://www.biodynamics.com", "desc": "Rudolf Steiner ki biodynamic farming methods aur seed preservation ki ecological systems guidelines.", "why": "Chemical fertilizers aur GM seed monopolies ke shoshan se bahar nikalne ka rasta.", "tags": ["biodynamic", "steiner", "farming", "self-reliance"], "category": "Education & Learning"}, {"name": "Open Source Ecology (GVCS)", "url": "https://www.opensourceecology.org", "desc": "Global Village Construction Set — 50 buniyaadi industrial machines (tractor, 3D printer, wind turbine, brick maker) ke open-source blueprints aur designs.", "why": "Utpadan ke saadhno (means of production) ka asli vikendrikaran. Apne local level par industry khadi karne ka naksha.", "tags": ["open hardware", "machines", "self-reliance", "abundance"], "category": "Education & Learning"}, {"name": "Precious Plastic", "url": "https://preciousplastic.com", "desc": "Plastic waste ko local level par melt, shred aur recycle karke naye product banane wali machines ke open blueprints.", "why": "Local recycling manufacturing setup khada karne ki free technology guidelines.", "tags": ["recycling", "open hardware", "machines", "pollution control"], "category": "Education & Learning"}, {"name": "Open Source Seed Initiative (OSSI)", "url": "https://oseeds.org", "desc": "Beeso (seeds) par corporate patents aur intellectual property control ko khatam karke unhe open-source rakhne ki global pratigya.", "why": "Food security aur agriculture ko corporate seed cartels se aazaad rakhne ka sabsb bada movement.", "tags": ["seeds", "agriculture", "open-source", "abundance"], "category": "Education & Learning"}, {"name": "Bellingcat", "url": "https://www.bellingcat.com", "desc": "An independent international collective of researchers, investigators and citizen journalists using OSINT.", "why": "Ye log sikhate hain ki Google Earth, social media images aur public data ka use karke international crimes kaise solve kiye jate hain. Peak OSINT.", "tags": [], "category": "OSINT & Databases"}, {"name": "Wikidata", "url": "https://www.wikidata.org", "desc": "A free and open knowledge base that can be read and edited by both humans and machines.", "why": "Wikipedia insano ke liye hai, Wikidata machines ke liye. Isme duniya ka saara data structured format (graphs/nodes) mein connected hai.", "tags": [], "category": "OSINT & Databases"}, {"name": "MITRE ATT&CK", "url": "https://attack.mitre.org", "desc": "A globally-accessible knowledge base of adversary tactics and techniques based on real-world observations.", "why": "Cybersecurity ka ultimate encyclopedia. Hackers actual mein systems ko kaise penetrate karte hain, iski complete dictionary.", "tags": [], "category": "OSINT & Databases"}, {"name": "Shodan", "url": "https://www.shodan.io", "desc": "A search engine for Internet-connected devices (servers, webcams, routers, etc.).", "why": "Google websites ko index karta hai, Shodan 'devices' ko index karta hai. Hackers/OSINT researchers iska use open ports dhoondhne ke liye karte hain.", "tags": [], "category": "OSINT & Databases"}, {"name": "Shodan", "url": "https://shodan.io", "desc": "Internet se connected har device ka search engine. IoT, servers, cameras, everything.", "why": "'Google for hackers.' Security research ke liye. Free tier kaafi hai.", "tags": ["OSINT", "security", "IoT"], "category": "OSINT & Databases"}, {"name": "Maltego CE", "url": "https://maltego.com/maltego-community", "desc": "Entities ke beech connections visualize karo. People, domains, IPs — web of connections.", "why": "Journalists, investigators use karte hain. Community edition free.", "tags": ["OSINT", "graph", "investigation"], "category": "OSINT & Databases"}, {"name": "IntelTechniques", "url": "https://inteltechniques.com/tools", "desc": "Michael Bazzell ke OSINT tools. People search, social media, phone, email lookup.", "why": "FBI OSINT trainer ne banaya. Professional grade, free tools.", "tags": ["OSINT", "people", "social"], "category": "OSINT & Databases"}, {"name": "Wayback Machine", "url": "https://web.archive.org", "desc": "800B+ web pages archived. Deleted websites, old versions — sab dekho.", "why": "Koi page delete hua? Yahan dhundo. Evidence preservation ke liye critical.", "tags": ["archive", "OSINT", "history"], "category": "OSINT & Databases"}, {"name": "WHOIS Lookup", "url": "https://whois.domaintools.com", "desc": "Domain ownership, registration, history. Reverse WHOIS bhi possible.", "why": "Kisi website ke baare mein investigate karna ho — shuru yahan se.", "tags": ["domain", "OSINT", "ownership"], "category": "OSINT & Databases"}, {"name": "Hunter.io", "url": "https://hunter.io", "desc": "Domain se linked emails dhundho. 25 free searches/month.", "why": "Cold outreach ya journalist investigation — real verified emails.", "tags": ["email", "OSINT", "outreach"], "category": "OSINT & Databases"}, {"name": "OSINT Combine", "url": "https://www.osintcombine.com/tools", "desc": "Image location, bulk username search, Google dorks — sab ek jagah.", "why": "Specialized tools jo mainstream OSINT miss karte hain.", "tags": ["OSINT", "image", "username"], "category": "OSINT & Databases"}, {"name": "Spyse (SecurityTrails)", "url": "https://securitytrails.com", "desc": "DNS history, subdomain finder, IP info. Historical DNS records.", "why": "Web infrastructure ka X-ray. Security researchers use karte hain.", "tags": ["DNS", "security", "intel"], "category": "OSINT & Databases"}, {"name": "Censys", "url": "https://search.censys.io", "desc": "Internet-connected devices aur networks ka database. Shodan ka competitor.", "why": "Research-grade. Universities use karti hain. Free academic access.", "tags": ["network", "security", "OSINT"], "category": "OSINT & Databases"}, {"name": "GeoSpy", "url": "https://geospy.ai", "desc": "Photo se location identify karo — AI se. OSINT investigators ka tool.", "why": "Background mein kya hai se location dhundho. Impressive accuracy.", "tags": ["image", "geolocation", "AI"], "category": "OSINT & Databases"}, {"name": "Exiftool", "url": "https://exiftool.org", "desc": "Image/file metadata extract karo. GPS coordinates, camera model, edit history.", "why": "Photos mein GPS data hota hai. OSINT ke liye gold mine.", "tags": ["metadata", "OSINT", "images"], "category": "OSINT & Databases"}, {"name": "Wikidata", "url": "https://wikidata.org", "desc": "Wikipedia ka structured database version. Queryable. 100M+ statements. Machine-readable.", "why": "Har cheez connected hai. SPARQL se query karo. Developer ka knowledge graph.", "tags": ["database", "linked data", "structured"], "category": "OSINT & Databases"}, {"name": "DBpedia", "url": "https://dbpedia.org", "desc": "Wikipedia ka RDF/linked data version. Semantic web ka core resource.", "why": "AI aur semantic search ke liye. Data interconnected hai automatically.", "tags": ["semantic", "linked data", "RDF"], "category": "OSINT & Databases"}, {"name": "Freebase Archive", "url": "https://developers.google.com/freebase", "desc": "Google ka old knowledge graph. Archive accessible. Billions of facts.", "why": "Google ka research data — historical value. AI training mein use hua.", "tags": ["knowledge graph", "historical", "Google"], "category": "OSINT & Databases"}, {"name": "OpenStreetMap", "url": "https://openstreetmap.org", "desc": "Wikipedia of maps. Community-maintained. More detailed than Google in many areas.", "why": "Developer ke liye Google Maps API ka free alternative.", "tags": ["maps", "geo", "open source"], "category": "OSINT & Databases"}, {"name": "World Bank Open Data", "url": "https://data.worldbank.org", "desc": "GDP, poverty, development indicators — 200+ countries. Free download.", "why": "Official economic data. Students, researchers, journalists sab use karte.", "tags": ["economics", "global", "official"], "category": "OSINT & Databases"}, {"name": "UN Data", "url": "https://data.un.org", "desc": "United Nations ka statistics portal. Demographics, trade, environment.", "why": "Primary source data. Research papers mein cite hota hai.", "tags": ["UN", "official", "demographics"], "category": "OSINT & Databases"}, {"name": "Gapminder", "url": "https://gapminder.org/data", "desc": "Hans Rosling ka platform. Global development data beautifully visualized.", "why": "Data storytelling ka master. Misconceptions debunk karte hain.", "tags": ["visualization", "development", "data"], "category": "OSINT & Databases"}, {"name": "Google Dataset Search", "url": "https://datasetsearch.research.google.com", "desc": "Datasets ke liye Google. Har topic ke datasets dhundo.", "why": "Research ke liye raw data chahiye? Yahan search karo.", "tags": ["datasets", "research", "search"], "category": "OSINT & Databases"}, {"name": "Kaggle Datasets", "url": "https://kaggle.com/datasets", "desc": "50,000+ datasets. Machine learning, data science, AI training.", "why": "Practice ke liye real data. Public datasets free download.", "tags": ["ML", "datasets", "AI"], "category": "OSINT & Databases"}, {"name": "Zenodo", "url": "https://zenodo.org", "desc": "CERN ka research data repository. Datasets, software, publications.", "why": "DOI wala permanent research data. Reproducible science ke liye.", "tags": ["research", "datasets", "CERN"], "category": "OSINT & Databases"}, {"name": "CommonCrawl", "url": "https://commoncrawl.org", "desc": "Poore web ka crawl data. Petabytes. Free download. GPT training mein use hua.", "why": "AI models yahan se train hue. Raw internet data chahiye? Ye lo.", "tags": ["web data", "AI", "crawl"], "category": "OSINT & Databases"}, {"name": "Merriam-Webster", "url": "https://merriam-webster.com", "desc": "America ka official dictionary. Thesaurus, word history, usage notes. Free.", "why": "Etymology samajhna ho — yahan har word ka history hai.", "tags": ["dictionary", "english", "etymology"], "category": "OSINT & Databases"}, {"name": "Wiktionary", "url": "https://en.wiktionary.org", "desc": "7M+ words across 4000+ languages. Etymology, pronunciation, translations.", "why": "Wikipedia ka dictionary version. Har language mein cross-referenced.", "tags": ["multilingual", "dictionary", "etymology"], "category": "OSINT & Databases"}, {"name": "Oxford Reference (Free)", "url": "https://oxfordreference.com", "desc": "Hundreds of specialist dictionaries — medicine, law, science, philosophy.", "why": "Niche terminology ke liye. Oxford authority.", "tags": ["reference", "specialist", "oxford"], "category": "OSINT & Databases"}, {"name": "Encyclopedia Britannica (Free)", "url": "https://britannica.com", "desc": "Peer-reviewed encyclopedia. More reliable than Wikipedia for contested topics.", "why": "Academic citations ke liye. Editors se verified content.", "tags": ["encyclopedia", "academic", "verified"], "category": "OSINT & Databases"}, {"name": "Wikipedia (Deep)", "url": "https://wikipedia.org", "desc": "Free encyclopedia. 60M+ articles. Talk pages main real debates hain.", "why": "Starting point — references seedha primary sources pe jaate hain.", "tags": ["encyclopedia", "free", "starting point"], "category": "OSINT & Databases"}, {"name": "Investopedia", "url": "https://investopedia.com", "desc": "Financial terms, concepts, formulas. Tutorials bhi hain.", "why": "Finance ka sab kuch explain karta hai. Glossary + education = both.", "tags": ["finance", "dictionary", "education"], "category": "OSINT & Databases"}, {"name": "TechTerms", "url": "https://techterms.com", "desc": "Technology terms simply explained. Computer science jargon.", "why": "IT professional ko explain karna ho ya khud samajhna ho.", "tags": ["technology", "dictionary", "simple"], "category": "OSINT & Databases"}, {"name": "Wolfram Alpha", "url": "https://wolframalpha.com", "desc": "Computational knowledge engine. Math, science, stats — answers with steps.", "why": "Calculator + encyclopedia + formula solver. Free tier kaafi powerful.", "tags": ["math", "computation", "science"], "category": "OSINT & Databases"}, {"name": "Encyclopedia of Mathematics", "url": "https://encyclopediaofmath.org", "desc": "Professional math encyclopedia. Springer-backed. Free online.", "why": "Every math concept properly defined. PhD level reference.", "tags": ["math", "reference", "academic"], "category": "OSINT & Databases"}, {"name": "AllSides", "url": "https://allsides.com", "desc": "Same story left/center/right se dikhao. Media bias ratings.", "why": "News consume karne se pehle bias samjho. Media literacy ka tool.", "tags": ["news", "bias", "media literacy"], "category": "OSINT & Databases"}, {"name": "FactCheck.org", "url": "https://factcheck.org", "desc": "Political claims verify karo. Annenberg Public Policy Center backed.", "why": "Viral claims check karne ke liye. Primary evidence with sources.", "tags": ["fact check", "politics", "evidence"], "category": "OSINT & Databases"}, {"name": "Ground News", "url": "https://ground.news", "desc": "Same news story ka coverage across 50,000+ sources. Blind Spots feature.", "why": "Kya tera media source cover nahi kar raha? Yahan pata chalta hai.", "tags": ["news", "aggregator", "blind spots"], "category": "OSINT & Databases"}, {"name": "Reuters", "url": "https://reuters.com", "desc": "Wire service news. Minimum editorial slant. Direct reporting.", "why": "News ka primary source. Sabse less biased mainstream.", "tags": ["news", "primary", "unbiased"], "category": "OSINT & Databases"}, {"name": "Associated Press", "url": "https://apnews.com", "desc": "AP news — fact-first journalism. Style guide bhi free available hai.", "why": "Reuters ka American equivalent. Gold standard fact reporting.", "tags": ["news", "AP", "facts"], "category": "OSINT & Databases"}, {"name": "Media Bias Chart", "url": "https://adfontesmedia.com", "desc": "News sources ko bias aur reliability ke basis pe map karta hai.", "why": "Har news source ki positioning ek chart pe. Quick reference.", "tags": ["media", "bias", "visual"], "category": "OSINT & Databases"}, {"name": "ZeroNet Project", "url": "https://zeronet.io", "desc": "बिटकॉइन और बिटटोरेंट (P2P) तकनीक पर आधारित विकेंद्रीकृत, सेंसरशिप-मुक्त वेबसाइट्स का नेटवर्क।", "why": "ऐसी वेबसाइट्स जिन्हें न तो ब्लॉक किया जा सकता है और न ही किसी सरकार द्वारा हटाया जा सकता है।", "tags": ["zeronet", "decentralized", "p2p", "censorship-free"], "category": "OSINT & Databases"}, {"name": "Freenet Project (Hyphanet)", "url": "https://freenetproject.org", "desc": "गोपनीयता और बोलने की पूर्ण स्वतंत्रता के लिए डिजाइन किया गया एक मजबूत पीयर-टू-पीयर विकेंद्रीकृत नेटवर्क।", "why": "सेंसरशिप-मुक्त फाइल शेयरिंग और सीक्रेट वेबसाइट्स को होस्ट करने का दुनिया का सबसे पुराना स्वतंत्र मंच।", "tags": ["freenet", "privacy", "p2p", "darknet"], "category": "OSINT & Databases"}, {"name": "IPFS (InterPlanetary File System)", "url": "https://ipfs.tech", "desc": "एक सहकर्मी से सहकर्मी (Peer-to-Peer) हाइपरमीडिया प्रोटोकॉल जो वेब को अधिक तेज़, सुरक्षित और अधिक खुला बनाने के लिए डिज़ाइन किया गया है।", "why": "कंटेंट एड्रेसेबल स्टोरेज, जो कॉर्पोरेट क्लाउड पर फ़ाइलों के सेंसर होने के खतरे को हमेशा के लिए खत्म करता है।", "tags": ["ipfs", "decentralized", "storage", "web3"], "category": "OSINT & Databases"}, {"name": "Brave Search", "url": "https://search.brave.com", "desc": "दुनिया का पहला स्वतंत्र और प्राइवेसी-केंद्रित सर्च इंजन, जो Google के बायस्ड (biased) परिणामों के इतर अन-फिल्टर्ड जानकारी देता है।", "why": "सर्च मोनोपॉली को तोड़ने और बिना किसी ट्रैकिंग के सही डेटा खोजने का सबसे बेहतरीन साधन।", "tags": ["brave", "search engine", "privacy", "uncensored"], "category": "OSINT & Databases"}, {"name": "awesome-selfhosted/awesome-selfhosted", "url": "https://github.com/awesome-selfhosted/awesome-selfhosted", "desc": "The definitive list of self-hostable free software network services and web apps.", "why": "Own your data. Escape the corporate cloud dependency by hosting your own tools.", "tags": ["github", "selfhosted", "privacy", "open-source"], "category": "OSINT & Databases"}, {"name": "pluja/awesome-privacy", "url": "https://github.com/pluja/awesome-privacy", "desc": "A curated list of privacy-respecting software and services alternatives.", "why": "Find immediate alternatives to big-tech trackers.", "tags": ["github", "privacy", "security", "anti-tracking"], "category": "OSINT & Databases"}, {"name": "privacy-sexy/privacy-sexy", "url": "https://github.com/privacy-sexy/privacy-sexy", "desc": "OS hardening tool to secure privacy best practices on Windows, macOS, and Linux.", "why": "Run automated scripts to turn off default system telemetry and data collection.", "tags": ["github", "privacy", "OS hardening", "security"], "category": "OSINT & Databases"}, {"name": "dani-garcia/vaultwarden", "url": "https://github.com/dani-garcia/vaultwarden", "desc": "Lightweight self-hosted password manager using the Bitwarden API.", "why": "Never trust third-party clouds with your passwords. Keep them local.", "tags": ["github", "selfhosted", "password", "security"], "category": "OSINT & Databases"}, {"name": "DhruvDancingBuddha/osho_discourses (Hugging Face)", "url": "https://huggingface.co/datasets/DhruvDancingBuddha/osho_discourses", "desc": "Full text database of 1,965 Osho discourses.", "why": "Clean, parsed dataset for semantic search, text mining, or chatbot training.", "tags": ["huggingface", "osho", "dataset", "nlp"], "category": "OSINT & Databases"}, {"name": "devangjain98-dev/Osho-AI-Project", "url": "https://github.com/devangjain98-dev/Osho-AI-Project", "desc": "Spiritual RAG bot utilizing vector storage for Osho discourses.", "why": "A template code showing how to query spiritual text corpus locally via vector embeddings.", "tags": ["github", "ai", "rag", "osho"], "category": "OSINT & Databases"}, {"name": "Internet Archive", "url": "https://archive.org", "desc": "A non-profit library of millions of free books, movies, software, music, websites, and more.", "why": "Internet ka backup. Agar koi website delete ho gayi hai, toh 'Wayback Machine' se usko wapas dekha ja sakta hai.", "tags": [], "category": "Digital Archives & Libraries"}, {"name": "Anna's Archive", "url": "https://annas-archive.org", "desc": "The world's largest open-source shadow library aggregator (combines Sci-Hub, LibGen, Z-Library).", "why": "Duniya ki har book, har research paper, aur har magazine yahan free mein available hai. Paid academia ka ultimate bypass.", "tags": [], "category": "Digital Archives & Libraries"}, {"name": "Sci-Hub", "url": "https://sci-hub.se", "desc": "A website that provides free access to millions of research papers and articles.", "why": "Academia mein har paper paywall ke piche hota hai. Sci-Hub DOI link lekar aapko wo paper instantly free mein de deta hai.", "tags": [], "category": "Digital Archives & Libraries"}, {"name": "Project Gutenberg", "url": "https://gutenberg.org", "desc": "70,000+ copyright-free books. Marcus Aurelius, Darwin, Shakespeare — seedha download.", "why": "Public domain = legal free. History ke sabse important minds yahan hain.", "tags": ["books", "classics", "free"], "category": "Digital Archives & Libraries"}, {"name": "Internet Archive Books", "url": "https://archive.org/details/books", "desc": "Millions of books, textbooks, comics, magazines. Borrow system bhi hai.", "why": "Jab Gutenberg mein na mile — yahan hoga. Library card ka digital version.", "tags": ["books", "borrow", "archive"], "category": "Digital Archives & Libraries"}, {"name": "Standard Ebooks", "url": "https://standardebooks.org", "desc": "Gutenberg ke books ko professionally formatted, typo-free, beautiful ebooks mein.", "why": "Gutenberg ka polished version. EPUB, MOBI, AZW3 — sab formats.", "tags": ["ebooks", "quality", "formatted"], "category": "Digital Archives & Libraries"}, {"name": "Open Library", "url": "https://openlibrary.org", "desc": "Universal library. 4M+ books. 1-hour borrow system. Physical library ka digital twin.", "why": "Out of print books bhi milte hain. Waitlist system hai.", "tags": ["borrow", "catalog", "rare"], "category": "Digital Archives & Libraries"}, {"name": "Z-Library", "url": "https://z-library.sk", "desc": "22M+ books, 99M+ articles. Most comprehensive shadow library.", "why": "Agar koi paid textbook chahiye — ye search karo. (Use VPN if needed)", "tags": ["textbooks", "papers", "shadow"], "category": "Digital Archives & Libraries"}, {"name": "Library Genesis (LibGen)", "url": "https://libgen.is", "desc": "Academic textbooks, fiction, scientific papers. Mirror: libgen.rs bhi hai.", "why": "Springer, Elsevier textbooks jo $200+ mein bik rahe hain — yahan free.", "tags": ["textbooks", "academic", "shadow"], "category": "Digital Archives & Libraries"}, {"name": "Manybooks", "url": "https://manybooks.net", "desc": "50,000+ free ebooks. Public domain + author-donated books.", "why": "Fiction ke liye best free source. Curated collections hain.", "tags": ["fiction", "ebooks", "curated"], "category": "Digital Archives & Libraries"}, {"name": "NASA Technical Reports", "url": "https://ntrs.nasa.gov", "desc": "NASA ki research, technical manuals, mission reports — sab free.", "why": "Real aerospace engineering documents. Jo NASA ne actually likha.", "tags": ["engineering", "space", "technical"], "category": "Digital Archives & Libraries"}, {"name": "arXiv", "url": "https://arxiv.org", "desc": "Physics, Math, CS, Biology, Economics research before peer review. 2M+ papers.", "why": "Cutting edge research seedha scientists se. Google Scholar se pehle aata hai.", "tags": ["research", "preprint", "science"], "category": "Digital Archives & Libraries"}, {"name": "PubMed Central", "url": "https://ncbi.nlm.nih.gov/pmc", "desc": "NIH ka free biomedical research archive. 8M+ full-text articles.", "why": "Medical research chahiye? Official NIH database. Free full text.", "tags": ["medical", "biomedical", "NIH"], "category": "Digital Archives & Libraries"}, {"name": "DOAJ", "url": "https://doaj.org", "desc": "18,000+ peer-reviewed open access journals. Search by subject.", "why": "Journals jinhe padhne ke liye $30/article nahi chahiye.", "tags": ["journals", "open access", "peer reviewed"], "category": "Digital Archives & Libraries"}, {"name": "Unpaywall", "url": "https://unpaywall.org", "desc": "Browser extension jo automatically free version dhundha hai paid papers ka.", "why": "DOI ke saath paper link chahiye — Unpaywall seedha free version le aata hai.", "tags": ["extension", "paywall", "papers"], "category": "Digital Archives & Libraries"}, {"name": "OpenDOAR", "url": "https://v2.sherpa.ac.uk/opendoar", "desc": "5000+ open access institutional repositories. University research archives.", "why": "University funded research — public domain hota hai mostly.", "tags": ["institutional", "research", "repositories"], "category": "Digital Archives & Libraries"}, {"name": "Google Scholar", "url": "https://scholar.google.com", "desc": "Academic papers, citations, author profiles. Free access links dhundta hai.", "why": "Research ka starting point. PDF links bhi milte hain. Author pages.", "tags": ["search", "academic", "citations"], "category": "Digital Archives & Libraries"}, {"name": "Semantic Scholar", "url": "https://semanticscholar.org", "desc": "AI-powered paper search. Influential citations, related work highlight karta hai.", "why": "Google Scholar se smarter. Citation impact clearly show karta hai.", "tags": ["AI search", "papers", "citations"], "category": "Digital Archives & Libraries"}, {"name": "SSRN", "url": "https://ssrn.com", "desc": "Social science, economics, law research preprints. 1M+ papers.", "why": "Economics aur law research ke liye arXiv equivalent.", "tags": ["social science", "law", "economics"], "category": "Digital Archives & Libraries"}, {"name": "NASA ADS", "url": "https://ui.adsabs.harvard.edu", "desc": "Astronomy, astrophysics research database. Harvard + NASA joint.", "why": "Space science ka definitive research archive.", "tags": ["astronomy", "space", "Harvard"], "category": "Digital Archives & Libraries"}, {"name": "Wikipedia (Talk Pages)", "url": "https://en.wikipedia.org/wiki/Wikipedia:Talk_page_guidelines", "desc": "Wikipedia articles nahi — unke Talk Pages. Yahan editors real arguments karte hain sources pe.", "why": "Ye woh jagah hai jahan facts ki ladaai hoti hai. Epistemology ka live battlefield.", "tags": ["debate", "sources", "meta"], "category": "Digital Archives & Libraries"}, {"name": "Google Patents", "url": "https://patents.google.com", "desc": "दुनिया के सभी खोजे गए आविष्कारों के मूल पेटेंट दस्तावेज़ों का आधिकारिक आर्काइव।", "why": "निकोला टेस्ला और अन्य वैज्ञानिकों के दबाए गए आविष्कारों के मूल तकनीकी नक्शे खोजने के लिए।", "tags": ["patents", "tesla", "inventions", "free energy"], "category": "Digital Archives & Libraries"}, {"name": "CIA Reading Room: The Gateway Process", "url": "https://www.cia.gov/readingroom/docs/CIA-RDP96-00788R001700210016-5.pdf", "desc": "सीआईए (CIA) द्वारा 1983 में तैयार किया गया रिसर्च पेपर जो मानव चेतना, ब्रह्मांडीय आयामों, रिमोट व्यूइंग (Remote Viewing) and माइंड सिंक्रोनाइजेशन की पुष्टि करता है।", "why": "चेतना और दिमाग की असली शक्तियों पर सरकारी स्तर का सबसे बड़ा डीक्लासिफाइड प्रमाण।", "tags": ["gateway process", "cia", "astral projection", "consciousness"], "category": "Digital Archives & Libraries"}, {"name": "Thomas Paine: Common Sense (Full Text PDF)", "url": "https://archive.org/details/rightsofmanbeing00painuoft", "desc": "American Kranti ki buniyad rakhne wali aur human rights par Thomas Paine ki classic book.", "why": "Imperialism aur monarchical rules ke exploitation ko expose karne wala aitihasik dastawez.", "tags": ["liberty", "human rights", "paine", "books"], "category": "Digital Archives & Libraries"}, {"name": "Henry David Thoreau: Civil Disobedience (Full Text PDF)", "url": "https://archive.org/details/walden02thoruoft", "desc": "Henry David Thoreau dwara likhi gayi 'Civil Disobedience' jo anyaypurna sarkari kanoon ke khilaf peaceful resistance par aadharit hai.", "why": "Satyagraha aur individual liberty ko samajhne ke liye sabsb bada philosophical dastawez.", "tags": ["philosophy", "civil disobedience", "thoreau", "books"], "category": "Digital Archives & Libraries"}, {"name": "Documentary: The Internet's Own Boy (Aaron Swartz Story)", "url": "https://www.youtube.com/results?search_query=the+internets+own+boy+full+documentary", "desc": "Internet ki aazaadi aur human knowledge par paywalls ke khilaf larne wale young prodigy Aaron Swartz ki kahani.", "why": "Big-tech aur sarkari daban ke digital-era consequences ka emotional aur technical expose.", "tags": ["documentary", "aaron swartz", "open access", "copyright"], "category": "Digital Archives & Libraries"}, {"name": "Examine.com", "url": "https://examine.com", "desc": "Independent, ad-free database analyzing clinical trials for supplements and nutrition.", "why": "Agar ashwagandha ya creatine lene ka soch rahe ho, pehle yahan check karo ki actual science kya kehti hai. No BS.", "tags": ["supplements", "clinical trials", "unbiased"], "category": "Health & Longevity"}, {"name": "PubMed", "url": "https://pubmed.ncbi.nlm.nih.gov", "desc": "The US National Library of Medicine. Millions of biomedical literature citations.", "why": "The ultimate truth layer. Jab influencer koi claim kare, seedha PubMed pe us disease/supplement ka research padho.", "tags": ["database", "peer-reviewed", "medicine"], "category": "Health & Longevity"}, {"name": "Cochrane Library", "url": "https://www.cochranelibrary.com", "desc": "Systematic reviews of primary research in human health care and health policy.", "why": "Gold standard for evidence-based medicine. Ek study se kuch nahi hota, Cochrane meta-analysis dekho.", "tags": ["meta-analysis", "evidence-based", "healthcare"], "category": "Health & Longevity"}, {"name": "FoundMyFitness (Dr. Rhonda Patrick)", "url": "https://www.foundmyfitness.com", "desc": "Extremely dense, heavily cited reports on micronutrients, sauna, cold exposure, and aging.", "why": "Rhonda Patrick scientific papers ko decode karti hai directly. Best place for mechanism of action of any health habit.", "tags": ["biochemistry", "longevity", "nutrition"], "category": "Health & Longevity"}, {"name": "Outlive by Peter Attia", "url": "https://peterattiamd.com/outlive/", "desc": "Medicine 3.0 approach. Focuses on Healthspan (quality) vs Lifespan (length). Deals with the 4 Horsemen of chronic diseases.", "why": "Is book ne longevity landscape change kiya hai. Focuses heavily on VO2 Max, ApoB, and preventative metrics.", "tags": ["book", "healthspan", "preventative"], "category": "Health & Longevity"}, {"name": "Blueprint by Bryan Johnson", "url": "https://blueprint.bryanjohnson.com", "desc": "Tech CEO spending millions to reverse aging. Open sources his entire protocol (diet, sleep, pills).", "why": "Extremist approach hai, par free public data goldmine hai on what actually works for biomarker optimization.", "tags": ["bio-hacking", "data-driven", "extreme"], "category": "Health & Longevity"}, {"name": "Lifespan by David Sinclair", "url": "https://lifespanbook.com", "desc": "Harvard geneticist's book on why we age and why we don't have to. Information theory of aging.", "why": "Explains NAD+, Resveratrol, and cellular senescence. Thoda controversial hai academia mein, par foundational read hai.", "tags": ["genetics", "aging", "harvard"], "category": "Health & Longevity"}, {"name": "The Drive Podcast (Attia)", "url": "https://peterattiamd.com/podcast/", "desc": "Peter Attia interviewing world-class scientists on metabolic health, exercise physiology, and neuroscience.", "why": "Podcasts usually shallow hote hain, ye wala PhD level ka hai. Deepest health podcast on the internet.", "tags": ["podcast", "physiology", "metabolism"], "category": "Health & Longevity"}, {"name": "Huberman Lab", "url": "https://www.hubermanlab.com", "desc": "Stanford neuroscientist Dr. Andrew Huberman explains how brain and body connections control health.", "why": "Protocols (like morning sunlight) jo completely free hain par highly effective. Biology ko actionable banata hai.", "tags": ["neuroscience", "protocols", "stanford"], "category": "Health & Longevity"}, {"name": "Dr. Andy Galpin", "url": "https://www.andygalpin.com", "desc": "Professor of Kinesiology. World expert on muscle physiology and strength/hypertrophy mechanics.", "why": "Gym bro science nahi. Actual cellular mechanism of how muscle grows and why strength = longevity.", "tags": ["hypertrophy", "kinesiology", "fitness"], "category": "Health & Longevity"}, {"name": "Dr. Matthew Walker", "url": "https://www.sleepdiplomat.com", "desc": "Author of 'Why We Sleep'. Unarguably the most prominent public voice on the science of sleep.", "why": "Sleep is the ultimate bio-hack. He explains why sleeping less than 7 hours systematically destroys your DNA.", "tags": ["sleep", "recovery", "neuroscience"], "category": "Health & Longevity"}, {"name": "Dr. Satchin Panda", "url": "https://salk.edu/scientist/satchidananda-panda/", "desc": "Salk Institute researcher who pioneered Time-Restricted Eating (Intermittent Fasting) and circadian biology.", "why": "Sirf kya khana hai nahi, *kab* khana hai ispe duniya ka best researcher.", "tags": ["circadian", "fasting", "biology"], "category": "Health & Longevity"}, {"name": "Why We Sleep", "url": "https://archive.org/search?query=why+we+sleep+matthew+walker", "desc": "Comprehensive analysis of how sleep impacts learning, mood, energy levels, and hormones.", "why": "Is book ko padhne ke baad aap kabhi apna sleep compromise nahi karenge. Changes your entire OS.", "tags": ["book", "sleep", "recovery"], "category": "Health & Longevity"}, {"name": "Huberman Sleep Toolkit", "url": "https://www.hubermanlab.com/newsletter/toolkit-for-sleep", "desc": "Actionable steps: Morning sunlight, temperature drops, NSDR, and exact supplement stack (Magnesium Threonate/Apigenin).", "why": "Without buying any tracker, just implement this free protocol to fix your circadian rhythm in 7 days.", "tags": ["protocol", "free", "actionable"], "category": "Health & Longevity"}, {"name": "Circadian Clock Mechanism", "url": "https://www.nobelprize.org/prizes/medicine/2017/press-release/", "desc": "2017 Nobel Prize in Physiology was awarded for discoveries of molecular mechanisms controlling circadian rhythm.", "why": "Read the actual press release/summary to understand why light and timing fundamentally control your cells.", "tags": ["science", "circadian", "nobel"], "category": "Health & Longevity"}, {"name": "The Obesity Code", "url": "https://archive.org/search?query=obesity+code+jason+fung", "desc": "Dr. Jason Fung. Explains why calorie counting fails and how Insulin is the primary driver of fat storage.", "why": "Completely changes how you view food. It's not about CICO (Calories In, Calories Out), it's about hormonal response.", "tags": ["insulin", "fasting", "diet"], "category": "Health & Longevity"}, {"name": "Valter Longo (FMD)", "url": "https://www.valterlongo.com", "desc": "Director of Longevity Institute at USC. Creator of the Fasting-Mimicking Diet (FMD).", "why": "How to trigger Autophagy (cellular cleanup) without completely starving yourself. Deep clinical evidence.", "tags": ["autophagy", "fasting", "longevity"], "category": "Health & Longevity"}, {"name": "Cronometer", "url": "https://cronometer.com", "desc": "Most accurate nutrition tracker. Uses NCCDB and USDA databases. Tracks 80+ micronutrients.", "why": "MyFitnessPal is garbage compared to this. Yeh actual vitamins, minerals, aur amino acids track karta hai.", "tags": ["app", "micronutrients", "tracking"], "category": "Health & Longevity"}, {"name": "InsideTracker", "url": "https://www.insidetracker.com", "desc": "Analyzes blood biomarkers and DNA to provide personalized nutrition and lifestyle interventions.", "why": "Reference ranges vs Optimal ranges. Medicine wants you 'normal', this wants you 'optimal'.", "tags": ["bloodwork", "biomarkers", "optimization"], "category": "Health & Longevity"}, {"name": "Oura / Whoop Data", "url": "https://ouraring.com", "desc": "Continuous tracking of HRV (Heart Rate Variability), RHR, Sleep architecture (REM/Deep), and temperature.", "why": "HRV is the best proxy for your nervous system's recovery. You need objective data to see if a habit is working.", "tags": ["wearables", "HRV", "sleep"], "category": "Health & Longevity"}, {"name": "VO2 Max & Grip Strength", "url": "https://peterattiamd.com/how-to-train-for-the-centenarian-decathlon/", "desc": "Attia's metrics for longevity: VO2 Max (cardiorespiratory fitness) and Grip Strength/Muscle Mass.", "why": "These two metrics have the highest correlation with living a long, independent life. Stop just doing bicep curls.", "tags": ["VO2 max", "strength", "metrics"], "category": "Health & Longevity"}, {"name": "Psychology Today", "url": "https://psychologytoday.com", "desc": "Articles by licensed therapists. Mix quality but consistently accessible.", "why": "Starting point — par har article ke author credentials check karo.", "tags": ["general", "accessible", "articles"], "category": "Psychology & Mental Models"}, {"name": "The School of Life", "url": "https://theschooloflife.com", "desc": "Alain de Botton ka platform. Emotional intelligence, relationships, philosophy mix.", "why": "Therapy-adjacent content jo deeply thoughtful hai, fluffy nahi.", "tags": ["emotional", "philosophy", "accessible"], "category": "Psychology & Mental Models"}, {"name": "Big Think — Psychology", "url": "https://bigthink.com/the-present/psychology", "desc": "Experts directly explain concepts. Short format, credible sources.", "why": "5-min videos jo actual researchers banate hain — entertainment nahi.", "tags": ["video", "experts", "short"], "category": "Psychology & Mental Models"}, {"name": "r/psychology", "url": "https://reddit.com/r/psychology", "desc": "Peer-reviewed studies discuss hoti hain. Moderation strict hai pop-psych ke against.", "why": "Sirf studies-backed content allowed. Reddit ka best psychology sub.", "tags": ["community", "studies", "moderated"], "category": "Psychology & Mental Models"}, {"name": "Psyche (Aeon)", "url": "https://psyche.co", "desc": "Aeon ka psychology + philosophy magazine. Deep essays by experts.", "why": "Long-form jo dumb down nahi karta. Real thinking, accessible writing.", "tags": ["essays", "aeon", "deep"], "category": "Psychology & Mental Models"}, {"name": "James Clear's Blog", "url": "https://jamesclear.com", "desc": "Habit formation, behavior change. Atomic Habits ka source material free.", "why": "Habit loops samajhna ho — yahan se shuru karo. Practical, evidence-aware.", "tags": ["habits", "behavior change", "free"], "category": "Psychology & Mental Models"}, {"name": "BJ Fogg's Behavior Model", "url": "https://behaviormodel.org", "desc": "Stanford researcher ka model — Motivation, Ability, Prompt. Behavior design ka framework.", "why": "Habits kyun fail hote hain — yeh model exactly batata hai.", "tags": ["stanford", "model", "design"], "category": "Psychology & Mental Models"}, {"name": "Chicago Booth — Decision Research", "url": "https://www.chicagobooth.edu/research/center-for-decision-research", "desc": "Nudge theory ka academic home. Choice architecture research.", "why": "Kaise environment decisions shape karta hai — academic grounding ke saath.", "tags": ["nudge", "economics", "choices"], "category": "Psychology & Mental Models"}, {"name": "Self-Determination Theory", "url": "https://selfdeterminationtheory.org", "desc": "Deci & Ryan ka motivation framework — autonomy, competence, relatedness.", "why": "Intrinsic vs extrinsic motivation ka academic-grade explanation.", "tags": ["motivation", "academic", "framework"], "category": "Psychology & Mental Models"}, {"name": "The Power of Habit (Archive)", "url": "https://archive.org/search?query=power+of+habit+duhigg", "desc": "Charles Duhigg. Habit loop — cue, routine, reward. Journalist's deep research.", "why": "Storytelling ke saath science. Most accessible habit book.", "tags": ["habits", "book", "storytelling"], "category": "Psychology & Mental Models"}, {"name": "Thinking, Fast and Slow (Archive)", "url": "https://archive.org/search?query=thinking+fast+and+slow+kahneman", "desc": "Daniel Kahneman. System 1 vs System 2. Nobel Prize-winning cognitive science.", "why": "Cognitive bias literature ka foundation text. Sab kuch yahan se nikalta hai.", "tags": ["kahneman", "biases", "foundational"], "category": "Psychology & Mental Models"}, {"name": "Decision Lab", "url": "https://thedecisionlab.com", "desc": "Behavioral science applied to real-world decisions. Free articles, biases explained.", "why": "Har bias ka real-world example milta hai — abstract nahi rehta.", "tags": ["applied", "biases", "examples"], "category": "Psychology & Mental Models"}, {"name": "LessWrong — Cognitive Biases", "url": "https://www.lesswrong.com/tag/cognitive-biases", "desc": "Rationalist community ka cognitive bias deep-dive. Technical, rigorous.", "why": "Jab basic biases samajh aa jaayein — yahan advanced layer milta hai.", "tags": ["rationality", "advanced", "biases"], "category": "Psychology & Mental Models"}, {"name": "Wikipedia — List of Cognitive Biases", "url": "https://en.wikipedia.org/wiki/List_of_cognitive_biases", "desc": "175+ biases catalogued with sources. Comprehensive single reference page.", "why": "Quick lookup ke liye best single resource. Sources verified.", "tags": ["reference", "comprehensive", "wiki"], "category": "Psychology & Mental Models"}, {"name": "Daniel Kahneman Interviews", "url": "https://www.youtube.com/results?search_query=daniel+kahneman+interview", "desc": "Kahneman khud apne research explain karte hain. Multiple long interviews available.", "why": "Book se zyada conversational. Concepts seedha creator se suno.", "tags": ["kahneman", "interviews", "video"], "category": "Psychology & Mental Models"}, {"name": "NIMH", "url": "https://www.nimh.nih.gov", "desc": "Official mental health research, disorder information, treatment data. Free.", "why": "Disorders ke baare mein authentic info — WebMD nahi, actual NIMH.", "tags": ["official", "disorders", "government"], "category": "Psychology & Mental Models"}, {"name": "PsychDB", "url": "https://psychdb.com", "desc": "Psychiatry residents ke liye banaya gaya. DSM criteria, treatment algorithms.", "why": "Medical-student grade clinical detail. Free, comprehensive.", "tags": ["clinical", "DSM", "psychiatry"], "category": "Psychology & Mental Models"}, {"name": "Beck Institute (CBT)", "url": "https://beckinstitute.org", "desc": "Aaron Beck ne CBT banaya. Institute ka free resources on cognitive behavioral therapy.", "why": "CBT ka original source. Most evidence-backed therapy model ka home.", "tags": ["CBT", "therapy", "evidence-based"], "category": "Psychology & Mental Models"}, {"name": "APA — Topics", "url": "https://www.apa.org/topics", "desc": "American Psychological Association. Topic-wise free resources, research summaries.", "why": "Field ka official governing body. Credible, peer-reviewed basis.", "tags": ["APA", "official", "topics"], "category": "Psychology & Mental Models"}, {"name": "WHO — Mental Health", "url": "https://www.who.int/health-topics/mental-health", "desc": "Global mental health data, disorder prevalence, treatment guidelines.", "why": "Cultural context ke saath — sirf Western lens nahi.", "tags": ["global", "WHO", "data"], "category": "Psychology & Mental Models"}, {"name": "IFS Institute", "url": "https://ifs-institute.com", "desc": "Richard Schwartz ka Internal Family Systems model — parts work, self-leadership.", "why": "Modern therapy framework jo accessible hai bina dumb-down kiye.", "tags": ["IFS", "trauma", "modern"], "category": "Psychology & Mental Models"}, {"name": "PubMed Central — Psychology", "url": "https://www.ncbi.nlm.nih.gov/pmc/?term=psychology", "desc": "Free full-text psychology research papers. NIH-backed database.", "why": "Claims verify karne ka primary source. Peer-reviewed, free access.", "tags": ["primary", "research", "free"], "category": "Psychology & Mental Models"}, {"name": "Open Science Framework", "url": "https://osf.io", "desc": "Replication crisis ke baad bana platform — pre-registered studies, open data.", "why": "Psychology mein replication crisis hua hai. Ye platform trustworthy research surface karta hai.", "tags": ["replication", "open science", "trustworthy"], "category": "Psychology & Mental Models"}, {"name": "PsyArXiv", "url": "https://psyarxiv.com", "desc": "Psychology preprints before peer review. Cutting edge findings.", "why": "Latest research peer review se pehle. arXiv ka psychology version.", "tags": ["preprints", "latest", "psychology"], "category": "Psychology & Mental Models"}, {"name": "Replication Index", "url": "https://replicationindex.com", "desc": "Ulrich Schimmack ka blog — psychology studies ki replicability statistically check karta hai.", "why": "Famous studies (Power Pose, Ego Depletion) — kya woh actually replicate hote hain? Yahan pata chalta hai.", "tags": ["replication", "watchdog", "statistics"], "category": "Psychology & Mental Models"}, {"name": "Journal of Personality and Social Psychology", "url": "https://www.apa.org/pubs/journals/psp", "desc": "APA ka flagship journal. Abstracts free, full papers often accessible via Unpaywall.", "why": "Field ka most cited journal. Personality + social psych ka gold standard.", "tags": ["journal", "APA", "top tier"], "category": "Psychology & Mental Models"}, {"name": "Carl Jung — Collected Works", "url": "https://archive.org/search?query=carl+jung+collected+works", "desc": "Jung ke complete works free archive pe. Archetypes, shadow, individuation.", "why": "Secondary sources se zyada — Jung khud kya likha woh padho.", "tags": ["jung", "archetypes", "primary"], "category": "Psychology & Mental Models"}, {"name": "Sigmund Freud — Complete Works", "url": "https://archive.org/search?query=sigmund+freud+complete+works", "desc": "Freud's original texts. Interpretation of Dreams, Ego and Id — free download.", "why": "Modern psychology critique karta hai Freud ko, lekin foundational hai history ke liye.", "tags": ["freud", "psychoanalysis", "historical"], "category": "Psychology & Mental Models"}, {"name": "Maps of Meaning Lectures", "url": "https://www.youtube.com/results?search_query=jordan+peterson+maps+of+meaning", "desc": "Jungian psychology + mythology lectures. University of Toronto course recorded free.", "why": "Jung ko modern, accessible framing mein. Polarizing figure but content solid hai.", "tags": ["jung", "mythology", "lectures"], "category": "Psychology & Mental Models"}, {"name": "The Society of Analytical Psychology", "url": "https://thesap.org.uk", "desc": "Jungian analysis training institute. Free articles, lecture archives.", "why": "Practicing Jungian analysts ka professional body — academic rigor.", "tags": ["jungian", "institute", "UK"], "category": "Psychology & Mental Models"}, {"name": "Joseph Campbell Foundation", "url": "https://www.jcf.org", "desc": "Hero's Journey, comparative mythology — Campbell ka work jo Jung se deeply connected hai.", "why": "Mythology ko psychology se jodta hai. Archetypal patterns across cultures.", "tags": ["mythology", "archetypes", "campbell"], "category": "Psychology & Mental Models"}, {"name": "Stanford Encyclopedia — Freud", "url": "https://plato.stanford.edu/entries/freud", "desc": "Philosophical, critical examination of Freudian theory — strengths aur weaknesses dono.", "why": "Balanced view chahiye — fanboy ya hater nahi, academic critique.", "tags": ["academic", "critique", "balanced"], "category": "Psychology & Mental Models"}, {"name": "TED: Tristan Harris — How Better Tech Could Protect Us from Distraction", "url": "https://www.ted.com/talks/tristan_harris_how_better_tech_could_protect_us_from_distraction", "desc": "Design ethicist Tristan Harris explains how tech giants hijack human attention and dopamine loops.", "why": "Uncover how social media algorithms are engineered to keep you addicted.", "tags": ["ted", "tristan harris", "attention economy", "dopamine"], "category": "Psychology & Mental Models"}, {"name": "TED: Ben Goldacre — What doctors don't know about the drugs they prescribe", "url": "https://www.ted.com/talks/ben_goldacre_what_doctors_don_t_know_about_the_drugs_they_prescribe", "desc": "Doctor and researcher explains how pharmaceutical companies hide negative clinical trials.", "why": "A critical look at the Big Pharma system of publishing only successful results.", "tags": ["ted", "ben goldacre", "big pharma", "clinical trials"], "category": "Psychology & Mental Models"}, {"name": "TED: Nita Farahany — The battle for your brain", "url": "https://www.ted.com/talks/nita_farahany_the_battle_for_your_brain", "desc": "Discusses cognitive liberty, neurotechnology surveillance, and the ultimate privacy threat.", "why": "Understand the future limits of personal privacy when tech can read brain waves.", "tags": ["ted", "privacy", "neurotech", "cognitive liberty"], "category": "Psychology & Mental Models"}, {"name": "TED: David Sinclair — Why we age and why we don't have to", "url": "https://www.ted.com/talks/david_sinclair_why_we_age_and_why_we_don_t_have_to", "desc": "David Sinclair presents the information theory of aging and cellular reprogramming.", "why": "Learn the scientific mechanism behind biological aging and longevity.", "tags": ["ted", "longevity", "david sinclair", "aging"], "category": "Psychology & Mental Models"}, {"name": "The Psychology of Money", "url": "https://archive.org/search?query=psychology+of+money", "desc": "Morgan Housel. Behavior + money ka intersection. 19 short chapters. Best financial book of last decade.", "why": "Finance books mein sab se accurate insight: wealthiest log ka raaz skill nahi, behavior hai.", "tags": ["behavior", "investing", "mindset"], "category": "Wealth, Finance & Investing"}, {"name": "Poor Charlie's Almanack", "url": "https://www.stripe.press/poor-charlies-almanack", "desc": "Charlie Munger ke speeches, mental models, investing philosophy. Stripe Press ne free publish kiya.", "why": "Agar ek book padh sako wealth thinking ke liye — yeh hai. Buffett ne bhi yahi kaha.", "tags": ["mental models", "investing", "munger"], "category": "Wealth, Finance & Investing"}, {"name": "Berkshire Letters (1965-)", "url": "https://berkshirehathaway.com/letters/letters.html", "desc": "Warren Buffett ke annual shareholder letters. 60 years ka investing wisdom seedha source se.", "why": "MBA ka substitute. Free. Primary source. Buffett khud likhta hai — ghostwriter nahi.", "tags": ["buffett", "letters", "investing"], "category": "Wealth, Finance & Investing"}, {"name": "The Intelligent Investor", "url": "https://archive.org/search?query=intelligent+investor+benjamin+graham", "desc": "Benjamin Graham — Buffett ka teacher. Value investing ka original text. 1949, timeless.", "why": "Chapter 8 aur 20 specifically. 'Mr Market' aur 'Margin of Safety' yahan se aaye.", "tags": ["value investing", "graham", "classic"], "category": "Wealth, Finance & Investing"}, {"name": "Rich Dad Poor Dad", "url": "https://archive.org/search?query=rich+dad+poor+dad", "desc": "Robert Kiyosaki. Asset vs Liability distinction. Mindset shift. Accounting mein galat hai par framing mein correct.", "why": "Warning: specific advice mat lo. Lekin 'assets vs liabilities' mental model gold hai.", "tags": ["mindset", "assets", "cashflow"], "category": "Wealth, Finance & Investing"}, {"name": "The Millionaire Next Door", "url": "https://archive.org/search?query=millionaire+next+door", "desc": "Stanley & Danko. Actual millionaires ka study — kaise jeete hain, kaise sochte hain. Surprise: boring.", "why": "Sab se important finding: wealth display aur actual wealth inversely correlated hain.", "tags": ["research", "frugality", "data"], "category": "Wealth, Finance & Investing"}, {"name": "Antifragile", "url": "https://archive.org/search?query=antifragile+taleb", "desc": "Nassim Taleb. Systems jo volatility se strong hote hain. Finance, life, business — sab pe apply hota hai.", "why": "Black Swan events mein dono hote hain: ruined aur enriched. Taleb batata hai kaise enriched side hona.", "tags": ["risk", "volatility", "taleb"], "category": "Wealth, Finance & Investing"}, {"name": "The Almanack of Naval Ravikant", "url": "https://navalmanack.com", "desc": "Naval ke tweets, podcasts, interviews ka compilation. Eric Jorgenson ne freely release kiya.", "why": "'How to Get Rich' thread + wealth philosophy. Har sentence extractable insight hai.", "tags": ["naval", "philosophy", "free"], "category": "Wealth, Finance & Investing"}, {"name": "One Up on Wall Street", "url": "https://archive.org/search?query=one+up+on+wall+street", "desc": "Peter Lynch. Common sense investing — apne aas paas se companies dhundho. Practical.", "why": "'Invest in what you know' — yeh philosophy yahan se hai. Retail investor ka edge explain karta hai.", "tags": ["stocks", "lynch", "practical"], "category": "Wealth, Finance & Investing"}, {"name": "The Little Book of Common Sense Investing", "url": "https://archive.org/search?query=little+book+common+sense+investing", "desc": "John Bogle — Vanguard founder. Index funds ka case. Passive > Active for most people.", "why": "Data se prove karta hai ki 90% active funds index se underperform karte hain. Painful truth.", "tags": ["index funds", "passive", "data"], "category": "Wealth, Finance & Investing"}, {"name": "Skin in the Game", "url": "https://archive.org/search?query=skin+in+game+taleb", "desc": "Taleb. Jo advice dete hain unhe uski consequences bhi face karni chahiye. Applies to finance too.", "why": "Kisi financial advisor ka skin in the game check karo pehle. Ye book reason batata hai.", "tags": ["risk", "accountability", "taleb"], "category": "Wealth, Finance & Investing"}, {"name": "The Essays of Warren Buffett", "url": "https://archive.org/search?query=essays+warren+buffett", "desc": "Lawrence Cunningham ka Buffett letters ka thematic compilation. Structured aur digestible.", "why": "Buffett ke letters coherent chapters mein. Better entry point than reading letters chronologically.", "tags": ["buffett", "curated", "value"], "category": "Wealth, Finance & Investing"}, {"name": "I Will Teach You To Be Rich", "url": "https://archive.org/search?query=ramit+sethi+teach+rich", "desc": "Ramit Sethi. 20s-30s ke liye. Automation, credit cards, investing — step by step.", "why": "Theory nahi — exactly what to do, kab karna hai. Young people ke liye best practical guide.", "tags": ["practical", "automation", "young"], "category": "Wealth, Finance & Investing"}, {"name": "Money: Master the Game", "url": "https://archive.org/search?query=tony+robbins+money+master+game", "desc": "Tony Robbins ne 50 top investors ke interviews liye — Dalio, Bogle, Soros. Condensed.", "why": "Aggregated wisdom. Ray Dalio wala chapter specifically powerful hai.", "tags": ["interviews", "dalio", "comprehensive"], "category": "Wealth, Finance & Investing"}, {"name": "The Dhandho Investor", "url": "https://archive.org/search?query=dhandho+investor+pabrai", "desc": "Mohnish Pabrai. Gujarati businessman mindset + Buffett value investing. India context.", "why": "'Heads I win, tails I don't lose much' — asymmetric bet philosophy. Indian examples.", "tags": ["value investing", "india", "asymmetric"], "category": "Wealth, Finance & Investing"}, {"name": "Zero to One", "url": "https://archive.org/search?query=zero+to+one+thiel", "desc": "Peter Thiel. Monopolies, secrets, building companies. Business creation as wealth vehicle.", "why": "Business ownership = real wealth. Salary nahi. Thiel explain karta hai why monopoly matters.", "tags": ["startup", "monopoly", "thiel"], "category": "Wealth, Finance & Investing"}, {"name": "The Richest Man in Babylon", "url": "https://archive.org/search?query=richest+man+babylon", "desc": "George Clason. Parables through ancient Babylon. 10% save karo, invest karo — fundamentals.", "why": "1926 mein likha. Har basic money rule yahan hai. Public domain — completely free.", "tags": ["classic", "fundamentals", "free"], "category": "Wealth, Finance & Investing"}, {"name": "Die With Zero", "url": "https://archive.org/search?query=die+with+zero+perkins", "desc": "Bill Perkins. Wealth accumulate karna goal nahi — experiences maximize karna hai.", "why": "Counter-narrative: over-saving bhi ek mistake hai. Optimize for life, not net worth number.", "tags": ["lifestyle", "contrarian", "experiences"], "category": "Wealth, Finance & Investing"}, {"name": "Naval's Wealth Creation Thread", "url": "https://nav.al/rich", "desc": "Naval Ravikant ka original Twitter thread — 'How to Get Rich (Without Getting Lucky)'. 40 principles.", "why": "'Seek wealth, not money or status. Wealth is assets that earn while you sleep.' Every line is dense.", "tags": ["naval", "principles", "leverage"], "category": "Wealth, Finance & Investing"}, {"name": "Munger's Psychology of Human Misjudgment", "url": "https://fs.blog/the-psychology-of-human-misjudgment", "desc": "Charlie Munger ka famous Harvard speech. 25 cognitive biases jo financial decisions ruin karte hain.", "why": "Poor Charlie's Almanack ka most important chapter. Free pe available. Read this first.", "tags": ["munger", "biases", "psychology"], "category": "Wealth, Finance & Investing"}, {"name": "Dalio's Principles (Free PDF)", "url": "https://principles.com", "desc": "Ray Dalio — world's largest hedge fund founder. Life + Work principles. Macroeconomic framework.", "why": "'Pain + Reflection = Progress' applies to investing too. Dalio's economic machine template = must.", "tags": ["dalio", "principles", "macro"], "category": "Wealth, Finance & Investing"}, {"name": "The Economic Machine (Video)", "url": "https://www.youtube.com/watch?v=PHe0bXAIuk0", "desc": "Ray Dalio ka 30-minute video — how the economy works. Simplest explanation of debt cycles.", "why": "Ye ek video dekh lo — economy, recessions, debt cycles sab samajh aayega. Free. Forever.", "tags": ["macro", "dalio", "video", "economy"], "category": "Wealth, Finance & Investing"}, {"name": "Warren Buffett's 2023 Letter", "url": "https://berkshirehathaway.com/letters/2023ltr.pdf", "desc": "Most recent Berkshire letter. Every year is a masterclass in capital allocation thinking.", "why": "Specific insights update hote hain but core philosophy same hai. Annual ritual banao isko.", "tags": ["buffett", "annual", "capital"], "category": "Wealth, Finance & Investing"}, {"name": "Farnam Street — Mental Models", "url": "https://fs.blog/mental-models", "desc": "Shane Parrish ka curated mental models library. Compounding, first principles, second-order thinking.", "why": "Wealth decisions mental models se driven hone chahiye — gut feeling se nahi. Yahan sab compiled hai.", "tags": ["mental models", "decisions", "library"], "category": "Wealth, Finance & Investing"}, {"name": "Morgan Housel's Blog", "url": "https://collabfund.com/blog/authors/morgan", "desc": "Morgan Housel ka Collaborative Fund blog. Deep articles on money behavior, market history.", "why": "Psychology of Money se bhi dense articles free pe. Regular reading material.", "tags": ["behavior", "history", "free"], "category": "Wealth, Finance & Investing"}, {"name": "Ben Graham's Security Analysis Concept", "url": "https://www.amazon.com/Security-Analysis-Benjamin-Graham/dp/0070244960", "desc": "Graham's original framework — intrinsic value vs market price. Foundation of all value investing.", "why": "Yeh concept samajhna = Mr Market game samajhna. Advanced but foundational.", "tags": ["value investing", "analysis", "advanced"], "category": "Wealth, Finance & Investing"}, {"name": "The Bogleheads Philosophy", "url": "https://www.bogleheads.org/wiki/Bogleheads%27_investment_philosophy", "desc": "Community wiki. Low-cost index funds, diversification, long-term holding. Evidence-based.", "why": "95% log ke liye optimal wealth strategy yahan described hai. Simple. Evidence-backed.", "tags": ["index", "passive", "evidence"], "category": "Wealth, Finance & Investing"}, {"name": "Howard Marks' Memos", "url": "https://www.oaktreecapital.com/insights", "desc": "Howard Marks — Oaktree Capital. Market cycle memos since 1990. Buffett bhi inhe padhta hai.", "why": "'The Most Important Thing' book ka live, updated version. Free subscription pe milte hain.", "tags": ["cycles", "marks", "memos"], "category": "Wealth, Finance & Investing"}, {"name": "Aswath Damodaran's Site", "url": "https://pages.stern.nyu.edu/~adamodar", "desc": "NYU Stern professor. Valuation framework, datasets, courses — all free online.", "why": "Stocks ko value karna sikhna ho? Damodaran ka course > any paid finance course.", "tags": ["valuation", "academic", "free"], "category": "Wealth, Finance & Investing"}, {"name": "AQR Research Papers", "url": "https://www.aqr.com/Insights/Research", "desc": "AQR Capital — Cliff Asness. Factor investing, momentum, value — free research papers.", "why": "Hedge fund level research public ke liye free. Academic rigor + practical application.", "tags": ["quant", "research", "factors"], "category": "Wealth, Finance & Investing"}, {"name": "Yahoo Finance", "url": "https://finance.yahoo.com", "desc": "Stock prices, financials, earnings, news. Free historical data download.", "why": "Starting point for any stock research. Screener bhi decent hai.", "tags": ["stocks", "data", "screener"], "category": "Wealth, Finance & Investing"}, {"name": "Macrotrends", "url": "https://www.macrotrends.net", "desc": "Long-term historical charts — S&P 500, PE ratios, GDP, inflation, interest rates. Free.", "why": "100+ years ka data. Market valuations historically kahan hain — yahan dekhna padta hai.", "tags": ["macro", "historical", "charts"], "category": "Wealth, Finance & Investing"}, {"name": "FRED (St. Louis Fed)", "url": "https://fred.stlouisfed.org", "desc": "Federal Reserve ka free economic database. 800,000+ data series. Inflation, rates, GDP, everything.", "why": "Macro investing ke liye primary source. Central bank ka khud ka data — no middleman.", "tags": ["macro", "federal reserve", "official"], "category": "Wealth, Finance & Investing"}, {"name": "Simplywall.st (Free Tier)", "url": "https://simplywall.st", "desc": "Company financials visualized — snowflake model. Free tier for basic analysis.", "why": "Numbers aur visuals ek saath. Non-financial log ke liye stock samajhna asaan hota hai.", "tags": ["stocks", "visual", "analysis"], "category": "Wealth, Finance & Investing"}, {"name": "GuruFocus", "url": "https://gurufocus.com", "desc": "Buffett, Munger, Ackman, Dalio — unke portfolios track karo. 13F filings visualized.", "why": "Real money kahan laga raha hai duniya's best investors ka. Free basic access.", "tags": ["portfolios", "gurus", "13F"], "category": "Wealth, Finance & Investing"}, {"name": "Multpl.com", "url": "https://multpl.com", "desc": "S&P 500 PE ratio, Shiller PE, dividend yield, earnings yield — historical charts. Clean.", "why": "Market expensive hai ya cheap? Shiller PE yahan dekhna hai. Simple. Crucial.", "tags": ["PE ratio", "valuation", "S&P"], "category": "Wealth, Finance & Investing"}, {"name": "Damodaran's Data", "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html", "desc": "Annual datasets — betas, risk premiums, industry margins, EV multiples. Updated annually.", "why": "Valuation mein industry benchmarks chahiye? Yahan free Excel downloads hain.", "tags": ["valuation", "industry", "academic"], "category": "Wealth, Finance & Investing"}, {"name": "Screener.in", "url": "https://screener.in", "desc": "Indian stocks ka comprehensive free screener. Balance sheets, P&L, cashflows, 10-year data.", "why": "India mein ye tool free mein jo deta hai woh $100/month tools bhi nahi dete.", "tags": ["india", "stocks", "screener"], "category": "Wealth, Finance & Investing"}, {"name": "RBI Data Warehouse", "url": "https://dbie.rbi.org.in", "desc": "Reserve Bank of India ka data. Inflation, interest rates, money supply, banking data.", "why": "India ke monetary decisions samajhne ke liye primary source.", "tags": ["india", "RBI", "official"], "category": "Wealth, Finance & Investing"}, {"name": "SEBI Filings (BSE/NSE)", "url": "https://www.bseindia.com", "desc": "Company filings, annual reports, shareholding patterns — directly from exchanges.", "why": "Jo company bolti hai woh nahi — jo file karti hai woh padho. Primary source.", "tags": ["india", "filings", "primary"], "category": "Wealth, Finance & Investing"}, {"name": "Global Market Cap", "url": "https://companiesmarketcap.com", "desc": "Top companies by market cap — global aur country-wise. Live aur historical.", "why": "Duniya ki wealth distribution kahan hai — quick visual context ke liye.", "tags": ["market cap", "global", "rankings"], "category": "Wealth, Finance & Investing"}, {"name": "Statista Finance", "url": "https://statista.com/markets/401/topic/455/financial-services", "desc": "Financial industry statistics, reports, charts. Free tier useful for overview data.", "why": "Research papers aur pitches ke liye credible data points. Properly sourced.", "tags": ["statistics", "reports", "financial"], "category": "Wealth, Finance & Investing"}, {"name": "TradingEconomics", "url": "https://tradingeconomics.com", "desc": "196 countries ka economic data. GDP, inflation, interest rates, unemployment — live.", "why": "Global macro view chahiye? Har country ka real-time data yahan hai.", "tags": ["global", "macro", "live"], "category": "Wealth, Finance & Investing"}, {"name": "Visual Capitalist", "url": "https://visualcapitalist.com", "desc": "Wealth, markets, economy — visualized. Shareable, well-researched infographics.", "why": "Data visualization = faster understanding. Useful for quickly grasping wealth patterns.", "tags": ["visualization", "wealth", "data"], "category": "Wealth, Finance & Investing"}, {"name": "Zerodha Kite", "url": "https://zerodha.com", "desc": "India ka best discount broker. ₹20 flat brokerage. Free delivery trading.", "why": "Investing mein sabse pehle ek account chahiye. Zerodha = default choice India mein.", "tags": ["broker", "india", "trading"], "category": "Wealth, Finance & Investing"}, {"name": "Grow (Smallcase)", "url": "https://groww.in", "desc": "Mutual funds, stocks, ETFs — simple UI. Beginner ke liye best starting point India mein.", "why": "SIP setup karo, forget karo. Automation + simplicity = most people ke liye best.", "tags": ["beginner", "mutual funds", "india"], "category": "Wealth, Finance & Investing"}, {"name": "Personal Capital / Empower", "url": "https://empower.com", "desc": "Complete financial picture — investments, assets, liabilities — ek dashboard mein. Free.", "why": "Net worth track karna shuru karo. Jo measure nahi hota woh improve nahi hota.", "tags": ["tracking", "net worth", "dashboard"], "category": "Wealth, Finance & Investing"}, {"name": "Portfolio Visualizer", "url": "https://portfoliovisualizer.com", "desc": "Portfolio backtesting, asset allocation analysis, Monte Carlo simulation. Free.", "why": "'Ye portfolio historically kaise perform karta' — yahan test karo before investing.", "tags": ["backtesting", "portfolio", "analysis"], "category": "Wealth, Finance & Investing"}, {"name": "Compound Interest Calculator", "url": "https://investor.gov/financial-tools-calculators/calculators/compound-interest-calculator", "desc": "US SEC ka free compound interest calculator. Visual graph ke saath.", "why": "Compounding ka actual magic dekhna ho — yahan numbers daalo. Mind badhega.", "tags": ["calculator", "compounding", "SEC"], "category": "Wealth, Finance & Investing"}, {"name": "SIP Calculator", "url": "https://groww.in/calculators/sip-calculator", "desc": "Monthly SIP ka projected value calculate karo. Return, tenure, amount adjust karo.", "why": "₹5000/month SIP at 12% return for 30 years = ₹1.8 crore. See it to believe it.", "tags": ["SIP", "india", "calculator"], "category": "Wealth, Finance & Investing"}, {"name": "Firefly III", "url": "https://firefly-iii.org", "desc": "Open-source personal finance manager. Self-hosted, private, no subscription.", "why": "Data apna, server apna, privacy complete. Technical users ke liye perfect.", "tags": ["open source", "self-hosted", "budget"], "category": "Wealth, Finance & Investing"}, {"name": "GnuCash", "url": "https://gnucash.org", "desc": "Free double-entry accounting software. Small business + personal finance.", "why": "Serious money tracking ke liye. Quicken ka free, more powerful alternative.", "tags": ["accounting", "free", "software"], "category": "Wealth, Finance & Investing"}, {"name": "Moneycontrol", "url": "https://moneycontrol.com", "desc": "India markets, mutual funds, news, portfolio tracking. Free tier comprehensive.", "why": "India mein sab log use karte hain. News + data ek jagah.", "tags": ["india", "news", "portfolio"], "category": "Wealth, Finance & Investing"}, {"name": "Value Research Online", "url": "https://valueresearchonline.com", "desc": "India mutual funds ka best free analysis tool. Fund comparison, ratings, returns.", "why": "Kaunsa mutual fund lena hai? Yahan research karo pehle. Independent, not sponsored.", "tags": ["mutual funds", "india", "research"], "category": "Wealth, Finance & Investing"}, {"name": "ETF.com", "url": "https://etf.com", "desc": "ETF comparison, expense ratios, holdings, performance. US ETFs comprehensive database.", "why": "Low-cost index investing ke liye ETF research = must. Free comprehensive data.", "tags": ["ETF", "index", "research"], "category": "Wealth, Finance & Investing"}, {"name": "Morningstar (Free Tier)", "url": "https://morningstar.com", "desc": "Fund ratings, analyst reports (some free), portfolio tools. Industry standard.", "why": "Star ratings se zyada — actual analyst insights ka free tier solid hai.", "tags": ["funds", "ratings", "analysis"], "category": "Wealth, Finance & Investing"}, {"name": "Warren Buffett Archive", "url": "https://buffett.cnbc.com", "desc": "CNBC ka Buffett interview archive. Decades ka video. Annual meetings, interviews, speeches.", "why": "Usse suno, sirf padho mat. Paisa banana ke baare mein 70 saal ka practical wisdom.", "tags": ["buffett", "video", "archive"], "category": "Wealth, Finance & Investing"}, {"name": "Charlie Munger — DJCO Meetings", "url": "https://www.youtube.com/results?search_query=charlie+munger+daily+journal+meeting", "desc": "Daily Journal Corporation annual meetings. Munger openly bolte hain kuch bhi. Legendary.", "why": "Buffett + Munger ki combination — Munger more blunt hai. Real talk.", "tags": ["munger", "annual", "meetings"], "category": "Wealth, Finance & Investing"}, {"name": "Ray Dalio — LinkedIn + YouTube", "url": "https://www.linkedin.com/in/raydalio", "desc": "Dalio actively posts. Economic principles, market cycles, geopolitical views.", "why": "Macro pe best insight. His posts are mini-essays with actual analysis.", "tags": ["dalio", "macro", "linkedin"], "category": "Wealth, Finance & Investing"}, {"name": "Naval Ravikant's Blog", "url": "https://nav.al", "desc": "Naval ke aphorisms, long-form posts, podcast links. Wealth without sacrificing freedom.", "why": "'Specific knowledge' concept — ek hi jagah properly explained hai.", "tags": ["naval", "leverage", "specific knowledge"], "category": "Wealth, Finance & Investing"}, {"name": "Aswath Damodaran YouTube", "url": "https://www.youtube.com/@AswathDamodaranonValuation", "desc": "NYU professor ke full valuation courses YouTube pe. Free. Better than MBA finance.", "why": "Stock valuation seekhna hai? 200+ videos free. Primary source.", "tags": ["valuation", "education", "youtube"], "category": "Wealth, Finance & Investing"}, {"name": "Cathie Wood — ARK Research", "url": "https://ark-invest.com/research", "desc": "ARK Invest ke research reports free download. Disruptive technology + equity research.", "why": "Agree ya disagree — unka research methodology padhne se analysis sikhti hai.", "tags": ["research", "disruptive", "ARK"], "category": "Wealth, Finance & Investing"}, {"name": "Nassim Taleb — Medium + Papers", "url": "https://medium.com/@nntaleb", "desc": "Taleb khud likhta hai directly. Risk, probability, skin in the game updates.", "why": "Books se zyada candid. Comment section pe fight bhi karta hai — entertaining + educational.", "tags": ["taleb", "risk", "probability"], "category": "Wealth, Finance & Investing"}, {"name": "Peter Lynch Interviews", "url": "https://www.youtube.com/results?search_query=peter+lynch+interview", "desc": "Lynch ke classic interviews — investing wisdom jo 80s mein kaha, aaj bhi sach hai.", "why": "'Invest in what you know' — usse seedha suno. 30 min se less mein class complete.", "tags": ["lynch", "stocks", "interviews"], "category": "Wealth, Finance & Investing"}, {"name": "Zerodha Varsity", "url": "https://zerodha.com/varsity", "desc": "Complete stock market curriculum — technical, fundamental, derivatives, personal finance. Hindi bhi.", "why": "India ka best free finance education. No other platform comes close. 10 modules.", "tags": ["india", "education", "free"], "category": "Wealth, Finance & Investing"}, {"name": "r/IndiaInvestments", "url": "https://reddit.com/r/IndiaInvestments", "desc": "India-specific investing community. MF, stocks, FDs, tax — real questions, real answers.", "why": "Wiki pehle padho. 90% questions cover hai wahan. High quality community.", "tags": ["india", "community", "reddit"], "category": "Wealth, Finance & Investing"}, {"name": "Freefincal", "url": "https://freefincal.com", "desc": "Prof Pattu ka blog. Evidence-based Indian personal finance. No conflict of interest.", "why": "India mein sabse honest financial blog. Peer-reviewed articles. No product selling.", "tags": ["india", "evidence", "honest"], "category": "Wealth, Finance & Investing"}, {"name": "SEBI Investor Education", "url": "https://investor.sebi.gov.in", "desc": "SEBI ka free investor education portal. Basics se advanced — official guidance.", "why": "Regulatory body ka khud ka education. Authentic, no conflict of interest.", "tags": ["india", "SEBI", "official"], "category": "Wealth, Finance & Investing"}, {"name": "Moneylife", "url": "https://www.moneylife.in", "desc": "Independent financial journalism. Debashis Basu — exposes mis-selling, fraud.", "why": "India mein financial mis-selling bahut common hai. Yeh watchdog hai.", "tags": ["india", "journalism", "watchdog"], "category": "Wealth, Finance & Investing"}, {"name": "Prime Investor (Free Articles)", "url": "https://primeinvestor.in", "desc": "SEBI-registered investment advisors ke free articles. Unbiased equity + MF research.", "why": "Paid service hai lekin free articles bhi valuable. No commissions conflict.", "tags": ["india", "research", "SEBI registered"], "category": "Wealth, Finance & Investing"}, {"name": "NSE Academy", "url": "https://www.nseindia.com/education", "desc": "National Stock Exchange ka free education. NCFM certifications ki prep material.", "why": "Exchange ka khud ka education. Concepts authentic aur India-market relevant.", "tags": ["india", "NSE", "education"], "category": "Wealth, Finance & Investing"}, {"name": "RBI Grade B Study Material", "url": "https://rbi.org.in/scripts/PublicationsView.aspx?id=14042", "desc": "RBI ke monetary policy reports, annual reports — economics ki deepest understanding.", "why": "Macro India samajhna hai? RBI khud explain karta hai kya soch raha hai.", "tags": ["india", "RBI", "macro"], "category": "Wealth, Finance & Investing"}, {"name": "Asan Ideas for Wealth", "url": "https://asanideas.com", "desc": "Pattu ke simple, local language financial guides. Tamil + Hindi content.", "why": "Language barrier hata ke India mein financial literacy badhaata hai.", "tags": ["india", "hindi", "simple"], "category": "Wealth, Finance & Investing"}, {"name": "Capitalmind", "url": "https://capitalmind.in", "desc": "Deepak Shenoy ka platform. Data-driven Indian market analysis. Free newsletter.", "why": "India mein quantitative approach lene wale few me se. Evidence-based.", "tags": ["india", "quant", "deepak shenoy"], "category": "Wealth, Finance & Investing"}, {"name": "SSRN Finance Abstracts", "url": "https://ssrn.com/en/index.cfm/finance", "desc": "Pre-publication finance research. Find papers before they become mainstream.", "why": "Academic alpha: research jo abhi popular nahi hua — practitioners se pehle padho.", "tags": ["academic", "research", "alpha"], "category": "Wealth, Finance & Investing"}, {"name": "CFA Institute Research", "url": "https://www.cfainstitute.org/research", "desc": "CFA Institute ke free research briefs, reports, market integrity resources.", "why": "Institutional investment thinking — free access to many reports.", "tags": ["CFA", "institutional", "research"], "category": "Wealth, Finance & Investing"}, {"name": "Options Clearing Corp Education", "url": "https://www.theocc.com/education", "desc": "Derivatives aur options fundamentals — official clearing corp ka education.", "why": "Options samajhna ho? Primary source se. No agenda except clarity.", "tags": ["options", "derivatives", "official"], "category": "Wealth, Finance & Investing"}, {"name": "Damodaran's Corporate Finance Course", "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/corpfin.htm", "desc": "Full corporate finance course — slides, videos, problem sets. NYU Stern level.", "why": "MBA level corporate finance education without MBA cost or debt.", "tags": ["corporate finance", "NYU", "free course"], "category": "Wealth, Finance & Investing"}, {"name": "Khan Academy Finance", "url": "https://khanacademy.org/economics-finance-domain", "desc": "Micro/macroeconomics, finance, accounting — first principles. Visual, interactive.", "why": "Agar foundation weak hai — yahan aao. Compound interest to derivatives.", "tags": ["foundation", "economics", "free"], "category": "Wealth, Finance & Investing"}, {"name": "Patrick Boyle YouTube", "url": "https://www.youtube.com/@PBoyle", "desc": "Ex-hedge fund manager. Quant finance, market history, economic analysis. High quality.", "why": "Wall Street insider ka perspective. No paid courses — sab free YouTube pe.", "tags": ["hedge fund", "quant", "youtube"], "category": "Wealth, Finance & Investing"}, {"name": "Ben Felix YouTube", "url": "https://www.youtube.com/@BenFelixCSI", "desc": "Evidence-based investing. Factor models, market efficiency, research-backed advice.", "why": "Financial pornography ke baad ye padho. Actual data se baat karta hai.", "tags": ["evidence", "factors", "youtube"], "category": "Wealth, Finance & Investing"}, {"name": "Macro Voices Podcast", "url": "https://www.macrovoices.com", "desc": "Professional investors ke saath macro discussions. Commodity cycles, rates, currencies.", "why": "Macro hedge fund thinking free pe. Complex topics simple nahi — real complexity.", "tags": ["macro", "podcast", "professional"], "category": "Wealth, Finance & Investing"}, {"name": "Acquired Podcast", "url": "https://www.acquired.fm", "desc": "Tech companies ka deep business history — Apple, Nvidia, Berkshire, LVMH. 3-4 ghante.", "why": "Business models seedha samjho. Kyun kuch companies trillion-dollar ban jaati hain.", "tags": ["business", "history", "podcast"], "category": "Wealth, Finance & Investing"}, {"name": "Positive Money", "url": "https://positivemoney.org", "desc": "Kendriya bankon dwara paisa chhapne ki monopoly ko khatam karne aur democratic money system ki advocacy karne wala global organization.", "why": "Fiat money ke shoshan aur debt-based economic गुलामी ko samajhne ka best resource.", "tags": ["sovereign money", "banking", "finance", "reform"], "category": "Wealth, Finance & Investing"}, {"name": "Bretton Woods Project", "url": "https://www.brettonwoodsproject.org", "desc": "World Bank aur IMF ki policies aur loans ki monitoring karne wala independent global project.", "why": "Uncover karta hai ki kaise international finance institutions garib deshon ke resources aur currency ko control karte hain.", "tags": ["imf", "world bank", "debt trap", "global economy"], "category": "Wealth, Finance & Investing"}, {"name": "The Money Masters Full Documentary", "url": "https://www.youtube.com/results?search_query=the+money+masters+full+documentary", "desc": "Central banking cartel aur paper currency (Fiat Money) ke shoshan ka itihaas batane wali documentary.", "why": "Duniya ko control karne wale financial elites ka sabsb bada aur authoritative expose.", "tags": ["documentary", "money", "history", "central banks"], "category": "Wealth, Finance & Investing"}, {"name": "Zeitgeist: Addendum Full Documentary", "url": "https://www.youtube.com/results?search_query=zeitgeist+addendum+full", "desc": "Money creation system, debt-based economy aur monetary slavery ka absolute scientific analysis.", "why": "Sikhiyye ki kaise debt aur money interconnected hain aur aam insaan is chakravyuh me phansa hua hai.", "tags": ["documentary", "economics", "fed", "debt"], "category": "Wealth, Finance & Investing"}, {"name": "ICIJ Offshore Leaks Database", "url": "https://offshoreleaks.icij.org", "desc": "पनामा पेपर्स, पंडोरा पेपर्स और पैराडाइज पेपर्स का आधिकारिक डेटाबेस। इसमें दुनिया भर के राजनेताओं और अमीरों की बेनामी कंपनियों का कच्चा डेटा है।", "why": "दुनिया भर के टैक्स हैवन, मनी लॉन्ड्रिंग और शेल कंपनियों का पर्दाफाश करने का सबसे बड़ा जरिया।", "tags": ["panama papers", "offshore", "money laundering", "expose"], "category": "World Expose Databases"}, {"name": "WikiLeaks", "url": "https://wikileaks.org", "desc": "सरकारों, खुफिया साज़िशों और युद्ध अपराधों के गुप्त लीक हुए दस्तावेज़ों का सबसे बड़ा वैश्विक आर्काइव।", "why": "बिना किसी सेंसरशिप के सरकारों के असली चेहरे और खुफिया नीतियों को सामने लाने का मुख्य स्रोत।", "tags": ["whistleblower", "classified", "leaks", "expose"], "category": "World Expose Databases"}, {"name": "DDoSecrets (Distributed Denial of Secrets)", "url": "https://ddosecrets.com", "desc": "खोजी पत्रकारों और व्हिसलब्लोअर्स के लीक हुए विशाल डेटासेट्स का एक स्वतंत्र विकेंद्रीकृत हब।", "why": "WikiLeaks के बाद दुनिया का सबसे सक्रिय लीक डेटाबेस।", "tags": ["leaks", "hacking", "government", "transparency"], "category": "World Expose Databases"}, {"name": "LittleSis (Oligarchy Mapping Database)", "url": "https://littlesis.org", "desc": "नेताओं, बड़े बैंकों, और कंपनियों के आपसी रसूख और सांठगांठ को विज़ुअली मैप करने वाला डेटाबेस।", "why": "यह जानने के लिए कि पर्दे के पीछे कौन सी कंपनी किस नेता को नियंत्रित कर रही है।", "tags": ["lobbying", "oligarchy", "mapping", "corruption"], "category": "World Expose Databases"}, {"name": "OpenSecrets (Money in Politics)", "url": "https://www.opensecrets.org", "desc": "नेताओं को मिलने वाले कॉर्पोरेट चंदे, चुनावी फंडिंग और राजनीतिक लॉबिंग के पैसे का लाइव डेटाबेस।", "why": "यह दिखाता है कि कैसे पैसा सीधे राजनीतिक निर्णयों और कानूनों को खरीदता है।", "tags": ["funding", "lobbying", "elections", "expose"], "category": "World Expose Databases"}, {"name": "Project Censored", "url": "https://www.projectcensored.org", "desc": "मुख्यधारा के बड़े कॉर्पोरेट मीडिया द्वारा दबाई गई सबसे बड़ी खोजी खबरों का वार्षिक डेटाबेस।", "why": "मीडिया सेंसरशिप को उजागर करने और वास्तविक खबरों को खोजने का एक शानदार शैक्षिक स्रोत।", "tags": ["media bias", "censored", "news", "expose"], "category": "World Expose Databases"}, {"name": "Operation Gladio Research (National Archives)", "url": "https://www.archives.gov", "desc": "शीत युद्ध के दौरान यूरोप में नाटो (NATO) और सीआईए द्वारा चलाए गए गुप्त स्टे-बिहाइंड सेनाओं (Operation Gladio) के डीक्लासिफाइड दस्तावेज़।", "why": "यह उजागर करता है कि कैसे राज्य एजेंसियां राजनीति को नियंत्रित करने के लिए नकली हमले (False Flag) आयोजित करती हैं।", "tags": ["false flag", "gladio", "cia", "expose"], "category": "World Expose Databases"}];
+const QUESTIONS = ["अगर पैसा छापने की मशीन सरकार के पास है, तो मैं अपनी ज़िंदगी के सबसे कीमती 40 साल उस कागज़ (पैसे) को कमाने के लिए क्यों दे रहा हूँ?", "अगर मैं आज काम करना बंद कर दूँ, तो मेरी सेविंग्स मुझे कितने दिन तक ज़िंदा रख सकती हैं?", "मेरी कंपनी का मालिक (CEO) मेरे द्वारा किए गए काम का फायदा उठा रहा है, तो मैं अपने खुद के समय का मालिक कब बनूंगा?", "क्या मैं अपनी नौकरी इसलिए कर रहा हूँ क्योंकि मुझे यह पसंद है, या इसलिए कि मेरे सिर पर EMI और कर्ज़ की तलवार लटकी है?", "मैं राजनीति, धर्म और समाज के बारे में जो भी सोचता हूँ, क्या वह वाकई *मेरी* अपनी सोच है, या वह मुझे टीवी, स्कूल और न्यूज़ ने दी है?", "जब मैं सोशल मीडिया (Reels/Shorts) देखता हूँ, तो क्या मैं खुद को कंट्रोल कर रहा हूँ, या वह ऐप का अल्गोरिदम (Algorithm) मुझे कंट्रोल कर रहा है?", "जो चीज़ें मुझे खुश करती हैं (जैसे नए कपड़े, नई गाड़ी, ब्रांड्स), क्या वे सच में मुझे खुशी देती हैं, या विज्ञापनों ने मेरे दिमाग में यह डाला है कि मुझे इनकी ज़रूरत है?", "अगर जंक फूड, सिगरेट और शराब से कैंसर और बीमारियां होती हैं, तो सरकारें इन्हें बैन करने के बजाय सिर्फ इन पर टैक्स क्यों लगाती हैं?", "न्यूज़ चैनल दिन भर सिर्फ डराने वाली और नेगेटिव ख़बरें ही क्यों दिखाते हैं? मेरे डरे रहने से किसको फायदा हो रहा है?", "स्कूल में मुझे 15 साल तक पाइथागोरस थ्योरम (Pythagoras theorem) जैसी चीज़ें सिखाई गईं, लेकिन टैक्स कैसे बचाएं, पैसे से पैसा कैसे बनाएं और अपना बिज़नेस कैसे शुरू करें, यह क्यों नहीं सिखाया गया?", "अगर दवाइयां (Allopathy) लोगों को ठीक कर रही हैं, तो बीमारियां साल-दर-साल बढ़ क्यों रही हैं?", "कंपनियां प्रोसेस्ड/पैकेट बंद खाने में इतने केमिकल्स क्यों डालती हैं? क्या सिर्फ स्वाद के लिए, या इसलिए कि आप बीमार पड़ें और फिर उनकी दवाइयां खरीदें?", "डॉक्टर को बीमारी ठीक करने के पैसे मिलते हैं। अगर सारे लोग स्वस्थ हो गए, तो डॉक्टर का बिज़नेस कैसे चलेगा?", "अगर मुझे कल पैसे की कोई चिंता न हो, और दुनिया का कोई डर न हो, तो मैं अपनी ज़िंदगी के साथ असल में क्या करूँगा?"];
+const GENIUSES = [{"category": "नीति और कानून (Policy & Whistleblowers)", "name": "सत्येंद्र दुबे", "wiki_url": "https://en.wikipedia.org/wiki/Satyendra_Dubey", "country": "भारत", "year": "2003", "what": "IES अधिकारी और NHAI प्रोजेक्ट डायरेक्टर, जिन्होंने राष्ट्रीय राजमार्ग परियोजना (Golden Quadrilateral) में बड़े भ्रष्टाचार का पर्दाफाश किया।", "fate": "प्रधानमंत्री कार्यालय (PMO) को भेजी गई उनकी गुप्त चिट्ठी से नाम लीक होने के बाद गया (बिहार) में गोली मारकर हत्या कर दी गई।"}, {"category": "नीति और कानून (Policy & Whistleblowers)", "name": "कैरन सिल्कवुड", "wiki_url": "https://en.wikipedia.org/wiki/Karen_Silkwood", "country": "USA", "year": "1974", "what": "प्लूटोनियम प्लांट की कर्मचारी, जिन्होंने प्लांट के अंदर हो रही भारी सुरक्षा कोताही और परमाणु सामग्री की चोरी का पर्दाफाश किया।", "fate": "जब वे न्यूयॉर्क टाइम्स के पत्रकार को सबूत देने जा रही थीं, तब उनकी कार का रहस्यमय एक्सीडेंट हो गया और कार में रखे सारे दस्तावेज़ गायब हो गए।"}, {"category": "नीति और कानून (Policy & Whistleblowers)", "name": "गैरी वेब", "wiki_url": "https://en.wikipedia.org/wiki/Gary_Webb", "country": "USA", "year": "2004", "what": "पुलित्जर विजेता पत्रकार, जिन्होंने खुलासा किया कि CIA ड्रग कार्टेल्स के साथ मिलकर अमेरिका के गरीब इलाकों में कोकीन बेच रही थी (Dark Alliance)।", "fate": "मुख्यधारा के मीडिया ने उनका करियर पूरी तरह तबाह कर दिया। वे सिर में दो गोलियों के घाव के साथ मृत पाए गए (जिससे पुलिस ने संदिग्ध रूप से 'आत्महत्या' करार दिया)।"}, {"category": "नीति और कानून (Policy & Whistleblowers)", "name": "जूलियन असांजे", "wiki_url": "https://en.wikipedia.org/wiki/Julian_Assange", "country": "ऑस्ट्रेलिया", "year": "—", "what": "WikiLeaks के संस्थापक, जिन्होंने इराक/अफगानिस्तान युद्ध अपराधों और सरकारों के गुप्त डिप्लोमैटिक केबल्स का कच्चा डेटा सार्वजनिक किया।", "fate": "एक दशक से अधिक समय तक मनमाने ढंग से हिरासत में रखा गया और प्रत्यर्पण मुकदमों के जरिए प्रताड़ित किया गया।"}, {"category": "स्वास्थ्य और चिकित्सा (Health & Suppressed Medicine)", "name": "डॉ. सुभाष मुखर्जी", "wiki_url": "https://en.wikipedia.org/wiki/Subhash_Mukhopadhyay", "country": "भारत", "year": "1981", "what": "भारत के पहले और दुनिया के दूसरे IVF (टेस्ट-ट्यूब बेबी) निर्माता।", "fate": "सरकारी डॉक्टरों और ब्यूरोक्रेसी ने उन्हें प्रताड़ित किया, रिसर्च रोकने के लिए आई-डिपार्टमेंट में ट्रांसफर किया। दुखी होकर आत्महत्या की। 2002 में आधिकारिक मान्यता मिली।"}, {"category": "स्वास्थ्य और चिकित्सा (Health & Suppressed Medicine)", "name": "डॉ. सेबी (अल्फ्रेडो बोमन)", "wiki_url": "https://en.wikipedia.org/wiki/Alfredo_Bowman", "country": "होंडुरास", "year": "2016", "what": "प्राकृतिक क्षारीय (Alkaline) आहार और जड़ी-बूटियों के जरिए एड्स, कैंसर और डायबिटीज ठीक करने का दावा किया और अमेरिकी सुप्रीम कोर्ट में खुद का केस जीता।", "fate": "पुलिस कस्टडी (Honduras) में बेहद संदिग्ध परिस्थितियों में मौत। उनके उपचार केंद्रों और शिक्षा सामग्री को पूरी तरह प्रतिबंधित करने की कोशिश की गई।"}, {"category": "स्वास्थ्य और चिकित्सा (Health & Suppressed Medicine)", "name": "रॉयल रेमंड राइफ", "wiki_url": "https://en.wikipedia.org/wiki/Royal_Rife", "country": "USA", "year": "1971", "what": "कैंसर और बैक्टीरिया की विनाशकारी आवृत्तियों (Destructive frequencies) को खोजकर उन्हें नष्ट करने वाली 'Rife Machine' का आविष्कार किया।", "fate": "उनकी प्रयोगशाला में आग लगा दी गई, उनके सहयोगियों को धमकाया गया और चिकित्सा संघ (AMA) ने उनके काम को पूरी तरह ब्लॉक कर दिया।"}, {"category": "स्वास्थ्य और चिकित्सा (Health & Suppressed Medicine)", "name": "डॉ. स्टैनिस्लाव बर्जिंस्की", "wiki_url": "https://en.wikipedia.org/wiki/Stanislaw_Burzynski", "country": "USA", "year": "—", "what": "'Antineoplastons' नामक नॉन-टॉक्सिक कैंसर चिकित्सा के खोजकर्ता, जो कैंसर ट्यूमर को ठीक करने में कामयाब रही।", "fate": "एफडीए (FDA) ने उनके खिलाफ दर्जनों मुकदमे दायर किए, उनकी रिसर्च पर बैन लगाने की कोशिश की और उन्हें दशकों तक प्रताड़ित किया।"}, {"category": "स्वास्थ्य और चिकित्सा (Health & Suppressed Medicine)", "name": "गैस्टन नेसन्स", "wiki_url": "https://en.wikipedia.org/wiki/Gaston_Naessens", "country": "फ्रांस/कनाडा", "year": "2018", "what": "जीवित रक्त कोशिकाओं के अंदर \"सोमाटिड्स\" (Somatids) नामक सूक्ष्म जीवों को देखने वाले 'सोमैटोस्कोप' (सूक्ष्मदर्शी) के आविष्कारक और वैकल्पिक कैंसर दवा \"714-X\" के निर्माता।", "fate": "मेडिकल एसोसिएशन ने उनकी दवा पर बैन लगा दिया, उन्हें कोर्ट केसों में फंसाया और विज्ञान बिरादरी से बाहर कर दिया।"}, {"category": "कला और स्वतंत्र अभिव्यक्ति (Art & Social Theatre)", "name": "सफ़दर हाशमी", "wiki_url": "https://en.wikipedia.org/wiki/Safdar_Hashmi", "country": "भारत", "year": "1989", "what": "नुक्कड़ नाटकों और जन-नाट्य मंच के जरिए मजदूरों, किसानों और गरीबों को व्यवस्था के शोषण के खिलाफ जागरूक करने वाले कलाकार।", "fate": "एक नाटक प्रदर्शन के दौरान गुंडों और राजनीतिक तत्वों द्वारा सरेआम पीट-पीटकर हत्या कर दी गई।"}, {"category": "कला और स्वतंत्र अभिव्यक्ति (Art & Social Theatre)", "name": "विक्टर जारा", "wiki_url": "https://en.wikipedia.org/wiki/Victor_Jara", "country": "चिली", "year": "1973", "what": "क्रांतिकारी लोक गायक और रंगमंच निर्देशक, जिन्होंने चिली के गरीब कामगारों और मजदूरों की आवाज़ उठाई।", "fate": "सीआईए (CIA) द्वारा समर्थित सैन्य तख्तापलट के दौरान चिली के स्टेडियम में उनके हाथ तोड़ दिए गए और उन्हें गोली मारकर मार दिया गया।"}, {"category": "तकनीकी और सॉफ्टवेयर (Tech, Code & Cryptography)", "name": "आरोन स्वार्ट्ज", "wiki_url": "https://en.wikipedia.org/wiki/Aaron_Swartz", "country": "USA", "year": "2013", "what": "इंटरनेट फ्रीडम एक्टिविस्ट और को-फाउंडर Reddit, जिन्होंने करोड़ों सशुल्क वैज्ञानिक रिसर्च पेपर्स (JSTOR) को मुफ्त में डाउनलोड कर दुनिया के साथ शेयर करना चाहा।", "fate": "अमेरिकी संघीय सरकार ने उन पर 35 साल की जेल का दबाव बनाया। अत्यधिक मानसिक दबाव के कारण 26 वर्ष की उम्र में उन्होंने आत्महत्या कर ली।"}, {"category": "तकनीकी और सॉफ्टवेयर (Tech, Code & Cryptography)", "name": "फिल ज़िमरमैन", "wiki_url": "https://en.wikipedia.org/wiki/Phil_Zimmermann", "country": "USA", "year": "—", "what": "PGP (Pretty Good Privacy) एन्क्रिप्शन के आविष्कारक, जिसने पहली बार ईमेल को पूरी तरह गोपनीय और सुरक्षित बनाया।", "fate": "अमेरिकी सरकार ने उन पर 3 साल तक आपराधिक जांच चलाई, क्योंकि उस समय मजबूत एन्क्रिप्शन कोड को 'हथियार' (Munition) माना जाता था।"}, {"category": "तकनीकी और सॉफ्टवेयर (Tech, Code & Cryptography)", "name": "कोडी विल्सन", "wiki_url": "https://en.wikipedia.org/wiki/Cody_Wilson", "country": "USA", "year": "—", "what": "पहली 3D-प्रिंटेड बंदूक (The Liberator) के निर्माता और बिना किसी सेंसर के CAD डिज़ाइन्स को ऑनलाइन बांटने के बड़े समर्थक।", "fate": "अमेरिकी विदेश विभाग ने उन पर वर्षों तक कानूनी मुकदमा चलाया ताकि 3D फाइलों के वितरण को रोका जा सके।"}, {"category": "विज्ञान और अंतरिक्ष (Science, Physics & Aerospace)", "name": "डॉ. होमी जहांगीर भाभा", "wiki_url": "https://en.wikipedia.org/wiki/Homi_J._Bhabha", "country": "भारत", "year": "1966", "what": "भारतीय परमाणु कार्यक्रम के जनक (Father of Indian Nuclear Program), जिन्होंने भारत को परमाणु ऊर्जा में आत्मनिर्भर बनाने की नींव रखी।", "fate": "मोंट ब्लांक (आल्प्स) में एयर इंडिया विमान दुर्घटना में मृत्यु। संदेह है कि भारत को परमाणु शक्ति बनने से रोकने के लिए CIA ने इसे अंजाम दिया।"}, {"category": "विज्ञान और अंतरिक्ष (Science, Physics & Aerospace)", "name": "डॉ. विक्रम साराभाई", "wiki_url": "https://en.wikipedia.org/wiki/Vikram_Sarabhai", "country": "भारत", "year": "1971", "what": "भारतीय अंतरिक्ष अनुसंधान संगठन (ISRO) के संस्थापक और महान वैज्ञानिक।", "fate": "कोवलम (केरल) के एक रिसॉर्ट में रहस्यमय तरीके से सोते हुए मृत पाए गए। कोई पोस्टमॉर्टम नहीं हुआ, डॉ. भाभा की मौत के ठीक 5 साल बाद।"}, {"category": "विज्ञान और अंतरिक्ष (Science, Physics & Aerospace)", "name": "एस. नंबी नारायणन", "wiki_url": "https://en.wikipedia.org/wiki/Nambi_Narayanan", "country": "भारत", "year": "1994", "what": "ISRO के शीर्ष क्रायोजेनिक रॉकेट वैज्ञानिक, जो भारत के अंतरिक्ष मिशन को दशकों आगे ले जा रहे थे।", "fate": "झूठे मालदीवियन जासूसी केस (ISRO Spy Case) में फंसाया गया, प्रताड़ित किया गया और करियर पूरी तरह बर्बाद कर दिया गया। बाद में निर्दोष साबित हुए।"}, {"category": "विज्ञान और अंतरिक्ष (Science, Physics & Aerospace)", "name": "निकोला टेस्ला", "wiki_url": "https://en.wikipedia.org/wiki/Nikola_Tesla", "country": "सर्बिया/USA", "year": "1943", "what": "AC करंट, वायरलेस बिजली ट्रांसमिशन, और पृथ्वी की प्राकृतिक ऊर्जा से असीमित 'फ्री एनर्जी' का विचार।", "fate": "जेपी मॉर्गन ने फंडिंग रोक दी (क्योंकि मुफ्त बिजली को मीटर नहीं किया जा सकता था)। टेस्ला के मरने के बाद FBI ने उनके सारे रिसर्च पेपर्स ज़ब्त कर लिए।"}, {"category": "विज्ञान और अंतरिक्ष (Science, Physics & Aerospace)", "name": "विक्टर शाउबर्गर", "wiki_url": "https://en.wikipedia.org/wiki/Viktor_Schauberger", "country": "ऑस्ट्रिया", "year": "1958", "what": "पानी के भंवर (Vortex) और इम्प्लोशन (Implosion) तकनीक पर आधारित इंजन (Repulsine) बनाए जो पर्यावरण को बिना नुकसान पहुंचाए असीमित ऊर्जा देते थे।", "fate": "द्वितीय विश्व युद्ध में नाजियों ने उन्हें जबरन काम पर रखा। बाद में अमेरिकी खुफिया एजेंसियों ने उनके पेटेंट और मशीनें ज़ब्त कर लीं। वे अमेरिका से लौटने के तुरंत बाद टूटे दिल से मरे।"}, {"category": "रसायन और ईंधन (Chemical & Fuel)", "name": "डॉ. येल्लाप्रगड़ा सुब्बाराव", "wiki_url": "https://en.wikipedia.org/wiki/Yellapragada_Subbarow", "country": "भारत", "year": "1948", "what": "कैंसर की पहली कीमोथेरेपी दवा (Methotrexate), टेट्रासाइक्लिन एंटीबायोटिक, और कोशिका ऊर्जा (ATP) की खोज की।", "fate": "नोबेल प्राइज और उचित क्रेडिट से वंचित रखा गया। हार्वर्ड में भेदभाव का सामना किया और गुमनामी में मृत्यु हुई।"}, {"category": "रसायन और ईंधन (Chemical & Fuel)", "name": "स्टैनली मेयर", "wiki_url": "https://en.wikipedia.org/wiki/Stanley_Meyer%27s_water_fuel_cell", "country": "USA", "year": "1998", "what": "पानी से चलने वाली कार (Water Fuel Cell) बनाई, जो पानी को हाइड्रोजन और ऑक्सीजन में तुरंत तोड़कर ईंधन बनाती थी।", "fate": "एक रेस्टोरेंट में भोजन करने के बाद अचानक मृत्यु हो गई। उनके अंतिम शब्द थे, \"उन्होंने मुझे ज़हर दे दिया है।\" उनका पेटेंट गायब कर दिया गया।"}, {"category": "रसायन और ईंधन (Chemical & Fuel)", "name": "थॉमस ओगल", "wiki_url": "https://en.wikipedia.org/wiki/Thomas_Ogle", "country": "USA", "year": "1981", "what": "ओगल कार्बोरेटर का आविष्कार किया, जिससे गाड़ी केवल एक गैलन पेट्रोल में 100 मील (160 किमी) से अधिक चल सकती थी।", "fate": "पेटेंट बेचने के दबाव और तेल कंपनियों के ऑफर्स को ठुकराने के बाद संदिग्ध परिस्थितियों में ड्रग ओवरडोज से मृत्यु। तकनीक कभी बाजार में नहीं आई।"}, {"category": "मानव मनोविज्ञान (Human Psychology & Mind Control)", "name": "फ्रैंक ओल्सन", "wiki_url": "https://en.wikipedia.org/wiki/Frank_Olson", "country": "USA", "year": "1953", "what": "अमेरिकी सेना के जैव-वैज्ञानिक जो गुप्त प्रोजेक्ट 'MK-Ultra' (माइंड कंट्रोल और रासायनिक हथियार) पर काम कर रहे थे।", "fate": "जब उन्होंने प्रोजेक्ट छोड़ना चाहा, तो उन्हें बिना बताए LSD दिया गया और बाद में वे एक होटल की 13वीं मंजिल की खिड़की से नीचे गिर गए (हत्या का गहरा संदेह)।"}, {"category": "मानव मनोविज्ञान (Human Psychology & Mind Control)", "name": "कैथी ओ'ब्रायन", "wiki_url": "https://en.wikipedia.org/wiki/Cathy_O%27Brien_(conspiracy_theorist", "country": "USA", "year": "—", "what": "सीआईए के 'Project Monarch' (ट्रॉमा-बेस्ड माइंड कंट्रोल) की सर्वाइवर और व्हिसलब्लोअर, जिसने राजनीतिक और सैन्य स्तर पर चल रहे दिमागी गुलामी के प्रयोगों का पर्दाफाश किया।", "fate": "मुख्यधारा की मीडिया में उनके इंटरव्यू पूरी तरह प्रतिबंधित रहे और उन्हें 'कॉन्स्पिरेसी थ्योरी' घोषित कर दबा दिया गया।"}, {"category": "मानव मनोविज्ञान (Human Psychology & Mind Control)", "name": "जैक्स बेनवेनिस्ते", "wiki_url": "https://en.wikipedia.org/wiki/Jacques_Benveniste", "country": "फ्रांस", "year": "2004", "what": "विख्यात इम्यूनोलॉजिस्ट जिन्होंने 'Water Memory' (पानी में जैविक सूचना याद रखने की क्षमता) की खोज की, जो विज्ञान को एक नया आयाम दे सकती थी।", "fate": "वैज्ञानिक बिरादरी ने उनका मज़ाक उड़ाया, उनकी लैब की फंडिंग बंद कर दी और उन्हें मुख्यधारा के विज्ञान से बाहर कर दिया।"}, {"category": "धन और वित्तीय प्रणालियाँ (Wealth & Financial Systems)", "name": "सातोशी नाकामोटो", "wiki_url": "https://en.wikipedia.org/wiki/Satoshi_Nakamoto", "country": "अज्ञात", "year": "2010", "what": "बिटकॉइन (Bitcoin) के निर्माता, जिसने दुनिया का पहला विकेंद्रीकृत, गणितीय और सीमान्त डिजिटल लेज़र बनाया।", "fate": "बिटकॉइन को लाइव करने के बाद स्वयं गायब हो गए ताकि इस वित्तीय क्रांति का कोई भी 'एक मालिक' न रहे जिसे दबाया या ब्लैकमेल किया जा सके।"}, {"category": "धन और वित्तीय प्रणालियाँ (Wealth & Financial Systems)", "name": "बर्नार्ड वॉन नॉटहॉस", "wiki_url": "https://en.wikipedia.org/wiki/Bernard_von_NotHaus", "country": "USA", "year": "—", "what": "'Liberty Dollar' नामक स्वतंत्र भौतिक मुद्रा बनाई, जो असली सोने और चांदी से समर्थित थी ताकि फेडरल रिज़र्व के कागजी खेल को टक्कर दी जा सके।", "fate": "अमेरिकी फेडरल सरकार ने उन पर मुकदमा चलाया और सिक्कों के निर्माण को \"अवैध और आतंकवाद के समान\" बताकर उन्हें दोषी ठहराया।"}, {"category": "धन और वित्तीय प्रणालियाँ (Wealth & Financial Systems)", "name": "डैनी कैसोलेरो", "wiki_url": "https://en.wikipedia.org/wiki/Danny_Casolaro", "country": "USA", "year": "1991", "what": "खोजी पत्रकार, जो 'द ऑक्टोपस' (The Octopus) नामक एक विशाल नेटवर्क का खुलासा कर रहे थे, जिसमें बैंकों, सीआईए और न्याय विभाग की साठगांठ थी।", "fate": "एक होटल के बाथटब में मृत पाए गए, उनकी कलाइयों की नसें कटी हुई थीं और उनके सारे खोजी दस्तावेज़ (Notes) कमरे से गायब थे।"}];
+const FACT_CHECKS = [{"file": "Corporate Trap", "claim": "Employee अपनी सैलरी से ज़्यादा वैल्यू पैदा करता है", "status": "✅ सत्य", "source": "Surplus Value — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Surplus_value"}, {"file": "Corporate Trap", "claim": "दुनिया की 80% दौलत सिर्फ 1% लोगों के पास है", "status": "✅ लगभग सत्य (2023 में 1% के पास ~46%)", "source": "Wealth inequality — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Distribution_of_wealth"}, {"file": "Corporate Trap", "claim": "EMI/Loan में आधा पैसा ब्याज (Interest) में जाता है", "status": "✅ सत्य (20 साल के Home Loan में ~50-60% ब्याज)", "source": "Amortization — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Amortization_(business"}, {"file": "Dar Se Mukti", "claim": "1", "status": "**एडवर्ड बर्नेज़ ने 'Propaganda' किताब 1928 में लिखी**", "source": "✅ सही — बर्नेज़ ने 1928 में यह किताब लिखी जिसमें उन्होंने बताया कि जनता की राय को कैसे बनाया जा सकता है।", "source_link": ""}, {"file": "Dar Se Mukti", "claim": "2", "status": "**बर्नेज़ सिगमंड फ्रॉयड के भतीजे थे**", "source": "✅ सही — एडवर्ड बर्नेज़ की माँ, अन्ना फ्रॉयड, सिगमंड फ्रॉयड की बहन थीं।", "source_link": ""}, {"file": "Dar Se Mukti", "claim": "3", "status": "**नोम चॉम्स्की ने 'Manufacturing Consent' लिखी**", "source": "Propaganda Model", "source_link": "https://en.wikipedia.org/wiki/Propaganda_model"}, {"file": "Dar Se Mukti", "claim": "4", "status": "**पेट्रोडॉलर सिस्टम असली है**", "source": "✅ सही — 1970 के दशक में अमेरिका और सऊदी अरब के बीच समझौता हुआ कि तेल का व्यापार सिर्फ़ अमेरिकी डॉलर में होगा।", "source_link": ""}, {"file": "Dar Se Mukti", "claim": "5", "status": "**सोशल मीडिया डोपामाइन लूप का इस्तेमाल करता है**", "source": "डोपामाइन", "source_link": "https://en.wikipedia.org/wiki/Dopamine"}, {"file": "Dar Se Mukti", "claim": "6", "status": "**टेक कंपनियाँ आपका डेटा बेचती हैं**", "source": "Surveillance Capitalism", "source_link": "https://en.wikipedia.org/wiki/Surveillance_capitalism"}, {"file": "Dar Se Mukti", "claim": "7", "status": "**जिड्डू कृष्णमूर्ति ने 'Freedom from the Known' लिखी**", "source": "✅ सही — 1969 में प्रकाशित, यह किताब बताती है कि डर, परंपरा और विश्वास से कैसे मुक्त हों।", "source_link": ""}, {"file": "Freedom Champions History.Md", "claim": "सुकरात को फांसी दी गई थी", "status": "❌ असत्य", "source": "Socrates — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Socrates"}, {"file": "Freedom Champions History.Md", "claim": "जियोर्डानो ब्रूनो को सिर्फ उनके खगोलीय दावों (सूर्य एक तारा है) के लिए मारा गया", "status": "❌ आंशिक सत्य", "source": "Giordano Bruno — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Giordano_Bruno"}, {"file": "Freedom Champions History.Md", "claim": "अमेरिकी सरकार का पीआरआईएसएम (PRISM) सर्विलांस प्रोग्राम असली था", "status": "✅ सत्य", "source": "PRISM surveillance program — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/PRISM"}, {"file": "Health Bigpharma", "claim": "Purdue Pharma ने झूठे दावों से लोगों को Opioid का आदी बनाया", "status": "✅ सत्य", "source": "Purdue Pharma — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Purdue_Pharma"}, {"file": "Health Bigpharma", "claim": "processed food में इस्तेमाल हाई फ्रुक्टोज कॉर्न सिरप मोटापा बढ़ाता है", "status": "✅ सत्य", "source": "High-fructose corn syrup — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/High-fructose_corn_syrup"}, {"file": "Health Bigpharma", "claim": "Royal Rife की मशीन और लैब को नष्ट किया गया था", "status": "⚠️ आंशिक सत्य (विवादास्पद)", "source": "Royal Rife — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Royal_Rife"}, {"file": "Health Bigpharma", "claim": "FDA के अधिकारियों और दवा कंपनियों के बीच \"घुमावदार दरवाजा\" (revolving door) है", "status": "✅ सत्य", "source": "FDA — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/FDA"}, {"file": "Historical Figures", "claim": "राजीव दीक्षित", "status": "30 नवंबर 1967", "source": "30 नवंबर 2010", "source_link": ""}, {"file": "Historical Figures", "claim": "जिड्डू कृष्णमूर्ति", "status": "11 मई 1895", "source": "17 फरवरी 1986", "source_link": ""}, {"file": "Historical Figures", "claim": "ओशो (रजनीश)", "status": "11 दिसंबर 1931", "source": "19 जनवरी 1990", "source_link": ""}, {"file": "Historical Figures", "claim": "ज्योतिराव फुले", "status": "11 अप्रैल 1827", "source": "28 नवंबर 1890", "source_link": ""}, {"file": "Historical Figures", "claim": "सावित्रीबाई फुले", "status": "3 जनवरी 1831", "source": "10 मार्च 1897", "source_link": ""}, {"file": "Historical Figures", "claim": "मिल्टन विलियम कूपर", "status": "6 मई 1943", "source": "6 नवंबर 2001", "source_link": ""}, {"file": "Historical Figures", "claim": "नोम चॉम्स्की", "status": "7 दिसंबर 1928", "source": "— (जीवित)", "source_link": ""}, {"file": "Historical Figures", "claim": "एडवर्ड बर्नेज़", "status": "22 नवंबर 1891", "source": "9 मार्च 1995", "source_link": ""}, {"file": "Historical Figures", "claim": "महात्मा गांधी", "status": "2 अक्टूबर 1869", "source": "30 जनवरी 1948", "source_link": ""}, {"file": "Map Of Awakening.Md", "claim": "'द डार्क नाइट ऑफ द सोल' (Dark Night of the Soul) एक मनोवैज्ञानिक अवस्था है", "status": "✅ सत्य", "source": "Dark Night of the Soul — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Dark_night_of_the_soul"}, {"file": "Map Of Awakening.Md", "claim": "जागृति एक रैखिक (Linear) प्रक्रिया है", "status": "❌ असत्य", "source": "व्यक्ति जागृति के विभिन्न चरणों में आगे-पीछे आ-जा सकता है, खासकर चरण 3 (Rabbit Hole) और चरण 4 (The Void) के बीच।", "source_link": ""}, {"file": "Multi Lens Reality Analysis.Md", "claim": "'जन-सहमति का निर्माण' (Manufacturing Consent) एक अकादमिक सिद्धांत है", "status": "✅ सत्य", "source": "Manufacturing Consent — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Manufacturing_Consent"}, {"file": "Multi Lens Reality Analysis.Md", "claim": "निगरानी पूंजीवाद (Surveillance Capitalism) का अर्थ केवल विज्ञापन दिखाना है", "status": "❌ असत्य", "source": "Surveillance capitalism — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Surveillance_capitalism"}, {"file": "Rupee Exploitation", "claim": "1947 में ₹1 = $1 था", "status": "❌ आंशिक असत्य", "source": "आजादी के समय विनिमय दर लगभग $1 = ₹3.30 थी। 1947 में सीधे तौर पर $1 = ₹1 नहीं था, हालांकि ब्रिटिश पाउंड के मुकाबले रुपये की दर निश्चित थी।", "source_link": ""}, {"file": "Rupee Exploitation", "claim": "1966 और 1991 में रुपये का अवमूल्यन बाहरी दबाव में हुआ", "status": "✅ सत्य", "source": "Devaluation of the Indian Rupee — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Devaluation_of_the_Indian_rupee"}, {"file": "Rupee Exploitation", "claim": "महंगाई आपकी बचत को चुपचाप चुराती है", "status": "✅ सत्य", "source": "Inflation Tax — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Inflation_tax"}, {"file": "Sovereignty Frameworks", "claim": "हेगेलियन डायलेक्टिक का उपयोग युद्ध भड़काने के लिए किया जाता है", "status": "✅ सत्य", "source": "Hegelian dialectic — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Dialectic"}, {"file": "Sovereignty Frameworks", "claim": "डेविड हॉकिन्स का चेतना मैप वैज्ञानिक परीक्षणों पर आधारित है", "status": "❌ आंशिक सत्य", "source": "यह काइनेसियोलॉजी (Muscle Testing) और चेतना के अनुभवों पर आधारित है। इसे मुख्यधारा के कुछ वैज्ञानिकों द्वारा छद्म विज्ञान (Pseudoscience) माना जाता है, लेकिन यह आध्यात्मिक और व्यावहारिक उन्नति का एक उत्कृष्ट दार्शनिक ढांचा है।", "source_link": ""}, {"file": "Suppressed History", "claim": "Operation Paperclip के तहत नाज़ी Science से जुड़ा (Scientific) अमेरिका लाए गए", "status": "✅ सत्य", "source": "Operation Paperclip — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Operation_Paperclip"}, {"file": "Suppressed History", "claim": "Phoebus Cartel ने बल्बों की उम्र जानबूझकर सीमित की थी", "status": "✅ सत्य", "source": "Phoebus cartel — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Phoebus_cartel"}, {"file": "Suppressed History", "claim": "Stanley Meyer की कार सचमुच शुद्ध पानी से चलती थी", "status": "⚠️ विवादास्पद (Science से जुड़ा (Scientific) रूप से खारिज)", "source": "Stanley Meyer — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/Stanley_Meyer%27s_water_fuel_cell"}, {"file": "Suppressed History", "claim": "CIA ने MK-Ultra माइंड कंट्रोल प्रयोग किए थे", "status": "✅ सत्य", "source": "MKUltra — Wikipedia", "source_link": "https://en.wikipedia.org/wiki/MKUltra"}];
+
+let currentQuestionIndex = 0;
+let activeCategory = 'All';
+
+// Case Studies Data
+const CASE_STUDIES = {
+  ai: {
+    title: "कृत्रिम बुद्धिमत्ता (Artificial Intelligence - AI)",
+    lenses: [
+      {
+        name: "👑 सत्ता का लेंस (Power)",
+        desc: "AI का नियंत्रण मुट्ठी भर बिग-टेक कंपनियों (Microsoft, Google, Meta) के पास केंद्रित हो रहा है। ये कंपनियां सूचना और सत्य के मापदंडों को सेंसर करने की असीमित शक्ति हासिल कर रही हैं।"
+      },
+      {
+        name: "💸 मौद्रिक लेंस (Monetary)",
+        desc: "डेटा माइनिंग और सिलिकॉन चिप्स के पेटेंट से अरबों डॉलर का मुनाफा चुनिंदा कॉर्पोरेट्स को जा रहा है, जबकि आम श्रम (Labor Force) का बड़े पैमाने पर विस्थापन (Job Loss) हो रहा है।"
+      },
+      {
+        name: "🧠 प्रोपेगैंडा लेंस (Propaganda)",
+        desc: "मीडिया में दो तरह के प्रोपेगैंडा हैं: एक तरफ 'AI मानवता को नष्ट कर देगा' का भय (ताकि सरकारें नियंत्रणकारी लाइसेंसिंग कानून ला सकें), और दूसरी तरफ 'AI सब ठीक कर देगा' की झूठी मसीहाई उम्मीद।"
+      },
+      {
+        name: "🌍 भू-राजनीतिक लेंस (Geopolitical)",
+        desc: "AI की सुपरकंप्यूटिंग शक्ति और सेमीकंडक्टर निर्माण (जैसे ताइवान में TSMC) के नियंत्रण को लेकर अमेरिका और चीन के बीच शीत युद्ध तेज हो रहा है।"
+      },
+      {
+        name: "⚡ तकनीकी निगरानी (Surveillance)",
+        desc: "AI के ज़रिए सामूहिक डेटा स्क्रैपिंग की जा रही है। व्यक्ति के निजी विचारों, व्यवहार और भविष्य के निर्णयों की भविष्यवाणी कर उन्हें प्रभावित करने का सबसे बड़ा हथियार।"
+      },
+      {
+        name: "🌿 पारिस्थितिक लेंस (Ecological)",
+        desc: "AI डेटा केंद्रों (Data Centers) को चलाने और उन्हें ठंडा रखने के लिए भारी मात्रा में बिजली (कोयला/गैस) और पानी की आवश्यकता होती है, जिससे स्थानीय संसाधनों पर अत्यधिक दबाव बढ़ रहा है।"
+      },
+      {
+        name: "🔮 चेतना का लेंस (Consciousness)",
+        desc: "AI मनुष्य की सोचने की क्षमता और रचनात्मकता को पंगु बनाकर उसे आलस्य और निम्न चेतना में धकेलता है। संज्ञानात्मक संप्रभुता को बनाए रखने के लिए मनुष्य को अपने विवेक (Intuition) को जगाना होगा।"
+      }
+    ]
+  },
+  pandemic: {
+    title: "वैश्विक महामारी संकट (Global Pandemic)",
+    lenses: [
+      {
+        name: "👑 सत्ता का लेंस (Power)",
+        desc: "स्वास्थ्य आपातकाल के बहाने नागरिक स्वतंत्रता (Lockdowns, Mandates) का पूर्ण निलंबन। स्वास्थ्य नीतियों का नियंत्रण गैर-निर्वाचित वैश्विक संस्थाओं (WHO, WEF) के पास जाना।"
+      },
+      {
+        name: "💸 मौद्रिक लेंस (Monetary)",
+        desc: "वैक्सीन निर्माण और पेटेंट के ज़रिए बिग फार्मा कंपनियों को ऐतिहासिक मुनाफ़ा। छोटे स्थानीय व्यवसायों का विनाश और अमेज़ॅन/बिग-टेक कॉर्पोरेट्स का अभूतपूर्व आर्थिक विस्तार।"
+      },
+      {
+        name: "🧠 प्रोपेगैंडा लेंस (Propaganda)",
+        desc: "मुख्यधारा के समाचार चैनलों द्वारा 24/7 केवल भय और मौतों का आंकड़ा दिखाना (Fear-mongering)। वैकल्पिक उपचारों, वैज्ञानिक बहसों और सवालों पर सख्त सेंसरशिप लगाना।"
+      },
+      {
+        name: "🌍 भू-राजनीतिक लेंस (Geopolitical)",
+        desc: "ग्लोबल सप्लाई चेन का बाधित होना। पश्चिम और चीन के बीच जैविक सुरक्षा (Biosecurity) और लैब-लीक थ्योरी को लेकर भू-राजनीतिक ब्लेम-गेम का तेज होना।"
+      },
+      {
+        name: "⚡ तकनीकी निगरानी (Surveillance)",
+        desc: "वैक्सीन पासपोर्ट, कांटेक्ट ट्रेसिंग ऐप्स और थर्मल इमेजिंग कैमरों के ज़रिए डिजिटल निगरानी के ढांचे का स्थायी रूप से स्थापित किया जाना।"
+      },
+      {
+        name: "🌿 पारिस्थितिक लेंस (Ecological)",
+        desc: "अरबों डिस्पोजेबल मास्क और प्लास्टिक पीपीई किट के उपयोग से महासागरों और जमीन में भारी प्रदूषण। रासायनिक दवाओं के अवशेषों का जल प्रणालियों में मिलना।"
+      },
+      {
+        name: "🔮 चेतना का लेंस (Consciousness)",
+        desc: "सामूहिक भय (Mass Hysteria) ने मानव चेतना के स्तर को न्यूनतम स्तर (Fear - 100) पर ला दिया, जिससे लोग सुरक्षा के बदले अपनी बुनियादी स्वतंत्रता सौंपने को आसानी से तैयार हो गए।"
+      }
+    ]
+  },
+  cbdc: {
+    title: "सेंट्रल बैंक डिजिटल करेंसी (CBDC)",
+    lenses: [
+      {
+        name: "👑 सत्ता का लेंस (Power)",
+        desc: "नकद (Cash) के विलोपन के बाद केंद्रीय बैंकों के पास प्रत्येक नागरिक के पैसे की खरीद शक्ति को सीधे फ्रीज या रद्द करने का पूर्ण तानाशाही अधिकार।"
+      },
+      {
+        name: "💸 मौद्रिक लेंस (Monetary)",
+        desc: "वाणिज्यिक बैंकों की प्रासंगिकता खत्म होना और केंद्रीय बैंक की प्रत्यक्ष मौद्रिक तानाशाही। ब्याज दरों को सीधे डिजिटल वॉलेट्स में लागू करने की क्षमता (जैसे नकारात्मक ब्याज दरें)।"
+      },
+      {
+        name: "🧠 प्रोपेगैंडा लेंस (Propaganda)",
+        desc: "प्रचार किया जा रहा है कि CBDC 'सुरक्षित, तेज़, पर्यावरण के अनुकूल और काले धन के खिलाफ' है, जबकि इसके पीछे के वित्तीय सर्वसत्तावाद को छुपाया जाता है।"
+      },
+      {
+        name: "🌍 भू-राजनीतिक लेंस (Geopolitical)",
+        desc: "डॉलर प्रभुत्व (De-dollarization) को चुनौती देने के लिए चीन के डिजिटल युआन और रूस के डिजिटल रूबल का निर्माण। वैश्विक प्रतिबंधों को बायपास करने का भू-राजनीतिक हथियार।"
+      },
+      {
+        name: "⚡ तकनीकी निगरानी (Surveillance)",
+        desc: "प्रोग्रामेबल मनी (Programmable Money) — पैसे में समाप्ति तिथि (Expiry date) जोड़ना या सीमित करना कि आप इसे कहाँ और कब खर्च कर सकते हैं (पूर्ण वित्तीय निगरानी)।"
+      },
+      {
+        name: "🌿 पारिस्थितिक लेंस (Ecological)",
+        desc: "नकद छपाई की तुलना में डेटा सेंटर्स और डिजिटल इंफ्रास्ट्रक्चर की भारी ऊर्जा खपत। दुर्लभ धातुओं (Lithium, Cobalt) के खनन में पारिस्थितिक विनाश।"
+      },
+      {
+        name: "🔮 चेतना का लेंस (Consciousness)",
+        desc: "व्यक्ति की स्वतंत्र पसंद को समाप्त करना और उसे बाहरी वित्तीय प्रणालियों पर पूरी तरह से निर्भर रखना, जो मनुष्य की आर्थिक और मानसिक संप्रभुता का हनन है।"
+      }
+    ]
+  }
+};
+
+// Switch View
+function switchView(viewId) {
+  document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+  
+  document.getElementById(viewId).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// Case Study Selector
+function switchCaseStudy(caseId) {
+  document.querySelectorAll('#reality-lenses .filter-tags button').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('btn-case-' + caseId).classList.add('active');
+  renderLenses(caseId);
+}
+
+function renderLenses(caseId) {
+  const container = document.getElementById('lenses-cards-container');
+  container.innerHTML = '';
+  const study = CASE_STUDIES[caseId];
+  
+  study.lenses.forEach(l => {
+    const card = document.createElement('div');
+    card.className = 'res-card';
+    card.style.minHeight = '180px';
+    card.innerHTML = `
+      <div class="res-header">
+        <div class="res-category" style="color: var(--accent-secondary);">${study.title}</div>
+        <div class="res-title" style="margin-top: 5px;">${l.name}</div>
+      </div>
+      <div class="res-desc" style="margin-bottom: 0; color: #d1d1d8;">${l.desc}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// Task Manager
+function toggleTask(element, checkboxId) {
+  const cb = document.getElementById(checkboxId);
+  cb.checked = !cb.checked;
+  if(cb.checked) {
+    element.classList.add('checked');
+  } else {
+    element.classList.remove('checked');
+  }
+  updateProgress();
+  saveTasks();
+}
+
+function updateProgress() {
+  const checkboxes = document.querySelectorAll('.task-list input[type="checkbox"]');
+  let checkedCount = 0;
+  checkboxes.forEach(cb => {
+    if(cb.checked) {
+      checkedCount++;
+      cb.parentElement.classList.add('checked');
+    } else {
+      cb.parentElement.classList.remove('checked');
+    }
+  });
+  
+  const percentage = Math.round((checkedCount / checkboxes.length) * 100);
+  document.getElementById('progress-fill').style.width = percentage + '%';
+  document.getElementById('stat-progress-val').textContent = percentage + '%';
+}
+
+function saveTasks() {
+  const checkboxes = document.querySelectorAll('.task-list input[type="checkbox"]');
+  const taskState = {};
+  checkboxes.forEach(cb => {
+    taskState[cb.id] = cb.checked;
+  });
+  localStorage.setItem('jsm_tasks', JSON.stringify(taskState));
+}
+
+function loadTasks() {
+  const taskState = JSON.parse(localStorage.getItem('jsm_tasks')) || {};
+  Object.keys(taskState).forEach(id => {
+    const cb = document.getElementById(id);
+    if(cb) {
+      cb.checked = taskState[id];
+    }
+  });
+  updateProgress();
+}
+
+// Journal Manager
+function loadQuestion() {
+  if(QUESTIONS.length === 0) {
+    document.getElementById('question-box').textContent = "सवाल समाप्त हो चुके हैं। खुद से नए सवाल पूछना जारी रखें।";
+    return;
+  }
+  document.getElementById('question-box').textContent = QUESTIONS[currentQuestionIndex];
+}
+
+function nextQuestion() {
+  currentQuestionIndex = (currentQuestionIndex + 1) % QUESTIONS.length;
+  loadQuestion();
+  document.getElementById('journal-input').value = '';
+}
+
+function saveLog() {
+  const text = document.getElementById('journal-input').value.trim();
+  if(!text) return;
+  
+  const question = QUESTIONS[currentQuestionIndex];
+  const logs = JSON.parse(localStorage.getItem('jsm_logs')) || [];
+  
+  logs.unshift({
+    date: new Date().toLocaleString(),
+    question: question,
+    text: text
+  });
+  
+  localStorage.setItem('jsm_logs', JSON.stringify(logs));
+  document.getElementById('journal-input').value = '';
+  renderLogs();
+  nextQuestion();
+}
+
+function renderLogs() {
+  const logs = JSON.parse(localStorage.getItem('jsm_logs')) || [];
+  const container = document.getElementById('logs-container');
+  container.innerHTML = '';
+  
+  if(logs.length === 0) {
+    container.innerHTML = '<div style="color: var(--text-muted)">कोई प्रविष्टि (Entry) नहीं मिली। अपना पहला विचार ऊपर दर्ज करें।</div>';
+    return;
+  }
+  
+  logs.forEach(log => {
+    const el = document.createElement('div');
+    el.className = 'log-item';
+    el.innerHTML = `
+      <div class="log-meta">${log.date}</div>
+      <div style="font-weight:600;margin-bottom:8px;color:#fff">${log.question}</div>
+      <div class="log-text">${log.text}</div>
+    `;
+    container.appendChild(el);
+  });
+}
+
+// Filter tags
+function generateFilterTags() {
+  const container = document.getElementById('filter-tags-container');
+  const categories = new Set();
+  RESOURCES.forEach(r => categories.add(r.category));
+  
+  categories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'tag-btn';
+    btn.textContent = cat;
+    btn.onclick = () => filterCategory(cat, btn);
+    container.appendChild(btn);
+  });
+}
+
+function filterCategory(catName, btnElement) {
+  document.querySelectorAll('.tag-btn').forEach(btn => btn.classList.remove('active'));
+  btnElement.classList.add('active');
+  activeCategory = catName;
+  search();
+}
+
+// Resources Search
+function search() {
+  const query = document.getElementById('search-input').value.toLowerCase();
+  const results = RESOURCES.filter(r => {
+    const matchesCategory = activeCategory === 'All' || r.category === activeCategory;
+    const matchesSearch = r.name.toLowerCase().includes(query) || 
+                          r.category.toLowerCase().includes(query) || 
+                          r.desc.toLowerCase().includes(query) ||
+                          (r.tags && r.tags.some(t => t.toLowerCase().includes(query)));
+    return matchesCategory && matchesSearch;
+  });
+  renderResources(results);
+}
+
+function renderResources(list) {
+  const root = document.getElementById('resources-root');
+  root.innerHTML = '';
+  
+  list.forEach(r => {
+    const el = document.createElement('div');
+    el.className = 'res-card';
+    el.innerHTML = `
+      <div class="res-header">
+        <div class="res-category">${r.category}</div>
+        <div class="res-title">${r.name}</div>
+      </div>
+      <div>
+        <div class="res-desc">${r.desc}</div>
+        ${r.why ? `<div class="res-why">${r.why}</div>` : ''}
+      </div>
+      <a href="${r.url}" target="_blank" class="res-link">🔗 Open Link</a>
+    `;
+    root.appendChild(el);
+  });
+}
+
+// Geniuses Search
+function searchGeniuses() {
+  const query = document.getElementById('search-geniuses-input').value.toLowerCase();
+  const results = GENIUSES.filter(g => {
+    return g.name.toLowerCase().includes(query) || 
+           g.category.toLowerCase().includes(query) || 
+           g.what.toLowerCase().includes(query) || 
+           g.fate.toLowerCase().includes(query) ||
+           g.country.toLowerCase().includes(query);
+  });
+  renderGeniuses(results);
+}
+
+function renderGeniuses(list) {
+  const root = document.getElementById('geniuses-root');
+  root.innerHTML = '';
+  
+  list.forEach(g => {
+    const el = document.createElement('div');
+    el.className = 'gen-card';
+    el.innerHTML = `
+      <div>
+        <div class="gen-name">${g.name}</div>
+        <div class="gen-meta">${g.category} | ${g.country} | ${g.year}</div>
+        <div class="gen-what">${g.what}</div>
+        <div class="gen-fate">💥 ${g.fate}</div>
+      </div>
+      ${g.wiki_url ? `<a href="${g.wiki_url}" target="_blank" class="res-link" style="color: var(--accent-secondary)">🔗 Read Wikipedia</a>` : ''}
+    `;
+    root.appendChild(el);
+  });
+}
+
+// Fact Checks Render
+function renderFactChecks() {
+  const root = document.getElementById('facts-root');
+  root.innerHTML = '';
+  
+  FACT_CHECKS.forEach(f => {
+    const el = document.createElement('tr');
+    
+    // Status Badge Color Class
+    let badgeClass = 'disputed';
+    if(f.status.includes('सत्य') || f.status.includes('True') || f.status.includes('✅')) {
+      badgeClass = 'true';
+    } else if(f.status.includes('असत्य') || f.status.includes('False') || f.status.includes('❌')) {
+      badgeClass = 'false';
+    }
+    
+    el.innerHTML = `
+      <td style="color: var(--accent); font-weight:600">${f.file}</td>
+      <td>${f.claim}</td>
+      <td><span class="badge ${badgeClass}">${f.status}</span></td>
+      <td class="fact-source">
+        ${f.source_link ? `<a href="${f.source_link}" target="_blank" style="color: var(--text-main); text-decoration:underline">${f.source}</a>` : f.source}
+      </td>
+    `;
+    root.appendChild(el);
+  });
+}
+
+// Sovereignty Calculator
+function calculateSovereignty() {
+  const checkboxes = document.querySelectorAll('.sov-check');
+  let score = 0;
+  checkboxes.forEach(cb => {
+    if (cb.checked) {
+      score += parseInt(cb.value);
+    }
+  });
+  
+  document.getElementById('sov-score-val').textContent = score + '%';
+  
+  let rating = "System Dependent (गुलाम चेतना - पूरी तरह से सिस्टम पर निर्भर)";
+  if (score >= 80) {
+    rating = "Highly Sovereign (पूर्ण संप्रभुता - ऑफ-ग्रिड और चेतना मुक्त)";
+  } else if (score >= 50) {
+    rating = "Partially Sovereign (आंशिक संप्रभुता - आंशिक रूप से स्वतंत्र)";
+  } else if (score >= 25) {
+    rating = "Awakening (जागृति की शुरुआत - Conditioning टूटना जारी है)";
+  }
+  
+  document.getElementById('sov-rating-val').textContent = "Status: " + rating;
+  localStorage.setItem('jsm_sov_score', JSON.stringify({score: score, checks: Array.from(checkboxes).map(c => c.checked)}));
+}
+
+function loadSovereignty() {
+  const state = JSON.parse(localStorage.getItem('jsm_sov_score'));
+  if (state) {
+    const checkboxes = document.querySelectorAll('.sov-check');
+    checkboxes.forEach((cb, idx) => {
+      if (state.checks && state.checks[idx] !== undefined) {
+        cb.checked = state.checks[idx];
+      }
+    });
+    calculateSovereignty();
+  }
+}
+
+// Init stats
+function initStats() {
+  document.getElementById('stat-resources-count').textContent = RESOURCES.length;
+  document.getElementById('stat-geniuses-count').textContent = GENIUSES.length;
+  document.getElementById('stat-checks-count').textContent = FACT_CHECKS.length;
+}
+
+// Init
+window.onload = function() {
+  loadTasks();
+  loadQuestion();
+  renderLogs();
+  generateFilterTags();
+  renderResources(RESOURCES);
+  renderGeniuses(GENIUSES);
+  renderFactChecks();
+  loadSovereignty();
+  renderLenses('ai');
+  initStats();
+};
+</script>
+</body>
+</html>

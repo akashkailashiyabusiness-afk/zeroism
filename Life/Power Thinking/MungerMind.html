@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MungerMind: Mental Model AI Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --dark: #1a252f;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #bdc3c7;
+        }
+        
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 25px;
+            height: calc(100vh - 200px);
+        }
+        
+        @media (max-width: 900px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .models-panel {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+        }
+        
+        .models-panel h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+        
+        .model-card {
+            background: rgba(44, 62, 80, 0.6);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .model-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            background: rgba(44, 62, 80, 0.8);
+        }
+        
+        .model-card h3 {
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .model-card p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #ecf0f1;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .chat-header h2 {
+            color: var(--accent);
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            max-width: 80%;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            background: rgba(52, 152, 219, 0.3);
+            margin-left: auto;
+            border: 1px solid rgba(52, 152, 219, 0.5);
+        }
+        
+        .ai-message {
+            background: rgba(46, 204, 113, 0.2);
+            margin-right: auto;
+            border: 1px solid rgba(46, 204, 113, 0.4);
+        }
+        
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-area input {
+            flex: 1;
+            padding: 15px 20px;
+            border-radius: 30px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .input-area input:focus {
+            border-color: var(--accent);
+        }
+        
+        .input-area button {
+            padding: 15px 25px;
+            border-radius: 30px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .input-area button:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+        
+        .ai-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .ai-controls button {
+            padding: 10px 15px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .ai-controls button:hover {
+            background: rgba(52, 152, 219, 0.3);
+        }
+        
+        .powered-by {
+            text-align: center;
+            margin-top: 30px;
+            color: #95a5a6;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .powered-by img {
+            height: 30px;
+            filter: brightness(0.8);
+        }
+        
+        .model-tag {
+            display: inline-block;
+            background: rgba(243, 156, 18, 0.2);
+            color: var(--warning);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+        
+        .thinking {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(46, 204, 113, 0.1);
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .thinking span {
+            animation: pulse 1.5s infinite;
+        }
+        
+        .thinking span:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        
+        .thinking span:nth-child(3) {
+            animation-delay: 1s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        .highlight {
+            background: rgba(243, 156, 18, 0.3);
+            padding: 0 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-brain"></i> MungerMind</h1>
+            <p>Apply Charlie Munger's latticework of mental models with AI-powered reasoning. Connect to your local LM Studio for private, powerful thinking.</p>
+        </header>
+        
+        <div class="app-container">
+            <div class="models-panel">
+                <h2><i class="fas fa-shapes"></i> Munger's Mental Models</h2>
+                
+                <div class="model-card">
+                    <h3><i class="fas fa-exchange-alt"></i> Inversion</h3>
+                    <p>Instead of aiming directly for a goal, consider the opposite. What could cause failure? Avoid those things.</p>
+                    <div class="model-tag">Decision Making</div>
+                </div>
+                
+                <div class="model-card">
+                    <h3><i class="fas fa-compass"></i> Circle of Competence</h3>
+                    <p>Work within your area of expertise. Recognize the boundaries of your knowledge and operate within them.</p>
+                    <div class="model-tag">Self-Awareness</div>
+                </div>
+                
+                <div class="model-card">
+                    <h3><i class="fas fa-cubes"></i> First Principles</h3>
+                    <p>Break down complex problems into fundamental truths and build up from there.</p>
+                    <div class="model-tag">Problem Solving</div>
+                </div>
+                
+                <div class="model-card">
+                    <h3><i class="fas fa-project-diagram"></i> Second-Order Thinking</h3>
+                    <p>Consider not just immediate consequences, but the consequences of those consequences.</p>
+                    <div class="model-tag">Consequential Thinking</div>
+                </div>
+                
+                <div class="model-card">
+                    <h3><i class="fas fa-map"></i> Map vs. Territory</h3>
+                    <p>Remember that models and representations are not reality. Be aware of their limitations.</p>
+                    <div class="model-tag">Reality Awareness</div>
+                </div>
+                
+                <div class="model-card">
+                    <h3><i class="fas fa-cut"></i> Occam's Razor</h3>
+                    <p>Among competing hypotheses, the one with the fewest assumptions should be selected.</p>
+                    <div class="model-tag">Problem Solving</div>
+                </div>
+                
+                <div class="model-card">
+                    <h3><i class="fas fa-balance-scale"></i> Hanlon's Razor</h3>
+                    <p>Never attribute to malice that which is adequately explained by neglect or misunderstanding.</p>
+                    <div class="model-tag">Human Behavior</div>
+                </div>
+                
+                <div class="model-card">
+                    <h3><i class="fas fa-meteor"></i> Margin of Safety</h3>
+                    <p>Build in buffers for error or unexpected events to avoid catastrophic outcomes.</p>
+                    <div class="model-tag">Risk Management</div>
+                </div>
+            </div>
+            
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h2><i class="fas fa-comments"></i> AI Thinking Assistant</h2>
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>Connected to LM Studio</span>
+                    </div>
+                </div>
+                
+                <div class="chat-messages">
+                    <div class="message ai-message">
+                        <div class="message-header">
+                            <i class="fas fa-robot"></i>
+                            <span>MungerMind AI</span>
+                        </div>
+                        <p>Hello! I'm your thinking assistant powered by Charlie Munger's mental models. How can I help you reason through a problem today?</p>
+                        <p>Try asking something like: <span class="highlight">"How should I approach investing in this new technology?"</span> or <span class="highlight">"What mental models would help me solve this business challenge?"</span></p>
+                    </div>
+                    
+                    <div class="message user-message">
+                        <div class="message-header">
+                            <i class="fas fa-user"></i>
+                            <span>You</span>
+                        </div>
+                        <p>I'm considering investing in a startup in the renewable energy sector. What mental models should I apply?</p>
+                    </div>
+                    
+                    <div class="message ai-message">
+                        <div class="message-header">
+                            <i class="fas fa-robot"></i>
+                            <span>MungerMind AI</span>
+                        </div>
+                        <p>Great question! Let's apply Munger's mental models to your investment decision:</p>
+                        <ol>
+                            <li><strong>Circle of Competence</strong>: Do you truly understand the renewable energy sector? If not, what knowledge gaps need filling?</li>
+                            <li><strong>Margin of Safety</strong>: What's your buffer if projections are overly optimistic? How resilient is the business model?</li>
+                            <li><strong>Second-Order Thinking</strong>: Beyond immediate returns, consider regulatory changes, tech disruptions, and long-term sustainability.</li>
+                            <li><strong>Inversion</strong>: Instead of asking "Why will this succeed?", ask "What would cause this to fail?" Identify those risks.</li>
+                        </ol>
+                        <p>Would you like me to apply these to the specific startup you're evaluating?</p>
+                    </div>
+                    
+                    <div class="thinking">
+                        <i class="fas fa-sync-alt fa-spin"></i>
+                        <span>AI is applying multiple mental models to your problem</span>
+                        <span>•</span>
+                        <span>•</span>
+                        <span>•</span>
+                    </div>
+                </div>
+                
+                <div class="input-area">
+                    <input type="text" id="user-input" placeholder="Describe your problem or question...">
+                    <button id="send-btn"><i class="fas fa-paper-plane"></i> Ask AI</button>
+                </div>
+                
+                <div class="ai-controls">
+                    <button><i class="fas fa-lightbulb"></i> Apply Inversion</button>
+                    <button><i class="fas fa-sitemap"></i> Second-Order Thinking</button>
+                    <button><i class="fas fa-exclamation-triangle"></i> Identify Risks</button>
+                    <button><i class="fas fa-project-diagram"></i> Model Combination</button>
+                    <button><i class="fas fa-redo"></i> Reset Conversation</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="powered-by">
+            <span>Powered by Charlie Munger's Mental Models</span>
+            <span>•</span>
+            <span>Integrated with Local LM Studio</span>
+            <span>•</span>
+            <span>Private & Secure AI Processing</span>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userInput = document.getElementById('user-input');
+            const sendBtn = document.getElementById('send-btn');
+            const chatMessages = document.querySelector('.chat-messages');
+            
+            // Function to add a new message to the chat
+            function addMessage(sender, text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'ai-message');
+                
+                const messageHeader = document.createElement('div');
+                messageHeader.classList.add('message-header');
+                
+                if (sender === 'user') {
+                    messageHeader.innerHTML = '<i class="fas fa-user"></i> <span>You</span>';
+                } else {
+                    messageHeader.innerHTML = '<i class="fas fa-robot"></i> <span>MungerMind AI</span>';
+                }
+                
+                const messageText = document.createElement('p');
+                messageText.textContent = text;
+                
+                messageDiv.appendChild(messageHeader);
+                messageDiv.appendChild(messageText);
+                chatMessages.appendChild(messageDiv);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Function to simulate AI response
+            function simulateAIResponse(userMessage) {
+                // This would be replaced with actual LM Studio API call
+                const thinking = document.querySelector('.thinking');
+                thinking.style.display = 'flex';
+                
+                setTimeout(() => {
+                    thinking.style.display = 'none';
+                    
+                    // Sample responses based on user input
+                    let aiResponse = "";
+                    
+                    if (userMessage.toLowerCase().includes('invest') || 
+                        userMessage.toLowerCase().includes('stock') || 
+                        userMessage.toLowerCase().includes('business')) {
+                        aiResponse = "For investment decisions, I recommend applying:\n\n1. **Circle of Competence**: Are you evaluating within your knowledge area?\n2. **Margin of Safety**: What's your risk buffer if things go wrong?\n3. **Inversion**: What would cause this investment to fail?\n4. **Second-Order Effects**: What long-term consequences might emerge?\n\nWould you like to explore one of these models in depth?";
+                    } else if (userMessage.toLowerCase().includes('problem') || 
+                               userMessage.toLowerCase().includes('issue') || 
+                               userMessage.toLowerCase().includes('challenge')) {
+                        aiResponse = "For problem-solving, consider these approaches:\n\n1. **First Principles**: Break down to fundamental truths\n2. **Occam's Razor**: What's the simplest explanation?\n3. **Inversion**: What would make this problem worse?\n4. **Map vs. Territory**: Are you solving the real problem or a symptom?\n\nLet's apply these to your specific situation.";
+                    } else {
+                        aiResponse = "Thanks for your input. To apply Munger's mental models effectively:\n\n1. **Identify key elements** of your situation\n2. **Select relevant models** from our framework\n3. **Apply systematically** for multidimensional analysis\n4. **Synthesize insights** into actionable wisdom\n\nCould you provide more details about your challenge?";
+                    }
+                    
+                    addMessage('ai', aiResponse);
+                }, 2000);
+            }
+            
+            // Send button click handler
+            sendBtn.addEventListener('click', function() {
+                const message = userInput.value.trim();
+                if (message) {
+                    addMessage('user', message);
+                    userInput.value = '';
+                    simulateAIResponse(message);
+                }
+            });
+            
+            // Enter key handler
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendBtn.click();
+                }
+            });
+            
+            // Model application buttons
+            document.querySelectorAll('.ai-controls button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const model = this.textContent.trim();
+                    const prompt = `Apply ${model} to the current discussion`;
+                    
+                    addMessage('user', prompt);
+                    
+                    // Simulate AI response for model application
+                    const thinking = document.querySelector('.thinking');
+                    thinking.style.display = 'flex';
+                    
+                    setTimeout(() => {
+                        thinking.style.display = 'none';
+                        
+                        let aiResponse = "";
+                        if (model.includes('Inversion')) {
+                            aiResponse = "Applying **Inversion**:\n\nInstead of asking how to succeed, we ask: 'What would guarantee failure?' For your situation, potential failure points might include:\n\n1. Underestimating implementation challenges\n2. Ignoring competitive responses\n3. Overlooking regulatory hurdles\n\nBy avoiding these, we create a path to success.";
+                        } else if (model.includes('Second-Order')) {
+                            aiResponse = "Applying **Second-Order Thinking**:\n\nFirst-level effect: Immediate outcomes of your decision.\n\nSecond-level effects:\n- How will competitors likely respond?\n- What long-term dependencies might this create?\n- How might this affect other areas of your business?\n\nThird-level effects:\n- Market perception shifts\n- Regulatory attention\n- Talent acquisition impact";
+                        } else if (model.includes('Risks')) {
+                            aiResponse = "**Risk Identification** using multiple models:\n\n1. Margin of Safety: Where are our buffers insufficient?\n2. Circle of Competence: What unknowns are we ignoring?\n3. Hanlon's Razor: Are we misattpreting intentions?\n4. Incentives: Are motivations properly aligned?\n\nKey risks in your scenario appear to be: [specific risks]";
+                        } else if (model.includes('Combination')) {
+                            aiResponse = "**Model Combination Analysis**:\n\nBy applying multiple mental models together:\n\n- Inversion + Margin of Safety: Identify failure points and build buffers\n- Second-Order Thinking + Incentives: Predict long-term behavior patterns\n- Circle of Competence + First Principles: Stay within expertise while innovating\n\nThis multidimensional approach yields more robust insights.";
+                        } else {
+                            aiResponse = "Let me apply this mental model to your current challenge...";
+                        }
+                        
+                        addMessage('ai', aiResponse);
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

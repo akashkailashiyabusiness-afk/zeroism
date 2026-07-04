@@ -1,0 +1,11 @@
+node_modules/
+.firebase/
+*.bat
+*.exe
+*.sh
+deepseek
+Most Powerful Wikipedia Pages Everyone Should Read/
+Time/server/
+khajana/compile_khazana.py
+khajana/*.zip
+khajana/desktop.ini

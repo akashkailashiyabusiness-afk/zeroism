@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bryan Johnson's Life Lessons & Book Learnings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        /*
+        ========================================
+        ADVANCED UI STYLES
+        ========================================
+        */
+
+        :root {
+            /* Light Mode Palette */
+            --bg-grad-start: #e0eafc;
+            --bg-grad-end: #cfdef3;
+            --text-primary: #1d2b3a;
+            --text-secondary: #5a6b7c;
+            --primary-color: #0061ff;
+            --secondary-color: #00a2ff;
+            --accent-color: #28a745;
+            --accent-color-hover: #32c759;
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-border: rgba(255, 255, 255, 0.9);
+            --card-shadow: 0 10px 30px rgba(0, 97, 255, 0.1);
+            --li-bg: rgba(233, 245, 255, 0.7);
+            --li-border: #cce7ff;
+            --toggle-icon: #ffffff;
+            --nav-btn-bg: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --nav-btn-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+
+            /* Transitions & Animations */
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body.dark-mode {
+            /* Dark Mode Palette */
+            --bg-grad-start: #0f2027;
+            --bg-grad-end: #203a43;
+            --text-primary: #e0e6f0;
+            --text-secondary: #9cb3c9;
+            --primary-color: #00a2ff;
+            --secondary-color: #00ddeb;
+            --accent-color: #32c759;
+            --accent-color-hover: #3ee06c;
+            --card-bg: rgba(28, 41, 56, 0.5);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --li-bg: rgba(42, 58, 75, 0.6);
+            --li-border: rgba(0, 162, 255, 0.3);
+            --toggle-icon: #f0f0f0;
+            --nav-btn-shadow: 0 4px 15px rgba(0, 162, 255, 0.2);
+        }
+
+        /* --- Base & Body --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            padding: 20px;
+            color: var(--text-primary);
+            line-height: 1.7;
+            background: linear-gradient(-45deg, var(--bg-grad-start), var(--bg-grad-end), #2c5364, #203a43);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            transition: var(--transition-smooth);
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- Custom Scrollbar --- */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
+
+        /* --- Header --- */
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.2); /* Fallback */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            opacity: 0.8;
+            z-index: -1;
+        }
+
+        h1 {
+            font-size: 3.2em;
+            margin: 0;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .toggle-mode {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            color: var(--toggle-icon);
+            font-size: 1.5em;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            transition: var(--transition-smooth);
+        }
+        .toggle-mode:hover {
+            transform: translateY(-2px) rotate(20deg);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* --- Navigation --- */
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 30px 0;
+            gap: 15px;
+            padding: 10px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            max-width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: var(--card-shadow);
+        }
+
+        nav button {
+            padding: 12px 25px;
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid transparent;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+        nav button:hover, nav button:focus {
+            color: var(--primary-color);
+            background: var(--li-bg);
+            transform: translateY(-3px);
+            outline: none;
+        }
+
+        /* --- Sections --- */
+        section {
+            display: none;
+            margin: 20px auto;
+            max-width: 1200px;
+            padding: 40px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--card-border);
+            animation: fadeIn 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        section.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        h2 {
+            font-size: 2.2em;
+            font-weight: 700;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            position: relative;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            border-radius: 2px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        }
+
+        /* --- Lists --- */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: var(--li-bg);
+            margin: 15px 0;
+            padding: 20px 25px 20px 60px;
+            border-radius: 12px;
+            border: 1px solid var(--li-border);
+            transition: var(--transition-smooth);
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0, 97, 255, 0.05);
+        }
+        li:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 97, 255, 0.1);
+            border-color: var(--primary-color);
+        }
+        body.dark-mode li:hover {
+            box-shadow: 0 8px 20px rgba(0, 162, 255, 0.15);
+        }
+        li i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5em;
+            color: var(--primary-color);
+            transition: var(--transition-smooth);
+        }
+        li:hover i {
+            transform: translateY(-50%) scale(1.2);
+        }
+
+        /* --- Form --- */
+        form {
+            display: grid;
+            gap: 25px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1em;
+        }
+
+        textarea {
+            padding: 15px;
+            border: 1px solid var(--li-border);
+            border-radius: 12px;
+            margin-top: 8px;
+            width: 100%;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1em;
+            transition: var(--transition-smooth);
+            background: var(--li-bg);
+            color: var(--text-primary);
+            min-height: 120px;
+        }
+        textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        body.dark-mode textarea:focus {
+            background: rgba(42, 58, 75, 1);
+        }
+
+        button[type="button"] {
+            padding: 15px;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-color-hover));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        button[type="button"]:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(40, 167, 69, 0.4);
+        }
+        button[type="button"] i {
+            transition: transform 0.3s ease;
+        }
+        button[type="button"]:hover i {
+            transform: rotate(15deg);
+        }
+
+        #suggestions {
+            margin-top: 30px;
+            padding: 25px;
+            background: var(--li-bg);
+            border-radius: 12px;
+            border-left: 5px solid var(--primary-color);
+            line-height: 1.8;
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-secondary);
+        }
+        #suggestions h3 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--text-secondary);
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            header { padding: 40px 15px; }
+            h1 { font-size: 2.2em; }
+            nav {
+                flex-direction: column;
+                border-radius: 20px;
+                max-width: 90%;
+                padding: 15px;
+            }
+            nav button { width: 100%; }
+            section { padding: 25px; }
+            form { max-width: 100%; }
+            li { padding: 20px; padding-left: 20px; }
+            li i { display: none; } /* Hide icons on mobile for more space */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bryan Johnson's Life Lessons & Book Learnings</h1>
+        <p>Insights from the Longevity Pioneer and His Works (as of August 25, 2025)</p>
+        <button class="toggle-mode" onclick="toggleDarkMode()" aria-label="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
+    </header>
+
+    <nav>
+        <button onclick="showSection('life-lessons')">Life Lessons 🌟</button>
+        <button onclick="showSection('code-7')">Code 7 📖</button>
+        <button onclick="showSection('proto-project')">The Proto Project 🚀</button>
+        <button onclick="showSection('dont-die')">Don't Die ⚕️</button>
+        <button onclick="showSection('ai')">AI Personalization 🤖</button>
+    </nav>
+
+    <section id="life-lessons" class="active">
+        <h2>Life Lessons from Bryan Johnson's Blueprint</h2>
+        <ul>
+            <li><i class="fas fa-ban"></i> <strong>Overcome Self-Destructive Behaviors:</strong> Identify harmful habits like overeating by personifying them (e.g., "Evening Bryan") and consciously eliminate their influence to regain control over health.</li>
+            <li><i class="fas fa-bed"></i> <strong>Prioritize Sleep:</strong> Treat sleep as non-negotiable with a strict routine, optimized environment, and tracking for perfect scores, leading to improved mental clarity and overall well-being.</li>
+            <li><i class="fas fa-chart-line"></i> <strong>Data-Driven Decisions:</strong> Use biomarkers and scientific studies to guide health choices, achieving elite metabolic health and biological age reversal.</li>
+            <li><i class="fas fa-users"></i> <strong>Align Internal Personas:</strong> Resolve conflicts between different self-aspects to ensure consistent progress toward goals like longevity.</li>
+            <li><i class="fas fa-calendar-alt"></i> <strong>Long-Term Thinking:</strong> Focus on future impacts, investing in health and technology for lasting change beyond immediate gratification.</li>
+        </ul>
+    </section>
+
+    <section id="code-7">
+        <h2>Key Learnings from Code 7: Cracking the Code for an Epic Life</h2>
+        <ul>
+            <li><i class="fas fa-key"></i> <strong>7 Codes for Epic Living:</strong> Through 7 stories, learn essential traits like perseverance, kindness, courage, responsibility, creativity, integrity, and empathy to navigate life's challenges.</li>
+            <li><i class="fas fa-child"></i> <strong>Empowerment for Kids:</strong> Heroes in the stories take charge, make meaning from struggles, and crack the code to live purposefully.</li>
+            <li><i class="fas fa-comments"></i> <strong>Conversation Starters:</strong> Encourages discussions on important characteristics, fostering honest talks between kids and adults.</li>
+            <li><i class="fas fa-book-open"></i> <strong>Purposeful Storytelling:</strong> Each tale embodies an important value, making complex life lessons accessible and engaging for young readers.</li>
+        </ul>
+    </section>
+
+    <section id="proto-project">
+        <h2>Key Learnings from The Proto Project: A Sci-Fi Adventure of the Mind</h2>
+        <ul>
+            <li><i class="fas fa-robot"></i> <strong>Ethical AI Use:</strong> Explores AI's potential through Proto, teaching proactive thinking, mystery-solving, and ethical considerations in technology.</li>
+            <li><i class="fas fa-users-cog"></i> <strong>Teamwork & Friendship:</strong> Characters like Jason and Maya collaborate in adventures, highlighting the value of friendship and diverse skills in problem-solving.</li>
+            <li><i class="fas fa-brain"></i> <strong>Curiosity & Science:</strong> Encourages exploration of science, social issues, and innovation, blending suspense with educational elements for kids.</li>
+            <li><i class="fas fa-space-shuttle"></i> <strong>Overcoming Challenges:</strong> Fast-paced story shows how curiosity and savvy lead to overcoming mysterious adventures and personal growth.</li>
+        </ul>
+    </section>
+
+    <section id="dont-die">
+        <h2>Key Learnings from Don't Die</h2>
+        <ul>
+            <li><i class="fas fa-skull-crossbones"></i> <strong>Overcome Fear of Death:</strong> View aging as a treatable disease, blending philosophy and science to transform fear into action for longevity.</li>
+            <li><i class="fas fa-heartbeat"></i> <strong>Self-Transformation:</strong> Through dialogues, learn to strive for longer, healthier lives by aligning body and mind with cutting-edge practices.</li>
+            <li><i class="fas fa-people-arrows"></i> <strong>Meaningful Connections:</strong> Emphasizes that true immortality lies in relationships and human connections, beyond just extending lifespan.</li>
+            <li><i class="fas fa-flask"></i> <strong>Beat Aging:</strong> Practical insights on using technology and biology to defy death, inspiring a proactive approach to health.</li>
+        </ul>
+    </section>
+
+    <section id="ai">
+        <h2>Get Personalized Advice with AI</h2>
+        <p>Use local AI (LM Studio at http://localhost:1234) to apply Bryan's lessons to your life. Ensure LM Studio is running with an OpenAI-compatible model.</p>
+        <form>
+            <label for="query">Your Question or Goal (e.g., How to apply Zeroism to daily life?):</label>
+            <textarea id="query" required></textarea>
+            <button type="button" onclick="getAdvice()">Get AI Advice <i class="fas fa-brain"></i></button>
+        </form>
+        <div id="suggestions"></div>
+    </section>
+
+    <footer>
+        <p>Data sourced from protocol.bryanjohnson.com and related sites. For educational purposes only.</p>
+    </footer>
+
+    <script>
+        // No changes to JavaScript are needed.
+        function showSection(id) {
+            document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.querySelector('.toggle-mode i');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        }
+
+        function getAdvice() {
+            const query = document.getElementById('query').value;
+            const suggestionsEl = document.getElementById('suggestions');
+            if (!query) {
+                suggestionsEl.innerHTML = `<p>Please enter a question or goal.</p>`;
+                return;
+            }
+            
+            suggestionsEl.innerHTML = `<p>Thinking... Please wait.</p>`;
+
+            const lessonsSummary = `
+Life Lessons from Blueprint: Overcome self-destructive behaviors by personifying them (e.g., "Evening Bryan"), prioritize sleep with a strict routine, use data (biomarkers) for health decisions, align internal personas to resolve conflicts, and adopt long-term thinking over immediate gratification.
+Key Learnings from "Code 7": Focuses on 7 essential traits for an epic life: perseverance, kindness, courage, responsibility, creativity, integrity, and empathy. It empowers kids to take charge and find purpose.
+Key Learnings from "The Proto Project": Explores ethical AI use, teamwork, the power of curiosity and science, and overcoming challenges through innovation.
+Key Learnings from "Don't Die": Frames aging as a treatable disease, encouraging a proactive approach to health. It emphasizes self-transformation, meaningful connections, and using technology to defy death.
+Central Philosophy (Zeroism): A principle of aiming for optimal health and longevity by systematically eliminating self-destructive behaviors and replacing them with data-driven, health-promoting actions. The goal is to reach a state of 'zero' harm.
+            `;
+
+            const prompt = `You are an AI assistant modeled on Bryan Johnson's principles. Based on the following summary of his work, provide clear, actionable, and personalized advice to the user. Maintain a direct, encouraging, and data-focused tone.
+            
+            Bryan Johnson's Philosophy Summary:
+            ${lessonsSummary}
+
+            User's query: "${query}"
+
+            Your advice should:
+            1. Directly address the user's query.
+            2. Connect the advice to one or more specific principles from the summary (e.g., "This is like tackling your 'Evening Bryan'...").
+            3. Provide 2-3 concrete, actionable steps the user can take.
+            4. Conclude with an empowering statement.`;
+
+            fetch('http://localhost:1234/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: 'local-model', // This is often a placeholder in LM Studio
+                    messages: [{ role: 'user', content: prompt }],
+                    temperature: 0.7,
+                    stream: false
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.choices && data.choices[0] && data.choices[0].message) {
+                    const content = data.choices[0].message.content.replace(/\n/g, '<br>');
+                    suggestionsEl.innerHTML = `<h3>AI Advice:</h3><p>${content}</p>`;
+                } else {
+                    throw new Error("Invalid response structure from the AI model.");
+                }
+            })
+            .catch(error => {
+                console.error("AI Fetch Error:", error);
+                suggestionsEl.innerHTML = `<h3><i class="fas fa-exclamation-triangle"></i> Connection Error</h3><p>Could not get advice. Please ensure LM Studio is running correctly at <strong>http://localhost:1234</strong> and a model is loaded. Error: ${error.message}</p>`;
+            });
+        }
+    </script>
+</body>
+</html>

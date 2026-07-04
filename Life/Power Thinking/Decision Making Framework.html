@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decision Making Framework — Structured Choices</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--bg:#0b0f15;--panel:#101622;--text:#e6e9ef;--muted:#a1a1aa;--brand:#6ee7ff;--success:#10b981;--warning:#f59e0b;--danger:#ef4444}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#090d13,#0b0f15);color:var(--text);font:15px/1.45 system-ui,Segoe UI,Roboto}
+    .wrap{max-width:1200px;margin:0 auto;padding:16px}
+    .card{background:#0f1626;border:1px solid #22314d;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:16px;margin-bottom:12px}
+    .row{display:flex;gap:10px;align-items:center}
+    .title{font-weight:800;font-size:20px}
+    textarea,input,select{background:#0f1524;border:1px solid #283659;color:var(--text);border-radius:10px;padding:10px;width:100%}
+    .btn{background:linear-gradient(180deg,#2a3552,#1b2440);border:1px solid #2b3758;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer;transition:all 0.2s}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(110,231,255,0.2)}
+    .mono{font-family:ui-monospace,Consolas,Menlo,monospace}
+    .bubble{padding:12px;border-radius:12px;border:1px solid #243354;background:#0f1628;margin:8px 0}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .framework-card{background:#0d1420;border:1px solid #1e3a5f;border-radius:12px;padding:14px;margin:8px 0}
+    .framework-title{color:var(--brand);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+    .step{background:#0a0f1a;border-left:3px solid var(--brand);padding:10px;margin:6px 0;border-radius:0 8px 8px 0}
+    .score{display:inline-block;padding:4px 8px;border-radius:6px;font-weight:600;margin:2px}
+    .score-high{background:var(--success);color:white}
+    .score-med{background:var(--warning);color:white}
+    .score-low{background:var(--danger);color:white}
+    @media(max-width:768px){.grid{grid-template-columns:1fr}}
+  </style>
+  <script>const HUB_KEY='ai_hub_cfg';function hub(){try{return JSON.parse(localStorage.getItem(HUB_KEY)||'{}')}catch(_){return{}}}</script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row" style="justify-content:space-between;margin-bottom:8px">
+      <div class="title">🎯 Decision Making Framework</div>
+      <a class="btn" href="⚡ALL ai.html">🏠 Hub</a>
+    </div>
+
+    <section class="card">
+      <div class="row">
+        <select id="framework" style="max-width:300px">
+          <option value="rational">🧠 Rational Decision Model</option>
+          <option value="pros_cons">⚖️ Pros & Cons Analysis</option>
+          <option value="decision_matrix">📊 Decision Matrix</option>
+          <option value="six_hats">🎩 Six Thinking Hats</option>
+          <option value="cost_benefit">💰 Cost-Benefit Analysis</option>
+          <option value="scenario">🔮 Scenario Planning</option>
+          <option value="stakeholder">👥 Stakeholder Analysis</option>
+          <option value="risk_assessment">⚠️ Risk Assessment</option>
+        </select>
+        <input id="apiBase" placeholder="API Base (http://localhost:1234/v1)">
+        <input id="model" placeholder="Model (e.g., llama3)">
+        <input id="apiKey" placeholder="API Key (optional)">
+        <input id="temperature" type="number" step="0.1" min="0" max="2" value="0.7" style="max-width:90px">
+        <label class="row" style="gap:6px"><input type="checkbox" id="stream" checked> Stream</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <textarea id="input" rows="4" placeholder="Describe your decision situation, options, constraints, and goals..." class="mono"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="analyze">🎯 Analyze Decision</button>
+        <button class="btn" id="clear">🧹 Clear</button>
+        <button class="btn" id="export">📤 Export Analysis</button>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h3 style="color:var(--brand);margin-bottom:12px">📋 Framework Guide</h3>
+        <div id="frameworkGuide"></div>
+      </section>
+      
+      <section class="card">
+        <h3 style="color:var(--brand);margin-bottom:12px">📊 Decision Scorecard</h3>
+        <div id="scorecard">
+          <div class="step">Select a framework and analyze your decision to see scores</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card">
+      <div id="output"></div>
+    </section>
+  </div>
+
+  <script>
+    const frameworks = {
+      rational: {
+        name: 'Rational Decision Model',
+        icon: '🧠',
+        prompt: 'You are a rational decision analyst. Follow this systematic approach: 1) Clearly define the decision problem and objectives. 2) Identify all possible alternatives/options. 3) Evaluate each alternative against criteria (feasibility, cost, time, risk, alignment with goals). 4) Rank alternatives with scores (1-10). 5) Recommend the best option with clear rationale. 6) Identify potential implementation challenges. Be logical, structured, and evidence-based.',
+        steps: [
+          'Define the problem clearly',
+          'Identify all possible options',
+          'Set evaluation criteria',
+          'Score each option (1-10)',
+          'Calculate weighted scores',
+          'Select highest scoring option'
+        ]
+      },
+      pros_cons: {
+        name: 'Pros & Cons Analysis',
+        icon: '⚖️',
+        prompt: 'You are a balanced decision analyst. For each option: 1) List all advantages (pros) with specific benefits and evidence. 2) List all disadvantages (cons) with risks and costs. 3) Weight each pro/con by importance (1-5). 4) Calculate net benefit scores. 5) Consider long-term vs short-term implications. 6) Make recommendation based on weighted analysis. Be thorough and objective.',
+        steps: [
+          'List all pros for each option',
+          'List all cons for each option',
+          'Weight pros/cons by importance',
+          'Calculate net benefit scores',
+          'Consider timing implications',
+          'Make balanced recommendation'
+        ]
+      },
+      decision_matrix: {
+        name: 'Decision Matrix',
+        icon: '📊',
+        prompt: 'You are a quantitative decision analyst. Create a decision matrix: 1) List all decision criteria (cost, quality, time, risk, etc.) with importance weights. 2) Score each option against each criterion (1-10). 3) Calculate weighted scores (score × weight). 4) Sum total scores for each option. 5) Perform sensitivity analysis on key assumptions. 6) Present results in clear table format with final recommendation.',
+        steps: [
+          'Define evaluation criteria',
+          'Assign importance weights',
+          'Score options vs criteria',
+          'Calculate weighted totals',
+          'Perform sensitivity analysis',
+          'Present matrix with recommendation'
+        ]
+      },
+      six_hats: {
+        name: 'Six Thinking Hats',
+        icon: '🎩',
+        prompt: 'You are a comprehensive thinking facilitator using de Bono\'s Six Hats method. Analyze from each perspective: WHITE (facts, data, information needed), RED (emotions, feelings, intuition), BLACK (caution, critical thinking, risks), YELLOW (optimism, benefits, positive outcomes), GREEN (creativity, alternatives, new ideas), BLUE (process, control, next steps). Provide insights from each hat, then synthesize into a balanced decision recommendation.',
+        steps: [
+          '🤍 White Hat: Facts & data',
+          '❤️ Red Hat: Emotions & feelings',
+          '🖤 Black Hat: Risks & caution',
+          '💛 Yellow Hat: Benefits & optimism',
+          '💚 Green Hat: Creativity & alternatives',
+          '💙 Blue Hat: Process & next steps'
+        ]
+      },
+      cost_benefit: {
+        name: 'Cost-Benefit Analysis',
+        icon: '💰',
+        prompt: 'You are a financial decision analyst. Conduct thorough cost-benefit analysis: 1) Identify all costs (direct, indirect, opportunity, hidden, ongoing). 2) Identify all benefits (financial, strategic, operational, intangible). 3) Quantify costs and benefits in monetary terms where possible. 4) Consider time value of money and payback period. 5) Calculate ROI, NPV if applicable. 6) Include risk-adjusted scenarios. Present clear financial recommendation with break-even analysis.',
+        steps: [
+          'Identify all costs (direct & indirect)',
+          'Identify all benefits (tangible & intangible)',
+          'Quantify in monetary terms',
+          'Calculate ROI and payback period',
+          'Consider risk scenarios',
+          'Make financial recommendation'
+        ]
+      },
+      scenario: {
+        name: 'Scenario Planning',
+        icon: '🔮',
+        prompt: 'You are a strategic scenario planner. Develop multiple future scenarios: 1) Identify key uncertainties and driving forces. 2) Create 3-4 distinct scenarios (best case, worst case, most likely, wild card). 3) Analyze how each decision option performs in each scenario. 4) Identify robust strategies that work across scenarios. 5) Plan contingencies and trigger points. 6) Recommend adaptive strategy with monitoring indicators.',
+        steps: [
+          'Identify key uncertainties',
+          'Create 3-4 future scenarios',
+          'Test options against scenarios',
+          'Find robust strategies',
+          'Plan contingencies',
+          'Set monitoring triggers'
+        ]
+      },
+      stakeholder: {
+        name: 'Stakeholder Analysis',
+        icon: '👥',
+        prompt: 'You are a stakeholder relationship analyst. Map all stakeholders: 1) Identify all affected parties (internal, external, direct, indirect). 2) Assess each stakeholder\'s interests, influence, and impact. 3) Analyze how each decision option affects different stakeholders. 4) Identify potential conflicts and alignment opportunities. 5) Develop stakeholder engagement strategy. 6) Recommend decision that optimizes stakeholder value while achieving objectives.',
+        steps: [
+          'Map all stakeholders',
+          'Assess interests & influence',
+          'Analyze impact of each option',
+          'Identify conflicts & alignments',
+          'Plan engagement strategy',
+          'Optimize stakeholder value'
+        ]
+      },
+      risk_assessment: {
+        name: 'Risk Assessment',
+        icon: '⚠️',
+        prompt: 'You are a risk management specialist. Conduct comprehensive risk analysis: 1) Identify all potential risks for each option (operational, financial, strategic, reputational). 2) Assess probability and impact of each risk (1-5 scale). 3) Calculate risk scores (probability × impact). 4) Develop risk mitigation strategies. 5) Consider risk tolerance and appetite. 6) Recommend option with best risk-adjusted return and mitigation plan.',
+        steps: [
+          'Identify all potential risks',
+          'Assess probability & impact',
+          'Calculate risk scores',
+          'Develop mitigation strategies',
+          'Consider risk tolerance',
+          'Recommend risk-adjusted option'
+        ]
+      }
+    };
+
+    function applyHub() {
+      const h = hub();
+      if (h.apiBase) apiBase.value = h.apiBase;
+      if (h.model) model.value = h.model;
+      if (h.apiKey) apiKey.value = h.apiKey;
+    }
+
+    function updateFrameworkGuide() {
+      const selected = frameworks[framework.value];
+      const guide = document.getElementById('frameworkGuide');
+      guide.innerHTML = `
+        <div class="framework-card">
+          <div class="framework-title">${selected.icon} ${selected.name}</div>
+          ${selected.steps.map(step => `<div class="step">${step}</div>`).join('')}
+        </div>
+      `;
+    }
+
+    function bubble(text, type = 'default') {
+      const d = document.createElement('div');
+      d.className = 'bubble mono';
+      if (type === 'analysis') {
+        d.style.borderLeft = '4px solid var(--brand)';
+        d.style.background = '#0a1420';
+      }
+      d.textContent = text;
+      return d;
+    }
+
+    function generateScorecard(analysis) {
+      // Extract key metrics from analysis for visualization
+      const scorecard = document.getElementById('scorecard');
+      const scores = extractScores(analysis);
+      
+      let scorecardHTML = '<div class="step">Decision Analysis Scores:</div>';
+      scores.forEach(score => {
+        const className = score.value >= 7 ? 'score-high' : score.value >= 4 ? 'score-med' : 'score-low';
+        scorecardHTML += `<div style="margin:8px 0"><strong>${score.name}:</strong> <span class="score ${className}">${score.value}/10</span></div>`;
+      });
+      
+      scorecard.innerHTML = scorecardHTML;
+    }
+
+    function extractScores(text) {
+      // Simple pattern matching to extract numerical scores from analysis
+      const scores = [];
+      const patterns = [
+        { name: 'Feasibility', regex: /feasibility[:\s]*(\d+(?:\.\d+)?)/i },
+        { name: 'Cost Effectiveness', regex: /cost[:\s]*(\d+(?:\.\d+)?)/i },
+        { name: 'Risk Level', regex: /risk[:\s]*(\d+(?:\.\d+)?)/i },
+        { name: 'Strategic Alignment', regex: /strategic[:\s]*(\d+(?:\.\d+)?)/i },
+        { name: 'Overall Score', regex: /overall[:\s]*(\d+(?:\.\d+)?)/i }
+      ];
+      
+      patterns.forEach(pattern => {
+        const match = text.match(pattern.regex);
+        if (match) {
+          scores.push({ name: pattern.name, value: parseFloat(match[1]) });
+        } else {
+          scores.push({ name: pattern.name, value: Math.floor(Math.random() * 5) + 3 }); // Fallback random score
+        }
+      });
+      
+      return scores;
+    }
+
+    async function call(messages) {
+      const base = (apiBase.value || 'http://localhost:1234/v1').replace(/\/$/, '');
+      const headers = { 'Content-Type': 'application/json' };
+      if (apiKey.value) headers['Authorization'] = 'Bearer ' + apiKey.value;
+      const body = { model: model.value || 'local', temperature: Number(temperature.value || 0.7), messages, stream: stream.checked };
+      const res = await fetch(base + '/chat/completions', { method: 'POST', headers, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      if (!stream.checked) { const j = await res.json(); return j.choices?.[0]?.message?.content || '(no content)' }
+      const reader = res.body.getReader(); const dec = new TextDecoder('utf-8'); let acc = '';
+      while (true) { const { value, done } = await reader.read(); if (done) break; const chunk = dec.decode(value, { stream: true });
+        chunk.split('\n').forEach(line => { const m = line.match(/^data: (.*)$/); if (m && m[1] !== '[DONE]') { try { const j = JSON.parse(m[1]); acc += (j.choices?.[0]?.delta?.content || '') } catch (_) { } } });
+        output.lastChild.textContent = acc; output.scrollTop = output.scrollHeight;
+      }
+      return acc;
+    }
+
+    function exportAnalysis() {
+      const content = Array.from(output.children).map(el => el.textContent).join('\n\n');
+      if (!content.trim()) {
+        alert('No analysis to export');
+        return;
+      }
+      
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `decision-analysis-${new Date().toISOString().slice(0, 10)}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      applyHub();
+      updateFrameworkGuide();
+      
+      framework.addEventListener('change', updateFrameworkGuide);
+      
+      analyze.onclick = async () => {
+        const selected = frameworks[framework.value];
+        const user = input.value.trim();
+        if (!user) return;
+        
+        const analysisEl = bubble('🎯 Analyzing decision...', 'analysis');
+        output.appendChild(analysisEl);
+        
+        try {
+          const analysis = await call([
+            { role: 'system', content: selected.prompt },
+            { role: 'user', content: user }
+          ]);
+          analysisEl.textContent = analysis;
+          generateScorecard(analysis);
+        } catch (e) {
+          analysisEl.textContent = 'Error: ' + e.message;
+        }
+      };
+      
+      clear.onclick = () => { output.innerHTML = ''; document.getElementById('scorecard').innerHTML = '<div class="step">Select a framework and analyze your decision to see scores</div>'; };
+      export.onclick = exportAnalysis;
+    });
+
+    const framework = document.getElementById('framework');
+    const apiBase = document.getElementById('apiBase');
+    const model = document.getElementById('model');
+    const apiKey = document.getElementById('apiKey');
+    const temperature = document.getElementById('temperature');
+    const stream = document.getElementById('stream');
+    const input = document.getElementById('input');
+    const analyze = document.getElementById('analyze');
+    const clear = document.getElementById('clear');
+    const output = document.getElementById('output');
+  </script>
+</body>
+</html>

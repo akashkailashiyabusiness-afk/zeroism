@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt Lab — Design, Test, Compare</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--bg:#0b0f17;--panel:#0f1624;--muted:#1a2235;--text:#e6e9ef;--sub:#aab3c5;--brand:#6ee7ff;--accent:#7c4dff}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(120deg,#0b0f17,#0a0f1c 60%,#0b1325);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px}
+    .card{background:var(--panel);border:1px solid #1b2437;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:14px}
+    .row{display:flex;gap:12px;align-items:stretch}
+    .col{flex:1}
+    .btn{background:linear-gradient(180deg,#2a3552,#1b2440);border:1px solid #2b3758;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer}
+    textarea,input,select{background:#0f1524;border:1px solid #283659;color:var(--text);border-radius:10px;padding:10px;width:100%}
+    .title{font-weight:800;font-size:20px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .small{font-size:12px;color:var(--sub)}
+    .mono{font-family:ui-monospace,Consolas,Menlo,monospace}
+  </style>
+  <script>
+    const HUB_KEY='ai_hub_cfg';
+    function getHub(){ try{return JSON.parse(localStorage.getItem(HUB_KEY)||'{}')}catch(_){return{}} }
+  </script>
+  </head>
+<body>
+  <div class="wrap">
+    <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="title">Prompt Lab</div>
+      <div class="row" style="gap:8px">
+        <a class="btn" href="⚡ALL ai.html">🏠 Hub</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <div class="small">Variables (name=value, one per line)</div>
+        <textarea id="vars" rows="6" class="mono">role=senior product manager
+tone=concise, actionable
+audience=founder
+goal=prioritize roadmap for Q4</textarea>
+        <div class="small" style="margin-top:8px">Prompt Template (use {{var}})</div>
+        <textarea id="template" rows="10" class="mono">You are a {{role}}. Write a {{tone}} plan for our {{audience}} to {{goal}}.
+Output:
+- 3 priorities with rationale
+- risks and mitigations
+- first 2-week action plan</textarea>
+        <div class="row" style="margin-top:6px;flex-wrap:wrap">
+          <select id="library" style="max-width:260px">
+            <option value="">Prompt Library…</option>
+            <option value="spec">Product Spec Critique</option>
+            <option value="prioritize">Prioritization (RICE)</option>
+            <option value="summary">Executive Summary</option>
+            <option value="code">Code Review Checklist</option>
+          </select>
+          <button class="btn" id="insertLib">Insert</button>
+        </div>
+        <div class="small" style="margin-top:8px">Variants Matrix (format: var=[opt1|opt2], one per line)</div>
+        <textarea id="variants" rows="5" class="mono" placeholder="tone=[concise|detailed]\naudience=[founder|team]\nrole=[pm|engineer]"></textarea>
+        <div class="row" style="margin-top:8px;flex-wrap:wrap">
+          <button class="btn" id="runA">Run A</button>
+          <button class="btn" id="runB">Run B</button>
+          <button class="btn" id="abCompare">A/B Compare</button>
+          <button class="btn" id="showDiff">Show Diff</button>
+          <button class="btn" id="batchRun">Batch Run Variants</button>
+          <button class="btn" id="exportBtn">Export</button>
+          <button class="btn" id="importBtn">Import</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="small">Settings</div>
+        <div class="row" style="margin-top:6px">
+          <input id="apiBase" placeholder="API Base (e.g., http://localhost:1234/v1)">
+          <input id="model" placeholder="Model (e.g., llama3)">
+        </div>
+        <div class="row" style="margin-top:6px">
+          <input id="apiKey" placeholder="API Key (optional)">
+          <input id="temperature" type="number" step="0.1" min="0" max="2" value="0.7" placeholder="Temp">
+        </div>
+        <div class="grid" style="margin-top:8px">
+          <div class="card" style="padding:10px">
+            <div class="small">Result A</div>
+            <div id="outA" class="mono" style="white-space:pre-wrap;min-height:160px"></div>
+            <div class="small">Tokens: <span id="tokA">0</span></div>
+          </div>
+          <div class="card" style="padding:10px">
+            <div class="small">Result B</div>
+            <div id="outB" class="mono" style="white-space:pre-wrap;min-height:160px"></div>
+            <div class="small">Tokens: <span id="tokB">0</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:8px">
+          <div class="small">Rubric (for auto-scoring A/B) — specify criteria and weights</div>
+          <textarea id="rubric" rows="4" class="mono">Clarity:40
+Actionability:40
+Accuracy:20</textarea>
+          <div class="row" style="margin-top:8px;flex-wrap:wrap">
+            <button class="btn" id="autoScore">Auto-Score A vs B</button>
+            <div class="small">Total tokens (session): <span id="tokTotal">0</span></div>
+          </div>
+          <div class="small" style="margin-top:6px">Notes / Scores</div>
+          <textarea id="notes" rows="5" class="mono" placeholder="Auto-scoring results and your observations appear here."></textarea>
+        </div>
+        <div class="card" style="margin-top:8px">
+          <div class="small">Diff (A vs B)</div>
+          <div id="diffOut" class="mono" style="white-space:pre-wrap;max-height:160px;overflow:auto"></div>
+        </div>
+        <div class="card" style="margin-top:8px">
+          <div class="small">Batch Results</div>
+          <div id="batchResults" class="mono" style="white-space:pre-wrap;max-height:200px;overflow:auto"></div>
+          <div class="row" style="margin-top:6px;flex-wrap:wrap">
+            <button class="btn" id="exportCsv">Export CSV</button>
+          </div>
+        </div>
+        <div class="card" style="margin-top:8px">
+          <div class="small">Run History</div>
+          <div class="row" style="margin-top:6px;flex-wrap:wrap">
+            <select id="historySel" style="max-width:320px"><option value="">Select saved experiment…</option></select>
+            <button class="btn" id="saveHistory">Save Current</button>
+            <button class="btn" id="loadHistory">Load</button>
+            <button class="btn" id="clearHistory">Clear All</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    function renderTemplate(tpl, vars){
+      return tpl.replace(/\{\{(.*?)\}\}/g,(_,k)=> (vars[k.trim()] ?? ''))
+    }
+    function parseVars(text){
+      const map={};
+      text.split(/\r?\n/).forEach(line=>{
+        const i=line.indexOf('='); if(i>0){ map[line.slice(0,i).trim()]=line.slice(i+1).trim() }
+      });
+      return map;
+    }
+    function hubDefaults(){ const h=getHub(); if(h.apiBase) apiBase.value=h.apiBase; if(h.model) model.value=h.model; if(h.apiKey) apiKey.value=h.apiKey }
+    async function callModel(prompt){
+      const base=(apiBase.value||'http://localhost:1234/v1').replace(/\/$/,'');
+      const headers={'Content-Type':'application/json'}; if(apiKey.value) headers['Authorization']='Bearer '+apiKey.value;
+      const body={model:model.value||'local',temperature:Number(temperature.value||0.7),messages:[{role:'system',content:'You are a precise assistant. Be concise.'},{role:'user',content:prompt}]};
+      const res=await fetch(base+'/chat/completions',{method:'POST',headers,body:JSON.stringify(body)});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const j=await res.json();
+      return { text: (j.choices?.[0]?.message?.content || JSON.stringify(j)), usage: j.usage||null };
+    }
+    function addUsage(u){ if(!u) return 0; const t=Number(u.total_tokens||0); const cur=Number(tokTotal.textContent||0); tokTotal.textContent=String(cur + t); return t }
+
+    function parseVariantsText(text){
+      const out={};
+      text.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).forEach(line=>{
+        const m=line.match(/^([^=]+)=\[(.+)\]$/); if(!m) return; const k=m[1].trim(); const vals=m[2].split('|').map(v=>v.trim());
+        if(k) out[k]=vals.filter(Boolean);
+      });
+      return out;
+    }
+    function productVariants(baseVars, variants){
+      const keys=Object.keys(variants); if(keys.length===0) return [baseVars];
+      const results=[];
+      function rec(i, acc){ if(i===keys.length){ results.push({...acc}); return; } const k=keys[i]; for(const v of variants[k]){ acc[k]=v; rec(i+1, acc); } }
+      rec(0, {...baseVars}); return results;
+    }
+
+    async function autoScoreAB(aText,bText, rubricText){
+      const base=(apiBase.value||'http://localhost:1234/v1').replace(/\/$/,'');
+      const headers={'Content-Type':'application/json'}; if(apiKey.value) headers['Authorization']='Bearer '+apiKey.value;
+      const sys='You are a strict evaluator. Given two candidate answers (A and B) and a rubric with weights, return a strict JSON: {"winner":"A|B|tie","scores":{"A":0-100,"B":0-100},"rationale":"..."}. Do not include any other text.';
+      const user=`Rubric (name:weight per 100):\n${rubricText}\n\nAnswer A:\n${aText}\n\nAnswer B:\n${bText}`;
+      const body={model:model.value||'local',temperature:0,messages:[{role:'system',content:sys},{role:'user',content:user}]};
+      const res=await fetch(base+'/chat/completions',{method:'POST',headers,body:JSON.stringify(body)});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const j=await res.json(); const usage=j.usage||null; let raw=(j.choices?.[0]?.message?.content||'').trim();
+      // try to extract JSON
+      const m=raw.match(/\{[\s\S]*\}$/); if(m) raw=m[0];
+      const parsed=JSON.parse(raw);
+      return { result: parsed, usage };
+    }
+
+    // Prompt library
+    const LIB = {
+      spec: `You are a critical product reviewer. Given a product spec, evaluate:\n- Goals and non-goals\n- Risks (product/tech/market)\n- Edge cases\n- Acceptance criteria\nRespond concisely with bullets and a risk table.`,
+      prioritize: `Use RICE (Reach, Impact 1–3, Confidence 0–1, Effort PM) to score the following backlog. Return a table and top 3 picks with rationale.`,
+      summary: `Write an executive summary (max 6 bullets): context, key findings, 3 actions, risks.`,
+      code: `Perform a code review. Checklist: correctness, readability, performance, security, tests. Provide concrete suggestions.`,
+    };
+
+    // Diff
+    function diffWords(a,b){
+      const aw=a.split(/\s+/), bw=b.split(/\s+/); const m=aw.length, n=bw.length; const dp=Array(m+1).fill(0).map(()=>Array(n+1).fill(0));
+      for(let i=m-1;i>=0;i--) for(let j=n-1;j>=0;j--) dp[i][j]=aw[i]===bw[j]?1+dp[i+1][j+1]:Math.max(dp[i+1][j],dp[i][j+1]);
+      const out=[]; let i=0,j=0; while(i<m&&j<n){ if(aw[i]===bw[j]){ out.push({t:'=',w:aw[i]}); i++; j++; } else if(dp[i+1][j]>=dp[i][j+1]){ out.push({t:'-',w:aw[i++]}); } else { out.push({t:'+',w:bw[j++]}); } }
+      while(i<m) out.push({t:'-',w:aw[i++]}); while(j<n) out.push({t:'+',w:bw[j++]}); return out;
+    }
+    function renderDiff(a,b){
+      const parts=diffWords(a,b); return parts.map(p=> p.t==='='? p.w : (p.t==='+'? `[+${p.w}]` : `[-${p.w}]`) ).join(' ');
+    }
+
+    window.addEventListener('DOMContentLoaded', ()=>{
+      hubDefaults();
+      document.getElementById('runA').onclick = async ()=>{
+        const vars=parseVars(varsEl.value); const p=renderTemplate(template.value, vars); outA.textContent='⏳ Running...'; tokA.textContent='0';
+        try{ const {text,usage}= await callModel(p); outA.textContent = text; tokA.textContent=String(addUsage(usage)); }catch(e){ outA.textContent='Error: '+e.message }
+      };
+      document.getElementById('runB').onclick = async ()=>{
+        const vars=parseVars(varsEl.value); vars.variant='B'; const p=renderTemplate(template.value, vars); outB.textContent='⏳ Running...'; tokB.textContent='0';
+        try{ const {text,usage}= await callModel(p); outB.textContent = text; tokB.textContent=String(addUsage(usage)); }catch(e){ outB.textContent='Error: '+e.message }
+      };
+      document.getElementById('abCompare').onclick = ()=>{
+        const a=outA.textContent.length, b=outB.textContent.length;
+        notes.value = (notes.value? notes.value+'\n':'') + `A length=${a}, B length=${b}. Criteria: clarity, actionability, accuracy.`;
+      };
+      document.getElementById('batchRun').onclick = async ()=>{
+        const baseVars=parseVars(varsEl.value); const vmap=parseVariantsText(variantsEl.value);
+        const combos=productVariants(baseVars, vmap); batchResults.textContent = `Running ${combos.length} combos...\n`;
+        batchRows = [];
+        let i=0; for(const vars of combos){ i++; const p=renderTemplate(template.value, vars); batchResults.textContent += `\n#${i} vars=${JSON.stringify(vars)}\n`; try{ const {text,usage}=await callModel(p); const tokens=addUsage(usage); batchResults.textContent += text + '\n'; batchRows.push({index:i, vars, text, tokens}); }catch(e){ batchResults.textContent += 'Error: '+e.message+'\n'; batchRows.push({index:i, vars, text:'', tokens:0, error:String(e.message)}) } }
+      };
+      document.getElementById('autoScore').onclick = async ()=>{
+        if(!outA.textContent || !outB.textContent){ alert('Run A and B first.'); return; }
+        notes.value = (notes.value? notes.value+'\n':'') + 'Scoring...';
+        try{
+          const {result,usage} = await autoScoreAB(outA.textContent, outB.textContent, rubric.value);
+          addUsage(usage);
+          notes.value += `\nWinner: ${result.winner}\nScores → A:${result.scores.A} B:${result.scores.B}\nWhy: ${result.rationale}`;
+        }catch(e){ notes.value += '\nError scoring: '+e.message }
+      };
+      document.getElementById('showDiff').onclick = ()=>{
+        if(!outA.textContent || !outB.textContent){ diffOut.textContent='Run A and B first.'; return; }
+        diffOut.textContent = renderDiff(outA.textContent, outB.textContent);
+      };
+      document.getElementById('insertLib').onclick = ()=>{
+        const k=library.value; if(!k) return; const t=LIB[k]; if(!t) return; template.value = (template.value? template.value+'\n\n':'' ) + t;
+      };
+      document.getElementById('exportBtn').onclick = ()=>{
+        const data={
+          when:new Date().toISOString(),
+          template: template.value, vars: varsEl.value, variants: variantsEl.value, rubric: rubric.value,
+          outputs:{A: outA.textContent, B: outB.textContent}, usage:{A: tokA.textContent, B: tokB.textContent, total: tokTotal.textContent}
+        };
+        const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='prompt-lab-experiment.json'; a.click(); URL.revokeObjectURL(url);
+      };
+      document.getElementById('importBtn').onclick = ()=>{
+        const inp=document.createElement('input'); inp.type='file'; inp.accept='.json'; inp.onchange=async()=>{ const f=inp.files[0]; if(!f) return; const txt=await f.text(); try{ const j=JSON.parse(txt); template.value=j.template||template.value; varsEl.value=j.vars||varsEl.value; variantsEl.value=j.variants||variantsEl.value; rubric.value=j.rubric||rubric.value; outA.textContent=j.outputs?.A||''; outB.textContent=j.outputs?.B||''; tokA.textContent=j.usage?.A||'0'; tokB.textContent=j.usage?.B||'0'; tokTotal.textContent=j.usage?.total||'0'; }catch(e){ alert('Invalid file'); } };
+        inp.click();
+      };
+      // History wiring
+      loadHistorySelect();
+      document.getElementById('saveHistory').onclick = ()=>{ saveHistoryEntry(); loadHistorySelect(); };
+      document.getElementById('loadHistory').onclick = ()=>{ const id=historySel.value; if(!id) return; const j=JSON.parse(localStorage.getItem(id)||'{}'); if(!j.template) return; template.value=j.template||''; varsEl.value=j.vars||''; variantsEl.value=j.variants||''; rubric.value=j.rubric||''; outA.textContent=j.outputs?.A||''; outB.textContent=j.outputs?.B||''; tokA.textContent=j.usage?.A||'0'; tokB.textContent=j.usage?.B||'0'; tokTotal.textContent=j.usage?.total||'0'; batchRows=j.batchRows||[]; renderBatchFromRows(); };
+      document.getElementById('clearHistory').onclick = ()=>{ Object.keys(localStorage).filter(k=>k.startsWith('pl_hist_')).forEach(k=>localStorage.removeItem(k)); loadHistorySelect(); };
+      document.getElementById('exportCsv').onclick = ()=>{ exportBatchCsv(); };
+    });
+
+    const varsEl = document.getElementById('vars');
+    const template = document.getElementById('template');
+    const variantsEl = document.getElementById('variants');
+    const apiBase = document.getElementById('apiBase');
+    const model = document.getElementById('model');
+    const apiKey = document.getElementById('apiKey');
+    const temperature = document.getElementById('temperature');
+    const outA = document.getElementById('outA');
+    const outB = document.getElementById('outB');
+    const tokA = document.getElementById('tokA');
+    const tokB = document.getElementById('tokB');
+    const tokTotal = document.getElementById('tokTotal');
+    const rubric = document.getElementById('rubric');
+    const notes = document.getElementById('notes');
+    const batchResults = document.getElementById('batchResults');
+    const diffOut = document.getElementById('diffOut');
+    const library = document.getElementById('library');
+    const historySel = document.getElementById('historySel');
+    let batchRows = [];
+
+    function saveHistoryEntry(){
+      const id='pl_hist_'+Date.now();
+      const entry={
+        when:new Date().toISOString(), template:template.value, vars:varsEl.value, variants:variantsEl.value, rubric:rubric.value,
+        outputs:{A: outA.textContent, B: outB.textContent}, usage:{A: tokA.textContent, B: tokB.textContent, total: tokTotal.textContent}, batchRows
+      };
+      localStorage.setItem(id, JSON.stringify(entry));
+    }
+    function loadHistorySelect(){
+      const keys=Object.keys(localStorage).filter(k=>k.startsWith('pl_hist_')).sort().reverse();
+      historySel.innerHTML='<option value="">Select saved experiment…</option>';
+      keys.forEach(k=>{ try{ const j=JSON.parse(localStorage.getItem(k)||'{}'); const opt=document.createElement('option'); opt.value=k; opt.textContent=(j.when||k); historySel.appendChild(opt);}catch(_){} });
+    }
+    function renderBatchFromRows(){
+      batchResults.textContent='';
+      batchRows.forEach(r=>{ batchResults.textContent += `\n#${r.index} vars=${JSON.stringify(r.vars)}\n${r.text||''}\n`; });
+    }
+    function toCsvCell(s){ if(s==null) return ''; s=String(s).replace(/"/g,'""'); return '"'+s+'"'; }
+    function exportBatchCsv(){
+      const header=['index','vars','tokens','text'];
+      const lines=[header.join(',')];
+      batchRows.forEach(r=>{ lines.push([r.index, toCsvCell(JSON.stringify(r.vars)), r.tokens, toCsvCell(r.text)].join(',')); });
+      const blob=new Blob([lines.join('\n')],{type:'text/csv'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='prompt-lab-batch.csv'; a.click(); URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
+

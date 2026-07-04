@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quality Quotes</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Merriweather:ital,wght@0,400;1,400&display=swap');
+        h1, button, input { font-family: 'Inter', sans-serif; }
+        blockquote { font-family: 'Merriweather', serif; }
+    </style>
+</head>
+<body 
+    class="bg-slate-900 text-slate-200"
+    x-data="{
+        search: '',
+        quotes: [
+            { text: 'The only way to do great work is to love what you do. ❤️💼', author: 'Steve Jobs' },
+            { text: 'In the middle of difficulty lies opportunity. 🌟💪', author: 'Albert Einstein' },
+            { text: 'Be the change you wish to see in the world. 🌍✨', author: 'Mahatma Gandhi' },
+            { text: 'I have not failed. I\'ve just found 10,000 ways that won\'t work. 🔍💡', author: 'Thomas Edison' },
+            { text: 'The best time to plant a tree was 20 years ago. The second best time is now. 🌳⏰', author: 'Chinese Proverb' },
+            { text: 'Everything you’ve ever wanted is on the other side of fear. 😨➡️🌈', author: 'George Addair' },
+            { text: 'It is never too late to be what you might have been. ⏳🌱', author: 'George Eliot' },
+            { text: 'The mind is everything. What you think you become. 🧠💭', author: 'Buddha' },
+            { text: 'Life is what happens when you\'re busy making other plans. 📅🤔', author: 'John Lennon' },
+            { text: 'You miss 100% of the shots you don’t take. 🏀❌', author: 'Wayne Gretzky' },
+            { text: 'Whether you think you can or you think you can’t, you’re right. 🤔👍👎', author: 'Henry Ford' },
+            { text: 'The only limit to our realization of tomorrow will be our doubts of today. 🌅❓', author: 'Franklin D. Roosevelt' },
+            { text: 'To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment. 🌈💪', author: 'Ralph Waldo Emerson' },
+            { text: 'Success is not final, failure is not fatal: It is the courage to continue that counts. 🏆💔➡️💪', author: 'Winston Churchill' },
+            { text: 'What you get by achieving your goals is not as important as what you become by achieving your goals. 🎯🌟', author: 'Zig Ziglar' },
+            { text: 'The future belongs to those who believe in the beauty of their dreams. 🌌💖', author: 'Eleanor Roosevelt' },
+            { text: 'It’s not whether you get knocked down, it’s whether you get up. 🤕➡️💪', author: 'Vince Lombardi' },
+            { text: 'The way to get started is to quit talking and begin doing. 🗣️✋➡️🏃‍♂️', author: 'Walt Disney' },
+            { text: 'Life is 10% what happens to us and 90% how we react to it. 🎢🤷‍♂️', author: 'Charles R. Swindoll' },
+            { text: 'Believe you can and you\'re halfway there. 🌟👍', author: 'Theodore Roosevelt' },
+            { text: 'I’ve learned that people will forget what you said, people will forget what you did, but people will never forget how you made them feel. 💬❤️', author: 'Maya Angelou' },
+            { text: 'The greatest glory in living lies not in never falling, but in rising every time we fall. 🌅💪', author: 'Nelson Mandela' },
+            { text: 'If you want to lift yourself up, lift up someone else. 🤝⬆️', author: 'Booker T. Washington' },
+            { text: 'It does not matter how slowly you go as long as you do not stop. 🐢➡️🏁', author: 'Confucius' },
+            { text: 'Go confidently in the direction of your dreams. Live the life you have imagined. 🌈🚶‍♂️', author: 'Henry David Thoreau' },
+            { text: 'Life is either a daring adventure or nothing at all. 🌍🎢', author: 'Helen Keller' },
+            { text: 'The best revenge is massive success. 💥🏆', author: 'Frank Sinatra' },
+            { text: 'What lies behind us and what lies before us are tiny matters compared to what lies within us. 🌌💖', author: 'Ralph Waldo Emerson' },
+            { text: 'The only way to achieve the impossible is to believe it is possible. 🌈💪', author: 'Charles Kingsleigh' },
+            { text: 'You don’t have to be great to start, but you have to start to be great. 🚀🌟', author: 'Zig Ziglar' },
+            { text: 'A room without books is like a body without a soul. 🏠📖', author: 'Cicero' },
+        ],
+        
+        get filteredQuotes() {
+            if (this.search.trim() === '') return this.quotes;
+            const term = this.search.toLowerCase();
+            return this.quotes.filter(q => 
+                q.text.toLowerCase().includes(term) ||
+                q.author.toLowerCase().includes(term)
+            );
+        },
+        
+        showRandom() {
+            const randomIndex = Math.floor(Math.random() * this.quotes.length);
+            const randomQuote = this.quotes[randomIndex];
+            this.search = randomQuote.text;
+        }
+    }"
+>
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+        <h1 class="text-4xl md:text-5xl font-bold text-center mb-8 text-amber-300">
+            Quality Quotes
+        </h1>
+
+        <!-- Controls -->
+        <div class="sticky top-4 z-10 p-4 mb-10 bg-slate-800/80 backdrop-blur-lg rounded-xl shadow-lg ring-1 ring-white/10 flex flex-col sm:flex-row gap-4 items-center">
+             <div class="relative w-full flex-grow">
+                <svg class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
+                <input 
+                    type="text" 
+                    x-model.debounce.300ms="search" 
+                    placeholder="Search quotes or authors..."
+                    class="w-full p-3 pl-10 border border-slate-600 rounded-lg bg-slate-700 text-white placeholder-slate-400 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:outline-none transition">
+            </div>
+            <button @click="showRandom()" class="px-8 py-3 w-full sm:w-auto rounded-lg bg-amber-400 text-slate-900 font-semibold hover:bg-amber-300 active:scale-95 transition-all shadow-md hover:shadow-lg">
+                Random Quote
+            </button>
+        </div>
+
+        <!-- Quote Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <template x-for="quote in filteredQuotes" :key="quote.text">
+                <div class="bg-slate-800 rounded-lg shadow-lg p-6 flex flex-col border-t-4 border-amber-400 hover:shadow-amber-400/10 hover:-translate-y-1.5 transition-all duration-300">
+                    <blockquote class="text-lg italic flex-grow mb-4 text-slate-300" x-text="quote.text"></blockquote>
+                    <figcaption class="text-right font-semibold text-amber-400 mt-2" x-text="'— ' + quote.author"></figcaption>
+                </div>
+            </template>
+            
+            <!-- No results message -->
+            <div x-show="filteredQuotes.length === 0" class="md:col-span-2 lg:col-span-3 text-center py-10 text-slate-500">
+                <p class="text-xl">No quotes found.</p>
+                <button @click="search = ''" class="mt-4 text-amber-400 hover:underline">Clear search</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

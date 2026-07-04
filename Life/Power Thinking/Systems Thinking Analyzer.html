@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Systems Thinking Analyzer — Holistic Problem Solving</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--bg:#0b0f15;--panel:#101622;--text:#e6e9ef;--muted:#a1a1aa;--brand:#6ee7ff;--success:#10b981;--warning:#f59e0b;--danger:#ef4444}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#090d13,#0b0f15);color:var(--text);font:15px/1.45 system-ui,Segoe UI,Roboto}
+    .wrap{max-width:1200px;margin:0 auto;padding:16px}
+    .card{background:#0f1626;border:1px solid #22314d;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:16px;margin-bottom:12px}
+    .row{display:flex;gap:10px;align-items:center}
+    .title{font-weight:800;font-size:20px}
+    textarea,input,select{background:#0f1524;border:1px solid #283659;color:var(--text);border-radius:10px;padding:10px;width:100%}
+    .btn{background:linear-gradient(180deg,#2a3552,#1b2440);border:1px solid #2b3758;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer;transition:all 0.2s}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(110,231,255,0.2)}
+    .mono{font-family:ui-monospace,Consolas,Menlo,monospace}
+    .bubble{padding:12px;border-radius:12px;border:1px solid #243354;background:#0f1628;margin:8px 0}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .system-element{background:#0d1420;border:1px solid #1e3a5f;border-radius:12px;padding:12px;margin:6px 0;cursor:pointer;transition:all 0.2s}
+    .system-element:hover{border-color:var(--brand);transform:translateY(-1px)}
+    .element-title{color:var(--brand);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+    .element-desc{font-size:13px;color:var(--muted);line-height:1.4}
+    .leverage-point{border-left:4px solid var(--success);background:#0a1a0a;padding:10px;margin:6px 0;border-radius:0 8px 8px 0}
+    .feedback-loop{border-left:4px solid var(--warning);background:#1a1200;padding:10px;margin:6px 0;border-radius:0 8px 8px 0}
+    .system-map{background:#0a0f1a;border:2px solid #1e3a5f;border-radius:12px;padding:16px;margin:12px 0;font-family:monospace;font-size:12px;line-height:1.6}
+    @media(max-width:768px){.grid{grid-template-columns:1fr}}
+  </style>
+  <script>const HUB_KEY='ai_hub_cfg';function hub(){try{return JSON.parse(localStorage.getItem(HUB_KEY)||'{}')}catch(_){return{}}}</script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row" style="justify-content:space-between;margin-bottom:8px">
+      <div class="title">🌐 Systems Thinking Analyzer</div>
+      <a class="btn" href="⚡ALL ai.html">🏠 Hub</a>
+    </div>
+
+    <section class="card">
+      <div class="row">
+        <select id="approach" style="max-width:280px">
+          <option value="holistic">🌐 Holistic Analysis</option>
+          <option value="causal_loops">🔄 Causal Loop Mapping</option>
+          <option value="leverage_points">🎯 Leverage Points</option>
+          <option value="iceberg_model">🧊 Iceberg Model</option>
+          <option value="rich_pictures">🎨 Rich Picture Analysis</option>
+          <option value="stakeholder_system">👥 Stakeholder Systems</option>
+          <option value="boundaries">🚧 Boundary Analysis</option>
+          <option value="emergence">✨ Emergent Properties</option>
+        </select>
+        <input id="apiBase" placeholder="API Base (http://localhost:1234/v1)">
+        <input id="model" placeholder="Model (e.g., llama3)">
+        <input id="apiKey" placeholder="API Key (optional)">
+        <input id="temperature" type="number" step="0.1" min="0" max="2" value="0.6" style="max-width:90px">
+        <label class="row" style="gap:6px"><input type="checkbox" id="stream" checked> Stream</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <textarea id="input" rows="4" placeholder="Describe a complex problem, organization, or system you want to analyze..." class="mono"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="analyze">🌐 Analyze System</button>
+        <button class="btn" id="clear">🧹 Clear</button>
+        <button class="btn" id="visualize">📊 Generate Map</button>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h3 style="color:var(--brand);margin-bottom:12px">🧰 Systems Tools</h3>
+        <div id="toolsLibrary"></div>
+      </section>
+      
+      <section class="card">
+        <h3 style="color:var(--brand);margin-bottom:12px">🎯 Key Insights</h3>
+        <div id="insights">
+          <div class="element-desc">Analyze a system to see key insights and leverage points</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card">
+      <div id="output"></div>
+    </section>
+  </div>
+
+  <script>
+    const systemsTools = {
+      stocks_flows: {
+        name: 'Stocks & Flows',
+        icon: '📊',
+        desc: 'Identify what accumulates (stocks) and what changes them (flows)',
+        example: 'Bank account (stock) ← deposits/withdrawals (flows)'
+      },
+      feedback_loops: {
+        name: 'Feedback Loops',
+        icon: '🔄',
+        desc: 'Map reinforcing and balancing loops that drive system behavior',
+        example: 'Population growth → more births → larger population (reinforcing)'
+      },
+      leverage_points: {
+        name: 'Leverage Points',
+        icon: '🎯',
+        desc: 'Find high-impact intervention points in the system',
+        example: 'Changing paradigms has more leverage than changing parameters'
+      },
+      mental_models: {
+        name: 'Mental Models',
+        icon: '🧠',
+        desc: 'Uncover assumptions and beliefs that shape system behavior',
+        example: 'Beliefs about competition vs collaboration affect outcomes'
+      },
+      boundaries: {
+        name: 'System Boundaries',
+        icon: '🚧',
+        desc: 'Define what is inside vs outside the system of interest',
+        example: 'Is the customer part of your business system or external?'
+      },
+      delays: {
+        name: 'Delays & Buffers',
+        icon: '⏱️',
+        desc: 'Identify time delays between causes and effects',
+        example: 'Training investment → skill improvement (6 month delay)'
+      },
+      emergence: {
+        name: 'Emergent Properties',
+        icon: '✨',
+        desc: 'Properties that arise from system interactions, not individual parts',
+        example: 'Team performance emerges from individual + interaction patterns'
+      },
+      hierarchy: {
+        name: 'System Hierarchy',
+        icon: '🏗️',
+        desc: 'Understand systems within systems and their relationships',
+        example: 'Individual → Team → Department → Organization → Industry'
+      }
+    };
+
+    const approachPrompts = {
+      holistic: 'You are a systems thinking expert. Analyze this system holistically: 1) Map key components and their relationships. 2) Identify feedback loops (reinforcing/balancing). 3) Find leverage points for maximum impact. 4) Examine emergent properties. 5) Consider unintended consequences. 6) Suggest systemic interventions. Think in terms of patterns, structures, and dynamics.',
+      causal_loops: 'You are a causal loop mapping specialist. Create detailed causal analysis: 1) Identify key variables in the system. 2) Map causal relationships with + or - polarity. 3) Trace reinforcing loops (R) and balancing loops (B). 4) Find delays in the system. 5) Identify dominant loops driving behavior. 6) Suggest loop-breaking interventions. Present as clear causal diagrams.',
+      leverage_points: 'You are a leverage point analyst using Donella Meadows\' framework. Identify intervention points ranked by leverage (highest to lowest): 1) Paradigms/mindsets. 2) Goals of the system. 3) Power to change system structure. 4) Rules of the system. 5) Information flows. 6) Material flows. 7) Regulating negative feedback loops. 8) Driving positive feedback loops. 9) Material elements. Focus on high-leverage interventions.',
+      iceberg_model: 'You are an iceberg model analyst. Examine the system at four levels: 1) EVENTS: What happened? (visible symptoms). 2) PATTERNS: What trends emerge over time? 3) STRUCTURES: What influences the patterns? (rules, policies, physical elements). 4) MENTAL MODELS: What beliefs create the structures? Focus on deeper levels for lasting change.',
+      rich_pictures: 'You are a rich picture facilitator. Create comprehensive system visualization: 1) Map all stakeholders and their relationships. 2) Show formal and informal structures. 3) Identify emotions, conflicts, and concerns. 4) Highlight information flows and communication patterns. 5) Show external influences and constraints. 6) Capture the "messiness" and complexity. Make it vivid and comprehensive.',
+      stakeholder_system: 'You are a stakeholder systems analyst. Map the human system: 1) Identify all stakeholders (primary, secondary, key players). 2) Analyze their interests, power, and influence. 3) Map relationships and dependencies. 4) Identify conflicts and alignments. 5) Find coalition opportunities. 6) Suggest engagement strategies. Focus on the social dynamics driving system behavior.',
+      boundaries: 'You are a boundary analysis expert. Examine system boundaries: 1) Define current system boundaries - what\'s in/out? 2) Question boundary choices - are they appropriate? 3) Identify boundary objects and spanning roles. 4) Examine boundary permeability and control. 5) Consider alternative boundary definitions. 6) Suggest boundary redesign for better outcomes.',
+      emergence: 'You are an emergence analyst. Focus on emergent properties: 1) Identify properties that emerge from interactions (not individual parts). 2) Examine how local interactions create global patterns. 3) Find self-organizing dynamics. 4) Identify tipping points and phase transitions. 5) Consider how to nurture positive emergence. 6) Design conditions for desired emergent outcomes.'
+    };
+
+    function applyHub() {
+      const h = hub();
+      if (h.apiBase) apiBase.value = h.apiBase;
+      if (h.model) model.value = h.model;
+      if (h.apiKey) apiKey.value = h.apiKey;
+    }
+
+    function renderToolsLibrary() {
+      const library = document.getElementById('toolsLibrary');
+      library.innerHTML = '';
+      
+      Object.entries(systemsTools).forEach(([key, tool]) => {
+        const card = document.createElement('div');
+        card.className = 'system-element';
+        card.innerHTML = `
+          <div class="element-title">${tool.icon} ${tool.name}</div>
+          <div class="element-desc">${tool.desc}</div>
+          <div style="margin-top:6px;font-size:11px;color:var(--muted);font-style:italic">${tool.example}</div>
+        `;
+        card.onclick = () => insertToolPrompt(key);
+        library.appendChild(card);
+      });
+    }
+
+    function insertToolPrompt(toolKey) {
+      const prompts = {
+        stocks_flows: 'Analyze the stocks and flows in: ',
+        feedback_loops: 'Map the feedback loops in: ',
+        leverage_points: 'Find the highest leverage intervention points in: ',
+        mental_models: 'Uncover the mental models and assumptions in: ',
+        boundaries: 'Examine the system boundaries of: ',
+        delays: 'Identify delays and time lags in: ',
+        emergence: 'Analyze the emergent properties of: ',
+        hierarchy: 'Map the system hierarchy and levels of: '
+      };
+      
+      input.value = prompts[toolKey] || '';
+      input.focus();
+    }
+
+    function updateInsights(analysis) {
+      const insights = document.getElementById('insights');
+      const keyPoints = extractSystemInsights(analysis);
+      
+      if (keyPoints.length === 0) {
+        insights.innerHTML = '<div class="element-desc">No key insights extracted</div>';
+        return;
+      }
+      
+      let insightsHTML = '';
+      keyPoints.forEach(point => {
+        const className = point.type === 'leverage' ? 'leverage-point' : 
+                         point.type === 'feedback' ? 'feedback-loop' : 'system-element';
+        insightsHTML += `<div class="${className}">
+          <strong>${point.title}:</strong> ${point.description}
+        </div>`;
+      });
+      
+      insights.innerHTML = insightsHTML;
+    }
+
+    function extractSystemInsights(text) {
+      const insights = [];
+      const lines = text.split('\n');
+      
+      lines.forEach(line => {
+        if (line.toLowerCase().includes('leverage') || line.toLowerCase().includes('intervention')) {
+          insights.push({
+            type: 'leverage',
+            title: 'Leverage Point',
+            description: line.trim()
+          });
+        } else if (line.toLowerCase().includes('feedback') || line.toLowerCase().includes('loop')) {
+          insights.push({
+            type: 'feedback',
+            title: 'Feedback Loop',
+            description: line.trim()
+          });
+        } else if (line.toLowerCase().includes('emergent') || line.toLowerCase().includes('pattern')) {
+          insights.push({
+            type: 'pattern',
+            title: 'System Pattern',
+            description: line.trim()
+          });
+        }
+      });
+      
+      return insights.slice(0, 5); // Limit to 5 key insights
+    }
+
+    function generateSystemMap() {
+      const text = input.value.trim();
+      if (!text) {
+        alert('Please enter a system description first');
+        return;
+      }
+      
+      // Simple system map visualization
+      const mapEl = document.createElement('div');
+      mapEl.className = 'system-map';
+      mapEl.innerHTML = `
+        <div style="text-align:center;color:var(--brand);font-weight:bold;margin-bottom:12px">SYSTEM MAP</div>
+        <div>┌─ INPUTS ─────────────────────────────────────────┐</div>
+        <div>│  • Resources, Information, Energy, People        │</div>
+        <div>└──────────────────┬────────────────────────────────┘</div>
+        <div>                   ▼</div>
+        <div>┌─ PROCESSES ──────────────────────────────────────┐</div>
+        <div>│  • Transformation, Decision-making, Workflows   │</div>
+        <div>│  • Interactions, Communication, Coordination    │</div>
+        <div>└──────────────────┬────────────────────────────────┘</div>
+        <div>                   ▼</div>
+        <div>┌─ OUTPUTS ────────────────────────────────────────┐</div>
+        <div>│  • Products, Services, Decisions, Behaviors     │</div>
+        <div>└──────────────────┬────────────────────────────────┘</div>
+        <div>                   │</div>
+        <div>                   ▼</div>
+        <div>┌─ FEEDBACK LOOPS ─────────────────────────────────┐</div>
+        <div>│  ↻ Reinforcing: Success → More Resources        │</div>
+        <div>│  ⚖ Balancing: Problems → Corrective Action      │</div>
+        <div>└──────────────────────────────────────────────────┘</div>
+        <div style="margin-top:12px;color:var(--muted)">Generated for: ${text.slice(0, 50)}...</div>
+      `;
+      
+      output.appendChild(mapEl);
+    }
+
+    function bubble(text, type = 'default') {
+      const d = document.createElement('div');
+      d.className = 'bubble mono';
+      if (type === 'analysis') {
+        d.style.borderLeft = '4px solid var(--brand)';
+        d.style.background = '#0a1420';
+      }
+      d.textContent = text;
+      return d;
+    }
+
+    async function call(messages) {
+      const base = (apiBase.value || 'http://localhost:1234/v1').replace(/\/$/, '');
+      const headers = { 'Content-Type': 'application/json' };
+      if (apiKey.value) headers['Authorization'] = 'Bearer ' + apiKey.value;
+      const body = { model: model.value || 'local', temperature: Number(temperature.value || 0.6), messages, stream: stream.checked };
+      const res = await fetch(base + '/chat/completions', { method: 'POST', headers, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      if (!stream.checked) { const j = await res.json(); return j.choices?.[0]?.message?.content || '(no content)' }
+      const reader = res.body.getReader(); const dec = new TextDecoder('utf-8'); let acc = '';
+      while (true) { const { value, done } = await reader.read(); if (done) break; const chunk = dec.decode(value, { stream: true });
+        chunk.split('\n').forEach(line => { const m = line.match(/^data: (.*)$/); if (m && m[1] !== '[DONE]') { try { const j = JSON.parse(m[1]); acc += (j.choices?.[0]?.delta?.content || '') } catch (_) { } } });
+        output.lastChild.textContent = acc; output.scrollTop = output.scrollHeight;
+      }
+      return acc;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      applyHub();
+      renderToolsLibrary();
+      
+      analyze.onclick = async () => {
+        const sys = approachPrompts[approach.value] || approachPrompts.holistic;
+        const user = input.value.trim();
+        if (!user) return;
+        
+        const analysisEl = bubble('🌐 Analyzing system...', 'analysis');
+        output.appendChild(analysisEl);
+        
+        try {
+          const analysis = await call([
+            { role: 'system', content: sys },
+            { role: 'user', content: user }
+          ]);
+          analysisEl.textContent = analysis;
+          updateInsights(analysis);
+        } catch (e) {
+          analysisEl.textContent = 'Error: ' + e.message;
+        }
+      };
+      
+      clear.onclick = () => { 
+        output.innerHTML = ''; 
+        document.getElementById('insights').innerHTML = '<div class="element-desc">Analyze a system to see key insights and leverage points</div>';
+      };
+      
+      visualize.onclick = generateSystemMap;
+    });
+
+    const approach = document.getElementById('approach');
+    const apiBase = document.getElementById('apiBase');
+    const model = document.getElementById('model');
+    const apiKey = document.getElementById('apiKey');
+    const temperature = document.getElementById('temperature');
+    const stream = document.getElementById('stream');
+    const input = document.getElementById('input');
+    const analyze = document.getElementById('analyze');
+    const clear = document.getElementById('clear');
+    const visualize = document.getElementById('visualize');
+    const output = document.getElementById('output');
+  </script>
+</body>
+</html>

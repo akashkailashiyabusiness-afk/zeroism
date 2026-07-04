@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Money Making Strategies Explorer</title>
+    <style>
+        /* --- Global Styles & Reset --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f7f6;
+            color: #333;
+            padding: 20px;
+        }
+
+        /* --- Container --- */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* --- Header --- */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #007bff;
+        }
+
+        header h1 {
+            color: #0056b3;
+            margin-bottom: 10px;
+            font-size: 2.8em;
+            font-weight: 600;
+        }
+
+        header p {
+            color: #555;
+            font-style: italic;
+            font-size: 1.1em;
+        }
+
+        /* --- Controls / Filters --- */
+        .controls {
+            background-color: #e9ecef;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            gap: 15px; /* Space between items */
+            align-items: center; /* Align items vertically */
+            border: 1px solid #ced4da;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column; /* Stack label and select */
+            flex-grow: 1; /* Allow groups to grow */
+            min-width: 150px; /* Minimum width before wrapping */
+        }
+
+        .control-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #495057;
+            font-size: 0.9em;
+        }
+
+        .control-group select {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            appearance: none; /* Remove default arrow */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E"); /* Custom arrow */
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 1em;
+        }
+
+        .control-group select:focus {
+            outline: none;
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        /* --- Strategy Cards --- */
+        #strategy-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+            gap: 25px;
+        }
+
+        .strategy-card {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            display: block; /* Initially visible, JS will hide */
+        }
+
+        .strategy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .strategy-card h3 {
+            color: #007bff;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .strategy-card p {
+            margin-bottom: 10px;
+            color: #444;
+            font-size: 0.95em;
+        }
+
+        .strategy-card .details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .strategy-card .details strong {
+            color: #333;
+            min-width: 120px; /* Align details */
+            display: inline-block;
+        }
+
+        .strategy-card .details span {
+            display: inline-block; /* Allow tags to be styled */
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-right: 5px;
+            margin-bottom: 3px; /* Space for wrapped tags */
+            font-size: 0.85em;
+        }
+
+        /* --- Tag Styling for Attributes --- */
+        .tag-risk-low { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .tag-risk-medium { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .tag-risk-high { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        .tag-reward-low { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .tag-reward-medium { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .tag-reward-high { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .tag-reward-very-high { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+
+        .tag-time-low { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .tag-time-medium { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .tag-time-high { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .tag-time-variable { background-color: #e2e3e5; color: #383d41; border: 1px solid #d6d8db; }
+
+        .tag-difficulty-easy { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .tag-difficulty-medium { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .tag-difficulty-hard { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        .tag-capital-low { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .tag-capital-medium { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .tag-capital-high { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .tag-capital-very-high { background-color: #f5c6cb; color: #721c24; border: 1px solid #f1b0b7; } /* Darker Red */
+
+        /* --- Disclaimer --- */
+        .disclaimer {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        .disclaimer strong {
+            color: #664d03;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 0.9em;
+            color: #777;
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 992px) {
+            .container {
+                padding: 20px;
+            }
+            header h1 {
+                font-size: 2.4em;
+            }
+            .controls {
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+            .controls {
+                flex-direction: column; /* Stack controls vertically */
+                align-items: stretch; /* Make controls full width */
+            }
+            .control-group {
+                min-width: 0; /* Remove min-width */
+                width: 100%; /* Make full width */
+            }
+            #strategy-list {
+                grid-template-columns: 1fr; /* Single column */
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+             header h1 {
+                font-size: 1.8em;
+            }
+             .container {
+                padding: 15px;
+            }
+             .strategy-card {
+                 padding: 15px;
+             }
+             .strategy-card h3 {
+                 font-size: 1.2em;
+             }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>World Money Making Strategies Explorer</h1>
+            <p>Filter strategies based on risk, reward, time, and difficulty. Inspired by concepts from leading business & finance books.</p>
+        </header>
+
+        <div class="disclaimer">
+            <strong>Important Disclaimer:</strong> This information is for educational purposes only and does NOT constitute financial advice. Risk/Reward/Time/Difficulty ratings are subjective estimations. Market conditions, individual effort, and execution significantly impact results. <strong>Always conduct thorough independent research (DYOR) and consult qualified professionals before making any financial decisions.</strong>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="controls" id="filter-controls">
+            <div class="control-group">
+                <label for="filter-risk">Risk Level:</label>
+                <select id="filter-risk">
+                    <option value="all">All Levels</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="filter-reward">Reward Potential:</label>
+                <select id="filter-reward">
+                    <option value="all">All Potentials</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="very-high">Very High</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="filter-time">Time Commitment:</label>
+                <select id="filter-time">
+                    <option value="all">All Commitments</option>
+                    <option value="low">Low (Passive/Side)</option>
+                    <option value="medium">Medium (Part-Time)</option>
+                    <option value="high">High (Full-Time+)</option>
+                    <option value="variable">Variable</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="filter-difficulty">Difficulty:</label>
+                <select id="filter-difficulty">
+                    <option value="all">All Difficulties</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+             <div class="control-group">
+                <label for="filter-capital">Initial Capital:</label>
+                <select id="filter-capital">
+                    <option value="all">All Levels</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                     <option value="very-high">Very High</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Strategy List -->
+        <main id="strategy-list">
+
+            <!-- Strategy Card Example (Repeat this structure for each strategy) -->
+            <div class="strategy-card" data-risk="low" data-reward="medium" data-time="medium" data-difficulty="medium" data-capital="low">
+                <h3>Freelancing (Writing, Design, Dev, VA)</h3>
+                <p>Offering specific skills as a service to clients remotely or locally. Platforms like Upwork, Fiverr, or direct outreach.</p>
+                <p><em>Book Concepts: Value Proposition, Skill Monetization (General Business).</em></p>
+                <div class="details">
+                    <p><strong>Risk:</strong> <span class="tag-risk-low">Low</span> (Mainly time investment)</p>
+                    <p><strong>Reward:</strong> <span class="tag-reward-medium">Medium</span> (Scales with skill & reputation)</p>
+                    <p><strong>Time:</strong> <span class="tag-time-medium">Medium</span> (Can be side or full-time)</p>
+                    <p><strong>Difficulty:</strong> <span class="tag-difficulty-medium">Medium</span> (Requires skill & client acquisition)</p>
+                    <p><strong>Capital:</strong> <span class="tag-capital-low">Low</span> (Computer, internet, potentially software)</p>
+                    <p><strong>Skills:</strong> Specific trade skill, communication, self-management.</p>
+                    <p><strong>Scalability:</strong> Medium (Agency model possible).</p>
+                    <p><strong>Data/Notes:</strong> Gig economy growing globally. Income varies wildly ($10-$200+/hr depending on skill/niche).</p>
+                </div>
+            </div>
+            <!-- End Strategy Card Example -->
+
+            <div class="strategy-card" data-risk="high" data-reward="very-high" data-time="high" data-difficulty="hard" data-capital="medium">
+                <h3>Tech Startup (SaaS, App, Platform)</h3>
+                <p>Creating and scaling a technology-based product or service to solve a specific problem for a large market.</p>
+                <p><em>Book Concepts: Lean Startup (Eric Ries), Blue Ocean Strategy, Zero to One (Peter Thiel).</em></p>
+                <div class="details">
+                    <p><strong>Risk:</strong> <span class="tag-risk-high">High</span> (High failure rate)</p>
+                    <p><strong>Reward:</strong> <span class="tag-reward-very-high">Very High</span> (Potential for massive scale/acquisition)</p>
+                    <p><strong>Time:</strong> <span class="tag-time-high">High</span> (Often requires intense dedication)</p>
+                    <p><strong>Difficulty:</strong> <span class="tag-difficulty-hard">Hard</span> (Technical, market, funding challenges)</p>
+                    <p><strong>Capital:</strong> <span class="tag-capital-medium">Medium</span> to <span class="tag-capital-very-high">Very High</span> (Depending on MVP & scaling needs)</p>
+                    <p><strong>Skills:</strong> Technical dev, product management, marketing, sales, fundraising.</p>
+                    <p><strong>Scalability:</strong> Very High.</p>
+                    <p><strong>Data/Notes:</strong> Requires validation (MVP), understanding product-market fit. Venture Capital often needed for rapid growth.</p>
+                </div>
+            </div>
+
+             <div class="strategy-card" data-risk="medium" data-reward="high" data-time="medium" data-difficulty="medium" data-capital="medium">
+                <h3>Real Estate Rental Properties</h3>
+                <p>Buying properties (residential, commercial) and renting them out for cash flow and potential appreciation.</p>
+                <p><em>Book Concepts: Rich Dad Poor Dad (Robert Kiyosaki - Assets vs Liabilities), Real Estate Investing books.</em></p>
+                <div class="details">
+                    <p><strong>Risk:</strong> <span class="tag-risk-medium">Medium</span> (Market fluctuations, vacancies, tenant issues)</p>
+                    <p><strong>Reward:</strong> <span class="tag-reward-high">High</span> (Leverage, cash flow, appreciation)</p>
+                    <p><strong>Time:</strong> <span class="tag-time-medium">Medium</span> (Property management, finding deals)</p>
+                    <p><strong>Difficulty:</strong> <span class="tag-difficulty-medium">Medium</span> (Requires capital, market knowledge, management)</p>
+                    <p><strong>Capital:</strong> <span class="tag-capital-high">High</span> to <span class="tag-capital-very-high">Very High</span> (Down payments, repairs)</p>
+                    <p><strong>Skills:</strong> Market analysis, financing, negotiation, property management.</p>
+                    <p><strong>Scalability:</strong> High (Build a portfolio).</p>
+                    <p><strong>Data/Notes:</strong> Leverage (using debt) magnifies gains & losses. Location is critical ("Location, Location, Location").</p>
+                </div>
+            </div>
+
+            <div class="strategy-card" data-risk="medium" data-reward="high" data-time="medium" data-difficulty="medium" data-capital="low">
+                <h3>Affiliate Marketing</h3>
+                <p>Promoting other companies' products/services and earning a commission on sales generated through your referral links.</p>
+                <p><em>Book Concepts: The 4-Hour Workweek (Tim Ferriss - Automation/Muse), Digital Marketing books.</em></p>
+                <div class="details">
+                    <p><strong>Risk:</strong> <span class="tag-risk-medium">Medium</span> (Platform changes, competition, reliance on others)</p>
+                    <p><strong>Reward:</strong> <span class="tag-reward-high">High</span> (Scalable with audience/traffic)</p>
+                    <p><strong>Time:</strong> <span class="tag-time-medium">Medium</span> (Content creation, audience building, SEO/Ads)</p>
+                    <p><strong>Difficulty:</strong> <span class="tag-difficulty-medium">Medium</span> (Requires traffic generation & trust)</p>
+                    <p><strong>Capital:</strong> <span class="tag-capital-low">Low</span> (Website/hosting, potentially ad spend)</p>
+                    <p><strong>Skills:</strong> Content creation (blogging, video), SEO, paid advertising, audience building, copywriting.</p>
+                    <p><strong>Scalability:</strong> High.</p>
+                    <p><strong>Data/Notes:</strong> Requires building an audience or mastering paid traffic. Transparency and trust are key. Popular platforms: Amazon Associates, ClickBank, ShareASale.</p>
+                </div>
+            </div>
+
+             <div class="strategy-card" data-risk="high" data-reward="high" data-time="low" data-difficulty="medium" data-capital="variable">
+                <h3>Stock Market Investing (Long-Term)</h3>
+                <p>Buying shares (stocks) in publicly traded companies with the expectation of long-term growth (capital gains) and potentially dividends.</p>
+                <p><em>Book Concepts: The Intelligent Investor (Benjamin Graham), A Random Walk Down Wall Street (Burton Malkiel), Common Stocks and Uncommon Profits (Philip Fisher).</em></p>
+                 <div class="details">
+                    <p><strong>Risk:</strong> <span class="tag-risk-high">High</span> (Market volatility, company failure)</p> <!-- Can be Medium with diversification -->
+                    <p><strong>Reward:</strong> <span class="tag-reward-high">High</span> (Compounding, potential for significant growth)</p>
+                    <p><strong>Time:</strong> <span class="tag-time-low">Low</span> (Research upfront, then passive holding usually)</p>
+                    <p><strong>Difficulty:</strong> <span class="tag-difficulty-medium">Medium</span> (Requires research, emotional control, patience)</p>
+                    <p><strong>Capital:</strong> <span class="tag-capital-low">Low</span> to <span class="tag-capital-very-high">Very High</span> (Can start small)</p>
+                    <p><strong>Skills:</strong> Research, analysis (fundamental/technical), risk management, patience.</p>
+                    <p><strong>Scalability:</strong> Very High.</p>
+                    <p><strong>Data/Notes:</strong> Diversification (e.g., via ETFs/Mutual Funds) can reduce specific company risk but not market risk. Long-term horizon generally advised. Avoid emotional decisions.</p>
+                </div>
+            </div>
+
+             <div class="strategy-card" data-risk="medium" data-reward="medium" data-time="high" data-difficulty="medium" data-capital="low">
+                <h3>Content Creation (YouTube, Blogging, Podcasting)</h3>
+                <p>Building an audience by creating valuable or entertaining content, monetizing through ads, sponsorships, merchandise, courses, etc.</p>
+                <p><em>Book Concepts: Crush It! (Gary Vaynerchuk), Content Inc. (Joe Pulizzi).</em></p>
+                <div class="details">
+                    <p><strong>Risk:</strong> <span class="tag-risk-medium">Medium</span> (Platform dependency, algorithm changes, burnout)</p>
+                    <p><strong>Reward:</strong> <span class="tag-reward-medium">Medium</span> to <span class="tag-reward-high">High</span> (Depends heavily on audience size & engagement)</p>
+                    <p><strong>Time:</strong> <span class="tag-time-high">High</span> (Consistent creation & promotion needed)</p>
+                    <p><strong>Difficulty:</strong> <span class="tag-difficulty-medium">Medium</span> (Consistency, creativity, audience building)</p>
+                    <p><strong>Capital:</strong> <span class="tag-capital-low">Low</span> (Basic equipment/hosting initially)</p>
+                    <p><strong>Skills:</strong> Content creation (writing, video, audio), editing, marketing, SEO, community management.</p>
+                    <p><strong>Scalability:</strong> High (Audience growth, multiple monetization streams).</p>
+                    <p><strong>Data/Notes:</strong> Takes time to build traction. Niche selection is important. Multiple income streams recommended.</p>
+                </div>
+            </div>
+
+            <div class="strategy-card" data-risk="medium" data-reward="medium" data-time="high" data-difficulty="hard" data-capital="medium">
+                <h3>E-commerce Store (Dropshipping or Own Inventory)</h3>
+                <p>Selling physical products online via platforms like Shopify, Amazon FBA, Etsy, or a custom website.</p>
+                <p><em>Book Concepts: E-Myth Revisited (Michael Gerber - Systems), Digital Marketing books.</em></p>
+                <div class="details">
+                    <p><strong>Risk:</strong> <span class="tag-risk-medium">Medium</span> (Inventory risk if not dropshipping, competition, ad costs)</p>
+                    <p><strong>Reward:</strong> <span class="tag-reward-medium">Medium</span> to <span class="tag-reward-high">High</span> (Scalable with marketing & product selection)</p>
+                    <p><strong>Time:</strong> <span class="tag-time-high">High</span> (Product sourcing, marketing, customer service, logistics)</p>
+                    <p><strong>Difficulty:</strong> <span class="tag-difficulty-hard">Hard</span> (Finding winning products, marketing, logistics)</p>
+                    <p><strong>Capital:</strong> <span class="tag-capital-low">Low</span> (Dropshipping) to <span class="tag-capital-medium">Medium</span>/<span class="tag-capital-high">High</span> (Inventory)</p>
+                    <p><strong>Skills:</strong> Digital marketing (SEO, SEM, Social), product sourcing, customer service, logistics management.</p>
+                    <p><strong>Scalability:</strong> High.</p>
+                    <p><strong>Data/Notes:</strong> Dropshipping has low capital entry but often thin margins & supplier issues. Amazon FBA leverages Amazon's logistics but has fees & competition.</p>
+                </div>
+            </div>
+
+             <div class="strategy-card" data-risk="low" data-reward="low" data-time="low" data-difficulty="easy" data-capital="low">
+                <h3>Online Surveys & Micro-Tasks</h3>
+                <p>Completing small online tasks, surveys, or data entry jobs on platforms like Amazon Mechanical Turk, Swagbucks, Prolific.</p>
+                <p><em>Book Concepts: Generally not covered in major strategy books; more side income focus.</em></p>
+                <div class="details">
+                    <p><strong>Risk:</strong> <span class="tag-risk-low">Low</span> (Mainly time)</p>
+                    <p><strong>Reward:</strong> <span class="tag-reward-low">Low</span> (Pay per task is typically very small)</p>
+                    <p><strong>Time:</strong> <span class="tag-time-low">Low</span> to <span class="tag-time-medium">Medium</span> (Flexible, but low earning rate)</p>
+                    <p><strong>Difficulty:</strong> <span class="tag-difficulty-easy">Easy</span> (Requires diligence and attention to detail)</p>
+                    <p><strong>Capital:</strong> <span class="tag-capital-low">Low</span> (Computer & internet)</p>
+                    <p><strong>Skills:</strong> Basic computer literacy, attention to detail.</p>
+                    <p><strong>Scalability:</strong> Low.</p>
+                    <p><strong>Data/Notes:</strong> Earnings are typically supplemental, not primary income. Payout thresholds and methods vary.</p>
+                </div>
+            </div>
+
+             <div class="strategy-card" data-risk="medium" data-reward="high" data-time="variable" data-difficulty="medium" data-capital="low">
+                <h3>Creating & Selling Online Courses/Digital Products</h3>
+                <p>Packaging expertise or knowledge into digital formats (courses, e-books, templates) and selling online via platforms like Teachable, Kajabi, Gumroad, or own site.</p>
+                <p><em>Book Concepts: Expert Secrets (Russell Brunson), Building a StoryBrand (Donald Miller).</em></p>
+                <div class="details">
+                    <p><strong>Risk:</strong> <span class="tag-risk-medium">Medium</span> (Time investment in creation, market may not respond)</p>
+                    <p><strong>Reward:</strong> <span class="tag-reward-high">High</span> (Highly scalable, high margins once created)</p>
+                    <p><strong>Time:</strong> <span class="tag-time-high">High</span> (Upfront creation) then <span class="tag-time-variable">Variable</span> (Marketing/Support)</p>
+                    <p><strong>Difficulty:</strong> <span class="tag-difficulty-medium">Medium</span> (Requires expertise, creation skills, marketing)</p>
+                    <p><strong>Capital:</strong> <span class="tag-capital-low">Low</span> (Platform fees, potentially video gear)</p>
+                    <p><strong>Skills:</strong> Subject matter expertise, content creation (video/writing), marketing, instructional design.</p>
+                    <p><strong>Scalability:</strong> Very High.</p>
+                    <p><strong>Data/Notes:</strong> Requires building authority or an audience. Validation before full creation is recommended (e.g., pre-selling).</p>
+                </div>
+            </div>
+
+             <div class="strategy-card" data-risk="medium" data-reward="medium" data-time="high" data-difficulty="medium" data-capital="medium">
+                <h3>Traditional Small Business (Retail, Service, Restaurant)</h3>
+                <p>Opening a physical location or service-based business serving a local community (e.g., cafe, plumber, boutique).</p>
+                <p><em>Book Concepts: E-Myth Revisited (Michael Gerber), Good to Great (Jim Collins - principles apply).</em></p>
+                <div class="details">
+                    <p><strong>Risk:</strong> <span class="tag-risk-medium">Medium</span> to <span class="tag-risk-high">High</span> (Overhead, location dependency, competition)</p>
+                    <p><strong>Reward:</strong> <span class="tag-reward-medium">Medium</span> to <span class="tag-reward-high">High</span> (Can provide solid income & asset)</p>
+                    <p><strong>Time:</strong> <span class="tag-time-high">High</span> (Especially in early years)</p>
+                    <p><strong>Difficulty:</strong> <span class="tag-difficulty-hard">Hard</span> (Operations, staffing, marketing, regulations)</p>
+                    <p><strong>Capital:</strong> <span class="tag-capital-medium">Medium</span> to <span class="tag-capital-very-high">Very High</span> (Rent, inventory, equipment, licenses)</p>
+                    <p><strong>Skills:</strong> Management, operations, finance, marketing, customer service, specific trade skill.</p>
+                    <p><strong>Scalability:</strong> Medium (Franchising or multiple locations possible).</p>
+                    <p><strong>Data/Notes:</strong> High failure rate in first few years. Strong business plan and understanding of local market crucial. Requires significant operational involvement.</p>
+                </div>
+            </div>
+
+            <!-- ADD MORE STRATEGY CARDS HERE following the same structure -->
+            <!-- Ideas: Consulting, Coaching, Event Planning, App Development (Service), Trading (High Risk), Crypto (Very High Risk), Royalties (Books/Music), Dividend Investing, Peer-to-Peer Lending, Crafting/Etsy Seller -->
+
+
+        </main>
+
+        <footer>
+            <p>&copy; 2023 Money Making Strategies Explorer. Information for educational purposes only. Not financial advice.</p>
+        </footer>
+    </div><!-- end container -->
+
+    <script>
+        // --- Filtering Logic ---
+        const filterControls = document.getElementById('filter-controls');
+        const strategyList = document.getElementById('strategy-list');
+        const strategyCards = strategyList.getElementsByClassName('strategy-card');
+
+        function filterStrategies() {
+            const riskFilter = document.getElementById('filter-risk').value;
+            const rewardFilter = document.getElementById('filter-reward').value;
+            const timeFilter = document.getElementById('filter-time').value;
+            const difficultyFilter = document.getElementById('filter-difficulty').value;
+            const capitalFilter = document.getElementById('filter-capital').value;
+
+            for (let card of strategyCards) {
+                const cardRisk = card.getAttribute('data-risk');
+                const cardReward = card.getAttribute('data-reward');
+                const cardTime = card.getAttribute('data-time');
+                const cardDifficulty = card.getAttribute('data-difficulty');
+                const cardCapital = card.getAttribute('data-capital');
+
+                // Check if card matches ALL selected filters (or if filter is set to 'all')
+                const riskMatch = (riskFilter === 'all' || cardRisk === riskFilter);
+                const rewardMatch = (rewardFilter === 'all' || cardReward === rewardFilter);
+                const timeMatch = (timeFilter === 'all' || cardTime === timeFilter);
+                const difficultyMatch = (difficultyFilter === 'all' || cardDifficulty === difficultyFilter);
+                const capitalMatch = (capitalFilter === 'all' || cardCapital === capitalFilter);
+
+                // Hide or show card based on match
+                if (riskMatch && rewardMatch && timeMatch && difficultyMatch && capitalMatch) {
+                    card.style.display = 'block'; // Show card
+                } else {
+                    card.style.display = 'none';  // Hide card
+                }
+            }
+        }
+
+        // Add event listeners to all select elements within the controls
+        filterControls.querySelectorAll('select').forEach(selectElement => {
+            selectElement.addEventListener('change', filterStrategies);
+        });
+
+        // Initial filter run on page load (optional, default shows all)
+        // filterStrategies();
+
+    </script>
+
+</body>
+</html>

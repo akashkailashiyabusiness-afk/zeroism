@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mindset: The New Psychology of Success</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .bg-teal-custom {
+            background-color: #23424D;
+        }
+        .text-teal-custom {
+            color: #23424D;
+        }
+        .hover\:bg-teal-custom:hover {
+            background-color: #1A323A; /* Darker teal for hover */
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-100 via-teal-50 to-teal-100 font-sans text-gray-800">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-3xl md:text-4xl font-bold text-center text-teal-custom mb-6 drop-shadow-md">
+            Mindset: The New Psychology of Success
+        </h1>
+
+        <!-- Tabs -->
+        <div class="flex flex-wrap gap-2 mb-6 bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-2 sticky top-0 z-10">
+            <button class="tablink flex-1 py-2 px-4 text-center text-sm md:text-base font-medium rounded-md transition-all duration-300 hover:bg-teal-custom hover:text-white active:bg-teal-custom active:text-white" onclick="openTab(event, 'Mindsets')">Mindsets</button>
+            <button class="tablink flex-1 py-2 px-4 text-center text-sm md:text-base font-medium rounded-md transition-all duration-300 hover:bg-teal-custom hover:text-white active:bg-teal-custom active:text-white" onclick="openTab(event, 'Impact')">Impact</button>
+            <button class="tablink flex-1 py-2 px-4 text-center text-sm md:text-base font-medium rounded-md transition-all duration-300 hover:bg-teal-custom hover:text-white active:bg-teal-custom active:text-white" onclick="openTab(event, 'Applications')">Applications</button>
+            <button class="tablink flex-1 py-2 px-4 text-center text-sm md:text-base font-medium rounded-md transition-all duration-300 hover:bg-teal-custom hover:text-white active:bg-teal-custom active:text-white" onclick="openTab(event, 'Change')">Changing Mindsets</button>
+            <button class="tablink flex-1 py-2 px-4 text-center text-sm md:text-base font-medium rounded-md transition-all duration-300 hover:bg-teal-custom hover:text-white active:bg-teal-custom active:text-white" onclick="openTab(event, 'Quiz')">Quiz</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="Mindsets" class="tabcontent hidden">
+            <h2 class="text-2xl font-semibold text-teal-custom mb-4">The Two Mindsets</h2>
+            <div class="space-y-6">
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Fixed Mindset</h3>
+                    <p class="mt-2">Belief that abilities are static and unchangeable. Individuals with a fixed mindset avoid challenges, give up easily, see effort as fruitless, ignore useful negative feedback, and feel threatened by the success of others.</p>
+                    <p class="mt-2 italic">Example: Avoiding a tough math problem because you believe you're "just not good at math."</p>
+                    <p class="mt-2">Focus is on *proving* existing intelligence, not *developing* it.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Growth Mindset</h3>
+                    <p class="mt-2">Belief that abilities can be developed through dedication and hard work. Individuals with a growth mindset embrace challenges, persist through obstacles, see effort as a path to mastery, learn from criticism, and find inspiration in the success of others.</p>
+                    <p class="mt-2 italic">Example: Practicing diligently to improve a skill, even when it's difficult.</p>
+                    <p class="mt-2">Focus is on *learning* and *growth*, not just achieving a result.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="Impact" class="tabcontent hidden">
+            <h2 class="text-2xl font-semibold text-teal-custom mb-4">Impact of Mindset</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Education</h3>
+                    <p class="mt-2">Growth mindset boosts learning and academic achievement. Students with a growth mindset are more likely to persevere through challenges and achieve higher grades.</p>
+                    <p class="mt-2 italic">Example: Students persist after low grades, viewing them as opportunities for improvement.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Work</h3>
+                    <p class="mt-2">Growth mindset drives innovation, resilience, and leadership. Employees with a growth mindset are more likely to take risks, learn from failures, and adapt to change.</p>
+                    <p class="mt-2 italic">Example: Employees seek new skills and embrace challenges as opportunities for growth.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Relationships</h3>
+                    <p class="mt-2">Growth mindset fosters resilience and stronger connections.  Individuals with a growth mindset are more likely to believe that relationships can be improved through effort and communication.</p>
+                    <p class="mt-2 italic">Example: Couples work through conflicts constructively, focusing on growth and understanding.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Parenting</h3>
+                    <p class="mt-2">Growth mindset encourages effort, resilience, and a love of learning in children. Praising effort and process, rather than innate talent, is crucial.</p>
+                    <p class="mt-2 italic">Example: Praise process, not talent ("You worked really hard on that!")</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="Applications" class="tabcontent hidden">
+            <h2 class="text-2xl font-semibold text-teal-custom mb-4">Actionable Steps</h2>
+            <div class="space-y-6">
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Embrace Challenges</h3>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li>Tackle hard tasks to grow your abilities.</li>
+                        <li>View challenges as opportunities for learning.</li>
+                        <li>Example: Try a new hobby, take on a difficult project at work.</li>
+                    </ul>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Value Effort</h3>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li>See effort as a necessary part of growth.</li>
+                        <li>Recognize that hard work leads to improvement.</li>
+                        <li>Example: Practice daily, even when you don't feel motivated.</li>
+                    </ul>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Learn from Feedback</h3>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li>Use criticism as a tool for improvement.</li>
+                        <li>Seek out constructive feedback from others.</li>
+                        <li>Example: Adjust your approach after receiving reviews or suggestions.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="Change" class="tabcontent hidden">
+            <h2 class="text-2xl font-semibold text-teal-custom mb-4">Changing Your Mindset</h2>
+            <div class="space-y-6">
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Awareness</h3>
+                    <p class="mt-2">Recognize fixed mindset triggers and self-limiting beliefs.</p>
+                    <p class="mt-2 italic">Example: Notice when you avoid risks, make excuses, or feel threatened by others' success.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Reframe</h3>
+                    <p class="mt-2">Shift to growth-oriented thoughts and language.</p>
+                    <p class="mt-2 italic">Example: Replace "I can’t do this" with "I can’t do this *yet*," or "This is too hard" with "This will be challenging, but I can learn from it."</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-medium text-teal-custom">Embrace Imperfection</h3>
+                    <p class="mt-2">Understand that mistakes are a natural part of the learning process.</p>
+                    <p class="mt-2 italic">Example: View failures as opportunities to learn and grow, rather than as evidence of your limitations.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="Quiz" class="tabcontent hidden">
+            <h2 class="text-2xl font-semibold text-teal-custom mb-4">Interactive Quiz</h2>
+            <div class="space-y-6">
+                <div class="p-4 bg-white rounded-lg shadow-md">
+                    <p class="font-medium">Q1: What does a growth mindset value?</p>
+                    <select id="quizAnswer1" class="mt-2 w-full p-2 border rounded-md focus:ring-2 focus:ring-teal-custom">
+                        <option value="A">Innate talent</option>
+                        <option value="B">Effort and learning</option>
+                        <option value="C">Avoiding failure</option>
+                    </select>
+                    <button onclick="checkAnswer1()" class="mt-2 w-full bg-teal-custom text-white py-2 rounded-md hover:bg-teal-custom transition-all duration-300">Submit</button>
+                    <div id="result1" class="result mt-2 font-semibold"></div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md">
+                    <p class="font-medium">Q2: How should you view failure?</p>
+                    <select id="quizAnswer2" class="mt-2 w-full p-2 border rounded-md focus:ring-2 focus:ring-teal-custom">
+                        <option value="A">As proof of inability</option>
+                        <option value="B">As a learning opportunity</option>
+                        <option value="C">As something to ignore</option>
+                    </select>
+                    <button onclick="checkAnswer2()" class="mt-2 w-full bg-teal-custom text-white py-2 rounded-md hover:bg-teal-custom transition-all duration-300">Submit</button>
+                    <div id="result2" class="result mt-2 font-semibold"></div>
+                </div>
+                <div class="p-4 bg-white rounded-lg shadow-md">
+                    <p class="font-medium">Q3: Someone says, "I'm just not good at public speaking." What mindset are they likely exhibiting?</p>
+                    <select id="quizAnswer3" class="mt-2 w-full p-2 border rounded-md focus:ring-2 focus:ring-teal-custom">
+                        <option value="A">Growth Mindset</option>
+                        <option value="B">Fixed Mindset</option>
+                        <option value="C">Adaptive Unconscious</option>
+                    </select>
+                    <button onclick="checkAnswer3()" class="mt-2 w-full bg-teal-custom text-white py-2 rounded-md hover:bg-teal-custom transition-all duration-300">Submit</button>
+                    <div id="result3" class="result mt-2 font-semibold"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            const tabcontent = document.getElementsByClassName("tabcontent");
+            for (let i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.add("hidden");
+                tabcontent[i].classList.remove("fade-in");
+            }
+            const tablinks = document.getElementsByClassName("tablink");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active", "bg-teal-custom", "text-white");
+            }
+            const activeTab = document.getElementById(tabName);
+            activeTab.classList.remove("hidden");
+            activeTab.classList.add("fade-in");
+            evt.currentTarget.classList.add("active", "bg-teal-custom", "text-white");
+        }
+
+        function checkAnswer1() {
+            const answer = document.getElementById("quizAnswer1").value;
+            const result = document.getElementById("result1");
+            if (answer === "B") {
+                result.innerHTML = "Correct! Growth mindset values effort and learning.";
+                result.classList.add("text-green-600");
+                result.classList.remove("text-red-600");
+            } else {
+                result.innerHTML = "Nope. It’s about effort, not talent or avoidance.";
+                result.classList.add("text-red-600");
+                result.classList.remove("text-green-600");
+            }
+        }
+
+        function checkAnswer2() {
+            const answer = document.getElementById("quizAnswer2").value;
+            const result = document.getElementById("result2");
+            if (answer === "B") {
+                result.innerHTML = "Right! Failure is a chance to grow.";
+                result.classList.add("text-green-600");
+                result.classList.remove("text-red-600");
+            } else {
+                result.innerHTML = "Incorrect. Growth sees failure as learning, not proof.";
+                result.classList.add("text-red-600");
+                result.classList.remove("text-green-600");
+            }
+        }
+
+        function checkAnswer3() {
+            const answer = document.getElementById("quizAnswer3").value;
+            const result = document.getElementById("result3");
+            if (answer === "B") {
+                result.innerHTML = "Correct! That statement reflects a fixed mindset.";
+                result.classList.add("text-green-600");
+                result.classList.remove("text-red-600");
+            } else {
+                result.innerHTML = "Incorrect. A fixed mindset believes abilities are static.";
+                result.classList.add("text-red-600");
+                result.classList.remove("text-green-600");
+            }
+        }
+
+        // Open default tab
+        document.getElementsByClassName("tablink")[0].click();
+    </script>
+</body>
+</html>

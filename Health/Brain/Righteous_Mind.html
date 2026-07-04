@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Righteous Mind - Summary</title>
+    <style>
+        /* CSS from your provided code - Blue/Gray/White Theme */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --primary-bg: #f0f8ff; /* AliceBlue */
+            --text-color: #333333; /* Dark Gray */
+            --accent-blue: #2962ff; /* Royal Blue */
+            --muted-blue: #64b5f6; /* Light Blue */
+            --shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            line-height: 1.7;
+            padding: 20px;
+            overflow-x: hidden;
+            transition: var(--transition);
+        }
+
+        /* Dark Mode - Already applied as default */
+        /* @media (prefers-color-scheme: dark) { ... }  - Removed as it's the default */
+
+        /* Book Intro Section */
+        .book-intro {
+            text-align: center;
+            padding: clamp(40px, 8vw, 60px) 20px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--muted-blue));
+            color: #fff;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-intro::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .book-intro:hover::before {
+            opacity: 0.8;
+        }
+
+        .book-intro img {
+            max-width: clamp(150px, 20vw, 200px);
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            transition: var(--transition);
+            transform: scale(1);
+        }
+
+        .book-intro img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .book-intro h1 {
+            font-size: clamp(2em, 5vw, 2.8em);
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .book-intro p {
+            font-size: clamp(1.1em, 3vw, 1.3em);
+            font-style: italic;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        section {
+            background: #fff; /* White */
+            padding: clamp(25px, 5vw, 35px);
+            margin-bottom: 40px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+            transition: var(--transition);
+        }
+
+        section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        section:nth-child(2) { animation-delay: 0.2s; }
+        section:nth-child(3) { animation-delay: 0.4s; }
+        section:nth-child(4) { animation-delay: 0.6s; }
+
+        section h2 {
+            color: var(--accent-blue);
+            font-size: clamp(1.8em, 4vw, 2.2em);
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--muted-blue);
+            padding-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        section h2:hover {
+            transform: translateX(10px);
+            color: var(--muted-blue);
+        }
+
+        article h3 {
+            color: #555555; /* Medium Gray */
+            font-size: clamp(1.4em, 3vw, 1.6em);
+            margin: 25px 0 15px;
+            transition: var(--transition);
+        }
+
+        article h3:hover {
+            color: var(--accent-blue);
+            text-decoration: underline;
+            text-decoration-color: var(--accent-blue);
+            text-decoration-thickness: 2px;
+        }
+
+        ul {
+            margin-left: 25px;
+        }
+
+        ul li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 20px;
+            transition: var(--transition);
+        }
+
+        ul li:hover {
+            transform: translateX(5px);
+            color: var(--accent-blue);
+        }
+
+        ul li:before {
+            content: "➤";
+            color: var(--accent-blue);
+            position: absolute;
+            left: 0;
+            transition: var(--transition);
+        }
+
+        ul li:hover:before {
+            transform: scale(1.2);
+        }
+
+        ul li strong {
+            color: var(--muted-blue);
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: clamp(1em, 2vw, 1.1em);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Improved Responsive Design */
+        @media (max-width: 1024px) {
+            main {
+                max-width: 110%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .book-intro {
+                padding: 40px 15px;
+            }
+
+            .book-intro h1 {
+                font-size: 2em;
+            }
+
+            .book-intro img {
+                max-width: 150px;
+            }
+
+            section {
+                padding: 20px;
+            }
+
+            section h2 {
+                font-size: 1.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .book-intro {
+                padding: 30px 10px;
+            }
+
+            .book-intro h1 {
+                font-size: 1.6em;
+            }
+
+            .book-intro p {
+                font-size: 1em;
+            }
+
+            section {
+                padding: 15px;
+            }
+
+            section h2 {
+                font-size: 1.5em;
+            }
+
+            article h3 {
+                font-size: 1.2em;
+            }
+        }
+
+        /* Accessibility */
+        :focus {
+            outline: 3px solid var(--accent-blue);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *:before, *:after {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="book-intro">
+        <img src="Righteous_Mind.jpg" alt="The Righteous Mind Cover">
+        <h1>The Righteous Mind</h1>
+        <p><em>Why Good People Are Divided by Politics and Religion</em></p>
+    </div>
+
+    <main>
+        <section>
+            <h2>Introduction: Beyond Reason</h2>
+            <p>Jonathan Haidt's "The Righteous Mind" explores the psychological foundations of morality and why people hold such strongly differing beliefs. He argues that our moral judgments are driven more by intuition and emotion than by reason.  *Morality, dil se aati hai* (Morality comes from the heart).</p>
+        </section>
+
+        <section>
+            <h2>The Six Moral Foundations</h2>
+            <p>Haidt proposes that there are six fundamental moral foundations that underlie all human societies:</p>
+            <ul>
+                <li><strong>Care/Harm:</strong>  Concern for the suffering of others.</li>
+                <li><strong>Fairness/Cheating:</strong>  A sense of justice and reciprocity.</li>
+                <li><strong>Loyalty/Betrayal:</strong>  Commitment to one's group and its values.</li>
+                <li><strong>Authority/Subversion:</strong>  Respect for hierarchy and tradition.</li>
+                <li><strong>Sanctity/Degradation:</strong>  A sense of purity and disgust.</li>
+                <li><strong>Liberty/Oppression:</strong>  Resistance to tyranny and oppression.</li>
+            </ul>
+            <p>He argues that liberals and conservatives prioritize these foundations differently, leading to fundamental disagreements on moral issues.</p>
+        </section>
+
+        <section>
+            <h2>The Hive Switch</h2>
+            <p>Haidt introduces the concept of the "hive switch," which refers to our innate capacity to lose ourselves in group activities and experience a sense of unity and transcendence. This capacity is essential for cooperation and social cohesion, but it can also lead to irrational behavior and groupthink.</p>
+        </section>
+
+        <section>
+            <h2>Real-Life Examples & Actionable Steps</h2>
+            <h3>Real-Life Example: Political Polarization</h3>
+            <p>Haidt argues that political polarization is fueled by the fact that liberals and conservatives live in different moral matrices, each with its own set of values and beliefs. This makes it difficult to understand or empathize with the other side.</p>
+
+            <h3>Actionable Steps for Bridging the Divide:</h3>
+            <ul>
+                <li><strong>Understand Your Own Moral Foundations:</strong>  Reflect on your own values and beliefs.</li>
+                <li><strong>Seek Out Diverse Perspectives:</strong>  Talk to people who hold different views than your own.</li>
+                <li><strong>Practice Empathy:</strong>  Try to understand the motivations and concerns of others.</li>
+                <li><strong>Focus on Shared Values:</strong>  Identify areas of common ground.</li>
+                <li><strong>Be Willing to Compromise:</strong>  Recognize that there are often multiple valid perspectives.</li>
+            </ul>
+            <p>The Righteous Mind is a thought-provoking exploration of the human moral landscape, offering insights into why we are so often divided and how we can bridge the gap. *Samajh aur samjhauta, shanti ka marg* (Understanding and compromise, the path to peace).</p>
+        </section>
+    </main>
+
+</body>
+</html>

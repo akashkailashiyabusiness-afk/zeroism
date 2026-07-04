@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thinking Traps</title>
+    <style>
+        /* --- Google Font Import --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        /* --- CSS Color Variables from the Image --- */
+        :root {
+            --bg-color: #f4f4f9;
+            --text-dark: #333333;
+            --text-light: #555555;
+            
+            --green: #d9e9d6; --green-dark: #c8dac5;
+            --gray: #d7dce0; --gray-dark: #c5cacd;
+            --pink: #f2d7dd; --pink-dark: #e0c5cb;
+            --peach: #f5e6d3; --peach-dark: #e3d4c1;
+            --cyan: #d6e9ea; --cyan-dark: #c4d7d8;
+            --red: #eac9c9; --red-dark: #d8b7b7;
+            --orange: #f2e0c7; --orange-dark: #e0ceb5;
+            --purple: #dcd6e9; --purple-dark: #cac4d7;
+            --rose: #f2d7d7; --rose-dark: #e0c5c5;
+            --mint: #d7e0d8; --mint-dark: #c5cdc6;
+            --lilac: #e9d6e9; --lilac-dark: #d7c4d7;
+            --sky-blue: #d3e5f5; --sky-blue-dark: #c1d3e3;
+        }
+
+        /* --- General Body & Reset Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* --- Header Styling --- */
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+
+        /* --- Main Content Grid --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem;
+        }
+
+        /* --- Trap Card Styling --- */
+        .trap-card {
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .trap-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .trap-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .trap-card .definition {
+            font-size: 0.95rem;
+            text-align: center;
+            color: var(--text-light);
+            flex-grow: 1; /* Pushes example to the bottom if cards are different heights */
+        }
+        
+        .example-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        /* --- Card Color Classes --- */
+        .card-green { background-color: var(--green); }
+        .card-green .example-box { background-color: var(--green-dark); }
+
+        .card-gray { background-color: var(--gray); }
+        .card-gray .example-box { background-color: var(--gray-dark); }
+        
+        .card-pink { background-color: var(--pink); }
+        .card-pink .example-box { background-color: var(--pink-dark); }
+        
+        .card-peach { background-color: var(--peach); }
+        .card-peach .example-box { background-color: var(--peach-dark); }
+
+        .card-cyan { background-color: var(--cyan); }
+        .card-cyan .example-box { background-color: var(--cyan-dark); }
+        
+        .card-red { background-color: var(--red); }
+        .card-red .example-box { background-color: var(--red-dark); }
+        
+        .card-orange { background-color: var(--orange); }
+        .card-orange .example-box { background-color: var(--orange-dark); }
+
+        .card-purple { background-color: var(--purple); }
+        .card-purple .example-box { background-color: var(--purple-dark); }
+
+        .card-rose { background-color: var(--rose); }
+        .card-rose .example-box { background-color: var(--rose-dark); }
+
+        .card-mint { background-color: var(--mint); }
+        .card-mint .example-box { background-color: var(--mint-dark); }
+
+        .card-lilac { background-color: var(--lilac); }
+        .card-lilac .example-box { background-color: var(--lilac-dark); }
+        
+        .card-sky-blue { background-color: var(--sky-blue); }
+        .card-sky-blue .example-box { background-color: var(--sky-blue-dark); }
+        
+        /* --- Responsive Media Queries --- */
+        @media (max-width: 600px) {
+            .header h1 { font-size: 2.5rem; }
+            .header p { font-size: 1rem; }
+            .grid-container { padding: 0 1rem 2rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1>Thinking Traps</h1>
+        <p>Spot these thoughts, and take your control back</p>
+    </header>
+
+    <main class="grid-container">
+        <!-- Row 1 -->
+        <div class="trap-card card-green">
+            <h3>Emotional Reasoning</h3>
+            <p class="definition">Thinking your feelings are facts.</p>
+            <div class="example-box">"I feel scared, so something bad must happen."</div>
+        </div>
+        <div class="trap-card card-gray">
+            <h3>Black & White Thinking</h3>
+            <p class="definition">Thinking it's either all good or all bad.</p>
+            <div class="example-box">"I made a mistake, so I'm terrible at this."</div>
+        </div>
+        <div class="trap-card card-pink">
+            <h3>Jumping to Conclusions</h3>
+            <p class="definition">Guessing what will happen or what someone thinks.</p>
+            <div class="example-box">"They looked at their watch. I must be boring."</div>
+        </div>
+        <div class="trap-card card-peach">
+            <h3>Disqualifying the Positive</h3>
+            <p class="definition">Not believing the good things are real.</p>
+            <div class="example-box">"They said I did a good job just to be nice."</div>
+        </div>
+        
+        <!-- Row 2 -->
+        <div class="trap-card card-cyan">
+            <h3>Magnification & Minimization</h3>
+            <p class="definition">Making small things too big, or big things too small.</p>
+            <div class="example-box">"I spilled water, now my day is ruined or I got an award, but it's not important."</div>
+        </div>
+        <div class="trap-card card-red">
+            <h3>Compare & Despair</h3>
+            <p class="definition">Looking at others and feeling bad about yourself.</p>
+            <div class="example-box">"They're so good. I'll never be like that."</div>
+        </div>
+        <div class="trap-card card-orange">
+            <h3>Catastrophizing</h3>
+            <p class="definition">Thinking the worst thing will happen.</p>
+            <div class="example-box">"If I fail this test, I'll never get a job and become homeless."</div>
+        </div>
+        <div class="trap-card card-purple">
+            <h3>Blaming</h3>
+            <p class="definition">Saying it's someone else's fault every time.</p>
+            <div class="example-box">"I failed because the teacher doesn't like me."</div>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="trap-card card-rose">
+            <h3>Personalization</h3>
+            <p class="definition">Blaming yourself for everything.</p>
+            <div class="example-box">"We lost the game because of me."</div>
+        </div>
+        <div class="trap-card card-mint">
+            <h3>"Should" Statements</h3>
+            <p class="definition">Telling yourself things must be a certain way.</p>
+            <div class="example-box">"I should always get an A."</div>
+        </div>
+        <div class="trap-card card-lilac">
+            <h3>Labeling</h3>
+            <p class="definition">Calling yourself mean names.</p>
+            <div class="example-box">"I'm so dumb."</div>
+        </div>
+        <div class="trap-card card-sky-blue">
+            <h3>Mental Filter</h3>
+            <p class="definition">Only seeing the bad part and ignoring the good.</p>
+            <div class="example-box">"We won the game, but I missed 2 shots."</div>
+        </div>
+    </main>
+
+</body>
+</html>

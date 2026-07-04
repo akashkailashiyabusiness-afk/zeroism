@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mentally Powerful Pro — Advanced Munger-style Thinking + Local LLM Studio</title>
+  <style>
+    /* Enhanced CSS - futuristic, friendly, single-file with new features */
+    :root{
+      --bg:#0b1020; --card:#0f1724; --muted:#9aa4b2; --accent:#4fd1c5; --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.02); --radius:14px; --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+      --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: radial-gradient(1200px 600px at 10% 10%, rgba(79,209,197,0.06), transparent), var(--bg); color:#e6eef6}
+    
+    .app{max-width:1400px;margin:20px auto;padding:20px;display:grid;grid-template-columns:380px 1fr;gap:20px}
+
+    /* Enhanced Sidebar */
+    .card{background:linear-gradient(180deg,var(--card), #08101a);padding:18px;border-radius:var(--radius);box-shadow:0 6px 30px rgba(6,10,20,0.6);position:relative;overflow:hidden}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(79,209,197,0.3),transparent)}
+    
+    h1{font-size:22px;margin:0 0 8px 0;letter-spacing:0.2px;background:linear-gradient(135deg,#4fd1c5,#38b2ac);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    p.lead{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+    .small{font-size:12px;color:var(--muted)}
+    .model-config{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+    
+    input, textarea, select, button{background:var(--glass);border:1px solid rgba(255,255,255,0.03);color:inherit;padding:10px;border-radius:10px;transition:all 0.2s ease}
+    input:focus,textarea:focus,select:focus{outline:2px solid rgba(79,209,197,0.12);backdrop-filter: blur(6px);border-color:rgba(79,209,197,0.2)}
+    input:hover,textarea:hover,select:hover{border-color:rgba(255,255,255,0.08)}
+
+    label{font-size:12px;color:var(--muted);margin-bottom:4px;display:block}
+    .checkbox-row{display:flex;gap:8px;align-items:center;margin:4px 0}
+
+    /* Enhanced Main area */
+    .workspace{display:flex;flex-direction:column;gap:14px}
+    .row{display:flex;gap:12px}
+    .panel{flex:1;padding:16px;border-radius:12px;background:linear-gradient(180deg,var(--glass),var(--glass-2));min-height:120px;position:relative}
+    .panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)}
+
+    .prompt{height:140px;resize:vertical;font-family:inherit}
+    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .btn{padding:10px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),#2bb6b0);color:#052023;font-weight:600;cursor:pointer;transition:all 0.2s ease;position:relative;overflow:hidden}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(79,209,197,0.3)}
+    .btn:active{transform:translateY(0)}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+    .btn.secondary:hover{border-color:rgba(255,255,255,0.12);color:#e6eef6}
+
+    /* New Mental Models Grid */
+    .models-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:12px}
+    .model-card{background:linear-gradient(135deg,var(--glass),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:12px;cursor:pointer;transition:all 0.3s ease;position:relative}
+    .model-card:hover{transform:translateY(-2px);border-color:rgba(79,209,197,0.2);box-shadow:0 8px 25px rgba(6,10,20,0.4)}
+    .model-card.active{border-color:var(--accent);background:linear-gradient(135deg,rgba(79,209,197,0.1),rgba(79,209,197,0.05))}
+    .model-card h4{margin:0 0 6px 0;font-size:14px;color:#e6eef6}
+    .model-card p{margin:0;font-size:12px;color:var(--muted);line-height:1.4}
+    .model-card .icon{position:absolute;top:12px;right:12px;width:20px;height:20px;opacity:0.6}
+
+    /* Bias Detection Panel */
+    .bias-panel{background:linear-gradient(135deg,rgba(239,68,68,0.05),rgba(239,68,68,0.02));border:1px solid rgba(239,68,68,0.1);border-radius:10px;padding:12px;margin-top:12px}
+    .bias-warning{color:#fca5a5;font-size:12px;display:flex;align-items:center;gap:6px}
+    .bias-list{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+    .bias-item{font-size:11px;color:#fca5a5;padding:4px 8px;background:rgba(239,68,68,0.1);border-radius:6px}
+
+    /* Progress Indicators */
+    .progress-bar{height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;margin:8px 0}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#2bb6b0);transition:width 0.3s ease}
+
+    /* Enhanced History */
+    .history{max-height:420px;overflow:auto;margin-top:12px;padding-right:6px}
+    .message{padding:12px;border-radius:10px;margin-bottom:8px;background:rgba(255,255,255,0.02);position:relative;transition:all 0.2s ease}
+    .message:hover{background:rgba(255,255,255,0.04)}
+    .assistant{border-left:4px solid rgba(79,209,197,0.18)}
+    .user{border-left:4px solid rgba(130,130,255,0.06)}
+    .message-time{font-size:10px;color:var(--muted);margin-bottom:4px}
+    .message-content{font-size:12px;line-height:1.4}
+
+    /* Tabs */
+    .tabs{display:flex;gap:2px;margin-bottom:12px;background:rgba(255,255,255,0.02);border-radius:8px;padding:2px}
+    .tab{padding:8px 12px;border-radius:6px;font-size:12px;cursor:pointer;transition:all 0.2s ease;color:var(--muted)}
+    .tab.active{background:var(--accent);color:#052023;font-weight:600}
+    .tab:hover:not(.active){background:rgba(255,255,255,0.05);color:#e6eef6}
+
+    /* Modal */
+    .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px)}
+    .modal.show{display:flex}
+    .modal-content{background:var(--card);border-radius:var(--radius);padding:24px;max-width:600px;max-height:80vh;overflow:auto;margin:20px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .modal-title{font-size:18px;margin:0}
+    .modal-close{background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;padding:0;width:24px;height:24px}
+
+    /* Tooltips */
+    .tooltip{position:relative}
+    .tooltip::after{content:attr(data-tooltip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.9);color:white;padding:4px 8px;border-radius:4px;font-size:11px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.2s;z-index:100}
+    .tooltip:hover::after{opacity:1}
+
+    /* Animations */
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+    .thinking{animation:pulse 1.5s infinite}
+    
+    @keyframes slideIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .slide-in{animation:slideIn 0.3s ease-out}
+
+    /* Enhanced responsive */
+    @media (max-width:1200px){.app{grid-template-columns:1fr;}.card{order:2}.models-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}}
+    @media (max-width:768px){.controls{flex-direction:column;align-items:stretch}.btn{margin-bottom:8px}.models-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card">
+      <h1>Mentally Powerful Pro</h1>
+      <p class="lead">Apply an expanded latticework of Munger-style mental models and cognitive bias detection. Enhanced with 11 mental models, bias detection, and advanced decision-making frameworks.</p>
+
+      <div class="model-config">
+        <label>Local API URL</label>
+        <input id="apiUrl" placeholder="http://127.0.0.1:8080/v1/generate" value="http://127.0.0.1:8080/v1/generate" />
+
+        <label>Model / Endpoint Name (optional)</label>
+        <input id="modelName" placeholder="model-name or endpoint (optional)" />
+
+        <label>Temperature / Creativity (0-1)</label>
+        <input id="temperature" type="number" min="0" max="1" step="0.1" value="0.2" />
+
+        <div style="display:flex;gap:8px;margin-top:6px;align-items:center;flex-wrap:wrap">
+          <button class="btn" id="testBtn">✦ Test connection</button>
+          <button class="btn secondary" id="clearHistory">🧹 Clear</button>
+          <button class="btn secondary" id="exportBtn">📤 Export</button>
+          <button class="btn secondary" id="helpBtn">❓ Help</button>
+        </div>
+
+        <div class="tabs">
+          <div class="tab active" data-tab="models">Mental Models</div>
+          <div class="tab" data-tab="biases">Bias Detection</div>
+          <div class="tab" data-tab="templates">Templates</div>
+        </div>
+
+        <div id="models-tab" class="tab-content">
+          <div class="checkbox-row">
+            <input type="checkbox" id="applyHeuristics" checked />
+            <label for="applyHeuristics">Apply selected mental models to prompt</label>
+          </div>
+          
+          <div class="models-grid">
+            <div class="model-card active" data-model="invert">
+              <h4>🔄 Inversion</h4>
+              <p>What would cause failure? Think backwards from the worst outcome.</p>
+            </div>
+            <div class="model-card active" data-model="incentives">
+              <h4>💰 Incentives</h4>
+              <p>Whose incentives matter? How do they shape behavior and outcomes?</p>
+            </div>
+            <div class="model-card active" data-model="probabilities">
+              <h4>🎲 Probabilistic Thinking</h4>
+              <p>Estimate likelihoods and think in terms of expected values.</p>
+            </div>
+            <div class="model-card active" data-model="circle">
+              <h4>🎯 Circle of Competence</h4>
+              <p>Stay within expertise or explicitly acknowledge limitations.</p>
+            </div>
+            <div class="model-card active" data-model="first">
+              <h4>🏗️ First Principles</h4>
+              <p>Break down to fundamentals and challenge assumptions.</p>
+            </div>
+            <div class="model-card active" data-model="simplify">
+              <h4>✂️ Simplify</h4>
+              <p>Apply Pareto principle and Occam's razor for clarity.</p>
+            </div>
+            <div class="model-card" data-model="opportunity">
+              <h4>⚖️ Opportunity Cost</h4>
+              <p>What are you giving up by choosing this option?</p>
+            </div>
+            <div class="model-card" data-model="lollapalooza">
+              <h4>🌪️ Lollapalooza Effect</h4>
+              <p>Multiple forces acting together create extreme outcomes.</p>
+            </div>
+            <div class="model-card" data-model="margin">
+              <h4>🛡️ Margin of Safety</h4>
+              <p>Build in buffers for uncertainty and potential errors.</p>
+            </div>
+            <div class="model-card" data-model="second">
+              <h4>🔗 Second-Order Thinking</h4>
+              <p>Consider consequences of consequences, not just immediate effects.</p>
+            </div>
+            <div class="model-card" data-model="systems">
+              <h4>🕸️ Systems Thinking</h4>
+              <p>Understand interconnections, feedback loops, and emergent properties.</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="biases-tab" class="tab-content" style="display:none">
+          <div class="checkbox-row">
+            <input type="checkbox" id="detectBiases" checked />
+            <label for="detectBiases">Analyze prompt for cognitive biases</label>
+          </div>
+          
+          <div class="small" style="margin:8px 0">The system will check for these common biases:</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;color:var(--muted)">
+            <div>• Confirmation Bias</div>
+            <div>• Anchoring Bias</div>
+            <div>• Availability Heuristic</div>
+            <div>• Sunk Cost Fallacy</div>
+            <div>• Social Proof</div>
+            <div>• Authority Bias</div>
+            <div>• Overconfidence Bias</div>
+          </div>
+          
+          <div id="biasResults" class="bias-panel" style="display:none">
+            <div class="bias-warning">⚠️ Potential biases detected:</div>
+            <div class="bias-list" id="biasList"></div>
+          </div>
+        </div>
+
+        <div id="templates-tab" class="tab-content" style="display:none">
+          <label>Decision Templates</label>
+          <select id="templateSel">
+            <option value="analysis">Structured Analysis</option>
+            <option value="decision">Decision Framework</option>
+            <option value="inversion">Inversion-First Analysis</option>
+            <option value="brainstorm">Creative Alternatives</option>
+            <option value="investment">Investment Decision</option>
+            <option value="career">Career Choice</option>
+            <option value="business">Business Strategy</option>
+            <option value="personal">Personal Decision</option>
+          </select>
+          
+          <label style="margin-top:12px">Analysis Role</label>
+          <select id="roleSel">
+            <option value="analyst">Analyst</option>
+            <option value="skeptic">Skeptic</option>
+            <option value="devil">Devil's Advocate</option>
+            <option value="teacher">Teacher</option>
+            <option value="consultant">Strategic Consultant</option>
+            <option value="investor">Investor</option>
+          </select>
+        </div>
+
+        <div class="small" style="margin-top:12px;padding:8px;background:rgba(255,255,255,0.02);border-radius:6px">
+          <strong>Quick Start:</strong> Select mental models above, write your problem below, and click "Think Deeply". The system will apply your selected frameworks and check for cognitive biases.
+        </div>
+      </div>
+    </div>
+
+    <div class="workspace">
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div>
+            <h2 style="margin:0;font-size:18px">Problem Analysis</h2>
+            <div class="small">Describe your decision, problem, or situation for comprehensive analysis</div>
+          </div>
+          <div class="small">Session: <span id="sessionId">—</span></div>
+        </div>
+
+        <textarea id="prompt" class="prompt" placeholder="Describe the problem, decision, or topic you want analyzed...
+
+Example: Should I accept this job offer at a startup? The salary is 20% lower than my current role, but they're offering equity and the work seems more interesting. Consider the risks, long-term implications, and what factors I should evaluate."></textarea>
+
+        <div class="controls">
+          <button id="thinkBtn" class="btn">🧠 Think Deeply</button>
+          <button id="quickBtn" class="btn secondary">⚡ Quick Analysis</button>
+          <button id="compareBtn" class="btn secondary">🔄 Compare Options</button>
+          <button id="refineBtn" class="btn secondary">✨ Refine Analysis</button>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="panel" style="flex:1.2">
+          <h3 style="margin:0 0 12px 0;font-size:16px">Analysis & Reasoning</h3>
+          <div id="output" style="white-space:pre-wrap;min-height:200px;padding:12px;margin-top:8px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border-radius:10px;font-size:13px;line-height:1.5"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:11px;color:var(--muted)">
+            <div>Generated by your local model — verify important claims</div>
+            <div>⚠️ This tool aids thinking; not professional advice</div>
+          </div>
+        </div>
+
+        <div class="panel" style="width:340px;flex-shrink:0">
+          <h3 style="margin:0 0 12px 0;font-size:16px">Applied Frameworks</h3>
+          
+          <div id="appliedModels" style="margin-bottom:16px">
+            <div class="small" style="color:var(--muted)">Selected mental models will appear here during analysis</div>
+          </div>
+
+          <h4 style="margin:12px 0 8px 0;font-size:14px">Analysis History</h4>
+          <div id="history" class="history"></div>
+          
+          <div style="margin-top:16px;padding:8px;background:rgba(79,209,197,0.05);border-radius:6px;border:1px solid rgba(79,209,197,0.1)">
+            <div style="font-size:11px;color:var(--accent);margin-bottom:4px">💡 Pro Tip</div>
+            <div style="font-size:11px;color:var(--muted)">Try different model combinations for the same problem to get varied perspectives and more robust analysis.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Modal -->
+  <div id="helpModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Mental Models Guide</h3>
+        <button class="modal-close" id="closeHelp">&times;</button>
+      </div>
+      <div style="max-height:400px;overflow:auto">
+        <h4>Core Mental Models</h4>
+        <p><strong>Inversion:</strong> Start with the worst possible outcome and work backwards. What would guarantee failure?</p>
+        <p><strong>Incentives:</strong> Follow the incentives. People respond to incentives, often in unexpected ways.</p>
+        <p><strong>Circle of Competence:</strong> Know what you know and what you don't. Stay within your expertise or acknowledge limitations.</p>
+        
+        <h4>Advanced Models</h4>
+        <p><strong>Lollapalooza Effect:</strong> When multiple psychological tendencies act together, they can create extreme outcomes.</p>
+        <p><strong>Second-Order Thinking:</strong> Consider not just immediate consequences, but consequences of consequences.</p>
+        <p><strong>Systems Thinking:</strong> Everything is connected. Look for feedback loops and unintended consequences.</p>
+        
+        <h4>Common Biases to Watch For</h4>
+        <p><strong>Confirmation Bias:</strong> Seeking information that confirms existing beliefs while ignoring contradictory evidence.</p>
+        <p><strong>Anchoring:</strong> Over-relying on the first piece of information encountered.</p>
+        <p><strong>Sunk Cost Fallacy:</strong> Continuing a behavior because of previously invested resources.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Enhanced JavaScript with new features
+    (function(){
+      const state = {
+        sessionId: Date.now().toString(36), 
+        history: [],
+        activeModels: new Set(['invert', 'incentives', 'probabilities', 'circle', 'first', 'simplify']),
+        currentAnalysis: null
+      };
+      
+      document.getElementById('sessionId').innerText = state.sessionId;
+
+      // Utilities
+      function el(id){return document.getElementById(id)}
+      function pushHistory(role, text, models = []){
+        state.history.unshift({role, text, time: new Date().toISOString(), models}); 
+        renderHistory();
+      }
+      
+      function renderHistory(){
+        const h = el('history'); 
+        h.innerHTML = state.history.map(item => `
+          <div class="message ${item.role === 'assistant' ? 'assistant' : 'user'} slide-in">
+            <div class="message-time">${item.time.replace('T',' ').slice(0,19)}</div>
+            <div class="message-content">${escapeHtml(item.text.substring(0, 200))}${item.text.length > 200 ? '...' : ''}</div>
+            ${item.models && item.models.length ? `<div style="font-size:10px;color:var(--accent);margin-top:4px">Models: ${item.models.join(', ')}</div>` : ''}
+          </div>
+        `).join('');
+      }
+      
+      function escapeHtml(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+      // Mental Models Data
+      const mentalModels = {
+        invert: {
+          name: 'Inversion',
+          prompt: 'Inversion: List specific ways this could fail or produce the opposite of the desired outcome. For each failure mode, suggest concrete mitigations.'
+        },
+        incentives: {
+          name: 'Incentives',
+          prompt: 'Incentives: Identify all stakeholders and their incentives (financial, social, psychological). How do these incentives shape likely behaviors and outcomes?'
+        },
+        probabilities: {
+          name: 'Probabilistic Thinking',
+          prompt: 'Probabilistic thinking: Assign approximate probabilities (percentages or high/medium/low) to key outcomes. Show your reasoning for these estimates.'
+        },
+        circle: {
+          name: 'Circle of Competence',
+          prompt: 'Circle of competence: What assumptions are within your expertise vs. outside it? How should you proceed when outside your competence?'
+        },
+        first: {
+          name: 'First Principles',
+          prompt: 'First principles: Break down the situation to fundamental truths. What assumptions can be challenged or verified independently?'
+        },
+        simplify: {
+          name: 'Simplify',
+          prompt: 'Simplify: Apply the 80/20 rule - what are the few factors that matter most? Provide a concise summary and clear recommendation.'
+        },
+        opportunity: {
+          name: 'Opportunity Cost',
+          prompt: 'Opportunity cost: What are you giving up by choosing each option? What is the next best alternative and its value?'
+        },
+        lollapalooza: {
+          name: 'Lollapalooza Effect',
+          prompt: 'Lollapalooza effect: Are multiple psychological tendencies or forces acting together here? How might they amplify each other?'
+        },
+        margin: {
+          name: 'Margin of Safety',
+          prompt: 'Margin of safety: What buffers can you build in for uncertainty, errors, or changing conditions? How much cushion is needed?'
+        },
+        second: {
+          name: 'Second-Order Thinking',
+          prompt: 'Second-order thinking: What are the consequences of the consequences? How might others react to your actions, and what chain reactions could occur?'
+        },
+        systems: {
+          name: 'Systems Thinking',
+          prompt: 'Systems thinking: What are the interconnections and feedback loops? How might this decision affect the broader system over time?'
+        }
+      };
+
+      // Cognitive Biases Detection
+      const cognitiveBiases = {
+        confirmation: {
+          name: 'Confirmation Bias',
+          keywords: ['I believe', 'I think', 'obviously', 'clearly', 'everyone knows'],
+          description: 'Seeking information that confirms existing beliefs'
+        },
+        anchoring: {
+          name: 'Anchoring Bias',
+          keywords: ['first', 'initial', 'starting', 'based on'],
+          description: 'Over-relying on first information received'
+        },
+        availability: {
+          name: 'Availability Heuristic',
+          keywords: ['recently', 'I heard', 'I saw', 'in the news'],
+          description: 'Overweighting recent or memorable examples'
+        },
+        sunk_cost: {
+          name: 'Sunk Cost Fallacy',
+          keywords: ['already invested', 'spent so much', 'can\'t waste'],
+          description: 'Continuing due to past investment rather than future value'
+        },
+        social_proof: {
+          name: 'Social Proof',
+          keywords: ['everyone else', 'most people', 'others are doing'],
+          description: 'Following others without independent analysis'
+        },
+        authority: {
+          name: 'Authority Bias',
+          keywords: ['expert said', 'according to', 'they told me'],
+          description: 'Deferring to authority without critical thinking'
+        },
+        overconfidence: {
+          name: 'Overconfidence Bias',
+          keywords: ['I\'m sure', 'definitely', 'certain', 'no doubt'],
+          description: 'Overestimating knowledge or abilities'
+        }
+      };
+
+      // Enhanced prompt transformer
+      function transformPrompt(base, analysisType = 'full'){
+        const lines = [];
+        const activeModelsList = Array.from(state.activeModels);
+        
+        lines.push(`You are a careful, analytical thinker trained in Charlie Munger's mental models approach.`);
+        lines.push(`Role: ${el('roleSel').value}. Session: ${state.sessionId}.`);
+        lines.push(`Analysis type: ${analysisType}`);
+
+        lines.push(`Problem statement:\n"""\n${base}\n"""`);
+
+        if(el('applyHeuristics').checked && activeModelsList.length > 0){
+          lines.push(`Apply these mental models systematically:`);
+          activeModelsList.forEach((modelKey, index) => {
+            if(mentalModels[modelKey]){
+              lines.push(`${index + 1}) ${mentalModels[modelKey].prompt}`);
+            }
+          });
+        }
+
+        // Add template-specific instructions
+        const template = el('templateSel').value;
+        const templateInstructions = {
+          decision: 'Create a decision matrix with weighted criteria and provide a clear recommendation (Accept/Decline/Defer).',
+          inversion: 'Start by inverting the goal: what would guarantee the worst possible outcome?',
+          brainstorm: 'Generate 6 creative alternatives or experiments to test assumptions quickly.',
+          investment: 'Focus on risk assessment, expected returns, and downside protection.',
+          career: 'Consider long-term growth, skill development, and life satisfaction.',
+          business: 'Analyze market dynamics, competitive advantages, and execution risks.',
+          personal: 'Balance emotional, practical, and long-term life impact factors.'
+        };
+        
+        if(templateInstructions[template]){
+          lines.push(`Template guidance: ${templateInstructions[template]}`);
+        }
+
+        // Bias detection prompt
+        if(el('detectBiases').checked){
+          lines.push(`Bias check: Analyze the problem statement for potential cognitive biases and warn if any are detected.`);
+        }
+
+        lines.push(`\nProvide your analysis in clear, numbered sections. Be explicit about uncertainties and confidence levels.`);
+        return lines.join('\n\n');
+      }
+
+      // Bias detection function
+      function detectBiases(text){
+        const detectedBiases = [];
+        const lowerText = text.toLowerCase();
+        
+        Object.entries(cognitiveBiases).forEach(([key, bias]) => {
+          const hasKeywords = bias.keywords.some(keyword => lowerText.includes(keyword.toLowerCase()));
+          if(hasKeywords){
+            detectedBiases.push(bias);
+          }
+        });
+        
+        return detectedBiases;
+      }
+
+      // Enhanced API call function
+      async function callLocalModel(prompt, showProgress = true){
+        const apiUrl = el('apiUrl').value.trim();
+        const model = el('modelName').value.trim();
+        const temperature = parseFloat(el('temperature').value) || 0.2;
+        
+        if(!apiUrl) return {error:'Set a local API URL in the left panel.'};
+
+        if(showProgress){
+          updateProgress(10);
+        }
+
+        const payloadOptions = [
+          {model, prompt, temperature, max_tokens: 2000},
+          {prompt, temperature, max_tokens: 2000},
+          {input: prompt, temperature}
+        ];
+
+        let lastErr = null;
+        for(const payload of payloadOptions){
+          try{
+            if(showProgress) updateProgress(30);
+            
+            const res = await fetch(apiUrl, {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify(payload)
+            });
+            
+            if(!res.ok){ 
+              lastErr = `HTTP ${res.status} ${res.statusText}`; 
+              continue; 
+            }
+
+            if(showProgress) updateProgress(70);
+
+            const data = await res.json();
+            let respText = '';
+            
+            // Parse various response formats
+            if(data.output && typeof data.output === 'string') respText = data.output;
+            else if(data.text && typeof data.text === 'string') respText = data.text;
+            else if(Array.isArray(data.choices) && data.choices[0]){
+              respText = data.choices[0].text || (data.choices[0].message && data.choices[0].message.content) || '';
+            } else if(data.result && typeof data.result === 'string') respText = data.result;
+            else if(typeof data === 'string') respText = data;
+            else respText = JSON.stringify(data, null, 2);
+
+            if(showProgress) updateProgress(100);
+            
+            return {text: respText};
+          }catch(e){ 
+            lastErr = e.message; 
+            continue; 
+          }
+        }
+        
+        if(showProgress) updateProgress(0);
+        return {error: lastErr || 'Unknown error'};
+      }
+
+      // Progress bar update
+      function updateProgress(percent){
+        el('progressFill').style.width = percent + '%';
+        if(percent === 100){
+          setTimeout(() => el('progressFill').style.width = '0%', 1000);
+        }
+      }
+
+      // Tab switching
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(tc => tc.style.display = 'none');
+          
+          tab.classList.add('active');
+          el(tab.dataset.tab + '-tab').style.display = 'block';
+        });
+      });
+
+      // Model card selection
+      document.querySelectorAll('.model-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const model = card.dataset.model;
+          if(state.activeModels.has(model)){
+            state.activeModels.delete(model);
+            card.classList.remove('active');
+          } else {
+            state.activeModels.add(model);
+            card.classList.add('active');
+          }
+          updateAppliedModels();
+        });
+      });
+
+      function updateAppliedModels(){
+        const container = el('appliedModels');
+        if(state.activeModels.size === 0){
+          container.innerHTML = '<div class="small" style="color:var(--muted)">No mental models selected</div>';
+          return;
+        }
+        
+        const modelsList = Array.from(state.activeModels).map(key => {
+          const model = mentalModels[key];
+          return model ? `<span style="background:rgba(79,209,197,0.1);color:var(--accent);padding:2px 6px;border-radius:4px;font-size:11px;margin:2px">${model.name}</span>` : '';
+        }).join(' ');
+        
+        container.innerHTML = `<div style="margin-bottom:8px">${modelsList}</div>`;
+      }
+
+      // Event handlers
+      el('testBtn').addEventListener('click', async () => {
+        const apiUrl = el('apiUrl').value.trim();
+        if(!apiUrl){ alert('Please enter a local API URL.'); return; }
+        
+        el('output').innerText = 'Testing connection...';
+        el('testBtn').classList.add('thinking');
+        
+        try{
+          const result = await callLocalModel('Test connection - respond with "Connection successful"', false);
+          if(result.error){
+            el('output').innerText = `Connection failed: ${result.error}`;
+          } else {
+            el('output').innerText = 'Connection successful! ✅';
+          }
+        } catch(e){
+          el('output').innerText = `Connection error: ${e.message}`;
+        }
+        
+        el('testBtn').classList.remove('thinking');
+      });
+
+      el('clearHistory').addEventListener('click', () => {
+        state.history = []; 
+        renderHistory(); 
+        el('output').innerText = 'History cleared.';
+      });
+
+      el('thinkBtn').addEventListener('click', async () => {
+        const base = el('prompt').value.trim(); 
+        if(!base){ 
+          alert('Please describe your problem or decision in the prompt area.'); 
+          return; 
+        }
+        
+        // Detect biases first
+        if(el('detectBiases').checked){
+          const detectedBiases = detectBiases(base);
+          if(detectedBiases.length > 0){
+            const biasPanel = el('biasResults');
+            const biasList = el('biasList');
+            biasList.innerHTML = detectedBiases.map(bias => 
+              `<div class="bias-item">${bias.name}: ${bias.description}</div>`
+            ).join('');
+            biasPanel.style.display = 'block';
+          } else {
+            el('biasResults').style.display = 'none';
+          }
+        }
+        
+        const transformed = transformPrompt(base, 'full');
+        const activeModelsList = Array.from(state.activeModels);
+        
+        pushHistory('user', base, activeModelsList);
+        el('output').innerHTML = '<div class="thinking">🧠 Analyzing with selected mental models...</div>';
+        el('thinkBtn').classList.add('thinking');
+
+        const result = await callLocalModel(transformed);
+        
+        el('thinkBtn').classList.remove('thinking');
+        
+        if(result.error){
+          el('output').innerText = `Error: ${result.error}`;
+        } else {
+          el('output').innerText = result.text;
+          pushHistory('assistant', result.text, activeModelsList);
+          state.currentAnalysis = result.text;
+        }
+      });
+
+      el('quickBtn').addEventListener('click', async () => {
+        const base = el('prompt').value.trim(); 
+        if(!base){ 
+          alert('Please describe your problem or decision in the prompt area.'); 
+          return; 
+        }
+        
+        const quickPrompt = `Provide a quick analysis of this situation using 2-3 key mental models:\n\n${base}\n\nBe concise but insightful.`;
+        
+        el('output').innerHTML = '<div class="thinking">⚡ Quick analysis...</div>';
+        el('quickBtn').classList.add('thinking');
+
+        const result = await callLocalModel(quickPrompt);
+        
+        el('quickBtn').classList.remove('thinking');
+        
+        if(result.error){
+          el('output').innerText = `Error: ${result.error}`;
+        } else {
+          el('output').innerText = result.text;
+          pushHistory('assistant', result.text, ['quick-analysis']);
+        }
+      });
+
+      el('compareBtn').addEventListener('click', async () => {
+        const base = el('prompt').value.trim(); 
+        if(!base){ 
+          alert('Please describe your options in the prompt area.'); 
+          return; 
+        }
+        
+        const comparePrompt = `Compare the options in this situation systematically:\n\n${base}\n\nCreate a comparison matrix with pros/cons, risks, and expected outcomes for each option. Provide a clear recommendation.`;
+        
+        el('output').innerHTML = '<div class="thinking">🔄 Comparing options...</div>';
+        el('compareBtn').classList.add('thinking');
+
+        const result = await callLocalModel(comparePrompt);
+        
+        el('compareBtn').classList.remove('thinking');
+        
+        if(result.error){
+          el('output').innerText = `Error: ${result.error}`;
+        } else {
+          el('output').innerText = result.text;
+          pushHistory('assistant', result.text, ['comparison']);
+        }
+      });
+
+      el('refineBtn').addEventListener('click', async () => {
+        if(!state.currentAnalysis){
+          alert('Please run an analysis first.');
+          return;
+        }
+        
+        const refinePrompt = `Refine and improve this analysis by:\n1) Identifying any gaps or weak points\n2) Adding additional perspectives\n3) Strengthening the reasoning\n\nOriginal analysis:\n${state.currentAnalysis}\n\nProvide an enhanced version.`;
+        
+        el('output').innerHTML = '<div class="thinking">✨ Refining analysis...</div>';
+        el('refineBtn').classList.add('thinking');
+
+        const result = await callLocalModel(refinePrompt);
+        
+        el('refineBtn').classList.remove('thinking');
+        
+        if(result.error){
+          el('output').innerText = `Error: ${result.error}`;
+        } else {
+          el('output').innerText = result.text;
+          pushHistory('assistant', result.text, ['refined']);
+          state.currentAnalysis = result.text;
+        }
+      });
+
+      el('exportBtn').addEventListener('click', () => {
+        const exportData = {
+          session: state.sessionId,
+          timestamp: new Date().toISOString(),
+          history: state.history,
+          activeModels: Array.from(state.activeModels)
+        };
+        
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `mental-models-analysis-${state.sessionId}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      el('helpBtn').addEventListener('click', () => {
+        el('helpModal').classList.add('show');
+      });
+
+      el('closeHelp').addEventListener('click', () => {
+        el('helpModal').classList.remove('show');
+      });
+
+      // Close modal on outside click
+      el('helpModal').addEventListener('click', (e) => {
+        if(e.target === el('helpModal')){
+          el('helpModal').classList.remove('show');
+        }
+      });
+
+      // Initialize
+      updateAppliedModels();
+      
+      // Add some example prompts for demonstration
+      const examplePrompts = [
+        "Should I quit my job to start a business?",
+        "Is this investment opportunity worth the risk?",
+        "Should I move to a new city for better opportunities?",
+        "How should I approach this difficult conversation with my boss?"
+      ];
+      
+      // Add keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if(e.ctrlKey || e.metaKey){
+          switch(e.key){
+            case 'Enter':
+              e.preventDefault();
+              el('thinkBtn').click();
+              break;
+            case 'k':
+              e.preventDefault();
+              el('prompt').focus();
+              break;
+          }
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
+

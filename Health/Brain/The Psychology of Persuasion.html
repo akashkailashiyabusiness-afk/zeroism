@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summary: Influence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS (Same as above) */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+        body { background-color: #f0f4f8; color: #2d3748; line-height: 1.7; padding: 20px; overflow-x: hidden; }
+        .book-intro { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #e53e3e, #9b2c2c); color: #fff; border-radius: 15px; margin-bottom: 40px; animation: fadeInDown 1s ease-out; } /* Adjusted Gradient */
+        .book-intro img { max-width: 200px; border-radius: 10px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); margin-bottom: 20px; }
+        .book-intro h1 { font-size: 2.8em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); }
+        .book-intro p { font-size: 1.3em; font-style: italic; opacity: 0.9; }
+        main { max-width: 1000px; margin: 0 auto; }
+        section { background: #fff; padding: 35px; margin-bottom: 40px; border-radius: 15px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); opacity: 0; animation: fadeInUp 0.8s ease-out forwards; }
+        section:nth-child(2) { animation-delay: 0.2s; }
+        section:nth-child(3) { animation-delay: 0.4s; }
+        section:nth-child(4) { animation-delay: 0.6s; }
+        section h2 { color: #9b2c2c; font-size: 2.2em; margin-bottom: 20px; border-bottom: 3px solid #e53e3e; padding-bottom: 10px; transition: transform 0.3s ease; } /* Adjusted Colors */
+        section h2:hover { transform: translateX(10px); }
+        article h3 { color: #4a5568; font-size: 1.6em; margin: 25px 0 15px; transition: color 0.3s ease; }
+        article h3:hover { color: #9b2c2c; } /* Adjusted Color */
+        ul { margin-left: 25px; }
+        ul li { margin-bottom: 15px; position: relative; padding-left: 20px; transition: transform 0.3s ease; }
+        ul li:hover { transform: translateX(5px); }
+        ul li:before { content: "➤"; color: #e53e3e; position: absolute; left: 0; } /* Adjusted Color */
+        ul li strong { color: #9b2c2c; } /* Adjusted Color */
+        p { margin-bottom: 20px; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { .book-intro h1 { font-size: 2em; } .book-intro img { max-width: 150px; } section { padding: 25px; } section h2 { font-size: 1.8em; } }
+    </style>
+</head>
+<body>
+
+    <header class="book-intro">
+        <img src="The Psychology of Persuasion.jpg" alt="Book Cover: Influence">
+        <h1>Influence: The Psychology of Persuasion</h1>
+        <p>by Robert Cialdini</p>
+    </header>
+
+    <main>
+        <section id="summary">
+            <h2>📖 Summary</h2>
+            <p>Why do people say "yes"? Cialdini explores the psychology of compliance, outlining six universal principles of influence that guide human behavior 🤝🧠. Based on extensive research and undercover work, the book explains how these principles are used by "compliance professionals" (salespeople, marketers, negotiators) and how we can use them ethically and defend ourselves against manipulation.</p>
+        </section>
+
+        <section id="key-concepts">
+            <h2>🔑 Key Principles (Weapons of Influence)</h2>
+            <ul>
+                <li><strong>Reciprocity:</strong> The obligation to give back what you have received from another (🎁➡️🙏).</li>
+                <li><strong>Commitment and Consistency:</strong> Once we make a choice or take a stand, we feel pressure to behave consistently with that commitment (📝➡️✅).</li>
+                <li><strong>Social Proof:</strong> We view a behavior as more correct in a given situation to the degree that we see others performing it (👥➡️👍).</li>
+                <li><strong>Liking:</strong> People prefer to say yes to individuals they know and like (😊➡️🤝). Factors include similarity, compliments, cooperation.</li>
+                <li><strong>Authority:</strong> We have a deep-seated sense of duty to authority figures (👨‍⚕️👩‍⚖️➡️🫡). Titles, clothes, and status symbols confer authority.</li>
+                <li><strong>Scarcity:</strong> Opportunities seem more valuable to us when their availability is limited (⏳💎➡️🏃).</li>
+            </ul>
+        </section>
+
+        <section id="real-life">
+            <h2>🌍 Real-Life Examples</h2>
+            <ul>
+                <li><strong>Reciprocity:</strong> Free samples at the supermarket, Hare Krishnas giving flowers before asking for donations.</li>
+                <li><strong>Commitment/Consistency:</strong> Signing a petition makes you more likely to donate to that cause later. Asking "How are you feeling?" before a sales pitch (people feel obliged to respond positively and act consistently).</li>
+                <li><strong>Social Proof:</strong> Bartenders "salting" their tip jars, websites showing customer testimonials or "most popular" items, canned laughter on TV shows.</li>
+                <li><strong>Liking:</strong> Salespeople finding common ground (hobbies, hometown), Tupperware parties hosted by friends.</li>
+                <li><strong>Authority:</strong> Ads featuring doctors endorsing products, obeying security guards even outside their jurisdiction.</li>
+                <li><strong>Scarcity:</strong> "Limited time offer!", "Only 3 left in stock!", exclusive deals.</li>
+            </ul>
+        </section>
+
+        <section id="takeaways">
+            <h2>✨ Key Takeaways</h2>
+            <ul>
+                <li>These influence principles often work automatically (like mental shortcuts).</li>
+                <li>Awareness is the key defense against unwanted manipulation. Ask "Why am I saying yes?".</li>
+                <li>These principles can be used ethically to persuade and achieve positive outcomes.</li>
+                <li>Understanding these triggers helps navigate social interactions more effectively.</li>
+                <li>Context and culture can influence how strongly these principles apply.</li>
+            </ul>
+        </section>
+    </main>
+
+</body>
+</html>

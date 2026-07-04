@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Life OS Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #f0f4f8;
+      --text: #2d3748;
+      --primary: #4c78a8;
+      --accent: #1a365d;
+      --card: #ffffff;
+    }
+
+    body.dark {
+      --bg: #1a202c;
+      --text: #edf2f7;
+      --primary: #90cdf4;
+      --accent: #2c5282;
+      --card: #2d3748;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 20px;
+      overflow-x: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .sticky-quote {
+      position: sticky;
+      top: 0;
+      background-color: var(--card);
+      color: var(--accent);
+      padding: 10px 20px;
+      border-left: 5px solid var(--primary);
+      font-style: italic;
+      z-index: 100;
+    }
+
+    .toggle-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 200;
+    }
+
+    .book-intro {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      border-radius: 15px;
+      margin-bottom: 40px;
+      animation: fadeInDown 1s ease-out;
+    }
+
+    .book-intro h1 {
+      font-size: 2.8em;
+      margin-bottom: 10px;
+    }
+
+    .book-intro p {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    section {
+      background: var(--card);
+      padding: 30px;
+      margin-bottom: 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      animation: fadeInUp 0.8s ease-out forwards;
+      opacity: 0;
+    }
+
+    section h2 {
+      color: var(--accent);
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 5px;
+    }
+
+    ul {
+      margin-left: 20px;
+    }
+
+    ul li {
+      margin-bottom: 10px;
+      position: relative;
+      padding-left: 20px;
+    }
+
+    ul li:before {
+      content: "➤";
+      color: var(--primary);
+      position: absolute;
+      left: 0;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .book-intro h1 {
+        font-size: 2em;
+      }
+
+      section {
+        padding: 20px;
+      }
+
+      .toggle-btn {
+        top: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="toggle-btn" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+  <div class="sticky-quote">“Your time is your true wealth. Spend it wisely.”</div>
+
+  <header class="book-intro">
+    <h1>Life Operating System</h1>
+    <p>Optimize your body, mind, and wealth.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Mindset & Philosophy</h2>
+      <ul>
+        <li>There are no facts, only interpretations.</li>
+        <li>Frame every disaster with: “In 5 years, will this matter?”</li>
+        <li>Nothing kills you faster than your own mind.</li>
+        <li>No one thinks about you as much as you do.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Health Rules</h2>
+      <ul>
+        <li>Eat half. Walk double. Laugh triple. Love without measure.</li>
+        <li>Exercise = Resistance Training + Sports + Rest</li>
+        <li>Diet = Natural Foods + Intermittent Fasting + Plants</li>
+        <li>Sleep = 8–9 hrs + No Alarms + Circadian Rhythm</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Wealth Wisdom</h2>
+      <ul>
+        <li>Money is a tool, not the goal. Freedom is.</li>
+        <li>Wealth = Income + (Investments × ROI)</li>
+        <li>Accountability × Leverage × Specific Knowledge = High Income</li>
+        <li>Gold & silver are ultimate money; fiat returns to zero.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Travel & Time</h2>
+      <ul>
+        <li>Travel, because money returns. Time doesn't.</li>
+        <li>Never sacrifice health to acquire more wealth.</li>
+        <li>Small moments create the biggest shifts.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Energy Management</h2>
+      <ul>
+        <li>You have a finite amount of energy every day.</li>
+        <li>Invest it only in who & what matters.</li>
+        <li>Respect your energy the same way you respect your time.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+    }
+
+    // Animate sections on load
+    window.addEventListener('load', () => {
+      document.querySelectorAll("section").forEach((sec, i) => {
+        sec.style.animationDelay = `${i * 0.2}s`;
+      });
+    });
+  </script>
+
+</body>
+</html>

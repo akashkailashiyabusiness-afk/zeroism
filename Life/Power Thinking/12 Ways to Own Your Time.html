@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Mastery | 12 Ways to Own Your Time</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #2ec4b6;
+            --warning: #ff9f1c;
+            --danger: #e71d36;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+
+        header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        .author img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background: var(--light-gray);
+            padding: 5px;
+        }
+
+        .techniques-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            position: relative;
+        }
+
+        .card-header h3 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .card-header .inventor {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .card-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-content p {
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            padding: 0 25px 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .pomodoro-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .timer-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 20px 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .timer-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .timer-btn:hover {
+            background: var(--secondary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--light-gray);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent), var(--primary));
+            width: 0%;
+            transition: width 1s linear;
+        }
+
+        .matrix {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .quadrant {
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 150px;
+        }
+
+        .quadrant h4 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .quadrant.urgent-important {
+            border-color: var(--danger);
+        }
+
+        .quadrant.important-not-urgent {
+            border-color: var(--success);
+        }
+
+        .quadrant.urgent-not-important {
+            border-color: var(--warning);
+        }
+
+        .quadrant.not-urgent-not-important {
+            border-color: var(--gray);
+        }
+
+        .kanban-board {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+
+        .kanban-column {
+            min-width: 250px;
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .kanban-column h4 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .kanban-task {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: move;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .kanban-task:last-child {
+            margin-bottom: 0;
+        }
+
+        .task-input {
+            display: flex;
+            margin-top: 15px;
+        }
+
+        .task-input input {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 50px 0 0 50px;
+            outline: none;
+        }
+
+        .task-input button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 0 50px 50px 0;
+            cursor: pointer;
+        }
+
+        .task-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+        }
+
+        .task-item input[type="checkbox"] {
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .task-item .task-text {
+            flex-grow: 1;
+        }
+
+        .task-item.completed .task-text {
+            text-decoration: line-through;
+            color: var(--gray);
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        .priority-A {
+            background: var(--danger);
+            color: white;
+        }
+
+        .priority-B {
+            background: var(--warning);
+            color: white;
+        }
+
+        .priority-C {
+            background: var(--accent);
+            color: white;
+        }
+
+        .time-block-schedule {
+            margin-top: 20px;
+        }
+
+        .time-block {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .time-range {
+            font-weight: 500;
+            min-width: 120px;
+            color: var(--primary);
+        }
+
+        .time-task {
+            flex-grow: 1;
+        }
+
+        .gtd-flow {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .gtd-flow::before {
+            content: "";
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent);
+            z-index: 1;
+        }
+
+        .gtd-step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            width: 18%;
+        }
+
+        .gtd-circle {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: 700;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--gray);
+            font-size: 1.1rem;
+            margin-top: 40px;
+        }
+
+        .signature {
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 10px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: var(--dark);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .techniques-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .gtd-flow {
+                flex-wrap: wrap;
+            }
+            
+            .gtd-step {
+                width: 48%;
+                margin-bottom: 20px;
+            }
+            
+            .gtd-flow::before {
+                display: none;
+            }
+            
+            .timer-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .timer-btn {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>12 WAYS TO OWN YOUR TIME</h1>
+            <p>Master proven techniques to boost your productivity and take control of your schedule</p>
+            <div class="author">
+                <i class="fas fa-user"></i>
+                <span>By Justin Mechan</span>
+            </div>
+        </header>
+
+        <div class="techniques-grid">
+            <!-- Pomodoro Technique -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Pomodoro Technique</h3>
+                    <div class="inventor">Inventor: Francesco Cirillo</div>
+                </div>
+                <div class="card-content">
+                    <p>Break work into 25-minute focused intervals with 5-minute breaks. After 4 cycles, take a longer 15-30 minute break.</p>
+                    <div class="pomodoro-container">
+                        <div class="timer-display">25:00</div>
+                        <div class="progress-bar">
+                            <div class="progress" id="pomodoro-progress"></div>
+                        </div>
+                        <div class="timer-controls">
+                            <button class="timer-btn" id="start-pomodoro">Start</button>
+                            <button class="timer-btn" id="pause-pomodoro">Pause</button>
+                            <button class="timer-btn" id="reset-pomodoro">Reset</button>
+                        </div>
+                        <div class="current-cycle">Current cycle: <span id="cycle-count">1</span>/4</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3-3-3 Method -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>3-3-3 Method</h3>
+                    <div class="inventor">Inventor: Oliver Burkeman</div>
+                </div>
+                <div class="card-content">
+                    <p>Structure your day with 3 hours of deep work, 3 shorter tasks, and 3 maintenance tasks.</p>
+                    <div class="task-list">
+                        <div class="time-block">
+                            <div class="time-range">3 hours:</div>
+                            <div class="time-task">Deep focused work</div>
+                        </div>
+                        <div class="time-block">
+                            <div class="time-range">3 tasks:</div>
+                            <div class="time-task">Important but shorter tasks</div>
+                        </div>
+                        <div class="time-block">
+                            <div class="time-range">3 tasks:</div>
+                            <div class="time-task">Maintenance/routine tasks</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eisenhower Matrix -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Eisenhower Matrix</h3>
+                </div>
+                <div class="card-content">
+                    <p>Prioritize tasks based on urgency and importance.</p>
+                    <div class="matrix">
+                        <div class="quadrant urgent-important">
+                            <h4>Urgent & Important</h4>
+                            <div class="tasks">
+                                <div class="task-item">Project deadline</div>
+                                <div class="task-item">Critical issue</div>
+                            </div>
+                        </div>
+                        <div class="quadrant important-not-urgent">
+                            <h4>Important (Not Urgent)</h4>
+                            <div class="tasks">
+                                <div class="task-item">Planning</div>
+                                <div class="task-item">Relationship building</div>
+                            </div>
+                        </div>
+                        <div class="quadrant urgent-not-important">
+                            <h4>Urgent (Not Important)</h4>
+                            <div class="tasks">
+                                <div class="task-item">Some emails</div>
+                                <div class="task-item">Interruptions</div>
+                            </div>
+                        </div>
+                        <div class="quadrant not-urgent-not-important">
+                            <h4>Not Urgent & Not Important</h4>
+                            <div class="tasks">
+                                <div class="task-item">Trivial tasks</div>
+                                <div class="task-item">Time wasters</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2 Minute Rule -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>2 Minute Rule</h3>
+                </div>
+                <div class="card-content">
+                    <p>If a task takes less than 2 minutes, do it immediately. If longer, delegate or defer.</p>
+                    <div class="task-input">
+                        <input type="text" id="two-minute-task" placeholder="Add a quick task...">
+                        <button id="add-two-minute-task"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <ul class="task-list" id="two-minute-task-list">
+                        <li class="task-item">
+                            <input type="checkbox">
+                            <span class="task-text">Reply to confirmation email</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox">
+                            <span class="task-text">Schedule meeting</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 80/20 Method -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>80/20 Method</h3>
+                </div>
+                <div class="card-content">
+                    <p>Focus on the vital 20% that produces 80% of results. Eliminate or reduce the trivial 80%.</p>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <div style="display: inline-block; width: 100px; height: 100px; border-radius: 50%; background: conic-gradient(var(--success) 0.2turn, var(--light-gray) 0.2turn); display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                            <div style="background: white; width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--success);">20%</div>
+                        </div>
+                        <p style="margin-top: 15px; font-weight: 500;">Focus Area: High-impact tasks</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABCDE Method -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>ABCDE Method</h3>
+                </div>
+                <div class="card-content">
+                    <p>Categorize tasks and execute by importance.</p>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox">
+                            <span class="task-text">Finish project proposal</span>
+                            <span class="priority-badge priority-A">A</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox">
+                            <span class="task-text">Team meeting preparation</span>
+                            <span class="priority-badge priority-B">B</span>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox">
+                            <span class="task-text">Read industry news</span>
+                            <span class="priority-badge priority-C">C</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Kanban Board -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Kanban Board</h3>
+                    <div class="inventor">Inventor: Taichi Ohno</div>
+                </div>
+                <div class="card-content">
+                    <p>Visualize workflow with To Do, In Progress, and Done columns.</p>
+                    <div class="kanban-board" id="kanban-board">
+                        <div class="kanban-column">
+                            <h4>To Do</h4>
+                            <div class="kanban-task" draggable="true">Create project plan</div>
+                            <div class="kanban-task" draggable="true">Research competitors</div>
+                            <div class="task-input">
+                                <input type="text" placeholder="Add a task...">
+                                <button><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <div class="kanban-column">
+                            <h4>In Progress</h4>
+                            <div class="kanban-task" draggable="true">Design wireframes</div>
+                        </div>
+                        <div class="kanban-column">
+                            <h4>Done</h4>
+                            <div class="kanban-task" draggable="true">Define project scope</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eat the Frog -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Eat the Frog</h3>
+                </div>
+                <div class="card-content">
+                    <p>Do your most important and challenging task first each day.</p>
+                    <div style="background: var(--light); padding: 20px; border-radius: 12px; text-align: center; margin-top: 20px;">
+                        <h4 style="color: var(--primary); margin-bottom: 15px;">Today's Frog</h4>
+                        <div style="font-size: 1.2rem; font-weight: 500;">Complete financial report</div>
+                        <button class="btn" style="margin-top: 20px; background: var(--warning);" id="eat-frog-btn">I Ate the Frog!</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time Blocking -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Time Blocking</h3>
+                </div>
+                <div class="card-content">
+                    <p>Schedule specific blocks of time for different types of work.</p>
+                    <div class="time-block-schedule">
+                        <div class="time-block">
+                            <div class="time-range">8am - 11am</div>
+                            <div class="time-task">Deep Work (important tasks)</div>
+                        </div>
+                        <div class="time-block">
+                            <div class="time-range">11am - 11:30am</div>
+                            <div class="time-task">Quick Tasks (emails, calls)</div>
+                        </div>
+                        <div class="time-block">
+                            <div class="time-range">11:30am - 12:30pm</div>
+                            <div class="time-task">Break (eat, exercise)</div>
+                        </div>
+                        <div class="time-block">
+                            <div class="time-range">12:30pm - 2pm</div>
+                            <div class="time-task">Important Tasks (projects)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Getting Things Done -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Getting Things Done</h3>
+                </div>
+                <div class="card-content">
+                    <p>Capture, clarify, organize, reflect, and engage with your tasks.</p>
+                    <div class="gtd-flow">
+                        <div class="gtd-step">
+                            <div class="gtd-circle">1</div>
+                            <div>Capture</div>
+                        </div>
+                        <div class="gtd-step">
+                            <div class="gtd-circle">2</div>
+                            <div>Clarify</div>
+                        </div>
+                        <div class="gtd-step">
+                            <div class="gtd-circle">3</div>
+                            <div>Organize</div>
+                        </div>
+                        <div class="gtd-step">
+                            <div class="gtd-circle">4</div>
+                            <div>Reflect</div>
+                        </div>
+                        <div class="gtd-step">
+                            <div class="gtd-circle">5</div>
+                            <div>Engage</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MSCW Method -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>MSCW Method</h3>
+                </div>
+                <div class="card-content">
+                    <p>Prioritize by: Must-Have, Should-Have, Could-Have, Won't-Have.</p>
+                    <ul class="task-list">
+                        <li class="task-item" style="border-left: 4px solid var(--danger);">
+                            <span class="task-text">Core functionality (Must-Have)</span>
+                        </li>
+                        <li class="task-item" style="border-left: 4px solid var(--warning);">
+                            <span class="task-text">Important feature (Should-Have)</span>
+                        </li>
+                        <li class="task-item" style="border-left: 4px solid var(--accent);">
+                            <span class="task-text">Nice-to-have (Could-Have)</span>
+                        </li>
+                        <li class="task-item" style="border-left: 4px solid var(--gray);">
+                            <span class="task-text">Future enhancement (Won't-Have)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Warren Buffet 5/25 Rule -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>5/25 Rule</h3>
+                </div>
+                <div class="card-content">
+                    <p>Focus only on your top 5 priorities and ignore the rest.</p>
+                    <ol style="margin-top: 20px; padding-left: 20px;">
+                        <li style="margin-bottom: 10px; font-weight: 500;">Complete product launch</li>
+                        <li style="margin-bottom: 10px;">Hire new team member</li>
+                        <li style="margin-bottom: 10px;">Develop marketing strategy</li>
+                        <li style="margin-bottom: 10px;">Improve customer service</li>
+                        <li style="margin-bottom: 10px;">Financial planning</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Master your time, master your life. Implement these proven techniques to become ultrapoductive.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+            </div>
+            <div class="signature">Justin Mechan</div>
+        </footer>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Toast notification system
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show ' + type;
+            
+            setTimeout(() => {
+                toast.className = 'toast';
+            }, 3000);
+        }
+
+        // API simulation using localStorage
+        const api = {
+            save: (key, data) => {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        localStorage.setItem(key, JSON.stringify(data));
+                        resolve({ status: 'success' });
+                    }, 500); // Simulate network delay
+                });
+            },
+            
+            load: (key) => {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        const data = localStorage.getItem(key);
+                        resolve(data ? JSON.parse(data) : null);
+                    }, 500); // Simulate network delay
+                });
+            }
+        };
+
+        // Pomodoro Timer Functionality
+        let pomodoroInterval;
+        let pomodoroSeconds = 25 * 60;
+        let pomodoroRunning = false;
+        let currentCycle = 1;
+        const pomodoroDisplay = document.querySelector('.timer-display');
+        const progressBar = document.getElementById('pomodoro-progress');
+        const cycleCount = document.getElementById('cycle-count');
+        
+        // Load saved pomodoro state
+        async function loadPomodoroState() {
+            try {
+                const state = await api.load('pomodoroState');
+                if (state) {
+                    pomodoroSeconds = state.seconds;
+                    currentCycle = state.cycle;
+                    cycleCount.textContent = currentCycle;
+                    updatePomodoroDisplay();
+                    
+                    const progressPercent = ((25 * 60 - pomodoroSeconds) / (25 * 60)) * 100;
+                    progressBar.style.width = `${progressPercent}%`;
+                }
+            } catch (error) {
+                console.error('Failed to load pomodoro state:', error);
+            }
+        }
+        
+        // Save pomodoro state
+        async function savePomodoroState() {
+            try {
+                await api.save('pomodoroState', {
+                    seconds: pomodoroSeconds,
+                    cycle: currentCycle,
+                    running: pomodoroRunning
+                });
+            } catch (error) {
+                console.error('Failed to save pomodoro state:', error);
+            }
+        }
+        
+        function updatePomodoroDisplay() {
+            const minutes = Math.floor(pomodoroSeconds / 60);
+            const seconds = pomodoroSeconds % 60;
+            pomodoroDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update progress bar
+            const progressPercent = ((25 * 60 - pomodoroSeconds) / (25 * 60)) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+        }
+        
+        async function startPomodoro() {
+            if (pomodoroRunning) return;
+            
+            pomodoroRunning = true;
+            pomodoroInterval = setInterval(async () => {
+                pomodoroSeconds--;
+                updatePomodoroDisplay();
+                
+                // Save state every 10 seconds
+                if (pomodoroSeconds % 10 === 0) {
+                    await savePomodoroState();
+                }
+                
+                if (pomodoroSeconds <= 0) {
+                    clearInterval(pomodoroInterval);
+                    pomodoroRunning = false;
+                    
+                    if (currentCycle < 4) {
+                        // Short break
+                        currentCycle++;
+                        cycleCount.textContent = currentCycle;
+                        showToast('Pomodoro complete! Take a 5-minute break.', 'success');
+                        pomodoroSeconds = 5 * 60;
+                    } else {
+                        // Long break
+                        showToast('Great job! You completed 4 Pomodoro cycles. Take a 15-30 minute break.', 'success');
+                        currentCycle = 1;
+                        cycleCount.textContent = currentCycle;
+                        pomodoroSeconds = 25 * 60;
+                    }
+                    updatePomodoroDisplay();
+                    await savePomodoroState();
+                }
+            }, 1000);
+        }
+        
+        function pausePomodoro() {
+            clearInterval(pomodoroInterval);
+            pomodoroRunning = false;
+            savePomodoroState();
+        }
+        
+        async function resetPomodoro() {
+            clearInterval(pomodoroInterval);
+            pomodoroRunning = false;
+            pomodoroSeconds = 25 * 60;
+            currentCycle = 1;
+            cycleCount.textContent = currentCycle;
+            updatePomodoroDisplay();
+            progressBar.style.width = '0%';
+            await api.save('pomodoroState', null);
+            showToast('Pomodoro timer reset', 'success');
+        }
+        
+        document.getElementById('start-pomodoro').addEventListener('click', startPomodoro);
+        document.getElementById('pause-pomodoro').addEventListener('click', pausePomodoro);
+        document.getElementById('reset-pomodoro').addEventListener('click', resetPomodoro);
+        
+        // Load pomodoro state on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPomodoroState();
+            loadTwoMinuteTasks();
+            loadKanbanTasks();
+        });
+        
+        // Task List Functionality with API
+        async function loadTwoMinuteTasks() {
+            try {
+                const tasks = await api.load('twoMinuteTasks') || [
+                    { text: 'Reply to confirmation email', completed: false },
+                    { text: 'Schedule meeting', completed: false }
+                ];
+                
+                const taskList = document.getElementById('two-minute-task-list');
+                taskList.innerHTML = '';
+                
+                tasks.forEach(task => {
+                    const newTask = document.createElement('li');
+                    newTask.className = 'task-item';
+                    newTask.innerHTML = `
+                        <input type="checkbox" ${task.completed ? 'checked' : ''}>
+                        <span class="task-text">${task.text}</span>
+                    `;
+                    taskList.appendChild(newTask);
+                    
+                    if (task.completed) {
+                        newTask.classList.add('completed');
+                    }
+                    
+                    // Add event listener to the new checkbox
+                    const checkbox = newTask.querySelector('input[type="checkbox"]');
+                    checkbox.addEventListener('change', async function() {
+                        if (this.checked) {
+                            newTask.classList.add('completed');
+                            setTimeout(async () => {
+                                taskList.removeChild(newTask);
+                                // Update storage
+                                const tasks = Array.from(taskList.querySelectorAll('.task-item')).map(item => {
+                                    return {
+                                        text: item.querySelector('.task-text').textContent,
+                                        completed: item.classList.contains('completed')
+                                    };
+                                });
+                                await api.save('twoMinuteTasks', tasks);
+                            }, 1000);
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('Failed to load tasks:', error);
+                showToast('Failed to load tasks', 'error');
+            }
+        }
+        
+        async function saveTwoMinuteTasks() {
+            try {
+                const taskList = document.getElementById('two-minute-task-list');
+                const tasks = Array.from(taskList.querySelectorAll('.task-item')).map(item => {
+                    return {
+                        text: item.querySelector('.task-text').textContent,
+                        completed: item.classList.contains('completed')
+                    };
+                });
+                
+                await api.save('twoMinuteTasks', tasks);
+            } catch (error) {
+                console.error('Failed to save tasks:', error);
+                showToast('Failed to save tasks', 'error');
+            }
+        }
+        
+        document.getElementById('add-two-minute-task').addEventListener('click', async function() {
+            const taskInput = document.getElementById('two-minute-task');
+            const taskText = taskInput.value.trim();
+            
+            if (taskText) {
+                const taskList = document.getElementById('two-minute-task-list');
+                const newTask = document.createElement('li');
+                newTask.className = 'task-item';
+                newTask.innerHTML = `
+                    <input type="checkbox">
+                    <span class="task-text">${taskText}</span>
+                `;
+                taskList.appendChild(newTask);
+                taskInput.value = '';
+                
+                // Add event listener to the new checkbox
+                const checkbox = newTask.querySelector('input[type="checkbox"]');
+                checkbox.addEventListener('change', async function() {
+                    if (this.checked) {
+                        newTask.classList.add('completed');
+                        setTimeout(async () => {
+                            taskList.removeChild(newTask);
+                            await saveTwoMinuteTasks();
+                        }, 1000);
+                    }
+                });
+                
+                await saveTwoMinuteTasks();
+                showToast('Task added successfully');
+            }
+        });
+        
+        // Add functionality to existing checkboxes
+        document.querySelectorAll('#two-minute-task-list input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', async function() {
+                const taskItem = this.closest('.task-item');
+                if (this.checked) {
+                    taskItem.classList.add('completed');
+                    setTimeout(async () => {
+                        taskItem.remove();
+                        await saveTwoMinuteTasks();
+                    }, 1000);
+                }
+            });
+        });
+        
+        // Kanban Board Drag and Drop with API
+        const kanbanBoard = document.getElementById('kanban-board');
+        let draggedTask = null;
+        
+        // Load kanban tasks
+        async function loadKanbanTasks() {
+            try {
+                const columnsData = await api.load('kanbanTasks');
+                if (columnsData) {
+                    const columns = kanbanBoard.querySelectorAll('.kanban-column');
+                    
+                    columns.forEach((column, index) => {
+                        if (columnsData[index] && columnsData[index].tasks) {
+                            // Clear existing tasks except the input
+                            const tasks = column.querySelectorAll('.kanban-task');
+                            tasks.forEach(task => task.remove());
+                            
+                            // Add saved tasks
+                            columnsData[index].tasks.forEach(taskText => {
+                                const task = createKanbanTask(taskText);
+                                column.insertBefore(task, column.querySelector('.task-input'));
+                            });
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to load kanban tasks:', error);
+            }
+        }
+        
+        // Save kanban tasks
+        async function saveKanbanTasks() {
+            try {
+                const columns = kanbanBoard.querySelectorAll('.kanban-column');
+                const columnsData = [];
+                
+                columns.forEach(column => {
+                    const tasks = Array.from(column.querySelectorAll('.kanban-task')).map(task => task.textContent);
+                    columnsData.push({ tasks });
+                });
+                
+                await api.save('kanbanTasks', columnsData);
+            } catch (error) {
+                console.error('Failed to save kanban tasks:', error);
+                showToast('Failed to save tasks', 'error');
+            }
+        }
+        
+        // Create a new kanban task element
+        function createKanbanTask(text) {
+            const newTask = document.createElement('div');
+            newTask.className = 'kanban-task';
+            newTask.draggable = true;
+            newTask.textContent = text;
+            
+            newTask.addEventListener('dragstart', function() {
+                draggedTask = this;
+                setTimeout(() => {
+                    this.style.opacity = '0.5';
+                }, 0);
+            });
+            
+            newTask.addEventListener('dragend', function() {
+                this.style.opacity = '1';
+                draggedTask = null;
+                saveKanbanTasks();
+            });
+            
+            return newTask;
+        }
+        
+        kanbanBoard.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+        
+        kanbanBoard.addEventListener('drop', function(e) {
+            e.preventDefault();
+            if (draggedTask) {
+                const target = e.target.closest('.kanban-column') || e.target;
+                
+                if (target.classList.contains('kanban-column')) {
+                    target.appendChild(draggedTask);
+                } else if (target.parentElement.classList.contains('kanban-column')) {
+                    target.parentElement.insertBefore(draggedTask, target);
+                }
+            }
+        });
+        
+        // Add new task to Kanban
+        document.querySelectorAll('.kanban-column .task-input button').forEach(button => {
+            button.addEventListener('click', async function() {
+                const input = this.previousElementSibling;
+                const taskText = input.value.trim();
+                
+                if (taskText) {
+                    const column = this.closest('.kanban-column');
+                    const newTask = createKanbanTask(taskText);
+                    
+                    // Insert before the input
+                    column.insertBefore(newTask, this.parentElement);
+                    input.value = '';
+                    
+                    await saveKanbanTasks();
+                    showToast('Task added to Kanban board');
+                }
+            });
+        });
+        
+        // Eat the Frog button
+        document.getElementById('eat-frog-btn').addEventListener('click', async function() {
+            this.textContent = 'Frog Eaten!';
+            this.style.background = 'var(--success)';
+            
+            // Simulate API call to save completion
+            try {
+                await api.save('frogEaten', new Date().toISOString());
+                showToast('Congratulations! You completed your most important task.', 'success');
+            } catch (error) {
+                console.error('Failed to save frog completion:', error);
+            }
+            
+            setTimeout(() => {
+                this.textContent = 'I Ate the Frog!';
+                this.style.background = 'var(--warning)';
+            }, 2000);
+        });
+        
+        // Check if frog was already eaten today
+        async function checkFrogStatus() {
+            try {
+                const lastEaten = await api.load('frogEaten');
+                if (lastEaten) {
+                    const lastEatenDate = new Date(lastEaten).toDateString();
+                    const today = new Date().toDateString();
+                    
+                    if (lastEatenDate === today) {
+                        const btn = document.getElementById('eat-frog-btn');
+                        btn.textContent = 'Frog Eaten Today!';
+                        btn.style.background = 'var(--success)';
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to check frog status:', error);
+            }
+        }
+        
+        // Check frog status on page load
+        checkFrogStatus();
+    </script>
+</body>
+</html>

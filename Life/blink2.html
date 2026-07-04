@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blink: The Power of Thinking Without Thinking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Reset and Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #fff3e0; /* Light orange to complement the theme */
+            color: #2d3748;
+            line-height: 1.7;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Book Intro Section */
+        .book-intro {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #4c78a8, #1a365d);
+            color: #fff;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .book-intro h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .book-intro p {
+            font-size: 1.3em;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        section {
+            background: #fff;
+            padding: 35px;
+            margin-bottom: 40px;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        section.active {
+            opacity: 1;
+        }
+
+        section h2 {
+            color: #ef5350; /* Dark orange */
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #ffffff; /* White accent */
+            padding-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        section h2:hover {
+            transform: translateX(10px);
+        }
+
+        article h3 {
+            color: #4a5568;
+            font-size: 1.6em;
+            margin: 25px 0 15px;
+            transition: color 0.3s ease;
+        }
+
+        article h3:hover {
+            color: #ffca28; /* Yellow accent for contrast */
+        }
+
+        ul {
+            margin-left: 25px;
+        }
+
+        ul li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        ul li:hover {
+            transform: translateX(5px);
+        }
+
+        ul li:before {
+            content: "➤";
+            color: #ffca28; /* Yellow accent for contrast */
+            position: absolute;
+            left: 0;
+        }
+
+        ul li strong {
+            color: #ef5350; /* Dark orange */
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        /* Quiz Section */
+        .quiz-container select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #4a5568;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .quiz-container button {
+            background: #ef5350;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .quiz-container button:hover {
+            background: #ffca28;
+            color: #2d3748;
+        }
+
+        .quiz-result {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .correct {
+            color: #2f855a;
+        }
+
+        .incorrect {
+            color: #c53030;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 8px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            margin-bottom: 24px;
+        }
+
+        .tablink {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-size: 1em;
+            font-weight: 500;
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tablink:hover, .tablink.active {
+            background: #4a5568;
+            color: #fff;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .book-intro h1 {
+                font-size: 2em;
+            }
+
+            section {
+                padding: 25px;
+            }
+
+            section h2 {
+                font-size: 1.8em;
+            }
+
+            .tablink {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <link rel="stylesheet" href="bookstyle.css">
+    <div class="book-intro">
+        <img src="blink.jpg" alt="The Biology of Belief Book Cover">
+        <h1>Blink: The Power of Thinking Without Thinking</h1>
+        <p>by Malcolm Gladwell</p>
+    </div>
+
+    <main>
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tablink active" onclick="showTab('Core')">Core Concepts</button>
+            <button class="tablink" onclick="showTab('Strengths')">Strengths</button>
+            <button class="tablink" onclick="showTab('Pitfalls')">Pitfalls</button>
+            <button class="tablink" onclick="showTab('Applications')">Applications</button>
+            <button class="tablink" onclick="showTab('Quiz')">Quiz</button>
+        </div>
+
+        <!-- Tab Content Container -->
+        <section id="tab-content"></section>
+    </main>
+
+    <script>
+        // Data object containing all tab content
+        const tabData = {
+            Core: {
+                title: "Core Concepts",
+                content: `
+                    <article>
+                        <h3>Thin-Slicing</h3>
+                        <p>Quick decisions from minimal data. The ability to find patterns in situations and predict behavior based on very little information.</p>
+                        <p><em>Example: Art experts spotting a fake statue instantly, or a wine connoisseur identifying a vintage with a single sip.</em></p>
+                        <p>Gladwell highlights the importance of <strong>how</strong> we slice – focusing on the right details.</p>
+
+                        <h3>Adaptive Unconscious</h3>
+                        <p>The brain’s fast, automatic judgment system. It's a cognitive process that happens outside of conscious awareness, allowing us to make quick decisions without deliberate thought.</p>
+                        <p><em>Example: Dodging a ball without thinking, or a chess master instantly recognizing a winning position.</em></p>
+                        <p>This system relies on experience and pattern recognition.</p>
+
+                        <h3>Cognitive Coupling</h3>
+                        <p>The process where two people's brains work together to solve a problem, often leading to better results than either could achieve alone.</p>
+                        <p><em>Example: Effective teamwork in emergency situations, where individuals intuitively understand each other's actions.</em></p>
+                    </article>
+                `
+            },
+            Strengths: {
+                title: "Strengths of Intuition",
+                content: `
+                    <article>
+                        <h3>Expert Intuition</h3>
+                        <p>Accurate snap judgments from extensive experience. It's not magic, but the result of years of deliberate practice and pattern recognition.</p>
+                        <p><em>Example: Firefighters sensing danger, paramedics quickly assessing a patient's condition, or experienced pilots reacting to unexpected turbulence.</em></p>
+
+                        <h3>Speed & Efficiency</h3>
+                        <p>Fast decisions in time-sensitive situations. Intuition allows us to bypass lengthy analysis and react immediately, which can be crucial in emergencies.</p>
+                        <p><em>Example: Doctors diagnosing in emergencies, or athletes making split-second decisions during a game.</em></p>
+
+                        <h3>Pattern Recognition</h3>
+                        <p>The ability to identify subtle cues and patterns that others might miss, leading to more accurate predictions and decisions.</p>
+                        <p><em>Example: A seasoned investor recognizing a promising opportunity, or a detective identifying a suspect based on seemingly insignificant details.</em></p>
+                    </article>
+                `
+            },
+            Pitfalls: {
+                title: "Pitfalls of Blink",
+                content: `
+                    <article>
+                        <h3>Unconscious Bias</h3>
+                        <p>Stereotypes and prejudices skewing intuition. These biases can lead to unfair or inaccurate judgments.</p>
+                        <p><em>Example: Racial bias in hiring, or gender stereotypes influencing performance evaluations.</em></p>
+                        <p>Gladwell emphasizes the importance of recognizing and mitigating these biases.</p>
+
+                        <h3>Overthinking</h3>
+                        <p>Analysis paralysis drowning intuition. Too much deliberation can actually hinder our ability to make effective decisions.</p>
+                        <p><em>Example: Overanalyzing a first date, or getting bogged down in details when a quick decision is needed.</em></p>
+
+                        <h3>Priming</h3>
+                        <p>Subtle cues altering perception. Exposure to certain stimuli can unconsciously influence our judgments and behaviors.</p>
+                        <p><em>Example: Words like “old” slowing your walk, or exposure to positive images making you more optimistic.</em></p>
+
+                        <h3>The Halo Effect</h3>
+                        <p>A cognitive bias where our overall impression of a person influences how we feel and think about their character. Positive impressions in one area can lead to positive assumptions in other areas.</p>
+                        <p><em>Example: Assuming an attractive person is also intelligent and kind.</em></p>
+                    </article>
+                `
+            },
+            Applications: {
+                title: "Actionable Steps",
+                content: `
+                    <article>
+                        <h3>Sharpen Intuition</h3>
+                        <ul>
+                            <li><strong>Build expertise</strong> through deliberate practice.</li>
+                            <li><strong>Seek out</strong> challenging experiences to hone your skills.</li>
+                            <li><em>Example: Study patterns in your field, analyze past decisions, and learn from your mistakes.</em></li>
+                        </ul>
+
+                        <h3>Check Biases</h3>
+                        <ul>
+                            <li><strong>Pause</strong> to question snap judgments.</li>
+                            <li><strong>Actively seek</strong> out diverse perspectives.</li>
+                            <li><em>Example: Reflect on first impressions, consider alternative explanations, and challenge your assumptions.</em></li>
+                        </ul>
+
+                        <h3>Control Priming</h3>
+                        <ul>
+                            <li><strong>Notice</strong> environmental influences.</li>
+                            <li><strong>Create</strong> a positive and focused environment before making important decisions.</li>
+                            <li><em>Example: Avoid negative cues before decisions, surround yourself with supportive people, and minimize distractions.</em></li>
+                        </ul>
+
+                        <h3>Cultivate Mindfulness</h3>
+                        <ul>
+                            <li><strong>Practice</strong> being present in the moment.</li>
+                            <li><strong>Pay attention</strong> to your internal sensations and thoughts without judgment.</li>
+                            <li>This can help you become more aware of your intuitive responses.</li>
+                        </ul>
+                    </article>
+                `
+            },
+            Quiz: {
+                title: "Interactive Quiz",
+                content: `
+                    <article class="quiz-container">
+                        <div>
+                            <p><strong>Q1: What is thin-slicing?</strong></p>
+                            <select id="quizAnswer1">
+                                <option value="A">Overanalyzing data</option>
+                                <option value="B">Quick judgments from little info</option>
+                                <option value="C">Ignoring intuition</option>
+                            </select>
+                            <button onclick="checkAnswer1()">Submit</button>
+                            <div id="result1" class="quiz-result"></div>
+                        </div>
+                        <div>
+                            <p><strong>Q2: When is intuition most reliable?</strong></p>
+                            <select id="quizAnswer2">
+                                <option value="A">With no experience</option>
+                                <option value="B">With deep expertise</option>
+                                <option value="C">Under heavy bias</option>
+                            </select>
+                            <button onclick="checkAnswer2()">Submit</button>
+                            <div id="result2" class="quiz-result"></div>
+                        </div>
+                        <div>
+                            <p><strong>Q3: What is the 'halo effect'?</strong></p>
+                            <select id="quizAnswer3">
+                                <option value="A">A bias where positive impressions in one area influence others</option>
+                                <option value="B">A technique for improving intuition</option>
+                                <option value="C">A type of priming</option>
+                            </select>
+                            <button onclick="checkAnswer3()">Submit</button>
+                            <div id="result3" class="quiz-result"></div>
+                        </div>
+                    </article>
+                `
+            }
+        };
+
+        // Function to show tab content
+        function showTab(tabName) {
+            const contentContainer = document.getElementById('tab-content');
+            const tablinks = document.getElementsByClassName('tablink');
+
+            // Remove active class from all tabs
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove('active');
+            }
+
+            // Add active class to clicked tab
+            const clickedTab = Array.from(tablinks).find(tab => tab.textContent === tabData[tabName].title || tab.textContent === tabName);
+            if (clickedTab) {
+                clickedTab.classList.add('active');
+            }
+
+            // Render tab content
+            const tab = tabData[tabName];
+            if (tab) {
+                contentContainer.innerHTML = `
+                    <h2>${tab.title}</h2>
+                    ${tab.content}
+                `;
+            }
+        }
+
+        // Quiz answer checking functions
+        function checkAnswer1() {
+            const answer = document.getElementById("quizAnswer1").value;
+            const result = document.getElementById("result1");
+            if (answer === "B") {
+                result.innerHTML = "Correct! Thin-slicing is quick judgment from little info.";
+                result.classList.add("correct");
+                result.classList.remove("incorrect");
+            } else {
+                result.innerHTML = "Nope. It’s about quick judgments, not overanalyzing.";
+                result.classList.add("incorrect");
+                result.classList.remove("correct");
+            }
+        }
+
+        function checkAnswer2() {
+            const answer = document.getElementById("quizAnswer2").value;
+            const result = document.getElementById("result2");
+            if (answer === "B") {
+                result.innerHTML = "Right! Intuition shines with deep expertise.";
+                result.classList.add("correct");
+                result.classList.remove("incorrect");
+            } else {
+                result.innerHTML = "Incorrect. Expertise, not inexperience or bias, helps.";
+                result.classList.add("incorrect");
+                result.classList.remove("correct");
+            }
+        }
+
+        function checkAnswer3() {
+            const answer = document.getElementById("quizAnswer3").value;
+            const result = document.getElementById("result3");
+            if (answer === "A") {
+                result.innerHTML = "Correct! The halo effect is a common cognitive bias.";
+                result.classList.add("correct");
+                result.classList.remove("correct");
+            } else {
+                result.innerHTML = "Incorrect. It's about how overall impressions influence specific judgments.";
+                result.classList.add("incorrect");
+                result.classList.remove("correct");
+            }
+        }
+
+        // Initialize the first tab
+        showTab('Core');
+    </script>
+</body>
+</html>

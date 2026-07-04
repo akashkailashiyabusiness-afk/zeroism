@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Research AI Dashboard — Local</title>
+  <style>
+    :root{--bg:#071422;--panel:#0b2230;--muted:#9fb3c8;--text:#e6f1f7;--accent:#06b6d4;--accent2:#7c3aed;}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto; background:var(--bg); color:var(--text);}
+    .wrap{display:grid;grid-template-columns:320px 1fr;grid-template-rows:auto 1fr;gap:12px;height:100vh;padding:12px;}
+    header{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);}
+    .logo{display:flex;gap:10px;align-items:center}
+    .logo .badge{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,var(--accent2),var(--accent));display:grid;place-items:center;font-weight:800;color:#021223}
+    .controls{display:flex;gap:8px;align-items:center}
+    .btn{background:#0f2b3a;border:1px solid #12313e;padding:8px 10px;border-radius:8px;color:var(--text);cursor:pointer}
+    .btn.primary{background:var(--accent2);color:#fff;border:0}
+    .panel{background:var(--panel);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.02);height:100%;overflow:auto}
+    .left{display:flex;flex-direction:column;gap:12px}
+    input[type="file"]{display:none}
+    .file-row{display:flex;gap:8px;align-items:center;justify-content:space-between}
+    .muted{color:var(--muted);font-size:13px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{padding:6px 8px;border-bottom:1px dashed rgba(255,255,255,.03);text-align:left}
+    .chart-wrap{height:320px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.02));display:grid;place-items:center;border-radius:8px}
+    .textarea{width:100%;min-height:80px;padding:8px;border-radius:8px;background:#071a24;border:1px solid rgba(255,255,255,.02);color:var(--text)}
+    select,input,button,textarea{font:inherit}
+    .top-controls{display:flex;gap:8px;align-items:center}
+    .small{font-size:13px;padding:6px 8px;border-radius:8px;background:#072530}
+    .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    .stat{background:#06161f;padding:10px;border-radius:8px;text-align:center}
+    .stat h3{margin:0;font-size:20px}
+    .spec{font-family:monospace;font-size:13px;color:#9ad6e1;background:#041620;padding:8px;border-radius:6px;white-space:pre-wrap}
+    .footer{grid-column:1/-1;text-align:right;color:var(--muted);font-size:13px;padding:4px 8px}
+    @media (max-width:900px){.wrap{grid-template-columns:1fr;grid-template-rows:auto auto 1fr} .left{order:2} .panel{height:auto}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <div class="badge">RD</div>
+        <div>
+          <div style="font-weight:800">Research AI Dashboard</div>
+          <div class="muted">Local • Data exploration • NL analysis</div>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="new" class="btn">New</button>
+        <label class="btn"><input type="file" id="file" accept=".csv,.json" /> Upload</label>
+        <button id="clear" class="btn">Clear Data</button>
+        <button id="settingsBtn" class="btn">Settings</button>
+        <button id="export" class="btn">Export JSON</button>
+      </div>
+    </header>
+
+    <aside class="panel left">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-weight:700">Dataset</div><div class="muted" id="rowsInfo">No data</div>
+        </div>
+        <div class="file-row">
+          <div id="filename" class="muted">Upload CSV or JSON</div>
+          <div style="display:flex;gap:6px">
+            <button id="previewBtn" class="btn small">Preview</button>
+            <button id="statsBtn" class="btn small">Stats</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <div style="font-weight:700;margin-bottom:6px">Quick Questions ✨</div>
+        <button class="btn small" data-q="Summarize the dataset in 3 bullet points.">Summarize</button>
+        <button class="btn small" data-q="What are the top 3 numeric columns by variance?">Top variance</button>
+        <button class="btn small" data-q="Suggest 3 interesting charts to visualize this data.">Suggest charts</button>
+      </div>
+
+      <div style="margin-top:12px">
+        <div style="font-weight:700;margin-bottom:6px">Natural Language Query 🧠</div>
+        <textarea id="nlQuery" class="textarea" placeholder="Ask in plain English (e.g., 'Show sales trend by month for product A')"></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <select id="presetServer" class="small">
+            <option value="lmstudio">LM Studio (OpenAI style)</option>
+            <option value="ollama">Ollama</option>
+          </select>
+          <input id="baseUrl" class="small" placeholder="http://localhost:1234" style="min-width:130px" />
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <input id="model" class="small" placeholder="model name (e.g., llama-3, qwen2)" style="min-width:160px" />
+          <button id="askBtn" class="btn primary">Ask AI</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <div style="font-weight:700;margin-bottom:6px">Saved Outputs</div>
+        <div id="outputs" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+    </aside>
+
+    <section class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-weight:800">Explorer</div>
+        <div class="muted">Preview table • simple charts • NL-driven analysis</div>
+      </div>
+
+      <div id="tableWrap" style="max-height:260px;overflow:auto;border-radius:8px;background:#031018;padding:8px;margin-bottom:12px"></div>
+
+      <div style="display:flex;gap:12px;margin-bottom:12px">
+        <div style="flex:1">
+          <div style="font-weight:700;margin-bottom:8px">Stats</div>
+          <div class="stat-grid" id="stats"></div>
+        </div>
+        <div style="width:420px">
+          <div style="font-weight:700;margin-bottom:8px">Chart</div>
+          <div class="chart-wrap" id="chartWrap"><canvas id="chart" width="640" height="320" style="max-width:100%"></canvas></div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px">
+        <div style="flex:1">
+          <div style="font-weight:700;margin-bottom:8px">AI Analysis</div>
+          <div id="analysis" class="spec">No analysis yet. Use the NL Query box to ask the model for insights or chart suggestions.</div>
+        </div>
+        <div style="width:320px">
+          <div style="font-weight:700;margin-bottom:8px">Chart Spec (parsed)</div>
+          <div id="chartSpec" class="spec">—</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">Local Research Dashboard • Runs with your local models • Built for privacy ❤️</div>
+  </div>
+
+<script>
+// Minimal CSV parser (handles quoted fields)
+function parseCSV(text){
+  const rows = []; const lines = text.split(/\\r?\\n/);
+  for(let i=0;i<lines.length;i++){
+    const line = lines[i]; if(!line) continue;
+    const row = []; let cur='', inQ=false;
+    for(let j=0;j<line.length;j++){ const ch=line[j];
+      if(ch==='\"'){ if(inQ && line[j+1]==='\"'){ cur+='\"'; j++; } else inQ=!inQ; continue; }
+      if(ch===',' && !inQ){ row.push(cur); cur=''; continue; }
+      cur+=ch;
+    } row.push(cur); rows.push(row);
+  }
+  return rows;
+}
+
+function arrayToObjects(rows){
+  if(rows.length<1) return [];
+  const headers = rows[0]; const data=[];
+  for(let i=1;i<rows.length;i++){ const r=rows[i]; if(r.length===0) continue;
+    const obj={}; for(let j=0;j<headers.length;j++) obj[headers[j]] = r[j] ?? '';
+    data.push(obj);
+  }
+  return data;
+}
+
+let dataset = []; let columns=[];
+
+// UI elements
+const fileInput = document.getElementById('file');
+const filename = document.getElementById('filename');
+const rowsInfo = document.getElementById('rowsInfo');
+const tableWrap = document.getElementById('tableWrap');
+const statsEl = document.getElementById('stats');
+const chartCanvas = document.getElementById('chart');
+const chartSpec = document.getElementById('chartSpec');
+const analysis = document.getElementById('analysis');
+const outputs = document.getElementById('outputs');
+
+fileInput.addEventListener('change', async (e)=>{
+  const f = e.target.files[0]; if(!f) return;
+  filename.textContent = f.name;
+  const text = await f.text();
+  if(f.name.endsWith('.json')){
+    try{ dataset = JSON.parse(text); if(!Array.isArray(dataset)) dataset = [dataset]; }catch(err){ alert('Invalid JSON'); return; }
+  } else {
+    const rows = parseCSV(text); dataset = arrayToObjects(rows);
+  }
+  afterLoad();
+});
+
+function afterLoad(){
+  columns = dataset.length ? Object.keys(dataset[0]) : [];
+  rowsInfo.textContent = dataset.length + ' rows • ' + columns.length + ' cols';
+  renderTable();
+  computeStats();
+  analysis.textContent = 'Dataset loaded. Try Quick Questions or ask in NL.';
+  chartSpec.textContent = '—';
+  outputs.innerHTML='';
+  saveState();
+}
+
+function renderTable(limit=50){
+  if(!dataset.length){ tableWrap.innerHTML = '<div class=\"muted\">No data</div>'; return; }
+  const cols = columns;
+  const rows = dataset.slice(0,limit);
+  let html='<table><thead><tr>' + cols.map(c=>`<th>${c}</th>`).join('') + '</tr></thead><tbody>';
+  for(const r of rows){ html+='<tr>' + cols.map(c=>`<td>${String(r[c]).slice(0,60)}</td>`).join('') + '</tr>'; }
+  html += '</tbody></table>';
+  tableWrap.innerHTML = html;
+}
+
+function computeStats(){
+  statsEl.innerHTML='';
+  if(!dataset.length) return;
+  // compute simple stats for numeric columns
+  const nums = {};
+  for(const c of columns){ nums[c]=[]; }
+  for(const r of dataset){
+    for(const c of columns){
+      const v = r[c];
+      const n = parseFloat(String(v).replace(/[^0-9.-]/g,''));
+      if(!isNaN(n)) nums[c].push(n);
+    }
+  }
+  const stats = [];
+  for(const c of columns){
+    const arr = nums[c];
+    if(arr.length<1) continue;
+    arr.sort((a,b)=>a-b);
+    const sum = arr.reduce((s,x)=>s+x,0);
+    const mean = sum/arr.length; const median = arr[Math.floor(arr.length/2)];
+    const min = arr[0]; const max = arr[arr.length-1]; const variance = arr.reduce((s,x)=>s+Math.pow(x-mean,2),0)/arr.length;
+    stats.push({col:c, mean, median, min, max, variance, count:arr.length});
+  }
+  stats.sort((a,b)=>b.variance - a.variance);
+  stats.slice(0,6).forEach(s=>{
+    const el = document.createElement('div'); el.className='stat';
+    el.innerHTML = `<div style="font-weight:700">${s.col}</div><div class="muted">n=${s.count}</div><div style="margin-top:6px"><small>mean</small><div style="font-weight:800">${round(s.mean)}</div></div>`;
+    statsEl.appendChild(el);
+  });
+}
+
+function round(x){ return Math.round((x+Number.EPSILON)*100)/100; }
+
+// Simple chart renderer (line/bar/scatter)
+function drawChart(spec){
+  const ctx = chartCanvas.getContext('2d');
+  chartSpec.textContent = JSON.stringify(spec, null, 2);
+  ctx.clearRect(0,0,chartCanvas.width,chartCanvas.height);
+  if(!spec || !spec.type) return;
+  // prepare data arrays
+  const xCol = spec.x; const yCol = spec.y;
+  const pts = dataset.map(r=>({x: parseFloat(String(r[xCol]).replace(/[^0-9.-]/g,'')), y: parseFloat(String(r[yCol]).replace(/[^0-9.-]/g,''))})).filter(p=>!isNaN(p.x) && !isNaN(p.y));
+  if(!pts.length){ analysis.textContent = 'No numeric data for chosen columns.'; return; }
+  // normalize into canvas coords
+  const padding = 40; const w = chartCanvas.width; const h = chartCanvas.height;
+  const xs = pts.map(p=>p.x); const ys = pts.map(p=>p.y);
+  const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+  function tx(x){ return padding + ((x - minx)/(maxx-minx || 1))*(w-2*padding); }
+  function ty(y){ return h - padding - ((y - miny)/(maxy-miny || 1))*(h-2*padding); }
+  // axes
+  ctx.strokeStyle = '#12323a'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(padding, padding); ctx.lineTo(padding, h-padding); ctx.lineTo(w-padding, h-padding); ctx.stroke();
+  ctx.fillStyle='#9ad6e1'; ctx.font='12px monospace';
+  // draw points/lines
+  if(spec.type==='scatter' || spec.type==='bar'){
+    for(const p of pts){ const cx=tx(p.x), cy=ty(p.y); ctx.beginPath(); ctx.arc(cx,cy,4,0,Math.PI*2); ctx.fill(); }
+    if(spec.type==='bar'){
+      ctx.fillStyle='#7c3aed'; for(const p of pts){ const cx=tx(p.x), cy=ty(p.y); ctx.fillRect(cx-6, cy, 12, (h-padding)-cy); }
+    }
+  } else { // line
+    ctx.strokeStyle='#7c3aed'; ctx.lineWidth=2; ctx.beginPath();
+    pts.forEach((p,i)=>{ const cx=tx(p.x), cy=ty(p.y); if(i===0) ctx.moveTo(cx,cy); else ctx.lineTo(cx,cy); });
+    ctx.stroke();
+  }
+  // labels
+  ctx.fillStyle='#9fb3c8'; ctx.fillText(spec.x, padding, 14); ctx.fillText(spec.y, w-60, h-8);
+}
+
+// Save/load local state
+function saveState(){ localStorage.setItem('rd_dataset', JSON.stringify({dataset, columns})); }
+function loadState(){ try{ const j=JSON.parse(localStorage.getItem('rd_dataset')); if(j && j.dataset){ dataset=j.dataset; columns=j.columns; afterLoad(); } }catch(e){} }
+loadState();
+
+// Quick buttons
+document.querySelectorAll('[data-q]').forEach(btn=>btn.onclick = ()=>{ nlQuery.value = btn.dataset.q; askAI(); });
+
+document.getElementById('previewBtn').onclick = ()=> renderTable(100);
+document.getElementById('statsBtn').onclick = ()=> computeStats();
+document.getElementById('clear').onclick = ()=>{ if(confirm('Clear dataset?')){ dataset=[]; columns=[]; filename.textContent='Upload CSV or JSON'; rowsInfo.textContent='No data'; tableWrap.innerHTML=''; statsEl.innerHTML=''; analysis.textContent='No analysis yet.'; chartSpec.textContent='—'; outputs.innerHTML=''; saveState(); } };
+
+document.getElementById('new').onclick = ()=>{ if(confirm('Reset everything?')){ localStorage.removeItem('rd_dataset'); location.reload(); } };
+document.getElementById('export').onclick = ()=>{
+  const blob = new Blob([JSON.stringify({dataset,columns},null,2)],{type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'dataset_export.json'; a.click(); URL.revokeObjectURL(a.href);
+};
+
+// NL Query & local LLM integration
+const nlQuery = document.getElementById('nlQuery');
+document.getElementById('askBtn').onclick = askAI;
+function buildSystemPrompt(){
+  const cols = columns.join(', ');
+  const sample = dataset.slice(0,5).map(r=>JSON.stringify(r)).join('\\n');
+  return `You are a data analyst assistant. The dataset has columns: ${cols}. Here are up to 5 sample rows:\\n${sample}\\n\\nWhen user asks a question, produce two outputs separated by a line \"---SPEC---\":\\n1) A concise natural-language analysis answering the user. Keep it short (max 300 words). Include up to 3 bullet points and a short conclusion.\\n2) After the marker ---SPEC--- output a JSON object with keys: {\"type\":\"chart|table|none\",\"x\":\"columnName\",\"y\":\"columnName\",\"chartType\":\"line|bar|scatter\"} If no chart needed, set type=\"none\".\\nOnly output valid JSON after the marker.`;
+}
+
+async function askAI(){
+  if(!dataset.length){ alert('Load a dataset first'); return; }
+  const q = nlQuery.value.trim(); if(!q) return; analysis.textContent = 'Thinking…'; chartSpec.textContent='—';
+  const system = buildSystemPrompt();
+  const messages = [{role:'system', content: system},{role:'user', content: q}];
+  const preset = document.getElementById('presetServer').value;
+  const baseUrl = document.getElementById('baseUrl').value || 'http://localhost:1234';
+  const model = document.getElementById('model').value || 'llama-3-8b-instruct';
+  try{
+    const url = (preset==='lmstudio' ? baseUrl.replace(/\/$/,'') + '/v1/chat/completions' : baseUrl.replace(/\/$/,'') + '/api/chat');
+    const body = (preset==='lmstudio') ? JSON.stringify({model, messages, stream:false, max_tokens:800}) : JSON.stringify({model, messages, stream:false});
+    const res = await fetch(url, {method:'POST', headers: {'Content-Type':'application/json'}, body});
+    if(!res.ok){ const t = await res.text(); throw new Error('HTTP '+res.status+' — '+t); }
+    const j = await res.json();
+    // parse response text
+    let text = '';
+    if(j.choices && j.choices[0] && j.choices[0].message) text = j.choices[0].message.content;
+    else if(j.output && j.output[0] && j.output[0].content) text = j.output[0].content[0].text || JSON.stringify(j);
+    // split by marker
+    const parts = text.split('---SPEC---');
+    const nl = parts[0] ? parts[0].trim() : 'No analysis.';
+    analysis.textContent = nl;
+    let spec = null;
+    if(parts[1]){
+      try{ spec = JSON.parse(parts[1].trim()); }catch(e){
+        // try to extract JSON substring
+        const m = parts[1].match(/\\{[\\s\\S]*\\}/);
+        if(m) spec = JSON.parse(m[0]);
+      }
+    }
+    if(spec && spec.type && spec.type!=='none' && spec.x && spec.y){ drawChart(spec); } else { chartSpec.textContent = JSON.stringify(spec,null,2) || '—'; }
+    // save to outputs
+    const out = { id: Date.now(), query: q, analysis: nl, spec };
+    const el = document.createElement('div'); el.className='muted'; el.textContent = q; el.style.cursor='pointer';
+    el.onclick = ()=>{ analysis.textContent = out.analysis; chartSpec.textContent = JSON.stringify(out.spec||'—',null,2); if(out.spec && out.spec.type!=='none') drawChart(out.spec); };
+    outputs.prepend(el);
+  }catch(err){
+    analysis.textContent = 'Error: ' + err.message;
+  }
+}
+
+</script>
+</body>
+</html>

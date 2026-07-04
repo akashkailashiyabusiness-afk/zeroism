@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mind Mapper — Local AI Brainstorm</title>
+<style>
+:root{
+  --bg:#050a1a; --panel:#0b1224; --muted:#93a3b9; --text:#eaf2ff;
+  --accent:#06b6d4; --accent2:#7c3aed; --ok:#22c55e; --warn:#f59e0b;
+  --edge:#28435f; --node:#111a33; --nodeSel:#142a4f;
+}
+*{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 10% -10%,rgba(124,58,237,.15),transparent),linear-gradient(180deg,#040a18 0%,#070f21 100%);color:var(--text)}
+.app{display:grid;grid-template-columns:320px 1fr 360px;grid-template-rows:auto 1fr;gap:12px;height:100vh;padding:12px}
+.header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05)}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent2),#60a5fa);display:grid;place-items:center;font-weight:800}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{background:transparent;border:1px solid rgba(255,255,255,0.08);padding:8px 10px;border-radius:8px;color:var(--text);cursor:pointer}
+.btn.primary{background:var(--accent);border-color:transparent}
+.btn.ghost{border-color:transparent;background:rgba(255,255,255,0.06)}
+.input,select,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:var(--text)}
+.small{font-size:12px;color:var(--muted)}
+.section-title{font-weight:800;margin:6px 0 10px 0}
+.sidebar,.right{background:var(--panel);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.05);overflow:auto}
+.card{background:rgba(255,255,255,0.02);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);margin-bottom:10px}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04)}
+canvas-bg{}
+.canvas-wrap{position:relative;height:100%;border-radius:12px;border:1px solid rgba(255,255,255,0.05);overflow:hidden}
+svg{width:100%;height:100%;background-image:
+  radial-gradient(#0f1b33 1px, transparent 1px),
+  radial-gradient(#0f1b33 1px, transparent 1px);
+background-position: 0 0, 25px 25px; background-size: 50px 50px;}
+.edge{stroke:var(--edge);stroke-width:1.6px;opacity:0.9}
+.node{cursor:grab}
+.node rect{fill:var(--node);stroke:#1f355a;stroke-width:1.2px;rx:10;ry:10;filter:drop-shadow(0 4px 8px rgba(0,0,0,.25))}
+.node.selected rect{fill:var(--nodeSel);stroke:var(--accent)}
+.node text{fill:var(--text);font-size:12px;pointer-events:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,0.06);font-size:11px}
+.toolbar{position:absolute;left:12px;top:12px;display:flex;gap:6px;z-index:2}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#0d162c;border:1px solid rgba(255,255,255,0.08);padding:10px 14px;border-radius:10px;display:none}
+hr{border:none;border-top:1px solid rgba(255,255,255,0.06);margin:8px 0}
+kbd{padding:2px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.2);font-size:11px}
+@media(max-width:1100px){.app{grid-template-columns:1fr;grid-template-rows:auto 420px auto;}.right{order:3}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="brand">
+      <div class="logo">MM</div>
+      <div>
+        <div style="font-weight:800">Mind Mapper — Local AI Brainstorm</div>
+        <div class="small">Drag nodes • Expand with AI • Export outline • 100% offline (connect your local LLM)</div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="btn" id="btn-new-map">New Map</button>
+      <button class="btn" id="btn-export-json">Export JSON</button>
+      <button class="btn" id="btn-import-json">Import JSON</button>
+      <button class="btn" id="btn-export-md">Export Markdown</button>
+      <button class="btn" id="btn-export-png">Export PNG</button>
+      <button class="btn primary" id="btn-expand-ai">Expand with AI 🤖</button>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="section-title">Maps</div>
+    <div class="card">
+      <div style="display:flex;gap:8px">
+        <input id="map-title" class="input" placeholder="Map title (e.g., YouTube Ideas)" />
+        <button class="btn" id="save-map">Save</button>
+      </div>
+      <div id="maps-list" class="list" style="margin-top:8px"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Quick Add Node</div>
+      <input id="node-text" class="input" placeholder="Node text (Hindi/English okay)" />
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn" id="add-root">+ Root</button>
+        <button class="btn" id="add-child">+ Child of Selected</button>
+      </div>
+      <div class="small" style="margin-top:6px">Tip: Double‑click canvas to add node. Select a node, press <kbd>Del</kbd> to remove.</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Settings (Local LLM)</div>
+      <input id="baseUrl" class="input" placeholder="Base URL (e.g., http://localhost:1234)" />
+      <input id="model" class="input" placeholder="Model (e.g., llama-3)" style="margin-top:6px" />
+      <select id="aiStyle" class="input" style="margin-top:6px">
+        <option value="ideas">Expand: 6 new related ideas</option>
+        <option value="tasks">Expand: break into 5 tasks</option>
+        <option value="proscons">Expand: pros & cons</option>
+      </select>
+      <div class="small" style="margin-top:6px">Works with LM Studio (OpenAI API compatible) or any /v1/chat/completions server.</div>
+    </div>
+  </aside>
+
+  <!-- Canvas -->
+  <main class="canvas-wrap">
+    <div class="toolbar">
+      <button class="btn ghost" id="zoom-in">＋</button>
+      <button class="btn ghost" id="zoom-out">－</button>
+      <button class="btn ghost" id="center">Center</button>
+      <span class="badge" id="status">Ready</span>
+    </div>
+    <svg id="canvas" xmlns="http://www.w3.org/2000/svg"></svg>
+  </main>
+
+  <!-- Right: Assistant & Preview -->
+  <aside class="right">
+    <div class="section-title">AI Assistant</div>
+    <div class="card">
+      <div class="small">Selected node:</div>
+      <div id="sel-label" class="badge">none</div>
+      <textarea id="prompt" class="input" style="margin-top:8px;height:100px" placeholder="Ask AI about this map or node…"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn primary" id="ask-ai">Ask</button>
+        <button class="btn" id="stop-ai">Stop</button>
+      </div>
+      <div id="ai-answer" class="small" style="margin-top:8px;white-space:pre-wrap"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Markdown Preview</div>
+      <pre id="md-preview" class="small" style="max-height:320px;overflow:auto"></pre>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ==== State & storage ====
+const store = {
+  get(k,d){ try{return JSON.parse(localStorage.getItem(k)) ?? d}catch{return d}},
+  set(k,v){ localStorage.setItem(k, JSON.stringify(v)) }
+};
+let state = store.get('mindmap_v1', {
+  settings:{baseUrl:'http://localhost:1234', model:'llama-3-8b-instruct'},
+  maps:[], currentId:null, // list of {id,title,nodes,edges,cam}
+});
+function save(){ store.set('mindmap_v1', state); renderMapsList(); draw(); }
+
+// ==== Graph model ====
+/* node: {id, text, x, y}; edge: {id, from, to} */
+function current(){ return state.maps.find(m=>m.id===state.currentId) }
+function ensureMap(){
+  if(!current()){
+    const id = uid('map');
+    state.maps.push({id,title:'Untitled Map',nodes:[],edges:[],cam:{k:1,x:0,y:0}});
+    state.currentId = id;
+  }
+}
+function uid(p='id'){ return p+'_'+Date.now()+'_'+Math.floor(Math.random()*1e6) }
+
+// ==== UI helpers ====
+const $ = sel => document.querySelector(sel);
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none', 1500) }
+function setStatus(msg){ $("#status").textContent = msg }
+
+// ==== Render maps list ====
+function renderMapsList(){
+  const box = $("#maps-list"); box.innerHTML='';
+  state.maps.forEach(m=>{
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `<div><strong>${m.title}</strong><div class="small">${m.nodes.length} nodes</div></div>
+      <div><button class="btn" data-id="${m.id}">Open</button></div>`;
+    div.querySelector('button').onclick = ()=>{ state.currentId=m.id; $("#map-title").value=m.title; draw(); save(); };
+    box.appendChild(div);
+  });
+}
+renderMapsList();
+
+// ==== Canvas & drawing ====
+const svg = $("#canvas");
+let selection = null; // node id
+let dragging = null; // {id,dx,dy}
+let cam = {k:1,x:0,y:0};
+
+function draw(){
+  ensureMap();
+  const m = current();
+  if(!m) return;
+  cam = m.cam || {k:1,x:0,y:0};
+
+  // clear
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+  // group with transform for zoom/pan
+  const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.setAttribute('id','viewport');
+  g.setAttribute('transform', `translate(${cam.x},${cam.y}) scale(${cam.k})`);
+  svg.appendChild(g);
+
+  // edges
+  m.edges.forEach(e=>{
+    const a = m.nodes.find(n=>n.id===e.from), b = m.nodes.find(n=>n.id===e.to);
+    if(!a || !b) return;
+    const line = document.createElementNS('http://www.w3.org/2000/svg','path');
+    const x1=a.x+70, y1=a.y+24, x2=b.x+70, y2=b.y+24;
+    const d = `M${x1},${y1} C${x1},${(y1+y2)/2} ${x2},${(y1+y2)/2} ${x2},${y2}`;
+    line.setAttribute('d', d);
+    line.setAttribute('class','edge');
+    g.appendChild(line);
+  });
+
+  // nodes
+  m.nodes.forEach(n=>{
+    const node = document.createElementNS('http://www.w3.org/2000/svg','g');
+    node.setAttribute('class', 'node'+(selection===n.id?' selected':''));
+    node.setAttribute('data-id', n.id);
+    node.setAttribute('transform', `translate(${n.x},${n.y})`);
+
+    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('width','140'); rect.setAttribute('height','48');
+    node.appendChild(rect);
+
+    const label = document.createElementNS('http://www.w3.org/2000/svg','text');
+    label.setAttribute('x','70'); label.setAttribute('y','28'); label.setAttribute('text-anchor','middle');
+    label.textContent = n.text.length>40 ? n.text.slice(0,37)+'…' : n.text;
+    node.appendChild(label);
+
+    g.appendChild(node);
+  });
+
+  $("#sel-label").textContent = selection ? (current().nodes.find(n=>n.id===selection)?.text || 'none') : 'none';
+  updateMdPreview();
+}
+draw();
+
+// interaction: select/drag/add
+svg.addEventListener('mousedown', e=>{
+  const m=current(); if(!m) return;
+  const target = e.target.closest('.node');
+  if(target){
+    const id = target.getAttribute('data-id');
+    selection = id; draw();
+    // drag init
+    const n = m.nodes.find(x=>x.id===id);
+    const pt = eventToWorld(e);
+    dragging = {id, dx: n.x - pt.x, dy: n.y - pt.y};
+    svg.style.cursor='grabbing';
+  }else{
+    selection = null; draw();
+  }
+});
+svg.addEventListener('mousemove', e=>{
+  if(!dragging) return;
+  const m=current(); const n = m.nodes.find(x=>x.id===dragging.id);
+  const pt = eventToWorld(e);
+  n.x = Math.round(pt.x + dragging.dx);
+  n.y = Math.round(pt.y + dragging.dy);
+  draw(); // live redraw
+});
+window.addEventListener('mouseup', ()=>{ if(dragging){ dragging=null; svg.style.cursor=''; save(); }});
+
+// zoom controls
+$("#zoom-in").onclick = ()=>{ cam.k*=1.1; current().cam=cam; draw(); save(); }
+$("#zoom-out").onclick = ()=>{ cam.k/=1.1; current().cam=cam; draw(); save(); }
+$("#center").onclick = ()=>{ cam={k:1,x:svg.clientWidth/2-200,y:svg.clientHeight/2-100}; current().cam=cam; draw(); save(); }
+
+// double-click to add node
+svg.addEventListener('dblclick', e=>{
+  const pt = eventToWorld(e);
+  addNodeAt('New Node', pt.x-70, pt.y-24, selection);
+});
+function eventToWorld(e){
+  const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+  const ctm = svg.getScreenCTM().inverse(); const p = pt.matrixTransform(ctm);
+  // undo viewport transform
+  return {x:(p.x - cam.x)/cam.k, y:(p.y - cam.y)/cam.k};
+}
+
+// keyboard: delete node
+window.addEventListener('keydown', e=>{
+  if(e.key==='Delete' && selection){ removeNode(selection) }
+});
+
+// node ops
+function addNodeAt(text,x,y,parentId=null){
+  const m=current(); const id=uid('n');
+  m.nodes.push({id,text,x,y});
+  if(parentId){ m.edges.push({id:uid('e'), from:parentId, to:id}); }
+  selection = id; save(); setStatus('Node added');
+}
+function removeNode(id){
+  const m=current();
+  // remove children edges and optionally orphan nodes? keep nodes
+  m.edges = m.edges.filter(e=> e.from!==id && e.to!==id );
+  m.nodes = m.nodes.filter(n=> n.id!==id );
+  selection = null; save(); setStatus('Node deleted');
+}
+
+// quick add
+$("#add-root").onclick = ()=>{
+  const t = $("#node-text").value.trim() || 'New Root';
+  addNodeAt(t, 40 + Math.random()*120, 40 + Math.random()*120, null);
+  $("#node-text").value='';
+};
+$("#add-child").onclick = ()=>{
+  const t = $("#node-text").value.trim() || 'New Child';
+  const parent = selection;
+  addNodeAt(t, 200 + Math.random()*120, 40 + Math.random()*120, parent);
+  $("#node-text").value='';
+};
+
+// map save/new
+$("#save-map").onclick = ()=>{
+  ensureMap();
+  const m=current(); m.title = $("#map-title").value.trim() || 'Untitled Map';
+  save(); toast('Saved ✅');
+};
+$("#btn-new-map").onclick = ()=>{
+  const id = uid('map');
+  state.maps.push({id,title:'Untitled Map',nodes:[],edges:[],cam:{k:1,x:0,y:0}});
+  state.currentId=id; $("#map-title").value='Untitled Map'; save(); draw(); toast('New map ✨');
+};
+
+// ==== AI calls ====
+async function callLLM(prompt){
+  const base = $("#baseUrl").value || state.settings.baseUrl;
+  const model = $("#model").value || state.settings.model;
+  const url = base.replace(/\/$/,'') + '/v1/chat/completions';
+  const messages = [
+    {role:'system', content:'You are a creative brainstorming assistant. Reply in plain text, bullet lists when generating ideas. Keep it concise.'},
+    {role:'user', content: prompt}
+  ];
+  const body = {model, messages, temperature:0.8, max_tokens:600, stream:false};
+  const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  const j = await res.json();
+  return j.choices?.[0]?.message?.content?.trim() || '';
+}
+
+$("#ask-ai").onclick = async ()=>{
+  const m=current(); if(!m) return;
+  const sel = m.nodes.find(n=>n.id===selection);
+  const q = $("#prompt").value.trim() || (sel?`Give ideas about: ${sel.text}`:'Give ideas for this map');
+  $("#ai-answer").textContent = 'Thinking…';
+  try{
+    const text = await callLLM(q);
+    $("#ai-answer").textContent = text;
+  }catch(err){ $("#ai-answer").textContent = 'Error: '+err.message; }
+};
+
+$("#btn-expand-ai").onclick = async ()=>{
+  const m=current(); if(!m) return;
+  const sel = m.nodes.find(n=>n.id===selection);
+  if(!sel){ toast('Select a node first'); return; }
+  const style = $("#aiStyle").value;
+  let prompt = '';
+  if(style==='ideas') prompt = `Topic: "${sel.text}". Generate 6 short related ideas. One per line.`;
+  if(style==='tasks') prompt = `Break "${sel.text}" into 5 actionable tasks. One per line.`;
+  if(style==='proscons') prompt = `List pros and cons of "${sel.text}". Use 2 sections with bullets.`;
+  setStatus('AI expanding…');
+  try{
+    const out = await callLLM(prompt);
+    // split lines to children (simple parse)
+    const lines = out.split(/\r?\n/).map(s=>s.replace(/^\s*[-*\d\.\)]\s*/,'').trim()).filter(Boolean).slice(0,12);
+    const baseX = (sel.x||0) + 220, baseY = (sel.y||0) - 40;
+    lines.forEach((txt,i)=> addNodeAt(txt, baseX + (i%2)*180, baseY + Math.floor(i/2)*70, sel.id));
+    setStatus('Expanded ✅');
+  }catch(e){ toast('AI error: '+e.message); setStatus('Error'); }
+};
+
+// ==== Export / Import ====
+$("#btn-export-json").onclick = ()=>{
+  const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='mindmap_export.json'; a.click(); URL.revokeObjectURL(a.href);
+};
+$("#btn-import-json").onclick = ()=>{
+  const f = document.createElement('input'); f.type='file'; f.accept='application/json';
+  f.onchange = e=>{
+    const file = e.target.files[0]; const r=new FileReader();
+    r.onload = ()=>{ try{ state = JSON.parse(r.result); save(); toast('Imported ✅'); $("#map-title").value=current()?.title||''; }catch(err){ alert('Invalid file') } };
+    r.readAsText(file);
+  };
+  f.click();
+};
+
+// markdown outline
+function toMarkdown(){
+  const m=current(); if(!m) return '';
+  const children = (id)=> m.edges.filter(e=>e.from===id).map(e=>e.to);
+  const roots = m.nodes.filter(n=> !m.edges.some(e=>e.to===n.id));
+  let out='';
+  function dfs(id,depth){
+    const n = m.nodes.find(x=>x.id===id); if(!n) return;
+    out += `${'  '.repeat(depth)}- ${n.text}\n`;
+    children(id).forEach(ch=> dfs(ch, depth+1));
+  }
+  roots.forEach(r=> dfs(r,0));
+  return out;
+}
+function updateMdPreview(){ $("#md-preview").textContent = toMarkdown() }
+$("#btn-export-md").onclick = ()=>{
+  const md = toMarkdown();
+  const blob = new Blob([md],{type:'text/markdown'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='mindmap.md'; a.click(); URL.revokeObjectURL(a.href);
+};
+
+// export PNG
+$("#btn-export-png").onclick = ()=>{
+  const m = current(); if(!m) return;
+  const serializer = new XMLSerializer();
+  const g = document.getElementById('viewport').cloneNode(true);
+  const svgTmp = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svgTmp.setAttribute('xmlns','http://www.w3.org/2000/svg');
+  svgTmp.setAttribute('width','1200'); svgTmp.setAttribute('height','800');
+  svgTmp.appendChild(g);
+  g.setAttribute('transform','translate(40,40) scale(1)');
+  const data = serializer.serializeToString(svgTmp);
+  const img = new Image();
+  const canvas = document.createElement('canvas'); canvas.width=1400; canvas.height=900;
+  const ctx = canvas.getContext('2d');
+  img.onload = ()=>{
+    // bg
+    ctx.fillStyle = '#061127'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(img,0,0);
+    canvas.toBlob(b=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='mindmap.png'; a.click(); URL.revokeObjectURL(a.href); });
+  };
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(data);
+};
+
+// persist settings inputs
+$("#baseUrl").value = state.settings.baseUrl || '';
+$("#model").value = state.settings.model || '';
+["baseUrl","model"].forEach(id=>{
+  $("#"+id).addEventListener('change', ()=>{
+    state.settings[id] = $("#"+id).value; save();
+  });
+});
+
+// init center
+$("#center").click();
+setStatus('Ready');
+</script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osho: The Art of Awareness</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Playfair Display', 'Georgia', 'serif'],
+                    },
+                    colors: {
+                        osho: {
+                            maroon: '#7A1C1C',
+                            orange: '#D95D39',
+                            gold: '#D4AF37',
+                            dark: '#161212',
+                            cream: '#FDF8F5',
+                            card: '#241C1C'
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glow-hover:hover {
+            box-shadow: 0 0 20px rgba(217, 93, 57, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-osho-dark text-osho-cream font-sans antialiased selection:bg-osho-orange selection:text-white">
+
+    <!-- Load Shared Navigation -->
+    <script src="shared-navigation.js"></script>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <!-- Abstract background gradients -->
+        <div class="absolute inset-0 z-0">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-osho-maroon rounded-full mix-blend-screen filter blur-[100px] opacity-40 animate-pulse-slow"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-osho-orange rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-pulse-slow" style="animation-delay: 2s;"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-normal tracking-wide leading-tight mb-8">
+                Life is not a problem to be solved,<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-osho-orange to-osho-gold font-semibold italic">but a mystery to be lived.</span>
+            </h1>
+            <p class="mt-6 max-w-2xl mx-auto text-xl md:text-2xl text-osho-cream/70 font-light font-serif">
+                "Be — don't try to become."
+            </p>
+            <div class="mt-12 flex justify-center">
+                <a href="#awareness" class="group relative inline-flex items-center justify-center px-8 py-3 text-base font-semibold text-white transition-all duration-300 bg-osho-maroon border border-osho-orange/50 rounded-full hover:bg-osho-orange hover:shadow-[0_0_30px_rgba(217,93,57,0.4)] overflow-hidden">
+                    <span class="relative z-10 flex items-center gap-2 tracking-widest uppercase">
+                        Awaken
+                        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Philosophy Section -->
+    <section id="philosophy" class="py-24 bg-osho-dark relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <span class="text-osho-orange font-semibold tracking-widest uppercase text-sm">The Core Vision</span>
+                <h2 class="font-serif text-4xl md:text-5xl text-osho-cream mt-3 font-normal">Beyond the Mind</h2>
+                <div class="w-16 h-px bg-osho-gold mx-auto mt-6"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- Card 1 -->
+                <div class="bg-osho-card p-10 rounded-2xl border border-osho-maroon/20 glow-hover transition-all duration-500 group">
+                    <div class="w-12 h-12 mb-8 text-osho-orange group-hover:scale-110 transition-transform duration-500">
+                        <!-- Eye / Witness Icon -->
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </div>
+                    <h3 class="font-serif text-2xl text-osho-cream mb-4">The Witness</h3>
+                    <p class="text-osho-cream/60 leading-relaxed font-light">
+                        Meditation is not concentration; it is simple awareness. By stepping back and becoming a witness to your thoughts, emotions, and actions, you free yourself from their grip. You are the watcher on the hill.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-osho-card p-10 rounded-2xl border border-osho-maroon/20 glow-hover transition-all duration-500 group">
+                    <div class="w-12 h-12 mb-8 text-osho-orange group-hover:scale-110 transition-transform duration-500">
+                        <!-- Fire / Rebellion Icon -->
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z"></path></svg>
+                    </div>
+                    <h3 class="font-serif text-2xl text-osho-cream mb-4">Conscious Rebellion</h3>
+                    <p class="text-osho-cream/60 leading-relaxed font-light">
+                        A true rebel does not fight against society, but drops the conditioning of the past. They live according to their own light, shedding dogmas, beliefs, and borrowed knowledge to discover their own authentic truth.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-osho-card p-10 rounded-2xl border border-osho-maroon/20 glow-hover transition-all duration-500 group">
+                    <div class="w-12 h-12 mb-8 text-osho-orange group-hover:scale-110 transition-transform duration-500">
+                        <!-- Lotus/Flower Icon -->
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"></path></svg>
+                    </div>
+                    <h3 class="font-serif text-2xl text-osho-cream mb-4">Zorba the Buddha</h3>
+                    <p class="text-osho-cream/60 leading-relaxed font-light">
+                        The ultimate synthesis. Enjoy the earthly pleasures, dance, sing, and feast like Zorba the Greek, but remain silently centered, aware, and meditative like Gautama the Buddha. Material and spiritual are not divided.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Traits Section -->
+    <section id="traits" class="py-24 bg-[#110e0e] border-y border-osho-maroon/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <!-- Image side -->
+                <div class="lg:w-1/2 relative">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-osho-maroon to-osho-orange rounded-full filter blur-[80px] opacity-20 transform -translate-x-10 translate-y-10"></div>
+                    <!-- Using a serene, nature/meditative abstract image -->
+                    <img src="https://images.unsplash.com/photo-1518002054494-3a6f94352e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Serene meditation concept" class="relative rounded-t-full rounded-b-2xl shadow-2xl shadow-osho-maroon/10 object-cover h-[600px] w-full border border-osho-maroon/20 grayscale-[30%] sepia-[20%]">
+                </div>
+                
+                <!-- Content side -->
+                <div class="lg:w-1/2">
+                    <span class="text-osho-orange font-semibold tracking-widest uppercase text-sm">Inner Qualities</span>
+                    <h2 class="font-serif text-4xl md:text-5xl text-osho-cream mt-3 mb-8 font-normal">Traits of the <br><span class="text-osho-gold italic">New Man</span></h2>
+                    
+                    <div class="space-y-8">
+                        <div class="flex gap-6 group">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-12 h-12 rounded-full border border-osho-orange/30 flex items-center justify-center text-osho-orange group-hover:bg-osho-orange group-hover:text-white transition-all duration-300">
+                                    <span class="font-serif text-xl">1</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-2xl font-serif text-osho-cream mb-2 group-hover:text-osho-gold transition-colors">Total Acceptance (Tathata)</h4>
+                                <p class="text-osho-cream/60 font-light leading-relaxed">Saying 'yes' to existence. Dropping the constant struggle to improve, change, or fight the present moment. Recognizing that whatever is, is perfectly as it should be.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-6 group">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-12 h-12 rounded-full border border-osho-orange/30 flex items-center justify-center text-osho-orange group-hover:bg-osho-orange group-hover:text-white transition-all duration-300">
+                                    <span class="font-serif text-xl">2</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-2xl font-serif text-osho-cream mb-2 group-hover:text-osho-gold transition-colors">Playfulness (Leela)</h4>
+                                <p class="text-osho-cream/60 font-light leading-relaxed">Treating life not as a serious business or a test, but as a cosmic joke, a dance, a play. Taking oneself lightly allows true joy and creativity to flow naturally.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-6 group">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-12 h-12 rounded-full border border-osho-orange/30 flex items-center justify-center text-osho-orange group-hover:bg-osho-orange group-hover:text-white transition-all duration-300">
+                                    <span class="font-serif text-xl">3</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-2xl font-serif text-osho-cream mb-2 group-hover:text-osho-gold transition-colors">Living in the Here and Now</h4>
+                                <p class="text-osho-cream/60 font-light leading-relaxed">The past is a memory; the future is an imagination. The only reality is this very moment. Drawing all energy back from time and pouring it into the present.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Awareness Generator -->
+    <section id="awareness" class="py-32 bg-osho-dark text-center relative overflow-hidden">
+        <!-- Background mandala/circle hint -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-osho-maroon/10 rounded-full"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-osho-maroon/10 rounded-full"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-osho-maroon/10 rounded-full"></div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <h2 class="font-serif text-4xl md:text-5xl text-osho-cream font-normal mb-6">Daily <span class="text-osho-orange italic">Awareness</span></h2>
+            <p class="text-osho-cream/50 mb-12 font-light text-lg">Click the button to receive a moment of meditation for your day.</p>
+
+            <div class="bg-osho-card/80 backdrop-blur-sm border border-osho-maroon/30 rounded-3xl p-10 md:p-16 shadow-2xl relative min-h-[350px] flex flex-col items-center justify-center">
+                
+                <div id="quote-container" class="hidden w-full max-w-2xl mx-auto">
+                    <!-- Subtle quote icon -->
+                    <div class="flex justify-center mb-6 text-osho-maroon">
+                        <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+                    </div>
+                    
+                    <blockquote id="quote-text" class="text-2xl md:text-4xl font-serif text-osho-cream mb-8 leading-snug font-normal">
+                        <!-- Quote goes here -->
+                    </blockquote>
+                    
+                    <div class="w-12 h-px bg-osho-orange/50 mx-auto mb-8"></div>
+                    
+                    <p id="quote-action" class="text-osho-gold font-light tracking-wide text-lg">
+                        <!-- Action goes here -->
+                    </p>
+                </div>
+
+                <div id="initial-state">
+                    <button onclick="generateInsight()" class="group relative inline-flex items-center justify-center w-40 h-40 rounded-full border border-osho-orange/50 bg-osho-maroon/20 hover:bg-osho-orange/20 transition-all duration-700 ease-in-out focus:outline-none overflow-hidden">
+                        <!-- Ripple effect span -->
+                        <span class="absolute w-full h-full border border-osho-orange/30 rounded-full animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite]"></span>
+                        <span class="relative z-10 flex flex-col items-center gap-2 text-osho-cream group-hover:text-osho-gold transition-colors duration-300">
+                            <span class="font-serif tracking-widest uppercase text-sm">Drop the</span>
+                            <span class="font-serif tracking-widest uppercase text-sm">Mind</span>
+                        </span>
+                    </button>
+                </div>
+
+                <div id="new-quote-btn" class="hidden mt-12">
+                    <button onclick="generateInsight()" class="text-osho-cream/40 hover:text-osho-orange transition-colors text-sm tracking-widest uppercase font-light border-b border-transparent hover:border-osho-orange pb-1">
+                        Draw another insight
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-osho-dark py-10 border-t border-osho-maroon/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center">
+            <svg class="w-8 h-8 text-osho-maroon mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10c0 1.93-.55 3.73-1.5 5.25" />
+                <circle cx="12" cy="12" r="3" fill="currentColor" class="opacity-50"/>
+            </svg>
+            <p class="text-osho-cream/40 font-light text-sm mb-2">&copy; 2026 The Pathless Path. For educational and meditative purposes.</p>
+            <p class="text-osho-cream/30 text-xs font-serif italic">"Truth is not something outside to be discovered, it is something inside to be realized."</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        const insightsData = [
+            {
+                quote: "If you love a flower, don’t pick it up. Because if you pick it up it dies and it ceases to be what you love. So if you love a flower, let it be.",
+                action: "Meditation: Practice loving without possessing today. Appreciate someone or something without demanding anything from them."
+            },
+            {
+                quote: "Life is a balance between rest and movement.",
+                action: "Meditation: Notice your physical tension right now. Drop your shoulders, take a deep breath, and do nothing at all for exactly one minute."
+            },
+            {
+                quote: "To avoid pain, you avoid pleasure. To avoid death, you avoid life.",
+                action: "Meditation: Embrace total vulnerability today. Allow yourself to fully feel whatever emotion arises, without trying to push it away."
+            },
+            {
+                quote: "Experience life in all possible ways—good-bad, bitter-sweet, dark-light, summer-winter. Experience all the dualities.",
+                action: "Meditation: Step out of your routine. Do one thing today that breaks your normal pattern, just to experience the freshness of the unknown."
+            },
+            {
+                quote: "Sadness gives depth. Happiness gives height. Sadness gives roots. Happiness gives branches.",
+                action: "Meditation: Stop labeling your current mood as 'good' or 'bad'. Simply witness it like passing clouds in the sky."
+            },
+            {
+                quote: "Truth is not to be found outside. No teacher, no scripture can give it to you. It is inside you and if you wish to attain it, seek your own company.",
+                action: "Meditation: Spend 10 minutes in absolute silence today. No phone, no music, no books. Just sit with yourself."
+            },
+            {
+                quote: "Be realistic: Plan for a miracle.",
+                action: "Meditation: Drop your logical, calculating mind for the next hour. Approach your tasks with the playfulness and wonder of a child."
+            }
+        ];
+
+        let lastIndex = -1;
+
+        function generateInsight() {
+            const container = document.getElementById('quote-container');
+            const initialState = document.getElementById('initial-state');
+            const quoteText = document.getElementById('quote-text');
+            const quoteAction = document.getElementById('quote-action');
+            const newQuoteBtn = document.getElementById('new-quote-btn');
+
+            // Add exit animation if it's already showing
+            if (!container.classList.contains('hidden')) {
+                container.classList.remove('fade-in-up');
+                container.style.opacity = '0';
+                
+                setTimeout(() => {
+                    updateContent();
+                }, 300); // Wait for fade out
+            } else {
+                initialState.style.opacity = '0';
+                setTimeout(() => {
+                    initialState.classList.add('hidden');
+                    container.classList.remove('hidden');
+                    newQuoteBtn.classList.remove('hidden');
+                    updateContent();
+                }, 300);
+            }
+
+            function updateContent() {
+                // Pick random quote, ensuring it's not the same
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * insightsData.length);
+                } while (newIndex === lastIndex && insightsData.length > 1);
+                
+                lastIndex = newIndex;
+                const selection = insightsData[newIndex];
+
+                // Update DOM
+                quoteText.innerHTML = `"${selection.quote}"`;
+                quoteAction.innerHTML = selection.action;
+
+                // Add animation
+                container.style.opacity = '1';
+                container.classList.add('fade-in-up');
+            }
+        }
+    </script>
+</body>
+</html>

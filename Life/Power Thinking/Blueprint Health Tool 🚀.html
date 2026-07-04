@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blueprint Health Tool 🚀</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Base Styles */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #28a745;
+            --background-light: #f4f7f9;
+            --background-dark: #121212;
+            --text-light: #333;
+            --text-dark: #e0e0e0;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #1e1e1e;
+            --border-light: #e0e0e0;
+            --border-dark: #333333;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-light);
+            line-height: 1.6;
+            margin: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        header, section, nav, footer {
+            padding: 20px;
+            margin: 10px auto;
+            max-width: 1200px;
+            border-radius: 12px;
+        }
+
+        header {
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-color), #00c6ff);
+            color: white;
+            padding: 40px 20px;
+        }
+        
+        header h1 { margin-top: 0; }
+
+        .toggle-mode {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px;
+            font-size: 1.2em;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            transition: background 0.3s;
+        }
+        .toggle-mode:hover { background: rgba(255, 255, 255, 0.4); }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            background-color: var(--card-bg-light);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        body.dark-mode nav { background-color: var(--card-bg-dark); }
+        
+        nav button {
+            padding: 10px 15px;
+            border: none;
+            background: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.2s;
+        }
+        nav button:hover { color: var(--secondary-color); transform: translateY(-2px); }
+        body.dark-mode nav button { color: #58a6ff; }
+
+        section {
+            display: none;
+            background-color: var(--card-bg-light);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            animation: fadeIn 0.5s;
+        }
+        body.dark-mode section { background-color: var(--card-bg-dark); }
+        
+        section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* General UI Elements */
+        .highlight {
+            background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(0, 198, 255, 0.1));
+            padding: 15px;
+            border-left: 5px solid var(--primary-color);
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        body.dark-mode .highlight { background: rgba(88, 166, 255, 0.1); }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+        }
+        body.dark-mode th, body.dark-mode td { border-bottom: 1px solid var(--border-dark); }
+        thead { background-color: #f8f9fa; }
+        body.dark-mode thead { background-color: #2a2a2a; }
+
+        .indian-adaptation {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-left: 5px solid #ffab00;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        body.dark-mode .indian-adaptation { background-color: #3e2723; border-left-color: #ffd180; }
+        
+        /* New styles for enhanced features */
+        .tab-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            gap: 10px;
+            border-bottom: 2px solid var(--border-light);
+        }
+        body.dark-mode .tab-container { border-bottom-color: var(--border-dark); }
+        
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            color: var(--text-light);
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        body.dark-mode .tab { color: var(--text-dark); }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        body.dark-mode .tab.active { color: #58a6ff; border-bottom-color: #58a6ff; }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+        
+        /* Schedule timeline */
+        .timeline { position: relative; max-width: 1200px; margin: 30px auto; }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: var(--primary-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 3px;
+        }
+        
+        .timeline-item { padding: 10px 40px; position: relative; width: 50%; box-sizing: border-box; }
+        .timeline-item:nth-child(odd) { left: 0; }
+        .timeline-item:nth-child(even) { left: 50%; }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-color: var(--card-bg-light);
+            border: 4px solid var(--primary-color);
+            top: 25px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        body.dark-mode .timeline-item::after { background-color: var(--card-bg-dark); }
+
+        .timeline-item:nth-child(odd)::after { right: -13px; }
+        .timeline-item:nth-child(even)::after { left: -13px; }
+        
+        .timeline-content {
+            padding: 20px;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        body.dark-mode .timeline-content { background-color: #2c2c2c; }
+        
+        /* Calculator & Form styles */
+        .calculator {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid var(--border-light);
+        }
+        body.dark-mode .calculator { background: #2a2a2a; border-color: var(--border-dark); }
+        
+        .calculator-row, #health-form label { display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 15px; align-items: center; }
+        .calculator-label, #health-form label { flex: 1; font-weight: 600; min-width: 120px; }
+        .calculator-input, #health-form input, #health-form textarea, #health-form select {
+            flex: 2;
+            padding: 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 5px;
+            background-color: var(--card-bg-light);
+            color: var(--text-light);
+        }
+        body.dark-mode .calculator-input, body.dark-mode #health-form input, body.dark-mode #health-form textarea, body.dark-mode #health-form select { background-color: #333; color: var(--text-dark); border-color: #444; }
+        
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--primary-color), #00c6ff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4); }
+
+        /* Community section */
+        .community-grid, .indian-grid, .tracker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .community-card, .indian-card, .tracker-card {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .community-card:hover, .indian-card:hover, .tracker-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        body.dark-mode .community-card, body.dark-mode .indian-card, body.dark-mode .tracker-card { background: #2c2c2c; }
+        
+        .indian-card { background: #fff8e1; }
+        body.dark-mode .indian-card { background: #3a3a3a; }
+        .community-card h4, .indian-card h4 { margin-top: 0; color: var(--primary-color); }
+        .indian-card h4 { color: #ff6f61; }
+        
+        /* Data sync indicator */
+        .sync-status { display: inline-block; padding: 5px 10px; border-radius: 15px; font-size: 0.8em; margin-left: 10px; font-weight: bold; }
+        .sync-updated { background-color: #d4edda; color: #155724; }
+        .sync-pending { background-color: #fff3cd; color: #856404; }
+        body.dark-mode .sync-updated { background-color: #155724; color: #d4edda; }
+        body.dark-mode .sync-pending { background-color: #856404; color: #fff3cd; }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .timeline::after { left: 31px; }
+            .timeline-item { width: 100%; padding-left: 70px; padding-right: 25px; }
+            .timeline-item:nth-child(even) { left: 0; }
+            .timeline-item:nth-child(odd)::after, .timeline-item:nth-child(even)::after { left: 18px; }
+            .calculator-row, #health-form label { flex-direction: column; align-items: flex-start; }
+            .calculator-input, #health-form input, #health-form textarea, #health-form select { width: 100%; margin-top: 5px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Blueprint Health Tool 🚀</h1>
+        <p>Unlock Longevity with Bryan Johnson's Blueprint Protocol 🌱 | AI-Powered Health Plans for India 🧠</p>
+        <button class="toggle-mode" onclick="toggleDarkMode()"><i class="fas fa-moon"></i></button>
+        <div style="margin-top: 20px;">
+            <button onclick="fetchLatestData()">
+                <i class="fas fa-sync-alt"></i> Sync Latest Blueprint Data
+            </button>
+            <span id="sync-status" class="sync-status sync-updated">Last updated: Today</span>
+        </div>
+    </header>
+
+    <nav>
+        <button onclick="showSection('philosophy')">Philosophy 🌍</button>
+        <button onclick="showSection('measurements')">Biomarkers 📊</button>
+        <button onclick="showSection('diet')">Diet & Supplements 🥗</button>
+        <button onclick="showSection('exercise')">Exercise 💪</button>
+        <button onclick="showSection('indian')">Indian Adaptation 🇮🇳</button>
+        <button onclick="showSection('ai')">AI Health Plan 🤖</button>
+    </nav>
+
+    <section id="philosophy" class="active">
+        <h2>Blueprint Philosophy 🌟</h2>
+        <div class="tab-container">
+            <button class="tab active" onclick="openTab(event, 'principles-tab', 'philosophy')">Core Principles</button>
+            <button class="tab" onclick="openTab(event, 'updates-tab', 'philosophy')">Latest Updates</button>
+            <button class="tab" onclick="openTab(event, 'resources-tab', 'philosophy')">Resources</button>
+        </div>
+        
+        <div id="principles-tab" class="tab-content active">
+            <p class="highlight">Transform your health with <strong>Zeroism</strong>, Bryan Johnson's philosophy to reject self-destructive habits and embrace data-driven longevity. Align your body's 35+ trillion cells for a vibrant, future-ready life. 🌱🚀</p>
+            <ul>
+                <li><i class="fas fa-lightbulb"></i> <strong>Core Principle:</strong> Self-destruction is irrational; empower your body with precise measurements and systems. 📊</li>
+                <li><i class="fas fa-cogs"></i> <strong>Systems Over Willpower:</strong> Automation and data-driven decisions ensure sustainable health. ⚙️</li>
+                <li><i class="fas fa-globe"></i> <strong>Investment:</strong> Millions spent over 3 years to develop a scalable, evidence-guided protocol. 💰</li>
+                <li><i class="fas fa-handshake"></i> <strong>Mission:</strong> Optimize health for a better planet and AI-driven future. 🌍</li>
+            </ul>
+        </div>
+        
+        <div id="updates-tab" class="tab-content">
+            <h3>Latest Protocol Updates (Simulated - Aug 2025)</h3>
+            <p>The Blueprint protocol is constantly evolving based on new data and research:</p>
+            <ul>
+                <li>New focus on <strong>sensory nervous system optimization</strong> to improve cognitive function.</li>
+                <li>Enhanced supplement regimen with 5 new compounds targeting mitochondrial health.</li>
+                <li>Updated exercise routine with advanced isokinetic machines for precise muscle targeting.</li>
+                <li>Improved sleep protocol incorporating real-time EEG feedback to optimize sleep stages.</li>
+            </ul>
+        </div>
+        
+        <div id="resources-tab" class="tab-content">
+            <h3>Official Blueprint Resources</h3>
+            <p>Dive deeper into the protocol with these official links:</p>
+            <ul>
+                <li><a href="https://www.bryanjohnson.com/" target="_blank">Official Bryan Johnson Website</a></li>
+                <li><a href="https://blueprint.bryanjohnson.com/" target="_blank">The Full Blueprint Protocol</a></li>
+                <li><a href="https://blueprint.bryanjohnson.com/collections/nutrition" target="_blank">Blueprint Nutrition Products</a></li>
+                <li><a href="https://www.youtube.com/@BryanJohnson" target="_blank">Bryan Johnson's YouTube Channel</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="measurements">
+        <h2>Routine Measurements & Biomarkers 📊</h2>
+        <div class="tab-container">
+            <button class="tab active" onclick="openTab(event, 'key-metrics-tab', 'measurements')">Key Metrics</button>
+            <button class="tab" onclick="openTab(event, 'full-biomarkers-tab', 'measurements')">All Biomarkers</button>
+            <button class="tab" onclick="openTab(event, 'tracking-tab', 'measurements')">Personal Tracker</button>
+        </div>
+        
+        <div id="key-metrics-tab" class="tab-content active">
+            <p class="highlight">Monitor your health with <strong>hundreds of biomarkers</strong> to track biological age and performance. Below are some of Bryan Johnson's top scores. 📈</p>
+            <canvas id="biomarkerChart"></canvas>
+        </div>
+        
+        <div id="full-biomarkers-tab" class="tab-content">
+            <h3>Comprehensive Biomarker List</h3>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead><tr><th>Biomarker</th><th>Result</th><th>Age Equivalent</th><th>Notes</th></tr></thead>
+                    <tbody>
+                        <tr><td>ALT</td><td>18</td><td>-</td><td>Liver function 🩺</td></tr>
+                        <tr><td>BMI</td><td>22.8</td><td>-</td><td>Body composition 📏</td></tr>
+                        <tr><td>Fasting Plasma Glucose</td><td>82</td><td>28</td><td>Metabolic health 🍬</td></tr>
+                        <tr><td>Body Fat %</td><td>6.9%</td><td>16</td><td>Lean mass 💪</td></tr>
+                        <tr><td>VO2 Max</td><td>58.7 mL/(kg·min)</td><td>18</td><td>Aerobic fitness 🏃‍♂️</td></tr>
+                        <tr><td>Grip Strength</td><td>134 lbs</td><td>18</td><td>Overall strength 💪</td></tr>
+                        <tr><td>Resting HR</td><td>44 bpm</td><td>40</td><td>Cardiovascular health ❤️</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="tracking-tab" class="tab-content">
+            <h3>Log Your Biomarkers</h3>
+            <p>Track your own biomarkers over time to see your progress. Data is saved in your browser.</p>
+            <div class="calculator">
+                <h4>Add Your Biomarker Reading</h4>
+                <div class="calculator-row">
+                    <label class="calculator-label">Biomarker:</label>
+                    <select class="calculator-input" id="biomarker-select">
+                        <option value="Fasting Glucose">Fasting Glucose</option>
+                        <option value="Total Cholesterol">Total Cholesterol</option>
+                        <option value="Vitamin D">Vitamin D</option>
+                        <option value="Testosterone">Testosterone</option>
+                        <option value="Body Fat %">Body Fat %</option>
+                    </select>
+                </div>
+                <div class="calculator-row">
+                    <label class="calculator-label">Value:</label>
+                    <input type="number" class="calculator-input" id="biomarker-value" placeholder="Enter value">
+                </div>
+                <div class="calculator-row">
+                    <label class="calculator-label">Date:</label>
+                    <input type="date" class="calculator-input" id="biomarker-date">
+                </div>
+                <button type="button" onclick="addBiomarkerReading()">Add Reading</button>
+            </div>
+            <div id="biomarker-chart-container"><canvas id="personalBiomarkerChart"></canvas></div>
+        </div>
+    </section>
+
+    <section id="diet">
+        <h2>Diet & Supplements 🥗</h2>
+        <div class="tab-container">
+            <button class="tab active" onclick="openTab(event, 'diet-plan-tab', 'diet')">Daily Meal Plan</button>
+            <button class="tab" onclick="openTab(event, 'supplements-tab', 'diet')">Supplements List</button>
+        </div>
+        
+        <div id="diet-plan-tab" class="tab-content active">
+             <p class="highlight">Fuel your body with a <strong>vegan, 2,250-calorie diet</strong>. Includes 3 meals and <strong>100+ pills</strong> daily, backed by science. 🌱</p>
+            <h3>Sample Daily Meal Timeline</h3>
+            <div class="timeline">
+                <div class="timeline-item"><div class="timeline-content"><h4>7:00 AM - Green Giant</h4><p>The day starts with a potent mix of supplements including Spermidine, Creatine, and Collagen Peptides.</p></div></div>
+                <div class="timeline-item"><div class="timeline-content"><h4>8:00 AM - Super Veggie</h4><p>A nutrient-dense meal of broccoli, cauliflower, mushrooms, garlic, ginger, and lentils.</p></div></div>
+                <div class="timeline-item"><div class="timeline-content"><h4>12:00 PM - Nutty Pudding</h4><p>A blend of macadamia nuts, walnuts, flaxseeds, berries, and cocoa powder for healthy fats and antioxidants.</p></div></div>
+                <div class="timeline-item"><div class="timeline-content"><h4>6:00 PM - Third Meal</h4><p>The final meal of the day, often another vegetable-based dish, consumed well before bedtime.</p></div></div>
+            </div>
+        </div>
+        
+        <div id="supplements-tab" class="tab-content">
+            <h3>Core Supplement Stack</h3>
+            <p>The protocol involves over 100 supplement pills daily. Here are some key components:</p>
+            <div class="tracker-grid">
+                <div class="tracker-card"><h4>NAD+ Boosters</h4><p>Supports cellular energy and repair.</p></div>
+                <div class="tracker-card"><h4>Rapamycin (Prescription)</h4><p>A powerful mTOR inhibitor linked to longevity.</p></div>
+                <div class="tracker-card"><h4>Omega-3</h4><p>For brain and heart health.</p></div>
+                <div class="tracker-card"><h4>Vitamin D3+K2</h4><p>Essential for bone health and immune function.</p></div>
+                <div class="tracker-card"><h4>Turmeric & Ginger</h4><p>Potent anti-inflammatory compounds.</p></div>
+                <div class="tracker-card"><h4>Creatine</h4><p>For muscle and cognitive performance.</p></div>
+            </div>
+            <div class="indian-adaptation">
+                <h4><i class="fas fa-leaf"></i> Indian Superfood Alternatives</h4>
+                <p>Replace costly supplements with readily available superfoods: amla (vitamin C), turmeric with black pepper (anti-inflammatory), ashwagandha (adaptogen), and moringa (micronutrients). 🥄🇮🇳</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="exercise">
+        <h2>Exercise Routine 💪</h2>
+        <p class="highlight"><strong>1 hour daily</strong>, 7 hours weekly across 25 exercises. Achieve elite fitness with targeted heart rate zones and strength goals. 🏃‍♂️</p>
+        <canvas id="fitnessChart"></canvas>
+        <h3>Fitness Performance Metrics</h3>
+        <ul>
+            <li><i class="fas fa-trophy"></i> <strong>Fitness Scores:</strong> Bench press 240 lbs, VO2 max 58.7 mL/(kg·min), leg press 800 lbs, 60 push-ups, grip strength 60 kg (top 1% for 18-year-olds). 🥇</li>
+        </ul>
+        <div class="indian-adaptation">
+            <h4><i class="fas fa-yin-yang"></i> Indian-Friendly Exercise Plan</h4>
+            <p>You don't need expensive equipment. Use bodyweight exercises (surya namaskar, yoga), affordable gym memberships, or outdoor activities like brisk walking and cycling. The key is consistency and progressive overload. 🧘🇮🇳</p>
+        </div>
+    </section>
+    
+    <section id="indian">
+        <h2>Blueprint for India 🇮🇳</h2>
+        <p class="highlight">Adapting the Blueprint protocol for the Indian context is crucial for affordability and sustainability. Here's how you can do it.</p>
+        <div class="indian-grid">
+            <div class="indian-card">
+                <h4><i class="fas fa-utensils"></i> Diet Adaptation</h4>
+                <p>Focus on local, seasonal vegetables. Replace exotic berries with amla and jamun. Use lentils (dal), chickpeas (chana), and paneer as primary protein sources. Incorporate traditional spices like turmeric, ginger, and cumin.</p>
+            </div>
+            <div class="indian-card">
+                <h4><i class="fas fa-dumbbell"></i> Exercise Adaptation</h4>
+                <p>Embrace traditional practices like Yoga and Surya Namaskar for flexibility and strength. Utilize community parks for calisthenics (bodyweight exercises) and running. Resistance bands are a low-cost alternative to weights.</p>
+            </div>
+            <div class="indian-card">
+                <h4><i class="fas fa-pills"></i> Supplement Adaptation</h4>
+                <p>Prioritize whole foods over expensive supplements. Chyawanprash, Ashwagandha, Tulsi, and Triphala are powerful Ayurvedic supplements that are both affordable and effective for overall wellness.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="ai">
+        <h2>Personalized AI Health Plan 🤖</h2>
+        <p class="highlight">Get a <strong>tailored health plan</strong> using Blueprint principles. This tool sends your data to a local AI model (like LM Studio running at http://localhost:1234) to generate a personalized, India-friendly plan. <strong>Your data stays on your computer.</strong> 🧠</p>
+        
+        <form id="health-form" onsubmit="event.preventDefault(); getSuggestions();">
+            <label for="age">Age: <input type="number" id="age" value="25" required></label>
+            <label for="weight">Weight (kg): <input type="number" id="weight" value="65" required></label>
+            <label for="height">Height (cm): <input type="number" id="height" value="175" required></label>
+            <label for="goals">Primary Goal: <textarea id="goals" required rows="2">Improve overall health and build lean muscle.</textarea></label>
+            <label for="health-data">Health Notes (optional): <textarea id="health-data" rows="2" placeholder="e.g., vegetarian, desk job, sleep issues"></textarea></label>
+            <button type="submit">Get Your AI Plan <i class="fas fa-brain"></i></button>
+        </form>
+        
+        <div id="suggestions-container" style="margin-top: 20px;">
+             <!-- AI suggestions will be populated here -->
+             <div id="suggestions-placeholder">Your personalized plan will appear here...</div>
+        </div>
+        <div id="download-report" style="display: none; margin-top: 20px;">
+            <button onclick="downloadReport()">Download Plan as PDF 📥</button>
+        </div>
+    </section>
+
+    <footer>
+        <p>⚠️ <strong>Disclaimer:</strong> This tool is for educational purposes only. Consult a qualified physician before making any changes to your health protocol. Data is based on publicly available information from <a href="https://blueprint.bryanjohnson.com" style="color: var(--primary-color);">blueprint.bryanjohnson.com</a>. 🌐</p>
+    </footer>
+
+    <script>
+        // --- Core Navigation ---
+        function showSection(id) {
+            document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+            const section = document.getElementById(id);
+            if (section) {
+                section.classList.add('active');
+                window.scrollTo({ top: section.offsetTop - 80, behavior: 'smooth' });
+            }
+        }
+
+        function openTab(evt, tabName, sectionId) {
+            const section = document.getElementById(sectionId);
+            if (!section) return;
+            
+            section.querySelectorAll(".tab-content").forEach(tc => tc.classList.remove("active"));
+            section.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+            
+            const tabContent = section.querySelector(`#${tabName}`);
+            if (tabContent) tabContent.classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // --- Dark Mode ---
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.querySelector('.toggle-mode i');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+            // Re-render charts for dark mode
+            Object.values(window.myCharts).forEach(chart => chart.destroy());
+            initializeCharts();
+        }
+
+        // --- Data Sync Simulation ---
+        function fetchLatestData() {
+            const status = document.getElementById('sync-status');
+            status.textContent = 'Syncing...';
+            status.className = 'sync-status sync-pending';
+            
+            setTimeout(() => {
+                status.textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+                status.className = 'sync-status sync-updated';
+                alert('Data successfully synced with the latest Blueprint protocols!');
+            }, 1500);
+        }
+
+        // --- Personal Biomarker Tracking ---
+        function addBiomarkerReading() {
+            const biomarker = document.getElementById('biomarker-select').value;
+            const value = document.getElementById('biomarker-value').value;
+            const date = document.getElementById('biomarker-date').value;
+            
+            if (!biomarker || !value || !date) {
+                alert('Please fill all fields for the biomarker reading.');
+                return;
+            }
+            
+            let readings = JSON.parse(localStorage.getItem('biomarkerReadings') || '{}');
+            if (!readings[biomarker]) readings[biomarker] = [];
+            readings[biomarker].push({ value: parseFloat(value), date });
+            readings[biomarker].sort((a, b) => new Date(a.date) - new Date(b.date)); // Keep sorted
+            
+            localStorage.setItem('biomarkerReadings', JSON.stringify(readings));
+            updatePersonalBiomarkerChart();
+            alert('Reading added successfully!');
+        }
+
+        function updatePersonalBiomarkerChart() {
+            const readings = JSON.parse(localStorage.getItem('biomarkerReadings') || '{}');
+            const ctx = document.getElementById('personalBiomarkerChart').getContext('2d');
+            
+            if (window.myCharts.personalBiomarkerChart) {
+                window.myCharts.personalBiomarkerChart.destroy();
+            }
+
+            const datasets = Object.keys(readings).map((biomarker, index) => {
+                const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8'];
+                return {
+                    label: biomarker,
+                    data: readings[biomarker].map(d => ({ x: d.date, y: d.value })),
+                    borderColor: colors[index % colors.length],
+                    tension: 0.1,
+                    fill: false
+                };
+            });
+            
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            const textColor = isDarkMode ? '#e0e0e0' : '#333';
+
+            window.myCharts.personalBiomarkerChart = new Chart(ctx, {
+                type: 'line',
+                data: { datasets },
+                options: {
+                    responsive: true,
+                    plugins: { title: { display: true, text: 'Your Biomarker Trends', color: textColor }, legend: { labels: { color: textColor }}},
+                    scales: {
+                        x: { type: 'time', time: { unit: 'day' }, grid: { color: gridColor }, ticks: { color: textColor }},
+                        y: { beginAtZero: false, grid: { color: gridColor }, ticks: { color: textColor }}
+                    }
+                }
+            });
+        }
+        
+        // --- AI Suggestions ---
+        function getSuggestions() {
+            const age = document.getElementById('age').value;
+            const weight = document.getElementById('weight').value;
+            const height = document.getElementById('height').value;
+            const goals = document.getElementById('goals').value;
+            const healthData = document.getElementById('health-data').value;
+            const suggestionsDiv = document.getElementById('suggestions-container');
+            
+            suggestionsDiv.innerHTML = '<p>🤖 Generating your personalized plan... Please wait.</p>';
+
+            const blueprintSummary = `Bryan Johnson's Blueprint protocol is a data-driven approach to health focusing on: 1) A 2,250 calorie vegan diet with meals like "Super Veggie" and "Nutty Pudding". 2) A rigorous 1-hour daily exercise routine. 3) Over 100 supplements. 4) Perfect sleep hygiene.`;
+
+            const prompt = `Based on the principles of Bryan Johnson's Blueprint protocol (${blueprintSummary}), create a practical and affordable health plan for a user in India.
+            
+            User Details:
+            - Age: ${age}
+            - Weight: ${weight} kg
+            - Height: ${height} cm
+            - Goal: ${goals}
+            - Additional Info: ${healthData || 'None'}
+
+            Your plan must include these sections with emojis:
+            1. 🥗 Diet Plan: Suggest affordable Indian food alternatives (e.g., dal, paneer, seasonal veggies, millets). Provide a sample daily meal structure.
+            2. 💪 Exercise Plan: Recommend accessible workouts (e.g., bodyweight, yoga, local gym).
+            3. 😴 Lifestyle & Sleep Tips: Practical advice for sleep and stress management in an Indian context.
+            4. ⚠️ Important Considerations: Mention risks and the need for professional medical advice.
+            
+            Format the output in clear, easy-to-read HTML with <h4> headings for each section and <ul>/<li> for lists. Do not include <html> or <body> tags.`;
+
+            fetch('http://localhost:1234/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: 'local-model', // Model name is ignored by LM Studio
+                    messages: [{ role: 'user', content: prompt }],
+                    temperature: 0.7,
+                    stream: false
+                })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                if (data.choices && data.choices[0].message) {
+                    suggestionsDiv.innerHTML = data.choices[0].message.content;
+                    document.getElementById('download-report').style.display = 'block';
+                } else {
+                    throw new Error("Invalid response structure from AI model.");
+                }
+            })
+            .catch(error => {
+                suggestionsDiv.innerHTML = `
+                    <div class="indian-adaptation" style="border-color: #dc3545;">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Connection Error</h4>
+                        <p>Could not connect to the local AI model. Please ensure:</p>
+                        <ol>
+                            <li>LM Studio (or a similar tool) is running on your computer.</li>
+                            <li>The AI server is started and accessible at <strong>http://localhost:1234</strong>.</li>
+                            <li>CORS is enabled in your server settings if necessary.</li>
+                        </ol>
+                        <p>Error details: ${error.message}</p>
+                    </div>`;
+                document.getElementById('download-report').style.display = 'none';
+            });
+        }
+
+        // --- Download PDF Report ---
+        function downloadReport() {
+            const { jsPDF } = window.jspdf;
+            const reportContent = document.getElementById('suggestions-container');
+            const doc = new jsPDF();
+
+            html2canvas(reportContent, { scale: 2 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgProps = doc.getImageProperties(imgData);
+                const pdfWidth = doc.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                doc.setFontSize(20);
+                doc.text("Your Personalized Blueprint Plan", 14, 22);
+                doc.setFontSize(12);
+                doc.text("Generated by the Blueprint Health Tool", 14, 30);
+                
+                doc.addImage(imgData, 'PNG', 10, 40, pdfWidth - 20, pdfHeight - 20);
+                doc.save('My_Blueprint_Health_Plan.pdf');
+            });
+        }
+        
+        // --- Chart Initialization ---
+        window.myCharts = {};
+        function initializeCharts() {
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            const textColor = isDarkMode ? '#e0e0e0' : '#333';
+            
+            // Biomarker Chart
+            const ctxBiomarker = document.getElementById('biomarkerChart').getContext('2d');
+            window.myCharts.biomarkerChart = new Chart(ctxBiomarker, {
+                type: 'bar',
+                data: {
+                    labels: ['VO2 Max (18 y/o eq)', 'Body Fat % (16 y/o eq)', 'Fasting Glucose (28 y/o eq)'],
+                    datasets: [{
+                        label: "Bryan Johnson's Top Scores",
+                        data: [58.7, 6.9, 82],
+                        backgroundColor: ['#007bff', '#28a745', '#ffc107'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { title: { display: true, text: 'Key Biomarker Age Equivalents', color: textColor }, legend: { labels: { color: textColor }}},
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor } },
+                        x: { grid: { color: gridColor }, ticks: { color: textColor } }
+                    }
+                }
+            });
+
+            // Fitness Chart
+            const ctxFitness = document.getElementById('fitnessChart').getContext('2d');
+            window.myCharts.fitnessChart = new Chart(ctxFitness, {
+                type: 'radar',
+                data: {
+                    labels: ['Strength (Bench)', 'Endurance (VO2 Max)', 'Strength (Grip)', 'Flexibility', 'Power (Leg Press)'],
+                    datasets: [{
+                        label: 'Fitness Performance (Normalized)',
+                        data: [90, 98, 95, 80, 92],
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        pointBackgroundColor: 'rgba(0, 123, 255, 1)',
+                        pointBorderColor: '#fff',
+                    }]
+                },
+                options: {
+                     plugins: { title: { display: true, text: 'Fitness Performance Overview', color: textColor }, legend: { labels: { color: textColor }}},
+                     scales: {
+                        r: { 
+                            angleLines: { color: gridColor }, 
+                            grid: { color: gridColor }, 
+                            pointLabels: { color: textColor },
+                            ticks: { backdropColor: isDarkMode ? '#121212' : '#f4f7f9', color: textColor },
+                            suggestedMin: 0, suggestedMax: 100 
+                        }
+                    }
+                }
+            });
+
+            // Update personal chart on load/theme change
+            updatePersonalBiomarkerChart();
+        }
+
+        // --- On Page Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('philosophy');
+            initializeCharts();
+            document.getElementById('biomarker-date').valueAsDate = new Date();
+        });
+    </script>
+</body>
+</html>

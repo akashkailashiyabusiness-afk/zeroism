@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thinking Coach — Guided Reasoning</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--bg:#0b0f15;--panel:#101622;--text:#e6e9ef;--muted:#a1a1aa;--brand:#6ee7ff}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#090d13,#0b0f15);color:var(--text);font:15px/1.45 system-ui,Segoe UI,Roboto}
+    .wrap{max-width:1000px;margin:0 auto;padding:16px}
+    .card{background:#0f1626;border:1px solid #22314d;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:12px}
+    .row{display:flex;gap:10px;align-items:center}
+    .title{font-weight:800;font-size:20px}
+    textarea,input,select{background:#0f1524;border:1px solid #283659;color:var(--text);border-radius:10px;padding:10px;width:100%}
+    .btn{background:linear-gradient(180deg,#2a3552,#1b2440);border:1px solid #2b3758;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer}
+    .mono{font-family:ui-monospace,Consolas,Menlo,monospace}
+    .bubble{padding:10px;border-radius:12px;border:1px solid #243354;background:#0f1628;margin:6px 0}
+  </style>
+  <script>const HUB_KEY='ai_hub_cfg';function hub(){try{return JSON.parse(localStorage.getItem(HUB_KEY)||'{}')}catch(_){return{}}}</script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row" style="justify-content:space-between;margin-bottom:8px">
+      <div class="title">Thinking Coach</div>
+      <a class="btn" href="⚡ALL ai.html">🏠 Hub</a>
+    </div>
+
+    <section class="card">
+      <div class="row">
+        <select id="mode" style="max-width:240px">
+          <option value="clarify">🔎 Clarify</option>
+          <option value="critic">🔍 Critic</option>
+          <option value="planner">🗺️ Planner</option>
+          <option value="coach">🏋️ Coach</option>
+          <option value="summarize">📚 Summarize</option>
+        </select>
+        <input id="apiBase" placeholder="API Base (http://localhost:1234/v1)">
+        <input id="model" placeholder="Model (e.g., llama3)">
+        <input id="apiKey" placeholder="API Key (optional)">
+        <input id="temperature" type="number" step="0.1" min="0" max="2" value="0.7" style="max-width:90px">
+        <label class="row" style="gap:6px"><input type="checkbox" id="stream" checked> Stream</label>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:10px">
+      <textarea id="input" rows="5" placeholder="Describe your problem, text, or goal…" class="mono"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="run">▶️ Run</button>
+        <button class="btn" id="clear">🧹 Clear</button>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:10px">
+      <div id="out"></div>
+    </section>
+  </div>
+
+  <script>
+    const modePrompts={
+      clarify:'You are a clarity assistant. 1) Restate the problem in one line. 2) List constraints and success criteria. 3) Identify assumptions and unknowns with ways to validate. 4) Propose 3 options with trade-offs. Be concise and structured.',
+      critic:'You are a candid critic. Identify flaws, risks, missing data, and offer concrete improvements with priorities.',
+      planner:'You are a planner. Produce milestones, owners, risks, and measurable outcomes. Include a 2-week action plan.',
+      coach:'You are a supportive coach. Provide one challenge, one habit, and one metric. Keep it motivating and specific.',
+      summarize:'You are a summarizer. Extract key points, actions, and follow-ups in bullet form.',
+    };
+
+    function applyHub(){ const h=hub(); if(h.apiBase) apiBase.value=h.apiBase; if(h.model) model.value=h.model; if(h.apiKey) apiKey.value=h.apiKey }
+
+    function bubble(text){ const d=document.createElement('div'); d.className='bubble mono'; d.textContent=text; return d }
+
+    async function call(messages){
+      const base=(apiBase.value||'http://localhost:1234/v1').replace(/\/$/,'');
+      const headers={'Content-Type':'application/json'}; if(apiKey.value) headers['Authorization']='Bearer '+apiKey.value;
+      const body={model:model.value||'local',temperature:Number(temperature.value||0.7),messages,stream:stream.checked};
+      const res=await fetch(base+'/chat/completions',{method:'POST',headers,body:JSON.stringify(body)});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      if(!stream.checked){ const j=await res.json(); return j.choices?.[0]?.message?.content||'(no content)' }
+      const reader=res.body.getReader(); const dec=new TextDecoder('utf-8'); let acc='';
+      while(true){ const {value,done}=await reader.read(); if(done) break; const chunk=dec.decode(value,{stream:true});
+        chunk.split('\n').forEach(line=>{const m=line.match(/^data: (.*)$/); if(m&&m[1]!=='[DONE]'){ try{ const j=JSON.parse(m[1]); acc += (j.choices?.[0]?.delta?.content||'') }catch(_){} }});
+        out.lastChild.textContent=acc; out.scrollTop=out.scrollHeight;
+      }
+      return acc;
+    }
+
+    window.addEventListener('DOMContentLoaded',()=>{
+      applyHub();
+      run.onclick=async()=>{
+        const sys=modePrompts[mode.value]||modePrompts.clarify; const user=input.value.trim(); if(!user) return;
+        const think=bubble('🧠 Thinking…'); out.appendChild(think);
+        try{ const text=await call([{role:'system',content:sys},{role:'user',content:user}]); think.textContent=text }catch(e){ think.textContent='Error: '+e.message }
+      };
+      clear.onclick=()=>{ out.innerHTML='' };
+    });
+
+    const mode=document.getElementById('mode');
+    const apiBase=document.getElementById('apiBase');
+    const model=document.getElementById('model');
+    const apiKey=document.getElementById('apiKey');
+    const temperature=document.getElementById('temperature');
+    const stream=document.getElementById('stream');
+    const input=document.getElementById('input');
+    const run=document.getElementById('run');
+    const clear=document.getElementById('clear');
+    const out=document.getElementById('out');
+  </script>
+</body>
+</html>
+

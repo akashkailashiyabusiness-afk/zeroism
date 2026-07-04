@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BizBuilder Pro — Offline Startup Plan Builder</title>
+  <style>
+    :root{
+      --bg:#0b0f14;--panel:#0f1624;--muted:#94a3b8;--text:#e5e7eb;--accent:#f59e0b;--border:#1f2a37;--ok:#22c55e;--danger:#ef4444;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+    .app{display:grid;grid-template-columns:280px 1fr;grid-template-rows:auto 1fr auto;height:100%}
+    header{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--border);background:rgba(17,24,38,.6);backdrop-filter:blur(8px)}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#ffd166,#f59e0b);display:grid;place-items:center;color:#0b0f14;font-weight:800}
+    .toolbar{display:flex;gap:8px;align-items:center}
+    .btn{background:#121a27;color:var(--text);border:1px solid var(--border);padding:8px 10px;border-radius:10px;cursor:pointer;transition:.18s;white-space:nowrap}
+    .btn:hover{transform:translateY(-1px);border-color:#273344}
+    .btn.primary{background:var(--accent);color:#111827;border-color:transparent}
+    .btn.ghost{background:transparent}
+    .btn.ok{background:var(--ok);border-color:transparent;color:#06330e}
+    .btn.danger{background:var(--danger);border-color:transparent}
+    .chip{background:#0c121e;border:1px solid var(--border);padding:6px 8px;border-radius:999px;font-size:12px}
+
+    aside{border-right:1px solid var(--border);background:var(--panel);padding:12px;overflow:auto}
+    .search{width:100%;background:#0b111b;border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:10px}
+    .list{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+    .item{background:#0b111b;border:1px solid var(--border);padding:10px;border-radius:12px;cursor:pointer}
+    .item.active{outline:2px solid var(--accent)}
+
+    .main{display:grid;grid-template-rows:auto 1fr}
+    .controls{border-bottom:1px solid var(--border);background:var(--panel);padding:8px 12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .input,.select,textarea{background:#0b111b;border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:10px}
+    textarea{width:100%;min-height:120px;resize:vertical}
+
+    .tabs{display:flex;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);background:#0d1421;position:sticky;top:0;z-index:3}
+    .tab{padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#0b111b;cursor:pointer}
+    .tab.active{background:var(--accent);color:#0b0f14;border-color:transparent}
+
+    .content{padding:14px;overflow:auto}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .card{background:#0b111b;border:1px solid var(--border);border-radius:14px;padding:12px}
+    .muted{color:var(--muted)}
+    .row{display:flex;gap:8px;align-items:center}
+    .right{margin-left:auto}
+
+    .k{font-size:12px;color:var(--muted)}
+    pre{background:#0a0f18;border:1px solid #101828;padding:10px;border-radius:10px;overflow:auto}
+
+    @media (max-width:980px){.app{grid-template-columns:1fr}aside{display:none}.grid2,.grid3{grid-template-columns:1fr}}
+
+    @media print{header,aside,.controls,.tabs,.toolbar{display:none}.content{padding:0}.card{border:none}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="logo">BB</div>
+        <div>
+          <div style="font-weight:800">BizBuilder Pro</div>
+          <div class="muted" style="font-size:12px">Offline Startup Plan Builder • Local LLMs</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button class="btn" id="btn-export-md">⬇️ Export Markdown</button>
+        <button class="btn" id="btn-export-json">⬇️ Export JSON</button>
+        <button class="btn" id="btn-import-json">⬆️ Import JSON</button>
+        <button class="btn" id="btn-voice">🎙️ Voice</button>
+        <button class="btn primary" id="btn-new">➕ New Project</button>
+      </div>
+    </header>
+
+    <aside>
+      <input id="search" class="search" placeholder="Search projects…" />
+      <div class="list" id="projects"></div>
+    </aside>
+
+    <section class="main">
+      <div class="controls">
+        <select id="preset" class="select">
+          <option value="lmstudio">LM Studio (/v1)</option>
+          <option value="ollama">Ollama (/api/chat)</option>
+        </select>
+        <input id="baseUrl" class="input" placeholder="http://localhost:1234" style="min-width:240px" />
+        <input id="model" class="input" placeholder="Model (e.g., llama-3, qwen2)" style="min-width:220px" />
+        <span class="chip" id="status">⚡ Ready</span>
+        <span class="chip" id="tokens">🧠 —</span>
+        <button class="btn" id="btn-settings">⚙️ Settings</button>
+        <button class="btn" id="btn-persona">🧩 Persona</button>
+        <span class="right" />
+        <button class="btn ok" id="btn-pitch">🎬 Build Pitch Outline</button>
+        <button class="btn" id="btn-print">🖨️ Print / PDF</button>
+      </div>
+
+      <div class="tabs" id="tabs"></div>
+
+      <div class="content" id="content"></div>
+    </section>
+
+    <footer style="grid-column:1/-1;border-top:1px solid var(--border);padding:8px 12px;display:flex;gap:8px;justify-content:space-between;background:rgba(17,24,38,.6)">
+      <span class="muted">Tip: Use 🧩 Persona to set voice/tone. All data stays in your browser. 🔒</span>
+      <span class="muted">Cmd/Ctrl+S to quick-save locally • Cmd/Ctrl+/ palette</span>
+    </footer>
+  </div>
+
+  <!-- Settings Modal -->
+  <dialog id="settings">
+    <div class="card" style="padding:0">
+      <div class="row" style="padding:12px;border-bottom:1px solid var(--border)"><b>Settings</b><button class="btn ghost right" onclick="closeModal('settings')">✖</button></div>
+      <div style="padding:12px;display:grid;gap:12px">
+        <div class="grid3">
+          <label>Max Tokens<br/><input id="set-max" class="input" type="number" value="1024"/></label>
+          <label>Temperature<br/><input id="set-temp" class="input" type="number" step="0.1" value="0.7"/></label>
+          <label>Top P<br/><input id="set-top" class="input" type="number" step="0.05" value="0.95"/></label>
+        </div>
+        <label class="k"><input type="checkbox" id="set-stream" checked/> Stream tokens</label>
+        <div class="row" style="justify-content:flex-end;gap:8px">
+          <button class="btn" onclick="saveSettings()">Save</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Persona Modal -->
+  <dialog id="persona">
+    <div class="card" style="padding:0">
+      <div class="row" style="padding:12px;border-bottom:1px solid var(--border)"><b>Persona</b><button class="btn ghost right" onclick="closeModal('persona')">✖</button></div>
+      <div style="padding:12px;display:grid;gap:12px">
+        <textarea id="persona-text" placeholder="You are a startup strategist…" class="input" style="min-height:160px"></textarea>
+        <div class="row" style="justify-content:space-between">
+          <div class="row" style="gap:6px">
+            <button class="btn" onclick="presetPersona('coach')">Coach 🧭</button>
+            <button class="btn" onclick="presetPersona('vc')">VC 📈</button>
+            <button class="btn" onclick="presetPersona('lean')">Lean 📦</button>
+          </div>
+          <button class="btn ok" onclick="savePersona()">Save</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Import input -->
+  <input id="import-file" type="file" accept="application/json" style="display:none" />
+
+  <script>
+  const $ = (q,root=document)=>root.querySelector(q);
+  const $$ = (q,root=document)=>Array.from(root.querySelectorAll(q));
+  const store = { get(k,def){ try{ return JSON.parse(localStorage.getItem(k)) ?? def }catch{ return def }}, set(k,v){ localStorage.setItem(k, JSON.stringify(v)) } };
+
+  const TABS = [
+    {id:'overview', name:'Overview'},
+    {id:'lean', name:'Lean Canvas'},
+    {id:'market', name:'Market & Competitors'},
+    {id:'gtm', name:'Go-To-Market'},
+    {id:'product', name:'Product & Roadmap'},
+    {id:'financials', name:'Financials'},
+    {id:'risks', name:'Risks & Moat'},
+    {id:'pitch', name:'Pitch Outline'}
+  ];
+
+  const state = {
+    projects: store.get('bb_projects',[]),
+    currentId: store.get('bb_current', null),
+    settings: store.get('bb_settings', {
+      preset:'lmstudio', baseUrl:'http://localhost:1234', model:'llama-3-8b-instruct', stream:true, max_tokens:1024, temperature:0.7, top_p:0.95
+    }),
+    persona: store.get('bb_persona','You are a seasoned startup coach. Give structured, concise, practical advice. Use tables/bullets. Challenge assumptions with questions. One emoji when helpful.'),
+    voice:false
+  };
+
+  function persist(){
+    store.set('bb_projects', state.projects);
+    store.set('bb_current', state.currentId);
+    store.set('bb_settings', state.settings);
+    store.set('bb_persona', state.persona);
+  }
+
+  function newProject(){
+    const id = 'p_'+Date.now();
+    const p = { id, name:'Untitled Project', created:Date.now(), data: defaultData() };
+    state.projects.unshift(p); state.currentId=id; persist(); renderProjects(); openTab('overview');
+  }
+
+  function defaultData(){
+    return {
+      overview:{ name:'', vision:'', problem:'', audience:'', solution:'', value:'', metrics:'' },
+      lean:{ problem:'', segments:'', uvp:'', solution:'', channels:'', revenue:'', costs:'', metrics:'', unfair:'', },
+      market:{ size:'', trends:'', competitors:'', positioning:'' },
+      gtm:{ strategy:'', channels:'', pricing:'', funnel:'', milestones:'' },
+      product:{ features:'', roadmap:'', tech:'', research:'' },
+      financials:{ assumptions:'', costs:'', revenue:'', projection:'', summary:'' },
+      risks:{ risks:'', mitigations:'', moat:'' },
+      pitch:{ title:'', hook:'', problem:'', solution:'', demo:'', market:'', business:'', traction:'', team:'', ask:'' }
+    };
+  }
+
+  function current(){ return state.projects.find(p=>p.id===state.currentId); }
+
+  function renderProjects(filter=''){
+    const root = $('#projects'); root.innerHTML='';
+    state.projects.filter(p=> (p.name||'').toLowerCase().includes(filter.toLowerCase()))
+      .forEach(p=>{
+        const div = document.createElement('div'); div.className='item'+(p.id===state.currentId?' active':'');
+        div.innerHTML = `<div class="row"><b style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name||'Untitled'}</b><span class="muted" style="font-size:12px">${new Date(p.created).toLocaleDateString()}</span></div>`;
+        div.onclick = ()=>{ state.currentId=p.id; persist(); renderProjects(filter); openTab('overview'); };
+        root.appendChild(div);
+      });
+  }
+
+  function renderTabs(){
+    const root = $('#tabs'); root.innerHTML='';
+    TABS.forEach(t=>{
+      const b = document.createElement('button'); b.className='tab'; b.textContent=t.name; b.dataset.id=t.id; b.onclick=()=>openTab(t.id);
+      root.appendChild(b);
+    });
+  }
+
+  function openTab(id){
+    $$('.tab').forEach(x=>x.classList.toggle('active', x.dataset.id===id));
+    const root = $('#content'); const p = current(); if(!p){ root.innerHTML='<div class="muted">No project. Click New Project.</div>'; return; }
+    switch(id){
+      case 'overview': renderOverview(p); break;
+      case 'lean': renderLean(p); break;
+      case 'market': renderMarket(p); break;
+      case 'gtm': renderGTM(p); break;
+      case 'product': renderProduct(p); break;
+      case 'financials': renderFinancials(p); break;
+      case 'risks': renderRisks(p); break;
+      case 'pitch': renderPitch(p); break;
+    }
+  }
+
+  function field(label, id, placeholder, value, aiPrompt){
+    return `<div class="card"><div class="row" style="justify-content:space-between"><b>${label}</b><div class="row" style="gap:6px"><button class="btn" onclick="aiFill('${id}')">✨ AI Assist</button><button class="btn ghost" onclick="clearField('${id}')">⟲ Reset</button></div></div><textarea id="${id}" placeholder="${placeholder}">${value||''}</textarea><div class="k">${aiPrompt||''}</div></div>`;
+  }
+
+  function renderOverview(p){
+    const d=p.data.overview; const root=$('#content');
+    root.innerHTML = `
+      <div class="grid2">
+        <div class="card"><label>Project name<br/><input id="ov-name" class="input" value="${p.name||''}" placeholder="e.g., NeuroNote"/></label></div>
+        <div class="card"><label>One-liner<br/><input id="ov-vision" class="input" value="${d.vision||''}" placeholder="What do you do?"/></label></div>
+      </div>
+      ${field('Problem','ov-problem','Top 3 painful user problems…', d.problem,'Be concrete, measurable, time-bound.')}
+      ${field('Target Audience','ov-audience','ICP, personas, must-have users…', d.audience)}
+      ${field('Solution & Value','ov-solution','Your solution, how it solves the pain…', d.solution)}
+      ${field('Key Metrics','ov-metrics','Activation, retention, revenue drivers…', d.metrics)}
+      <div class="row" style="gap:8px;justify-content:flex-end">
+        <button class="btn ok" onclick="saveOverview()">Save</button>
+      </div>
+    `;
+  }
+
+  function renderLean(p){
+    const d=p.data.lean; const root=$('#content');
+    root.innerHTML = `
+      <div class="grid3">
+        ${cardText('Problem','ln-problem', d.problem)}
+        ${cardText('Customer Segments','ln-segments', d.segments)}
+        ${cardText('UVP','ln-uvp', d.uvp)}
+      </div>
+      <div class="grid3">
+        ${cardText('Solution','ln-solution', d.solution)}
+        ${cardText('Channels','ln-channels', d.channels)}
+        ${cardText('Revenue Streams','ln-revenue', d.revenue)}
+      </div>
+      <div class="grid3">
+        ${cardText('Cost Structure','ln-costs', d.costs)}
+        ${cardText('Key Metrics','ln-metrics', d.metrics)}
+        ${cardText('Unfair Advantage','ln-unfair', d.unfair)}
+      </div>
+      <div class="row" style="gap:8px;justify-content:flex-end"><button class="btn ok" onclick="saveLean()">Save</button><button class="btn" onclick="aiLean()">✨ Auto-generate Lean Canvas</button></div>
+    `;
+  }
+  function cardText(label,id,val){
+    return `<div class="card"><div class="row" style="justify-content:space-between"><b>${label}</b><button class="btn" onclick="aiFill('${id}')">✨</button></div><textarea id="${id}">${val||''}</textarea></div>`
+  }
+
+  function renderMarket(p){
+    const d=p.data.market; const root=$('#content');
+    root.innerHTML = `
+      ${field('Market Size (TAM/SAM/SOM)','mk-size','Numbers + method…', d.size)}
+      ${field('Trends & Insights','mk-trends','Macro/micro trends, regulations…', d.trends)}
+      ${field('Competitors','mk-competitors','Direct/indirect, features, pricing…', d.competitors)}
+      ${field('Positioning','mk-positioning','Positioning statement, 2x2, wedge…', d.positioning)}
+      <div class="row" style="gap:8px;justify-content:flex-end"><button class="btn ok" onclick="saveMarket()">Save</button></div>
+    `;
+  }
+
+  function renderGTM(p){
+    const d=p.data.gtm; const root=$('#content');
+    root.innerHTML = `
+      ${field('Strategy','gtm-strategy','ICP -> channel fit -> offer…', d.strategy)}
+      ${field('Channels','gtm-channels','SEO, content, partnerships, PLG…', d.channels)}
+      ${field('Pricing & Packaging','gtm-pricing','Tiers, value metric, trials…', d.pricing)}
+      ${field('Funnel & KPIs','gtm-funnel','Acquisition → Activation → Retention → Revenue', d.funnel)}
+      ${field('Milestones (12 months)','gtm-milestones','M0…M12 roadmap with targets', d.milestones)}
+      <div class="row" style="gap:8px;justify-content:flex-end"><button class="btn ok" onclick="saveGTM()">Save</button></div>
+    `;
+  }
+
+  function renderProduct(p){
+    const d=p.data.product; const root=$('#content');
+    root.innerHTML = `
+      ${field('Key Features','pd-features','MVP features ranked by impact/effort…', d.features)}
+      ${field('Roadmap','pd-roadmap','M0-M3, M3-M6, M6-M12…', d.roadmap)}
+      ${field('Tech & Architecture','pd-tech','Stack, hosting, privacy, risks…', d.tech)}
+      ${field('User Research','pd-research','Insights, JTBD, quotes…', d.research)}
+      <div class="row" style="gap:8px;justify-content:flex-end"><button class="btn ok" onclick="saveProduct()">Save</button></div>
+    `;
+  }
+
+  function renderFinancials(p){
+    const d=p.data.financials; const root=$('#content');
+    root.innerHTML = `
+      <div class="grid2">
+        ${cardText('Assumptions','fin-assumptions', d.assumptions)}
+        ${cardText('Summary','fin-summary', d.summary)}
+      </div>
+      <div class="grid2">
+        ${cardText('Costs','fin-costs', d.costs)}
+        ${cardText('Revenue','fin-revenue', d.revenue)}
+      </div>
+      ${field('12-Month Projection','fin-projection','Month-by-month users, ARPU, churn…', d.projection)}
+      <div class="card">
+        <div class="row" style="justify-content:space-between"><b>Quick Calculator</b><span class="k">Simple offline calc (no decimals required)</span></div>
+        <div class="grid3">
+          <label>Users (month 1)<br/><input id="calc-users" class="input" type="number" value="100"/></label>
+          <label>Growth % / mo<br/><input id="calc-growth" class="input" type="number" value="20"/></label>
+          <label>ARPU ($)<br/><input id="calc-arpu" class="input" type="number" value="10"/></label>
+        </div>
+        <div class="grid3" style="margin-top:8px">
+          <label>Churn % / mo<br/><input id="calc-churn" class="input" type="number" value="5"/></label>
+          <label>COGS % of rev<br/><input id="calc-cogs" class="input" type="number" value="20"/></label>
+          <label>Fixed costs / mo ($)<br/><input id="calc-fixed" class="input" type="number" value="2000"/></label>
+        </div>
+        <div class="row" style="gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn" onclick="runCalc()">📈 Run Calc</button></div>
+        <pre id="calc-out" class="k"></pre>
+      </div>
+      <div class="row" style="gap:8px;justify-content:flex-end"><button class="btn ok" onclick="saveFinancials()">Save</button></div>
+    `;
+  }
+
+  function renderRisks(p){
+    const d=p.data.risks; const root=$('#content');
+    root.innerHTML = `
+      ${field('Top Risks','rk-risks','Team, product, market, legal…', d.risks)}
+      ${field('Mitigations','rk-mitigations','Validation steps, milestones…', d.mitigations)}
+      ${field('Moat','rk-moat','Network effects, data, distribution…', d.moat)}
+      <div class="row" style="gap:8px;justify-content:flex-end"><button class="btn ok" onclick="saveRisks()">Save</button></div>
+    `;
+  }
+
+  function renderPitch(p){
+    const d=p.data.pitch; const root=$('#content');
+    root.innerHTML = `
+      ${field('Title','pt-title','Name + one-liner…', d.title)}
+      <div class="grid3">
+        ${cardText('Hook','pt-hook', d.hook)}
+        ${cardText('Problem','pt-problem', d.problem)}
+        ${cardText('Solution','pt-solution', d.solution)}
+      </div>
+      <div class="grid3">
+        ${cardText('Demo/UX','pt-demo', d.demo)}
+        ${cardText('Market','pt-market', d.market)}
+        ${cardText('Business Model','pt-business', d.business)}
+      </div>
+      <div class="grid3">
+        ${cardText('Traction','pt-traction', d.traction)}
+        ${cardText('Team','pt-team', d.team)}
+        ${cardText('The Ask','pt-ask', d.ask)}
+      </div>
+      <div class="row" style="gap:8px;justify-content:flex-end"><button class="btn" onclick="aiPitch()">✨ Auto-generate Pitch</button><button class="btn ok" onclick="savePitch()">Save</button></div>
+    `;
+  }
+
+  // ===== Save Handlers =====
+  function saveOverview(){ const p=current(); p.name=$('#ov-name').value; const d=p.data.overview; d.vision=$('#ov-vision').value; d.problem=$('#ov-problem').value; d.audience=$('#ov-audience').value; d.solution=$('#ov-solution').value; d.metrics=$('#ov-metrics').value; persist(); renderProjects($('#search').value||'') }
+  function saveLean(){ const p=current(); const d=p.data.lean; ['problem','segments','uvp','solution','channels','revenue','costs','metrics','unfair'].forEach(k=> d[k]=$(`#ln-${k}`).value); persist(); }
+  function saveMarket(){ const p=current(); const d=p.data.market; ['size','trends','competitors','positioning'].forEach(k=> d[k]=$(`#mk-${k}`).value); persist(); }
+  function saveGTM(){ const p=current(); const d=p.data.gtm; ['strategy','channels','pricing','funnel','milestones'].forEach(k=> d[k]=$(`#gtm-${k}`).value); persist(); }
+  function saveProduct(){ const p=current(); const d=p.data.product; ['features','roadmap','tech','research'].forEach(k=> d[k]=$(`#pd-${k}`).value); persist(); }
+  function saveFinancials(){ const p=current(); const d=p.data.financials; ['assumptions','costs','revenue','projection','summary'].forEach(k=> d[k]=$(`#fin-${k}`).value); persist(); }
+  function saveRisks(){ const p=current(); const d=p.data.risks; ['risks','mitigations','moat'].forEach(k=> d[k]=$(`#rk-${k}`).value); persist(); }
+  function savePitch(){ const p=current(); const d=p.data.pitch; ['title','hook','problem','solution','demo','market','business','traction','team','ask'].forEach(k=> d[k]=$(`#pt-${k}`).value); persist(); }
+
+  function clearField(id){ const el=$(`#${id}`); if(el) el.value=''; }
+
+  // ===== Calculators =====
+  function runCalc(){
+    const U=+$('#calc-users').value||0, g=(+$('#calc-growth').value||0)/100, arpu=+$('#calc-arpu').value||0, churn=(+$('#calc-churn').value||0)/100, cogs=(+$('#calc-cogs').value||0)/100, fixed=+$('#calc-fixed').value||0;
+    let users=U; let out=['Month | Users | MRR | Gross | Net','----- | -----:| ---:| ----:| ---:'];
+    for(let m=1;m<=12;m++){
+      users = Math.max(0, Math.round(users*(1+g-churn)));
+      const mrr = users*arpu; const gross = mrr*(1-cogs); const net = gross-fixed;
+      out.push(`${m} | ${users} | ${mrr.toFixed(0)} | ${gross.toFixed(0)} | ${net.toFixed(0)}`);
+    }
+    $('#calc-out').textContent = out.join('\n');
+  }
+
+  // ===== AI Integration =====
+  function buildMessages(system, user){
+    const msgs=[{role:'system',content:system},{role:'user',content:user}];
+    return msgs;
+  }
+
+  async function aiFill(id){
+    const ctx = gatherContext();
+    const label = document.querySelector(`label[for='${id}']`)?.textContent || id;
+    const prompt = `Fill the section "${id}" with concise, bullet-proof content for a startup plan. Use crisp bullets, numbers, and avoid fluff.\n\nContext:\n${ctx}\n\nReturn only the content.`;
+    const text = await callLLM(prompt);
+    if(text){ const el=$(`#${id}`); if(el) el.value=text.trim(); }
+  }
+
+  async function aiLean(){
+    const ctx = gatherContext();
+    const prompt = `Generate a Lean Canvas (Problem, Customer Segments, UVP, Solution, Channels, Revenue, Costs, Key Metrics, Unfair Advantage) as short bullet points.\nContext:\n${ctx}`;
+    const text = await callLLM(prompt);
+    if(!text) return; const map={problem:'ln-problem',segments:'ln-segments',uvp:'ln-uvp',solution:'ln-solution',channels:'ln-channels',revenue:'ln-revenue',costs:'ln-costs',metrics:'ln-metrics','unfair advantage':'ln-unfair'};
+    for(const k in map){ const id=map[k]; const re=new RegExp(`${k.replace(/ /g,'[\\s_-]?')}:?([\s\S]*?)(?:\n\n|$)`, 'i'); const m=text.match(re); if(m){ $(`#${id}`).value = m[1].trim(); }
+  }
+
+  async function aiPitch(){
+    const ctx=gatherContext();
+    const prompt=`Create a 10-slide pitch outline with: Title, Hook, Problem, Solution, Demo, Market, Business Model, Traction, Team, Ask. Use 3-5 bullets per slide, punchy and quant-driven.\nContext:\n${ctx}`;
+    const text=await callLLM(prompt); if(!text) return;
+    const ids=['pt-title','pt-hook','pt-problem','pt-solution','pt-demo','pt-market','pt-business','pt-traction','pt-team','pt-ask'];
+    const keys=['title','hook','problem','solution','demo','market','business','traction','team','ask'];
+    keys.forEach((k,i)=>{ const re=new RegExp(`${k}:([\s\S]*?)(?:\n\n|$)`,'i'); const m=text.match(re); if(m){ $(`#${ids[i]}`).value = m[1].trim(); } });
+  }
+
+  function gatherContext(){
+    const p=current(); if(!p) return '';
+    const d=p.data; const ctx=[`Name: ${p.name}`,`Vision: ${d.overview.vision}`,`Problem: ${d.overview.problem}`,`Audience: ${d.overview.audience}`,`Solution: ${d.overview.solution}`,`Metrics: ${d.overview.metrics}`].join('\n');
+    return ctx;
+  }
+
+  async function callLLM(userPrompt){
+    const {preset, baseUrl, model, stream, max_tokens, temperature, top_p} = state.settings;
+    const system = state.persona;
+    setStatus('⏳ Thinking…');
+    try{
+      if(preset==='lmstudio'){
+        const url = baseUrl.replace(/\/$/,'') + '/v1/chat/completions';
+        const body = { model, messages: buildMessages(system, userPrompt), stream, max_tokens, temperature, top_p };
+        const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        if(!res.ok) throw new Error('HTTP '+res.status+' — '+await res.text());
+        if(stream){
+          let acc=''; const reader=res.body.getReader(); const dec=new TextDecoder();
+          while(true){ const {value,done}=await reader.read(); if(done) break; const chunk=dec.decode(value,{stream:true});
+            const lines=chunk.split(/\n/).filter(Boolean); for(const line of lines){ if(line.startsWith('data:')){ const data=line.slice(5).trim(); if(data==='[DONE]') break; try{ const j=JSON.parse(data); const d=j.choices?.[0]?.delta?.content||''; acc+=d; }catch{} } }
+          }
+          setStatus('⚡ Ready'); return acc.trim();
+        } else { const j=await res.json(); setStatus('⚡ Ready'); return (j.choices?.[0]?.message?.content||'').trim(); }
+      } else {
+        const url = baseUrl.replace(/\/$/,'') + '/api/chat';
+        const body = { model, messages: buildMessages(system, userPrompt), stream:true };
+        const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        if(!res.ok) throw new Error('HTTP '+res.status+' — '+await res.text());
+        let acc=''; const reader=res.body.getReader(); const dec=new TextDecoder();
+        while(true){ const {value,done}=await reader.read(); if(done) break; const chunk=dec.decode(value,{stream:true}).trim();
+          for(const line of chunk.split(/\n/)){ if(!line) continue; try{ const j=JSON.parse(line); const d=j.message?.content||''; acc+=d; if(j.done){ setStatus('⚡ Ready'); return acc.trim(); } }catch{} }
+        }
+        setStatus('⚡ Ready'); return acc.trim();
+      }
+    }catch(err){ setStatus('⚠️ Error'); alert(err.message||err); return ''; }
+  }
+
+  // ===== Export / Import =====
+  function exportJSON(){ const blob=new Blob([JSON.stringify({projects:state.projects, settings:state.settings, persona:state.persona},null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='bizbuilder_export.json'; a.click(); URL.revokeObjectURL(a.href); }
+
+  function exportMarkdown(){
+    const p=current(); if(!p){ alert('No project'); return; }
+    const d=p.data; const md = `# ${p.name}\n\n## Overview\n- Vision: ${d.overview.vision}\n- Problem: ${oneLine(d.overview.problem)}\n- Audience: ${oneLine(d.overview.audience)}\n- Solution: ${oneLine(d.overview.solution)}\n- Metrics: ${oneLine(d.overview.metrics)}\n\n## Lean Canvas\n- Problem: ${oneLine(d.lean.problem)}\n- Segments: ${oneLine(d.lean.segments)}\n- UVP: ${oneLine(d.lean.uvp)}\n- Solution: ${oneLine(d.lean.solution)}\n- Channels: ${oneLine(d.lean.channels)}\n- Revenue: ${oneLine(d.lean.revenue)}\n- Costs: ${oneLine(d.lean.costs)}\n- Metrics: ${oneLine(d.lean.metrics)}\n- Unfair: ${oneLine(d.lean.unfair)}\n\n## Market & Competitors\n- Size: ${oneLine(d.market.size)}\n- Trends: ${oneLine(d.market.trends)}\n- Competitors: ${oneLine(d.market.competitors)}\n- Positioning: ${oneLine(d.market.positioning)}\n\n## GTM\n- Strategy: ${oneLine(d.gtm.strategy)}\n- Channels: ${oneLine(d.gtm.channels)}\n- Pricing: ${oneLine(d.gtm.pricing)}\n- Funnel: ${oneLine(d.gtm.funnel)}\n- Milestones: ${oneLine(d.gtm.milestones)}\n\n## Product\n- Features: ${oneLine(d.product.features)}\n- Roadmap: ${oneLine(d.product.roadmap)}\n- Tech: ${oneLine(d.product.tech)}\n- Research: ${oneLine(d.product.research)}\n\n## Financials\n- Assumptions: ${oneLine(d.financials.assumptions)}\n- Costs: ${oneLine(d.financials.costs)}\n- Revenue: ${oneLine(d.financials.revenue)}\n- Projection: ${oneLine(d.financials.projection)}\n- Summary: ${oneLine(d.financials.summary)}\n\n## Risks & Moat\n- Risks: ${oneLine(d.risks.risks)}\n- Mitigations: ${oneLine(d.risks.mitigations)}\n- Moat: ${oneLine(d.risks.moat)}\n\n## Pitch\n- Title: ${oneLine(d.pitch.title)}\n- Hook: ${oneLine(d.pitch.hook)}\n- Problem: ${oneLine(d.pitch.problem)}\n- Solution: ${oneLine(d.pitch.solution)}\n- Demo: ${oneLine(d.pitch.demo)}\n- Market: ${oneLine(d.pitch.market)}\n- Business: ${oneLine(d.pitch.business)}\n- Traction: ${oneLine(d.pitch.traction)}\n- Team: ${oneLine(d.pitch.team)}\n- Ask: ${oneLine(d.pitch.ask)}\n`;
+    const blob=new Blob([md],{type:'text/markdown'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${(p.name||'project').replace(/[^a-z0-9_-]/gi,'_')}.md`; a.click(); URL.revokeObjectURL(a.href);
+  }
+  function oneLine(s){ return (s||'').replace(/\n/g,' ').replace(/\s+/g,' ').trim(); }
+
+  function importJSONFile(file){ const r=new FileReader(); r.onload=()=>{ try{ const j=JSON.parse(r.result); if(j.projects) state.projects=j.projects; if(j.settings) state.settings=j.settings; if(j.persona) state.persona=j.persona; state.currentId=state.projects[0]?.id||null; persist(); boot(); }catch(e){ alert('Invalid JSON') } }; r.readAsText(file); }
+
+  // ===== UI Helpers =====
+  function setStatus(t){ $('#status').textContent=t }
+  function openModal(id){ $('#'+id).showModal() }
+  function closeModal(id){ $('#'+id).close() }
+  function saveSettings(){ state.settings.max_tokens=+$('#set-max').value||1024; state.settings.temperature=+$('#set-temp').value||0.7; state.settings.top_p=+$('#set-top').value||0.95; state.settings.stream=$('#set-stream').checked; persist(); closeModal('settings') }
+  function presetPersona(kind){ const presets={ coach:'You are a tough-love startup coach. Give concrete, testable advice. Prefer numbers, experiments, and short bullets. Be optimistic but realistic. 💡', vc:'You are a pragmatic VC partner. Pressure-test market, moat, unit economics, and risks. Ask sharp questions, then suggest fixes. 📈', lean:'You are a Lean Startup mentor. Prioritize experiments, MVP, and validated learning. Keep it scrappy and iterative. 🧪' }; $('#persona-text').value=presets[kind] }
+  function savePersona(){ state.persona=$('#persona-text').value||state.persona; persist(); closeModal('persona') }
+
+  // ===== Events =====
+  $('#btn-new').onclick=()=>newProject();
+  $('#btn-export-json').onclick=exportJSON;
+  $('#btn-export-md').onclick=exportMarkdown;
+  $('#btn-import-json').onclick=()=>$('#import-file').click();
+  $('#import-file').onchange=(e)=>{ const f=e.target.files[0]; if(f) importJSONFile(f); e.target.value=''; };
+  $('#search').oninput=(e)=>renderProjects(e.target.value);
+  $('#btn-settings').onclick=()=>openModal('settings');
+  $('#btn-persona').onclick=()=>{ $('#persona-text').value=state.persona; openModal('persona'); };
+  $('#btn-voice').onclick=()=>{ state.voice=!state.voice; $('#btn-voice').textContent = state.voice? '🔊 Voice ON':'🎙️ Voice'; persist(); };
+  $('#btn-pitch').onclick=()=>{ openTab('pitch'); aiPitch(); };
+  $('#btn-print').onclick=()=>window.print();
+
+  $('#preset').onchange=e=>{ state.settings.preset=e.target.value; persist(); };
+  $('#baseUrl').onchange=e=>{ state.settings.baseUrl=e.target.value; persist(); };
+  $('#model').onchange=e=>{ state.settings.model=e.target.value; persist(); };
+
+  document.addEventListener('keydown',(e)=>{
+    if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); persist(); setStatus('💾 Saved'); setTimeout(()=>setStatus('⚡ Ready'),800); }
+    if((e.ctrlKey||e.metaKey) && e.key==='/'){ e.preventDefault(); const cmd=prompt('Command: new, export, import, settings, persona'); if(cmd==='new') newProject(); if(cmd==='export') exportJSON(); if(cmd==='import') $('#import-file').click(); if(cmd==='settings') openModal('settings'); if(cmd==='persona') $('#btn-persona').click(); }
+  });
+
+  function hydrate(){
+    $('#preset').value=state.settings.preset; $('#baseUrl').value=state.settings.baseUrl; $('#model').value=state.settings.model;
+    $('#set-max').value=state.settings.max_tokens; $('#set-temp').value=state.settings.temperature; $('#set-top').value=state.settings.top_p; $('#set-stream').checked=!!state.settings.stream;
+  }
+
+  function boot(){ if(!state.currentId) newProject(); renderProjects(); renderTabs(); hydrate(); openTab('overview'); }
+
+  boot();
+  </script>
+</body>
+</html>

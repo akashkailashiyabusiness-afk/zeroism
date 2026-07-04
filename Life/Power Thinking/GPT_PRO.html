@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LocalGPT Pro — Offline Chat UI</title>
+<style>
+  :root{
+    --bg:#0b0f17;--panel:#0f1624;--muted:#1a2235;--text:#e6e9ef;--sub:#aab3c5;--brand:#6ee7ff;--accent:#7c4dff;--danger:#ff5d6c;--ok:#22c55e;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:linear-gradient(120deg,#0b0f17 0%,#0a0f1c 60%,#0b1325 100%);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
+  .app{display:grid;grid-template-columns:280px 1fr;gap:14px;height:100%;padding:14px}
+  .card{background:var(--panel);border:1px solid #1b2437;border-radius:var(--radius);box-shadow:var(--shadow)}
+  .sidebar{display:flex;flex-direction:column;gap:10px;padding:12px}
+  .row{display:flex;gap:8px;align-items:center}
+  .title{font-weight:700;font-size:18px}
+  .sub{color:var(--sub);font-size:12px}
+  .btn{background:linear-gradient(180deg,#1a2437,#151d30);border:1px solid #1f2940;color:var(--text);padding:10px 12px;border-radius:12px;cursor:pointer;transition:.15s;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.03)}
+  .btn.primary{background:linear-gradient(180deg,#2a3552,#1b2440);border-color:#2b3758}
+  .btn.ghost{background:transparent;border:1px dashed #2a3552}
+  .btn.danger{border-color:#553043;background:#2a1820}
+  .chip{background:#141c2d;border:1px solid #22304b;color:#b8c6e3;border-radius:999px;padding:6px 10px;font-size:12px}
+  input,select,textarea{background:#0f1524;border:1px solid #283659;color:var(--text);border-radius:12px;padding:10px;width:100%;outline:none}
+  textarea{resize:vertical;min-height:72px}
+  .header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #1b2437}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand-logo{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 30% 30%,var(--brand),transparent 60%),radial-gradient(circle at 70% 70%,var(--accent),transparent 55%),#0c1428;border:1px solid #25314d;box-shadow:0 0 40px rgba(108,231,255,.15) inset}
+  .content{display:grid;grid-template-rows:auto 1fr auto;height:100%}
+  .chat{display:flex;gap:14px;height:100%}
+  .messages{flex:1;overflow:auto;padding:16px;scroll-behavior:smooth}
+  .bubble{max-width:900px;margin:0 0 14px;display:flex;gap:10px}
+  .bubble .avatar{width:32px;height:32px;border-radius:8px;background:#17213a;border:1px solid #263456;flex:0 0 32px}
+  .bubble.user .avatar{background:#1b2e22;border-color:#254c38}
+  .bubble .msg{padding:12px 14px;border-radius:14px;border:1px solid #233254;background:#0f1628;white-space:pre-wrap}
+  .bubble.user .msg{background:#11211a;border-color:#224232}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+  .inputbar{display:flex;gap:10px;align-items:flex-end;padding:12px;border-top:1px solid #1b2437;background:linear-gradient(180deg,#0f1624,#0d1320)}
+  .inputbar textarea{flex:1}
+  .aside{width:340px;display:flex;flex-direction:column;gap:10px;padding:12px}
+  .split{display:grid;grid-template-columns:1fr 360px;gap:14px;height:calc(100% - 56px)}
+  .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:#0c1428;border:1px solid #223356;border-radius:8px;padding:0 6px;font-size:12px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  .code{position:relative;background:#0a0f1f;border:1px solid #203052;border-radius:12px;padding:12px;overflow:auto}
+  .copy{position:absolute;top:8px;right:8px;cursor:pointer;border:1px solid #31456e;border-radius:8px;padding:6px 8px;background:#0d1530}
+  .hidden{display:none !important}
+  .tabs{display:flex;gap:8px;border-bottom:1px solid #1b2437;padding:0 12px}
+  .tab{padding:10px 12px;border:1px solid #253153;border-bottom:none;border-radius:12px 12px 0 0;background:#0f172a;cursor:pointer}
+  .tab.active{background:#151f39}
+  .section{padding:12px}
+  .hr{height:1px;background:#1b2437;margin:10px 0}
+  .link{color:#7bd2ff;text-decoration:none;border-bottom:1px dashed #2b405f}
+  .small{font-size:12px;color:var(--sub)}
+</style>
+</head>
+<body>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="card sidebar" id="left">
+      <div class="row">
+        <div class="brand">
+          <div class="brand-logo"></div>
+          <div>
+            <div class="title">LocalGPT Pro</div>
+            <div class="sub">Runs 100% on your machine</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn primary" id="newChat">➕ New Chat</button>
+        <button class="btn ghost" id="exportAll">⬇️ Export</button>
+      </div>
+
+      <div class="hr"></div>
+      <div class="sub">Conversations</div>
+      <div id="threads" style="overflow:auto;flex:1;display:flex;flex-direction:column;gap:6px"></div>
+
+      <div class="hr"></div>
+      <div class="sub">Quick Prompts</div>
+      <div id="prompts" class="row" style="flex-wrap:wrap">
+        <button class="chip" data-prompt="Summarize this clearly with bullet points.">📝 Summarize</button>
+        <button class="chip" data-prompt="Explain like I'm 12 with examples.">🧒 ELI12</button>
+        <button class="chip" data-prompt="List 5 actionable next steps.">✅ Next Steps</button>
+        <button class="chip" data-prompt="Generate clean, commented code and tests.">👩‍💻 Code+Tests</button>
+        <button class="chip" data-prompt="Think step by step; show reasoning concisely.">🧠 Think</button>
+      </div>
+
+      <div class="hr"></div>
+      <div class="sub">Tips</div>
+      <div class="small">
+        Works with LM Studio, Ollama, GPT4All compatible APIs.<br/>
+        Use <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> to send. <br/>
+        Toggle streaming if your server supports it.
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="card content">
+      <div class="header">
+        <div class="brand">
+          <div class="brand-logo"></div>
+          <div>
+            <div class="title">Chat</div>
+            <div class="sub">Private • Local • Fast ⚡</div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <a class="btn ghost" href="⚡ALL ai.html" title="Back to Hub">🏠 Hub</a>
+          <button class="btn" id="ttsBtn">🔊 Speak</button>
+          <button class="btn" id="sttBtn">🎙️ Dictate</button>
+          <button class="btn" id="clearThread">🧹 Clear</button>
+          <button class="btn danger" id="deleteThread">🗑️ Delete</button>
+        </div>
+      </div>
+
+      <div class="split">
+        <!-- Messages -->
+        <section class="chat">
+          <div class="messages" id="messages"></div>
+        </section>
+
+        <!-- Right aside: Settings & Tools -->
+        <aside class="aside card">
+          <div class="tabs">
+            <div class="tab active" data-tab="settings">⚙️ Settings</div>
+            <div class="tab" data-tab="files">📎 Files</div>
+            <div class="tab" data-tab="images">🖼️ Images</div>
+            <div class="tab" data-tab="about">ℹ️ About</div>
+          </div>
+
+          <div class="section" id="tab-settings">
+            <div class="sub">API Endpoint</div>
+            <input id="apiBase" placeholder="http://localhost:1234/v1" />
+            <div class="sub" style="margin-top:8px">Model</div>
+            <input id="model" placeholder="e.g., qwen2.5, llama3, mistral" />
+            <div class="row" style="margin-top:8px">
+              <label class="row" style="gap:6px"><input type="checkbox" id="stream" /> Stream</label>
+              <label class="row" style="gap:6px"><input type="checkbox" id="markdown" checked /> Markdown</label>
+            </div>
+            <div class="sub" style="margin-top:8px">System Prompt</div>
+            <textarea id="system" placeholder="You are a helpful, concise assistant. Use markdown."></textarea>
+            <div class="row" style="margin-top:8px">
+              <button class="btn" id="saveCfg">💾 Save</button>
+              <button class="btn ghost" id="resetCfg">↩️ Reset</button>
+            </div>
+            <div class="hr"></div>
+            <div class="sub">Temperature</div>
+            <input type="range" id="temp" min="0" max="2" step="0.1" value="0.7" />
+            <div class="sub">Max Tokens (reply)</div>
+            <input type="number" id="maxTokens" min="1" value="1024" />
+          </div>
+
+          <div class="section hidden" id="tab-files">
+            <div class="sub">Attach context files (txt, md, json, code)</div>
+            <input type="file" id="filePicker" multiple />
+            <div class="small">Attached: <span id="fileCount">0</span></div>
+            <div id="fileList" class="small" style="max-height:160px;overflow:auto;margin-top:6px"></div>
+          </div>
+
+          <div class="section hidden" id="tab-images">
+            <div class="sub">Image Generation (optional)</div>
+            <div class="small">Point to a local API like SD WebUI or OpenAI-compatible /images endpoint.</div>
+            <label class="sub">Endpoint</label>
+            <input id="imgEndpoint" placeholder="http://localhost:7860/v1/images/generations" />
+            <label class="sub">Prompt</label>
+            <textarea id="imgPrompt" placeholder="A cinematic neon cityscape..."></textarea>
+            <div class="row">
+              <button class="btn" id="genImage">🎨 Generate</button>
+              <a class="btn ghost" id="dlImage" download="image.png">💾 Download</a>
+            </div>
+            <div style="margin-top:10px">
+              <img id="imagePreview" style="max-width:100%;border-radius:12px;border:1px solid #2a3552" />
+            </div>
+          </div>
+
+          <div class="section hidden" id="tab-about">
+            <div class="title">LocalGPT Pro</div>
+            <div class="sub">Single-file offline web client</div>
+            <ul>
+              <li>Supports OpenAI-compatible Chat API.</li>
+              <li>Works with <span class="mono">LM Studio</span> (Server Mode), <span class="mono">Ollama + OpenAI compat</span>, <span class="mono">GPT4All Server</span>.</li>
+              <li>Stores chats locally (browser storage).</li>
+              <li>Voice input/output (browser dependent).</li>
+            </ul>
+            <div class="hr"></div>
+            <div class="small">Made for privacy-first workflows. No external CDN, no trackers.</div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Input Bar -->
+      <div class="inputbar">
+        <textarea id="input" placeholder="Ask anything… (Ctrl+Enter to send)"></textarea>
+        <button class="btn primary" id="send">➡️ Send</button>
+      </div>
+    </main>
+  </div>
+
+<script>
+/* ============================
+   Utilities
+============================= */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+function uid(){ return Math.random().toString(36).slice(2,10) }
+function now(){ return new Date().toISOString() }
+function escapeHTML(s){ return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) }
+
+// Very small Markdown renderer (headings, bold/italic, code, lists, links)
+function md(text){
+  let t = escapeHTML(text);
+  // code blocks ```
+  t = t.replace(/```([\s\S]*?)```/g, (_,code)=>`<div class="code"><button class="copy">Copy</button><pre><code>${code}</code></pre></div>`);
+  // inline code
+  t = t.replace(/`([^`]+)`/g, '<span class="mono">$1</span>');
+  // headings
+  t = t.replace(/^### (.*)$/gm,'<h3>$1</h3>').replace(/^## (.*)$/gm,'<h2>$1</h2>').replace(/^# (.*)$/gm,'<h1>$1</h1>');
+  // bold / italic
+  t = t.replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\*([^*]+)\*/g,'<i>$1</i>');
+  // links [text](url)
+  t = t.replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g,'<a class="link" target="_blank" href="$2">$1</a>');
+  // lists
+  t = t.replace(/^(\- |\* )(.*)$/gm,'• $2');
+  // line breaks
+  t = t.replace(/\n/g,'<br/>');
+  return t;
+}
+
+function saveFile(name, content){
+  const blob = new Blob([content], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ============================
+   State & Storage
+============================= */
+const store = {
+  get k(){ return 'localgpt_pro_v1' },
+  load(){
+    try{ return JSON.parse(localStorage.getItem(this.k)) || {} }catch(e){ return {} }
+  },
+  save(obj){ localStorage.setItem(this.k, JSON.stringify(obj)) }
+}
+
+let state = store.load();
+if(!state.cfg){
+  state.cfg = {
+    apiBase: 'http://localhost:1234/v1',
+    model: 'local-model-name',
+    system: 'You are a helpful, concise assistant. Use markdown and provide examples when helpful.',
+    stream: false,
+    markdown: true,
+    temp: 0.7,
+    maxTokens: 1024
+  }
+}
+if(!state.threads){ state.threads = {} }
+if(!state.active){ state.active = uid(); state.threads[state.active]={id:state.active,name:'New chat',msgs:[]} }
+
+/* ============================
+   UI Bindings
+============================= */
+function renderThreads(){
+  const el = $('#threads'); el.innerHTML='';
+  Object.values(state.threads).sort((a,b)=> (b.updated||0) - (a.updated||0)).forEach(t=>{
+    const d = document.createElement('div');
+    d.className='btn'; d.style.justifyContent='space-between'; d.style.display='flex';
+    d.innerHTML = `<div>${t.name||'Untitled'}</div><div class="small">${(t.updated||'').slice(0,10)}</div>`;
+    d.onclick=()=>{ state.active=t.id; store.save(state); renderAll() }
+    if(state.active===t.id){ d.style.borderColor='#5aa7ff' }
+    el.appendChild(d);
+  });
+}
+
+function applyCfg(){
+  $('#apiBase').value = state.cfg.apiBase;
+  $('#model').value = state.cfg.model;
+  $('#system').value = state.cfg.system;
+  $('#stream').checked = state.cfg.stream;
+  $('#markdown').checked = state.cfg.markdown;
+  $('#temp').value = state.cfg.temp;
+  $('#maxTokens').value = state.cfg.maxTokens;
+}
+
+function renderMessages(){
+  const m = $('#messages'); m.innerHTML='';
+  const t = state.threads[state.active];
+  t.msgs.forEach(msg=>{
+    const b = document.createElement('div');
+    b.className = 'bubble ' + (msg.role==='user'?'user':'assistant');
+    b.innerHTML = `<div class="avatar"></div><div class="msg">${ state.cfg.markdown && msg.role!=='user' ? md(msg.content): escapeHTML(msg.content) }</div>`;
+    m.appendChild(b);
+  });
+  m.scrollTop = m.scrollHeight;
+  // add copy action for code blocks
+  m.querySelectorAll('.copy').forEach(btn=>{
+    btn.onclick = ()=>{
+      const code = btn.parentElement.querySelector('code').innerText;
+      navigator.clipboard.writeText(code);
+      btn.textContent = 'Copied';
+      setTimeout(()=>btn.textContent='Copy',1200);
+    }
+  })
+}
+
+function renderAll(){ renderThreads(); applyCfg(); renderMessages(); }
+
+/* ============================
+   Chat Actions
+============================= */
+function setActiveNameByFirstUserMessage(){
+  const t = state.threads[state.active];
+  const firstUser = t.msgs.find(x=>x.role==='user');
+  if(firstUser && (!t.name || t.name==='New chat')){
+    t.name = (firstUser.content.slice(0,30) + (firstUser.content.length>30?'…':''));
+  }
+}
+
+async function sendMessage(){
+  const input = $('#input'); const text = input.value.trim();
+  if(!text) return;
+  const t = state.threads[state.active];
+  t.msgs.push({role:'user',content:text,time:now()});
+  state.threads[state.active]=t; t.updated=now();
+  setActiveNameByFirstUserMessage();
+  input.value=''; renderAll();
+
+  // optimistic assistant bubble
+  const thinkingId = uid();
+  t.msgs.push({role:'assistant', content:'⏳ Thinking…', tempId:thinkingId});
+  renderAll();
+
+  try{
+    const payload = {
+      model: state.cfg.model,
+      temperature: Number(state.cfg.temp),
+      max_tokens: Number(state.cfg.maxTokens),
+      messages: [
+        ...(state.cfg.system ? [{role:'system', content: state.cfg.system}] : []),
+        ...t.msgs.filter(m => !m.tempId && m.role!=='assistant') // only prior user/system
+      ],
+      stream: !!state.cfg.stream
+    };
+
+    const base = state.cfg.apiBase.replace(/\/$/, '');
+    const url = base + '/chat/completions';
+
+    if(state.cfg.stream){
+      // EventStream parsing for OpenAI-compatible
+      const res = await fetch(url, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      // replace thinking bubble with empty assistant bubble
+      t.msgs = t.msgs.filter(m=>!m.tempId);
+      const a = {role:'assistant', content:'', time:now()}; t.msgs.push(a); renderAll();
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      while(true){
+        const {value, done} = await reader.read();
+        if(done) break;
+        const chunk = decoder.decode(value, {stream:true});
+        const lines = chunk.split('\n').map(l=>l.trim()).filter(Boolean);
+        for(const line of lines){
+          if(!line.startsWith('data:')) continue;
+          const data = line.slice(5).trim();
+          if(data==='[DONE]') break;
+          try{
+            const j = JSON.parse(data);
+            const delta = j.choices?.[0]?.delta?.content || '';
+            a.content += delta || '';
+            renderMessages();
+          }catch(e){ /* ignore */ }
+        }
+      }
+      t.updated=now(); store.save(state);
+    }else{
+      const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      const content = data.choices?.[0]?.message?.content || JSON.stringify(data);
+      // replace thinking bubble
+      t.msgs = t.msgs.filter(m=>!m.tempId);
+      t.msgs.push({role:'assistant',content,time:now()});
+      t.msgs[t.msgs.length-1].content = content;
+      t.updated=now(); store.save(state); renderAll();
+    }
+  }catch(err){
+    // replace thinking bubble
+    const t = state.threads[state.active];
+    t.msgs = t.msgs.filter(m=>!m.tempId);
+    t.msgs.push({role:'assistant',content:'⚠️ Error: '+err.message,time:now()});
+    t.updated=now(); store.save(state); renderAll();
+  }
+}
+
+// Buttons & hotkeys
+$('#send').onclick = sendMessage;
+$('#input').addEventListener('keydown', e=>{
+  if(e.key==='Enter' && (e.ctrlKey || e.metaKey)){ e.preventDefault(); sendMessage(); }
+});
+
+$('#newChat').onclick = ()=>{
+  const id = uid();
+  state.active=id; state.threads[id]={id,name:'New chat',msgs:[],updated:now()};
+  store.save(state); renderAll();
+}
+$('#clearThread').onclick = ()=>{
+  const ok = confirm('Clear messages in this chat?'); if(!ok) return;
+  state.threads[state.active].msgs=[]; state.threads[state.active].updated=now();
+  store.save(state); renderAll();
+}
+$('#deleteThread').onclick = ()=>{
+  const ok = confirm('Delete this chat?'); if(!ok) return;
+  delete state.threads[state.active];
+  const remaining = Object.keys(state.threads);
+  state.active = remaining[0] || (state.threads[uid()]={id:uid(),name:'New chat',msgs:[]}).id;
+  store.save(state); renderAll();
+}
+$('#exportAll').onclick = ()=>{
+  const data = JSON.stringify(state, null, 2);
+  saveFile('localgpt_pro_export.json', data);
+}
+
+// Quick prompts
+$('#prompts').addEventListener('click', e=>{
+  if(e.target.matches('.chip')){
+    const p = e.target.getAttribute('data-prompt');
+    const i = $('#input'); i.value = (i.value? i.value+'\n' : '') + p;
+    i.focus();
+  }
+});
+
+/* ============================
+   Tabs & Settings
+============================= */
+$$('.tab').forEach(tab=>tab.onclick = ()=>{
+  $$('.tab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  const name = tab.getAttribute('data-tab');
+  // toggle visible sections explicitly
+  $('#tab-settings').classList.toggle('hidden', name!=='settings');
+  $('#tab-files').classList.toggle('hidden', name!=='files');
+  $('#tab-images').classList.toggle('hidden', name!=='images');
+  $('#tab-about').classList.toggle('hidden', name!=='about');
+});
+
+$('#saveCfg').onclick = ()=>{
+  state.cfg.apiBase = $('#apiBase').value.trim();
+  state.cfg.model = $('#model').value.trim();
+  state.cfg.system = $('#system').value.trim();
+  state.cfg.stream = $('#stream').checked;
+  state.cfg.markdown = $('#markdown').checked;
+  state.cfg.temp = Number($('#temp').value);
+  state.cfg.maxTokens = Number($('#maxTokens').value);
+  store.save(state);
+  alert('✅ Settings saved');
+}
+$('#resetCfg').onclick = ()=>{
+  if(confirm('Reset settings to defaults?')){
+    localStorage.removeItem(store.k);
+    location.reload();
+  }
+}
+
+/* ============================
+   Files as context
+============================= */
+let attachments = [];
+$('#filePicker').addEventListener('change', async (e)=>{
+  const files = Array.from(e.target.files);
+  for(const f of files){
+    const text = await f.text();
+    attachments.push({name:f.name,content:text.slice(0,200000)}); // cap ~200 KB per file
+  }
+  $('#fileCount').textContent = attachments.length;
+  $('#fileList').innerHTML = attachments.map(a=>`<div>📄 ${escapeHTML(a.name)} <span class="small">(${a.content.length} chars)</span></div>`).join('');
+  // inject into system prompt for next message
+  if(attachments.length){
+    const note = '\n\n[Attached files summary]\n' + attachments.map(a=>`- ${a.name}: ${a.content.slice(0,200)}`).join('\n');
+    $('#system').value = (state.cfg.system||'') + note;
+  }
+});
+
+/* ============================
+   Voice I/O
+============================= */
+let speaking=false;
+$('#ttsBtn').onclick = ()=>{
+  const t = state.threads[state.active];
+  const last = [...t.msgs].reverse().find(x=>x.role==='assistant'); if(!last) return;
+  if(speaking){ window.speechSynthesis.cancel(); speaking=false; return; }
+  const u = new SpeechSynthesisUtterance(last.content); window.speechSynthesis.speak(u); speaking=true;
+  u.onend=()=>speaking=false;
+};
+let rec=null;
+$('#sttBtn').onclick = async ()=>{
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ alert('SpeechRecognition not supported in this browser'); return; }
+  if(rec){ rec.stop(); rec=null; return; }
+  rec = new SR(); rec.lang='en-US'; rec.continuous=false; rec.interimResults=false;
+  rec.onresult = e=>{ $('#input').value += (e.results[0][0].transcript + ' '); };
+  rec.onend=()=>{ rec=null; };
+  rec.start();
+};
+
+/* ============================
+   Images
+============================= */
+$('#genImage').onclick = async ()=>{
+  const ep = $('#imgEndpoint').value.trim();
+  const prompt = $('#imgPrompt').value.trim();
+  if(!ep || !prompt){ alert('Set endpoint and prompt first'); return; }
+  try{
+    const res = await fetch(ep, {method:'POST',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({prompt, size:'1024x1024', n:1})});
+    const data = await res.json();
+    // Expect base64 in data.data[0].b64_json or url
+    let b64 = data?.data?.[0]?.b64_json;
+    if(!b64 && data?.data?.[0]?.url){
+      const img = new Image(); img.crossOrigin='anonymous'; img.src = data.data[0].url;
+      img.onload = ()=>{
+        const c = document.createElement('canvas'); c.width=img.width; c.height=img.height;
+        const ctx = c.getContext('2d'); ctx.drawImage(img,0,0);
+        $('#imagePreview').src = c.toDataURL('image/png');
+        $('#dlImage').href = $('#imagePreview').src;
+      };
+      return;
+    }
+    if(!b64) throw new Error('No image found in response');
+    const src = 'data:image/png;base64,'+b64;
+    $('#imagePreview').src = src;
+    $('#dlImage').href = src;
+  }catch(e){
+    alert('Image error: '+e.message);
+  }
+};
+
+/* ============================
+   Hub settings sync
+============================= */
+try{
+  const hub = JSON.parse(localStorage.getItem('ai_hub_cfg')||'{}');
+  if(hub.apiBase){ state.cfg.apiBase = hub.apiBase; }
+  if(hub.model){ state.cfg.model = hub.model; }
+  if(hub.apiKey){ state.cfg.apiKey = hub.apiKey; }
+  store.save(state);
+}catch(_){ }
+
+/* ============================
+   Boot
+============================= */
+renderAll();
+</script>
+</body>
+</html>

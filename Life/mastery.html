@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>मास्टरी बाय रॉबर्ट ग्रीन: सारांश 🌟</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="bookstyle.css">  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #fff3e0;
+            color: #2d3748;
+            line-height: 1.7;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .book-intro {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #4c78a8, #1a365d);
+            color: #fff;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .book-intro h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .book-intro p {
+            font-size: 1.3em;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        section {
+            background: #fff;
+            padding: 35px;
+            margin-bottom: 40px;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        section.active {
+            opacity: 1;
+        }
+
+        section h2 {
+            color: #ef5350;
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #ffffff;
+            padding-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        section h2:hover {
+            transform: translateX(10px);
+        }
+
+        article h3 {
+            color: #4a5568;
+            font-size: 1.6em;
+            margin: 25px 0 15px;
+            transition: color 0.3s ease;
+        }
+
+        article h3:hover {
+            color: #ffca28;
+        }
+
+        ul {
+            margin-left: 25px;
+        }
+
+        ul li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        ul li:hover {
+            transform: translateX(5px);
+        }
+
+        ul li:before {
+            content: "➤";
+            color: #ffca28;
+            position: absolute;
+            left: 0;
+        }
+
+        ul li strong {
+            color: #ef5350;
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            padding: 16px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .quiz-container select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #4a5568;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .quiz-container button {
+            background: #ef5350;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .quiz-container button:hover {
+            background: #ffca28;
+            color: #2d3748;
+        }
+
+        .quiz-result {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .correct {
+            color: #2f855a;
+        }
+
+        .incorrect {
+            color: #c53030;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 8px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            margin-bottom: 24px;
+        }
+
+        .tablink {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-size: 1em;
+            font-weight: 500;
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tablink:hover, .tablink.active {
+            background: #4a5568;
+            color: #fff;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .book-intro h1 {
+                font-size: 2em;
+            }
+
+            section {
+                padding: 25px;
+            }
+
+            section h2 {
+                font-size: 1.8em;
+            }
+
+            .tablink {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="book-intro">
+        <img src="mastery.webp" alt="Steve Jobs Biography Cover">
+        <h1>मास्टरी: अपने क्षेत्र में मास्टर बनें 🌟</h1>
+        <p>रॉबर्ट ग्रीन की किताब से प्रेरणा ✨</p>
+    </div>
+
+    <main>
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tablink active" onclick="showTab('पुकार')">अपनी पुकार 😊</button>
+            <button class="tablink" onclick="showTab('शिक्षुता')">शिक्षुता 🛠️</button>
+            <button class="tablink" onclick="showTab('मेंटर')">मेंटर 🙏</button>
+            <button class="tablink" onclick="showTab('लोग')">लोगों को समझें 🤝</button>
+            <button class="tablink" onclick="showTab('रचनात्मकता')">रचनात्मकता 💡</button>
+            <button class="tablink" onclick="showTab('मास्टरी')">मास्टरी 🎯</button>
+            <button class="tablink" onclick="showTab('प्रश्नोत्तरी')">प्रश्नोत्तरी ❓</button>
+        </div>
+
+        <!-- Tab Content Container -->
+        <section id="tab-content"></section>
+    </main>
+
+    <script>
+        // डेटा ऑब्जेक्ट जिसमें सारी जानकारी है
+        const tabData = {
+            पुकार: {
+                title: "अपनी पुकार 😊",
+                content: `
+                    <article>
+                        <div class="grid">
+                            <div class="card">
+                                <h3>अपना प्यार ढूंढो 🌈</h3>
+                                <p>हर किसी के अंदर कुछ खास है। वो काम जो तुम्हें खुशी देता है, वही तुम्हारी पुकार है!</p>
+                                <p><em>उदाहरण: अगर बचपन में तुम्हें पेंटिंग करना पसंद था, तो शायद कला तुम्हारा रास्ता है 🎨</em></p>
+                                <p>अपने दिल की सुनो, न कि समाज की।</p>
+                            </div>
+                            <div class="card">
+                                <h3>बचपन को याद करो 🧒</h3>
+                                <p>बचपन में तुम्हें क्या करने में मज़ा आता था? वो तुम्हारा इशारा हो सकता है।</p>
+                                <p><em>उदाहरण: लियोनार्डो दा विंची को प्रकृति देखना पसंद था, इसलिए वो कलाकार और वैज्ञानिक बने 🌳</em></p>
+                                <p>पुरानी यादें तुम्हें सही रास्ता दिखा सकती हैं।</p>
+                            </div>
+                            <div class="card">
+                                <h3>पैसे की चिंता मत करो 💸</h3>
+                                <p>अगर तुम सिर्फ पैसों के लिए काम चुनोगे, तो खुशी नहीं मिलेगी।</p>
+                                <p><em>उदाहरण: बेंजामिन फ्रैंकलिन ने मोमबत्ती का धंधा छोड़कर लेखन चुना ✍️</em></p>
+                                <p>वो करो जो तुम्हें उत्साहित करता है।</p>
+                            </div>
+                        </div>
+                    </article>
+                `
+            },
+            शिक्षुता: {
+                title: "शिक्षुता 🛠️",
+                content: `
+                    <article>
+                        <div class="grid">
+                            <div class="card">
+                                <h3>बुनियाद सीखो 📚</h3>
+                                <p>किसी भी काम में मास्टर बनने के लिए पहले उसकी बेसिक बातें सीखो।</p>
+                                <p><em>उदाहरण: मोज़ार्ट ने घंटों पियानो बजाया, भले ही वो उबाऊ था 🎹</em></p>
+                                <p>छोटी चीज़ों से बड़ी कामयाबी शुरू होती है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>धैर्य रखो 😌</h3>
+                                <p>शुरुआत में काम मुश्किल और बोरिंग लगेगा, लेकिन रुकना मत।</p>
+                                <p><em>उदाहरण: चार्ल्स डार्विन ने सालों तक नमूने इकट्ठे किए, फिर थ्योरी बनाई 🦒</em></p>
+                                <p>हर कदम तुम्हें मज़बूत बनाता है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>छोटे काम करो 🔧</h3>
+                                <p>छोटी-छोटी चीज़ें सीखने से डरो मत। वो तुम्हारी नींव बनेंगी।</p>
+                                <p><em>उदाहरण: फ्रेडी रोच ने बॉक्सिंग रिंग साफ करके शुरुआत की 🥊</em></p>
+                                <p>हर काम में कुछ नया सीखो।</p>
+                            </div>
+                        </div>
+                    </article>
+                `
+            },
+            मेंटर: {
+                title: "मेंटर 🙏",
+                content: `
+                    <article>
+                        <div class="grid">
+                            <div class="card">
+                                <h3>सही गुरु ढूंढो 👨‍🏫</h3>
+                                <p>एक अच्छा मेंटर तुम्हें सही रास्ता दिखाता है।</p>
+                                <p><em>उदाहरण: लियोनार्डो ने वेर्रोकियो से कला सीखी और बाद में मोना लिसा बनाई 🖼️</em></p>
+                                <p>उनका अनुभव तुम्हारा समय बचाता है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>मदद करो 🤝</h3>
+                                <p>मेंटर को दिखाओ कि तुम मेहनती हो। उनके लिए छोटे काम करो।</p>
+                                <p><em>उदाहरण: फ्रेडी रोच ने अपने कोच की हर बात सुनी और अभ्यास किया 🥊</em></p>
+                                <p>ये उनका भरोसा जीतता है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>आगे बढ़ो 🚀</h3>
+                                <p>जब तुम तैयार हो, तो अपने रास्ते पर चलो। मेंटर को छोड़ने में डर मत।</p>
+                                <p><em>उदाहरण: मोज़ार्ट ने अपने पिता की ट्रेनिंग छोड़कर अपनी धुनें बनाईं 🎼</em></p>
+                                <p>अपनी पहचान बनाओ।</p>
+                            </div>
+                        </div>
+                    </article>
+                `
+            },
+            लोग: {
+                title: "लोगों को समझें 🤝",
+                content: `
+                    <article>
+                        <div class="grid">
+                            <div class="card">
+                                <h3>लोगों को पढ़ो 🧠</h3>
+                                <p>लोग क्या सोचते हैं, ये समझना ज़रूरी है।</p>
+                                <p><em>उदाहरण: चार्ल्स डार्विन ने वैज्ञानिकों की बातें सुनीं, जिससे उनकी किताब मशहूर हुई 📖</em></p>
+                                <p>ये तुम्हें रास्ते की रुकावटें पार करने में मदद करता है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>गुस्से से बचो 😬</h3>
+                                <p>छोटी बातों पर बहस मत करो। अपने काम से जवाब दो।</p>
+                                <p><em>उदाहरण: फ्रैंकलिन ने अपनी लेखनी से सबको प्रभावित किया, बहस से नहीं ✍️</em></p>
+                                <p>शांति से कामयाबी ज़्यादा मिलती है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>सबको जोड़ो 🌈</h3>
+                                <p>हर तरह के लोगों के साथ तालमेल बिठाओ।</p>
+                                <p><em>उदाहरण: डार्विन ने अलग-अलग लोगों से दोस्ती की, जिससे उनकी थ्योरी को समर्थन मिला 🌍</em></p>
+                                <p>ये तुम्हें बड़ा मंच देता है।</p>
+                            </div>
+                        </div>
+                    </article>
+                `
+            },
+            रचनात्मकता: {
+                title: "रचनात्मकता 💡",
+                content: `
+                    <article>
+                        <div class="grid">
+                            <div class="card">
+                                <h3>नया आज़माओ 🧪</h3>
+                                <p>पुराने नियम तोड़ो और नई चीज़ें बनाओ।</p>
+                                <p><em>उदाहरण: मोज़ार्ट ने नई धुनें बनाकर संगीत को बदला 🎶</em></p>
+                                <p>प्रयोग से डरो मत।</p>
+                            </div>
+                            <div class="card">
+                                <h3>पुराना-नया मिलाओ 🔄</h3>
+                                <p>जो सीखा, उसे नए तरीके से दिखाओ।</p>
+                                <p><em>उदाहरण: लियोनार्डो ने प्रकृति और कला को मिलाकर अनोखे चित्र बनाए 🖌️</em></p>
+                                <p>ये तुम्हें अलग बनाता है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>हार से सीखो 😌</h3>
+                                <p>हर असफलता कुछ नया सिखाती है।</p>
+                                <p><em>उदाहरण: आइंस्टीन ने कई बार गलत थ्योरीज़ बनाईं, फिर सही रास्ता मिला 🌌</em></p>
+                                <p>गलतियों को गले लगाओ।</p>
+                            </div>
+                        </div>
+                    </article>
+                `
+            },
+            मास्टरी: {
+                title: "मास्टरी 🎯",
+                content: `
+                    <article>
+                        <div class="grid">
+                            <div class="card">
+                                <h3>गहराई तक जाओ 🔬</h3>
+                                <p>अपने काम की हर छोटी बात समझो।</p>
+                                <p><em>उदाहरण: बॉबी फिशर ने शतरंज की हर चाल को पढ़ा और चैंपियन बने ♟️</em></p>
+                                <p>जितना ज़्यादा जानोगे, उतना आसान लगेगा।</p>
+                            </div>
+                            <div class="card">
+                                <h3>दिल की सुनो 🌟</h3>
+                                <p>सालों की मेहनत के बाद तुम्हारा दिमाग सही फैसले लेता है।</p>
+                                <p><em>उदाहरण: आइंस्टीन ने अपनी थ्योरीज़ में दिल की बात मानी 🌌</em></p>
+                                <p>अपनी सहज बुद्धि पर भरोसा करो।</p>
+                            </div>
+                            <div class="card">
+                                <h3>हमेशा सीखो 📖</h3>
+                                <p>मास्टरी कोई अंत नहीं, बल्कि यात्रा है।</p>
+                                <p><em>उदाहरण: ग्लेन गूल्ड ने पियानो को नए तरीके से बजाया, हर बार कुछ नया सीखा 🎹</em></p>
+                                <p>नया सीखते रहो, रुकना मत।</p>
+                            </div>
+                        </div>
+                    </article>
+                `
+            },
+            प्रश्नोत्तरी: {
+                title: "प्रश्नोत्तरी ❓",
+                content: `
+                    <article class="quiz-container">
+                        <div class="card">
+                            <p><strong>प्रश्न 1: मास्टरी की शुरुआत क्या है? 🤔</strong></p>
+                            <select id="quizAnswer1">
+                                <option value="A">पैसे कमाना</option>
+                                <option value="B">अपनी पुकार ढूंढना</option>
+                                <option value="C">दूसरों से आगे निकलना</option>
+                            </select>
+                            <button onclick="checkAnswer1()">जवाब दो! 🚀</button>
+                            <div id="result1" class="quiz-result"></div>
+                        </div>
+                        <div class="card">
+                            <p><strong>प्रश्न 2: शिक्षुता में क्या ज़रूरी है? 🛠️</strong></p>
+                            <select id="quizAnswer2">
+                                <option value="A">जल्दी कामयाबी</option>
+                                <option value="B">धैर्य और मेहनत</option>
+                                <option value="C">कम काम करना</option>
+                            </select>
+                            <button onclick="checkAnswer2()">जवाब दो! 🚀</button>
+                            <div id="result2" class="quiz-result"></div>
+                        </div>
+                        <div class="card">
+                            <p><strong>प्रश्न 3: असली मास्टरी कैसे आती है? 🎯</strong></p>
+                            <select id="quizAnswer3">
+                                <option value="A">सिर्फ किताबें पढ़कर</option>
+                                <option value="B">सहज बुद्धि और मेहनत से</option>
+                                <option value="C">दूसरों की नकल करके</option>
+                            </select>
+                            <button onclick="checkAnswer3()">जवाब दो! 🚀</button>
+                            <div id="result3" class="quiz-result"></div>
+                        </div>
+                    </article>
+                `
+            }
+        };
+
+        // टैब दिखाने का फंक्शन
+        function showTab(tabName) {
+            const contentContainer = document.getElementById('tab-content');
+            const tablinks = document.getElementsByClassName('tablink');
+
+            // सभी टैब्स से एक्टिव हटाओ
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove('active');
+            }
+
+            // क्लिक किया टैब एक्टिव करो
+            const clickedTab = Array.from(tablinks).find(tab => tab.textContent === tabData[tabName].title || tab.textContent === tabName);
+            if (clickedTab) {
+                clickedTab.classList.add('active');
+            }
+
+            // टैब का कंटेंट दिखाओ
+            const tab = tabData[tabName];
+            if (tab) {
+                contentContainer.innerHTML = `
+                    <h2>${tab.title}</h2>
+                    ${tab.content}
+                `;
+            }
+        }
+
+        // क्विज़ के जवाब चेक करने के फंक्शन
+        function checkAnswer1() {
+            const answer = document.getElementById("quizAnswer1").value;
+            const result = document.getElementById("result1");
+            if (answer === "B") {
+                result.innerHTML = "वाह, सही जवाब! 🎉 मास्टरी अपनी पुकार से शुरू होती है!";
+                result.classList.add("correct");
+                result.classList.remove("incorrect");
+            } else {
+                result.innerHTML = "अरे, गलत हो गया 😅 मास्टरी अपने दिल की आवाज़ से शुरू होती है!";
+                result.classList.add("incorrect");
+                result.classList.remove("correct");
+            }
+        }
+
+        function checkAnswer2() {
+            const answer = document.getElementById("quizAnswer2").value;
+            const result = document.getElementById("result2");
+            if (answer === "B") {
+                result.innerHTML = "बिल्कुल सही! 🎈 धैर्य और मेहनत ही शिक्षुता की जान है!";
+                result.classList.add("correct");
+                result.classList.remove("incorrect");
+            } else {
+                result.innerHTML = "ओहो, गलत 😔 शिक्षुता में मेहनत ज़रूरी है, जल्दबाज़ी नहीं!";
+                result.classList.add("incorrect");
+                result.classList.remove("correct");
+            }
+        }
+
+        function checkAnswer3() {
+            const answer = document.getElementById("quizAnswer3").value;
+            const result = document.getElementById("result3");
+            if (answer === "B") {
+                result.innerHTML = "शाबाश! 🌟 सहज बुद्धि और मेहनत से मास्टरी मिलती है!";
+                result.classList.add("correct");
+                result.classList.remove("incorrect");
+            } else {
+                result.innerHTML = "नहीं-नहीं 😕 मास्टरी अपने अनुभव और मेहनत से आती है!";
+                result.classList.add("incorrect");
+                result.classList.remove("correct");
+            }
+        }
+
+        // पहला टैब शुरू में दिखाओ
+        showTab('पुकार');
+    </script>
+</body>
+</html>

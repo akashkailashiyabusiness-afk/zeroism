@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Diamond Collection | Essential Wikipedia Pages</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Lora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-main: #0a0a0c;
+  --surface: #161b22;
+  --accent: #c5a059;
+  --accent-glow: rgba(197,160,89,0.3);
+  --text-primary: #e2e8f0;
+  --text-muted: #8b949e;
+  --border: rgba(197,160,89,0.15);
+}
+body { background: var(--bg-main); color: var(--text-primary); font-family: 'Inter', sans-serif; }
+.serif { font-family: 'Playfair Display', serif; }
+.lora { font-family: 'Lora', serif; }
+.gold-text { color: var(--accent); }
+.card-hover { background: var(--surface); border: 1px solid var(--border); transition: all 0.3s ease; }
+.card-hover:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 10px 30px -10px var(--accent-glow); }
+.importance-bar { background: linear-gradient(90deg, #c5a059 0%, #d4af37 100%); }
+.category-badge { background: rgba(197,160,89,0.1); color: var(--accent); border: 1px solid rgba(197,160,89,0.2); }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- Header -->
+<header class="border-b border-[#30363d] bg-[#0a0a0c]/95 backdrop-blur-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <a href="/" class="text-[#8b949e] hover:text-[#c5a059] transition-colors">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <div>
+          <h1 class="text-2xl font-bold gold-text serif">The Diamond Collection</h1>
+          <p class="text-xs text-[#8b949e] uppercase tracking-widest font-bold">Essential Wikipedia Pages</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="text-xs text-[#8b949e] font-bold"><span id="page-count" class="gold-text">15</span> Pages</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Hero Section -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <div class="text-center max-w-4xl mx-auto">
+    <div class="inline-flex items-center gap-2 bg-[#161b22] border border-[#30363d] rounded-full px-4 py-2 mb-6">
+      <i class="fas fa-gem gold-text text-sm"></i>
+      <span class="text-xs font-bold uppercase tracking-widest text-[#8b949e]">Curated Knowledge</span>
+    </div>
+    <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4 serif">Fifteen Pages That Define Human Knowledge</h2>
+    <p class="text-lg text-[#8b949e] leading-relaxed lora">
+      Like diamonds, these Wikipedia articles are precious, rare, and transformative. Each one explores fundamental concepts that shape human understanding across philosophy, science, history, psychology, society, and technology.
+    </p>
+  </div>
+</section>
+
+<!-- Filter Tabs -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+  <div class="flex flex-wrap gap-2 justify-center">
+    <button onclick="filterCategory('all')" class="cat-filter active px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all" data-cat="all">
+      All <span class="opacity-60">(15)</span>
+    </button>
+    <button onclick="filterCategory('Philosophy')" class="cat-filter px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all" data-cat="Philosophy">
+      Philosophy <span class="opacity-60">(4)</span>
+    </button>
+    <button onclick="filterCategory('Science')" class="cat-filter px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all" data-cat="Science">
+      Science <span class="opacity-60">(4)</span>
+    </button>
+    <button onclick="filterCategory('History')" class="cat-filter px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all" data-cat="History">
+      History <span class="opacity-60">(2)</span>
+    </button>
+    <button onclick="filterCategory('Society')" class="cat-filter px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all" data-cat="Society">
+      Society <span class="opacity-60">(3)</span>
+    </button>
+    <button onclick="filterCategory('Psychology')" class="cat-filter px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all" data-cat="Psychology">
+      Psychology <span class="opacity-60">(1)</span>
+    </button>
+    <button onclick="filterCategory('Technology')" class="cat-filter px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all" data-cat="Technology">
+      Technology <span class="opacity-60">(1)</span>
+    </button>
+  </div>
+</section>
+
+<!-- Pages Grid -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+  <div id="pages-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+</section>
+
+<!-- Connected Hubs Section -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+  <h3 class="text-sm font-bold uppercase tracking-widest text-[#8b949e] mb-6 flex items-center gap-2">
+    <i class="fas fa-network-wired gold-text text-xs"></i> Explore Other Hubs
+  </h3>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <a href="https://welth-0.web.app" target="_blank" class="card-hover p-6 rounded-xl group hover:no-underline">
+      <div class="flex items-center gap-4 mb-3">
+        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+          <i class="fas fa-chart-line text-emerald-500 text-xl"></i>
+        </div>
+        <div>
+          <p class="text-base font-bold text-white serif">Wealth Hub</p>
+          <p class="text-[9px] text-emerald-500 uppercase font-bold tracking-wider">Financial Intelligence</p>
+        </div>
+      </div>
+      <p class="text-xs text-[#8b949e] leading-relaxed">Master wealth creation, investment strategies, and financial freedom.</p>
+    </a>
+    <a href="https://mbrain-0.web.app" target="_blank" class="card-hover p-6 rounded-xl group hover:no-underline">
+      <div class="flex items-center gap-4 mb-3">
+        <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+          <i class="fas fa-brain text-purple-500 text-xl"></i>
+        </div>
+        <div>
+          <p class="text-base font-bold text-white serif">Mind Brain Hub</p>
+          <p class="text-[9px] text-purple-500 uppercase font-bold tracking-wider">Cognitive Mastery</p>
+        </div>
+      </div>
+      <p class="text-xs text-[#8b949e] leading-relaxed">Peak mental performance, neuroscience insights, and cognitive optimization.</p>
+    </a>
+    <a href="/" class="card-hover p-6 rounded-xl group hover:no-underline">
+      <div class="flex items-center gap-4 mb-3">
+        <div class="w-12 h-12 rounded-xl bg-[#c5a059]/10 flex items-center justify-center border border-[#c5a059]/20">
+          <i class="fas fa-book-open text-[#c5a059] text-xl"></i>
+        </div>
+        <div>
+          <p class="text-base font-bold text-white serif">0ISM Knowledge</p>
+          <p class="text-[9px] text-[#c5a059] uppercase font-bold tracking-wider">Main Hub</p>
+        </div>
+      </div>
+      <p class="text-xs text-[#8b949e] leading-relaxed">200+ books, AI chat, neural lab, and complete knowledge library.</p>
+    </a>
+    <a href="/Wikipedia/index.html" class="card-hover p-6 rounded-xl group hover:no-underline border-2 border-amber-500/30">
+      <div class="flex items-center gap-4 mb-3">
+        <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
+          <i class="fas fa-gem text-amber-500 text-xl"></i>
+        </div>
+        <div>
+          <p class="text-base font-bold text-white serif">Diamond Collection</p>
+          <p class="text-[9px] text-amber-500 uppercase font-bold tracking-wider">Current Hub</p>
+        </div>
+      </div>
+      <p class="text-xs text-[#8b949e] leading-relaxed">15 essential Wikipedia pages that define human knowledge.</p>
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="border-t border-[#30363d] bg-[#161b22] py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <p class="text-sm text-[#8b949e]">Part of the <a href="/" class="gold-text hover:underline">0ISM Knowledge Ecosystem</a></p>
+    <p class="text-xs text-[#8b949e] mt-2">Zero Ego. Zero Limits. Pure Knowledge.</p>
+  </div>
+</footer>
+
+<script src="wikipedia-data.js"></script>
+<script>
+const CAT_COLORS = {
+  Philosophy: '#818cf8',
+  Science: '#10b981',
+  History: '#f59e0b',
+  Society: '#ec4899',
+  Psychology: '#8b5cf6',
+  Technology: '#06b6d4',
+  Knowledge: '#c5a059'
+};
+
+let currentFilter = 'all';
+
+function renderPages() {
+  const grid = document.getElementById('pages-grid');
+  const filtered = currentFilter === 'all' 
+    ? WIKI_PAGES 
+    : WIKI_PAGES.filter(p => p.category === currentFilter);
+  
+  grid.innerHTML = filtered.map(page => {
+    const color = CAT_COLORS[page.category] || '#c5a059';
+    return `
+      <a href="${page.url}" target="_blank" class="card-hover rounded-2xl p-6 block group">
+        <div class="flex items-start justify-between mb-4">
+          <span class="category-badge text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider" style="color:${color};border-color:${color}20;background:${color}10">
+            ${page.category}
+          </span>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold gold-text">${page.importance}</span>
+            <i class="fas fa-external-link-alt text-xs text-[#8b949e] group-hover:text-[#c5a059] transition-colors"></i>
+          </div>
+        </div>
+        
+        <h3 class="text-xl font-bold text-white mb-3 serif group-hover:text-[#c5a059] transition-colors">${page.title}</h3>
+        
+        <p class="text-sm text-[#8b949e] leading-relaxed mb-4 lora">${page.description}</p>
+        
+        <div class="w-full bg-[#0d1117] h-1.5 rounded-full overflow-hidden">
+          <div class="importance-bar h-full rounded-full transition-all duration-500" style="width:${page.importance}%"></div>
+        </div>
+      </a>
+    `;
+  }).join('');
+}
+
+function filterCategory(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('.cat-filter').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.cat === cat);
+  });
+  renderPages();
+}
+
+// Initialize
+renderPages();
+</script>
+
+<style>
+.cat-filter {
+  background: var(--surface);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+.cat-filter.active,
+.cat-filter:hover {
+  background: rgba(197,160,89,0.1);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+</style>
+
+</body>
+</html>

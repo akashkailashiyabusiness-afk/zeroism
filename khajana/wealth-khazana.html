@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wealth Ka Real Khazana</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --vault:    #141210;
+  --felt:     #1a1714;
+  --ledger:   #201d19;
+  --border:   #2e2820;
+  --gold:     #c9922a;
+  --gold-lt:  #e8b84b;
+  --copper:   #b06030;
+  --cream:    #f0e8d8;
+  --parchment:#d4c9b0;
+  --muted:    #7a6e5e;
+  --ink:      #a89880;
+  --white:    #f5efe4;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  background:var(--vault);
+  color:var(--cream);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* subtle grain overlay */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:0.6;
+}
+
+/* ── TICKER ── */
+.ticker-wrap{
+  background:var(--gold);
+  overflow:hidden;
+  padding:8px 0;
+  position:relative;z-index:10;
+}
+.ticker-track{
+  display:flex;
+  width:max-content;
+  animation:ticker 40s linear infinite;
+}
+.ticker-item{
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  color:var(--vault);
+  font-weight:500;
+  padding:0 40px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.ticker-sep{color:rgba(0,0,0,0.3);margin:0 8px}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── VAULT DOOR HEADER ── */
+header{
+  position:relative;z-index:1;
+  border-bottom:1px solid var(--border);
+  padding:56px 60px 44px;
+  background:linear-gradient(180deg,#0d0b09 0%,var(--vault) 100%);
+}
+
+.h-eyebrow{
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  letter-spacing:4px;
+  color:var(--gold);
+  text-transform:uppercase;
+  margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;
+}
+.h-eyebrow::before{content:'';display:block;width:32px;height:1px;background:var(--gold)}
+
+.h-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(52px,8vw,100px);
+  font-weight:900;
+  line-height:0.88;
+  color:var(--white);
+  letter-spacing:-2px;
+}
+.h-title em{
+  font-style:italic;
+  color:var(--gold);
+  display:block;
+}
+
+.h-sub{
+  margin-top:24px;
+  font-size:14px;
+  color:var(--muted);
+  max-width:640px;
+  line-height:1.75;
+  font-weight:300;
+}
+
+.h-meta{
+  position:absolute;top:56px;right:60px;
+  display:flex;flex-direction:column;align-items:flex-end;gap:16px;
+}
+.vault-num{
+  font-family:'Playfair Display',serif;
+  font-size:72px;
+  font-weight:700;
+  color:transparent;
+  -webkit-text-stroke:1px var(--border);
+  line-height:1;
+}
+.vault-label{
+  font-family:'DM Mono',monospace;
+  font-size:9px;
+  color:var(--muted);
+  letter-spacing:3px;
+  text-transform:uppercase;
+  text-align:right;
+}
+
+/* ── NAV TABS ── */
+.nav{
+  position:sticky;top:0;z-index:50;
+  background:var(--felt);
+  border-bottom:1px solid var(--border);
+  display:flex;overflow-x:auto;scrollbar-width:none;
+  padding:0 60px;
+}
+.nav::-webkit-scrollbar{display:none}
+.nav-tab{
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);
+  padding:14px 20px;
+  border:none;background:none;cursor:pointer;
+  border-bottom:2px solid transparent;
+  white-space:nowrap;
+  transition:all .2s;
+}
+.nav-tab:hover{color:var(--ink)}
+.nav-tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* ── LAYOUT ── */
+.layout{
+  max-width:1300px;margin:0 auto;
+  padding:0 60px 80px;
+  position:relative;z-index:1;
+}
+
+/* ── SECTION ── */
+.section{margin-top:56px;display:none}
+.section.active{display:block}
+
+.sec-head{
+  display:flex;align-items:baseline;gap:20px;
+  border-bottom:1px solid var(--border);
+  padding-bottom:16px;margin-bottom:32px;
+}
+.sec-icon{font-size:22px}
+.sec-title{
+  font-family:'Playfair Display',serif;
+  font-size:28px;font-weight:700;
+  color:var(--white);
+}
+.sec-count{
+  margin-left:auto;
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:var(--muted);
+  letter-spacing:2px;
+}
+
+/* ── CARD GRID ── */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+}
+
+.card{
+  background:var(--ledger);
+  padding:24px 26px;
+  display:flex;flex-direction:column;gap:10px;
+  transition:background .15s;
+  position:relative;
+  overflow:hidden;
+}
+.card::before{
+  content:'';
+  position:absolute;left:0;top:0;bottom:0;
+  width:2px;
+  background:var(--card-color,var(--gold));
+  transform:scaleY(0);transform-origin:bottom;
+  transition:transform .3s;
+}
+.card:hover{background:#1e1b16}
+.card:hover::before{transform:scaleY(1)}
+
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.card-name{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-weight:700;
+  color:var(--white);line-height:1.25;
+}
+.badge{
+  font-family:'DM Mono',monospace;font-size:8px;
+  letter-spacing:1.5px;text-transform:uppercase;
+  padding:3px 8px;border:1px solid;
+  flex-shrink:0;white-space:nowrap;
+}
+.card-url{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--gold-lt);text-decoration:none;
+  word-break:break-all;
+}
+.card-url:hover{text-decoration:underline}
+.card-desc{font-size:13px;color:var(--ink);line-height:1.65;font-weight:300}
+.card-why{
+  font-size:12px;color:var(--parchment);
+  font-style:italic;line-height:1.55;
+  padding:8px 12px;
+  border-left:2px solid var(--card-color,var(--gold));
+  background:rgba(201,146,42,0.05);
+  margin-top:2px;
+}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.tag{
+  font-family:'DM Mono',monospace;font-size:9px;
+  padding:2px 7px;
+  background:rgba(255,255,255,0.04);
+  color:var(--muted);text-transform:uppercase;letter-spacing:.5px;
+}
+
+/* ── FEATURED ROW ── */
+.feat-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:1px;background:var(--border);border:1px solid var(--border);
+  margin-bottom:48px;
+}
+.feat-card{
+  background:var(--felt);
+  padding:28px 26px;
+  display:flex;flex-direction:column;gap:8px;
+  transition:background .15s;
+}
+.feat-card:hover{background:#1c1916}
+.feat-tier{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:3px;text-transform:uppercase;color:var(--gold);
+}
+.feat-name{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:700;color:var(--white);
+}
+.feat-url{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--muted);text-decoration:none;
+}
+.feat-url:hover{color:var(--gold-lt)}
+.feat-why{font-size:13px;color:var(--ink);line-height:1.6;font-weight:300}
+
+/* ── QUOTE BLOCK ── */
+.quote-block{
+  margin:40px 0;
+  padding:28px 36px;
+  border-left:3px solid var(--gold);
+  background:rgba(201,146,42,0.04);
+}
+.quote-text{
+  font-family:'Playfair Display',serif;
+  font-size:20px;font-style:italic;
+  color:var(--white);line-height:1.5;
+}
+.quote-attr{
+  margin-top:12px;
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:var(--muted);
+  letter-spacing:2px;text-transform:uppercase;
+}
+
+/* ── FORMULA BOX ── */
+.formula{
+  background:var(--ledger);
+  border:1px solid var(--border);
+  padding:24px 28px;
+  margin:32px 0;
+  font-family:'DM Mono',monospace;
+  font-size:13px;color:var(--gold-lt);
+  line-height:2;
+  letter-spacing:.5px;
+}
+.formula-label{
+  font-size:9px;letter-spacing:3px;
+  color:var(--muted);text-transform:uppercase;
+  margin-bottom:12px;
+  display:block;
+}
+
+@media(max-width:700px){
+  header,nav,layout{padding-left:20px;padding-right:20px}
+  .layout{padding:0 20px 60px}
+  .h-meta{display:none}
+  .grid{grid-template-columns:1fr}
+  .feat-row{grid-template-columns:1fr}
+  header{padding:40px 20px 32px}
+}
+</style>
+    <style>
+      .hub-back-btn{position:fixed;top:12px;left:12px;z-index:9999;display:flex;align-items:center;gap:8px;background:rgba(22,27,34,0.92);border:1px solid rgba(197,160,89,0.25);color:#c5a059;font-family:sans-serif;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:7px 14px;border-radius:999px;text-decoration:none;backdrop-filter:blur(10px);transition:all 0.2s ease;}
+      .hub-back-btn:hover{background:rgba(197,160,89,0.15);border-color:#c5a059;color:#d4af37;}
+    </style></head>
+<body>
+    <a href="/" class="hub-back-btn">&#8592; 0ISM Hub</a>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span class="ticker-item">Rich Dad Poor Dad — ₹0 in royalties earned by you reading it</span>
+    <span class="ticker-item">Compound interest — 8th wonder of the world (Einstein, allegedly)</span>
+    <span class="ticker-item">Assets buy liabilities — not the other way around</span>
+    <span class="ticker-item">Income ≠ Wealth — Cashflow > Salary</span>
+    <span class="ticker-item">Time × Money × Knowledge = Real Net Worth</span>
+    <span class="ticker-item">Inflation is a tax on the ignorant — learn or lose</span>
+    <span class="ticker-item">The best investment is in your own mind — Warren Buffett</span>
+    <span class="ticker-item">Network × Knowledge × Capital = Compounding Power</span>
+    <span class="ticker-item">Rich Dad Poor Dad — ₹0 in royalties earned by you reading it</span>
+    <span class="ticker-item">Compound interest — 8th wonder of the world (Einstein, allegedly)</span>
+    <span class="ticker-item">Assets buy liabilities — not the other way around</span>
+    <span class="ticker-item">Income ≠ Wealth — Cashflow > Salary</span>
+    <span class="ticker-item">Time × Money × Knowledge = Real Net Worth</span>
+    <span class="ticker-item">Inflation is a tax on the ignorant — learn or lose</span>
+    <span class="ticker-item">The best investment is in your own mind — Warren Buffett</span>
+    <span class="ticker-item">Network × Knowledge × Capital = Compounding Power</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="h-eyebrow">Classified Intelligence Brief — Wealth Edition</div>
+  <div class="h-title">
+    Wealth Ka<br><em>Real Khazana</em>
+  </div>
+  <p class="h-sub">
+    Motivational quotes nahi. Real books, real frameworks, real data sources, real tools —
+    jo log actually wealthy hote hain woh yahan se sochna seekhte hain.
+    Paisa banana ek skill hai. Skills sikhne ke sources yahan hain.
+  </p>
+  <div class="h-meta">
+    <div class="vault-num">∞</div>
+    <div class="vault-label">Compounding<br>Potential</div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <button class="nav-tab on" data-sec="overview">Overview</button>
+  <button class="nav-tab" data-sec="books">📚 Books</button>
+  <button class="nav-tab" data-sec="frameworks">🧠 Frameworks</button>
+  <button class="nav-tab" data-sec="data">📊 Data & Markets</button>
+  <button class="nav-tab" data-sec="tools">🛠 Tools</button>
+  <button class="nav-tab" data-sec="people">👁 People to Study</button>
+  <button class="nav-tab" data-sec="india">🇮🇳 India Specific</button>
+  <button class="nav-tab" data-sec="advanced">⚡ Advanced Layer</button>
+</nav>
+
+<div class="layout">
+
+<!-- OVERVIEW -->
+<div class="section active" id="overview">
+
+  <div class="quote-block">
+    <div class="quote-text">"The more you learn, the more you earn." Lekin yeh sirf half-truth hai. Sahi version: "The more you learn about money specifically, the more you earn — kyunki money ek game hai aur log rules sikhaye bina khel rahe hain."</div>
+    <div class="quote-attr">— Wealth Intelligence Principle #1</div>
+  </div>
+
+  <div class="formula">
+    <span class="formula-label">Wealth Formula — Real Wali</span>
+    WEALTH = (Income − Expenses) × Time × Return Rate<br>
+    NET WORTH = Assets − Liabilities<br>
+    FINANCIAL FREEDOM = Passive Income ≥ Monthly Expenses<br>
+    REAL RETURN = Nominal Return − Inflation Rate<br>
+    COMPOUNDING MAGIC = Principal × (1 + r)^n
+  </div>
+
+  <div class="sec-head">
+    <span class="sec-icon">🔑</span>
+    <div class="sec-title">Vault Entry Points — Seedha Yahan Se Shuru Karo</div>
+    <div class="sec-count">6 ESSENTIALS</div>
+  </div>
+
+  <div class="feat-row">
+    <div class="feat-card">
+      <div class="feat-tier">Book · Foundation</div>
+      <div class="feat-name">The Psychology of Money</div>
+      <a href="https://www.morganhousel.com/books" target="_blank" class="feat-url">morganhousel.com</a>
+      <div class="feat-why">Morgan Housel. Paise ke baare mein sabse human, sabse accurate book. Finance nahi — behaviour hai.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-tier">Framework · Core</div>
+      <div class="feat-name">Poor Charlie's Almanack</div>
+      <a href="https://www.stripe.press/poor-charlies-almanack" target="_blank" class="feat-url">stripe.press/poor-charlies-almanack</a>
+      <div class="feat-why">Charlie Munger ke mental models — investing ka real OS. Buffett ka teacher.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-tier">Data · Live</div>
+      <div class="feat-name">Berkshire Letters</div>
+      <a href="https://berkshirehathaway.com/letters/letters.html" target="_blank" class="feat-url">berkshirehathaway.com/letters</a>
+      <div class="feat-why">Buffett ke annual letters 1965 se. Free. History ka best investing education seedha source se.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-tier">Tool · India</div>
+      <div class="feat-name">Zerodha Varsity</div>
+      <a href="https://zerodha.com/varsity" target="_blank" class="feat-url">zerodha.com/varsity</a>
+      <div class="feat-why">India ka best free finance education. Stock market, options, personal finance — sab Hindi mein bhi.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-tier">Community · Real</div>
+      <div class="feat-name">r/personalfinance</div>
+      <a href="https://reddit.com/r/personalfinance" target="_blank" class="feat-url">reddit.com/r/personalfinance</a>
+      <div class="feat-why">18M+ members. Real questions, real situations, real advice. Wiki pehle padho — 90% sawaalon ka jawab wahan hai.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-tier">Research · Academic</div>
+      <div class="feat-name">SSRN Finance Papers</div>
+      <a href="https://ssrn.com/en/index.cfm/finance" target="_blank" class="feat-url">ssrn.com/finance</a>
+      <div class="feat-why">Academic finance research free. Jahan practitioners ki gut feelings proof hoti hain — ya nahi hoti.</div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <div class="quote-text">"Wealth is not about having a lot of money; it's about having a lot of options." Yeh options tab aate hain jab assets paida karte hain income — warna tum sirf ek salary-dependent machine ho.</div>
+    <div class="quote-attr">— Chris Rock (surprisingly deep on this)</div>
+  </div>
+
+</div>
+
+<!-- BOOKS -->
+<div class="section" id="books">
+  <div class="sec-head">
+    <span class="sec-icon">📚</span>
+    <div class="sec-title">Books — Real Wale, Not Motivational Trash</div>
+    <div class="sec-count">18 BOOKS</div>
+  </div>
+
+  <div class="grid" id="books-grid"></div>
+</div>
+
+<!-- FRAMEWORKS -->
+<div class="section" id="frameworks">
+  <div class="sec-head">
+    <span class="sec-icon">🧠</span>
+    <div class="sec-title">Mental Models — Wealth ke liye Cognitive OS</div>
+    <div class="sec-count">12 FRAMEWORKS</div>
+  </div>
+
+  <div class="formula">
+    <span class="formula-label">Wealth Mental Model Stack</span>
+    COMPOUNDING     → Sabse chote gains bhi time ke saath massive ho jaate hain<br>
+    OPPORTUNITY COST→ Har choice mein ek hidden cost hai<br>
+    MARGIN OF SAFETY→ Buffett rule: har investment mein buffer rakho<br>
+    INVERSION       → "Kaise ameer banunga" nahi, "Kaise poor rahunga" avoid karo<br>
+    ANTIFRAGILITY   → Volatility se toot mat, usme grow karo (Taleb)<br>
+    NETWORK EFFECTS → Value exponentially badhti hai with users/connections<br>
+    SURVIVORSHIP BIAS→ Sirf successful log dikhte hain — failures invisible hain
+  </div>
+
+  <div class="grid" id="frameworks-grid"></div>
+</div>
+
+<!-- DATA -->
+<div class="section" id="data">
+  <div class="sec-head">
+    <span class="sec-icon">📊</span>
+    <div class="sec-title">Data Sources — Real Numbers, No Noise</div>
+    <div class="sec-count">14 SOURCES</div>
+  </div>
+  <div class="grid" id="data-grid"></div>
+</div>
+
+<!-- TOOLS -->
+<div class="section" id="tools">
+  <div class="sec-head">
+    <span class="sec-icon">🛠</span>
+    <div class="sec-title">Tools — Free Calculators, Trackers, Platforms</div>
+    <div class="sec-count">12 TOOLS</div>
+  </div>
+  <div class="grid" id="tools-grid"></div>
+</div>
+
+<!-- PEOPLE -->
+<div class="section" id="people">
+  <div class="sec-head">
+    <span class="sec-icon">👁</span>
+    <div class="sec-title">People to Study — Their Archives, Letters, Interviews</div>
+    <div class="sec-count">10 MINDS</div>
+  </div>
+  <div class="grid" id="people-grid"></div>
+</div>
+
+<!-- INDIA -->
+<div class="section" id="india">
+  <div class="sec-head">
+    <span class="sec-icon">🇮🇳</span>
+    <div class="sec-title">India-Specific Wealth Intelligence</div>
+    <div class="sec-count">12 RESOURCES</div>
+  </div>
+
+  <div class="quote-block">
+    <div class="quote-text">"India mein financial literacy ka problem yeh hai ki log savings ko investment samajhte hain aur FD ko wealth building. Inflation factoring ke baad FD negative return deta hai most years."</div>
+    <div class="quote-attr">— Real talk, no filter</div>
+  </div>
+
+  <div class="grid" id="india-grid"></div>
+</div>
+
+<!-- ADVANCED -->
+<div class="section" id="advanced">
+  <div class="sec-head">
+    <span class="sec-icon">⚡</span>
+    <div class="sec-title">Advanced Layer — Jab Basics Clear Ho Jaayein</div>
+    <div class="sec-count">10 SOURCES</div>
+  </div>
+
+  <div class="formula">
+    <span class="formula-label">Second-Order Wealth Thinking</span>
+    TAX EFFICIENCY  → Jo bachaya woh kamaya. Tax optimization = legal wealth multiplier<br>
+    ASYMMETRIC BETS → Limited downside, unlimited upside (Taleb, Venture Logic)<br>
+    OPTIONALITY     → Decisions jo future doors kholte hain, band nahi karte<br>
+    INTELLECTUAL ARB→ Jo duniya abhi nahi jaanti — uspe early hona = alpha<br>
+    CAPITAL STACK   → Equity > Debt > Cash. Har level ka alag risk-return profile
+  </div>
+
+  <div class="grid" id="advanced-grid"></div>
+</div>
+
+</div><!-- /layout -->
+
+<script>
+const CARDS = {
+  books:[
+    {name:"The Psychology of Money",url:"https://archive.org/search?query=psychology+of+money",badge:"Must Read",color:"#c9922a",desc:"Morgan Housel. Behavior + money ka intersection. 19 short chapters. Best financial book of last decade.",why:"Finance books mein sab se accurate insight: wealthiest log ka raaz skill nahi, behavior hai.",tags:["behavior","investing","mindset"]},
+    {name:"Poor Charlie's Almanack",url:"https://www.stripe.press/poor-charlies-almanack",badge:"FREE Online",color:"#c9922a",desc:"Charlie Munger ke speeches, mental models, investing philosophy. Stripe Press ne free publish kiya.",why:"Agar ek book padh sako wealth thinking ke liye — yeh hai. Buffett ne bhi yahi kaha.",tags:["mental models","investing","munger"]},
+    {name:"Berkshire Letters (1965-)",url:"https://berkshirehathaway.com/letters/letters.html",badge:"Free · Primary",color:"#c9922a",desc:"Warren Buffett ke annual shareholder letters. 60 years ka investing wisdom seedha source se.",why:"MBA ka substitute. Free. Primary source. Buffett khud likhta hai — ghostwriter nahi.",tags:["buffett","letters","investing"]},
+    {name:"The Intelligent Investor",url:"https://archive.org/search?query=intelligent+investor+benjamin+graham",badge:"Graham Bible",color:"#c9922a",desc:"Benjamin Graham — Buffett ka teacher. Value investing ka original text. 1949, timeless.",why:"Chapter 8 aur 20 specifically. 'Mr Market' aur 'Margin of Safety' yahan se aaye.",tags:["value investing","graham","classic"]},
+    {name:"Rich Dad Poor Dad",url:"https://archive.org/search?query=rich+dad+poor+dad",badge:"Starter",color:"#e8b84b",desc:"Robert Kiyosaki. Asset vs Liability distinction. Mindset shift. Accounting mein galat hai par framing mein correct.",why:"Warning: specific advice mat lo. Lekin 'assets vs liabilities' mental model gold hai.",tags:["mindset","assets","cashflow"]},
+    {name:"The Millionaire Next Door",url:"https://archive.org/search?query=millionaire+next+door",badge:"Data-Backed",color:"#c9922a",desc:"Stanley & Danko. Actual millionaires ka study — kaise jeete hain, kaise sochte hain. Surprise: boring.",why:"Sab se important finding: wealth display aur actual wealth inversely correlated hain.",tags:["research","frugality","data"]},
+    {name:"Antifragile",url:"https://archive.org/search?query=antifragile+taleb",badge:"Advanced",color:"#b06030",desc:"Nassim Taleb. Systems jo volatility se strong hote hain. Finance, life, business — sab pe apply hota hai.",why:"Black Swan events mein dono hote hain: ruined aur enriched. Taleb batata hai kaise enriched side hona.",tags:["risk","volatility","taleb"]},
+    {name:"The Almanack of Naval Ravikant",url:"https://navalmanack.com",badge:"FREE",color:"#c9922a",desc:"Naval ke tweets, podcasts, interviews ka compilation. Eric Jorgenson ne freely release kiya.",why:"'How to Get Rich' thread + wealth philosophy. Har sentence extractable insight hai.",tags:["naval","philosophy","free"]},
+    {name:"One Up on Wall Street",url:"https://archive.org/search?query=one+up+on+wall+street",badge:"Lynch Classic",color:"#c9922a",desc:"Peter Lynch. Common sense investing — apne aas paas se companies dhundho. Practical.",why:"'Invest in what you know' — yeh philosophy yahan se hai. Retail investor ka edge explain karta hai.",tags:["stocks","lynch","practical"]},
+    {name:"The Little Book of Common Sense Investing",url:"https://archive.org/search?query=little+book+common+sense+investing",badge:"Bogle",color:"#e8b84b",desc:"John Bogle — Vanguard founder. Index funds ka case. Passive > Active for most people.",why:"Data se prove karta hai ki 90% active funds index se underperform karte hain. Painful truth.",tags:["index funds","passive","data"]},
+    {name:"Skin in the Game",url:"https://archive.org/search?query=skin+in+game+taleb",badge:"Taleb",color:"#b06030",desc:"Taleb. Jo advice dete hain unhe uski consequences bhi face karni chahiye. Applies to finance too.",why:"Kisi financial advisor ka skin in the game check karo pehle. Ye book reason batata hai.",tags:["risk","accountability","taleb"]},
+    {name:"The Essays of Warren Buffett",url:"https://archive.org/search?query=essays+warren+buffett",badge:"Curated Letters",color:"#c9922a",desc:"Lawrence Cunningham ka Buffett letters ka thematic compilation. Structured aur digestible.",why:"Buffett ke letters coherent chapters mein. Better entry point than reading letters chronologically.",tags:["buffett","curated","value"]},
+    {name:"I Will Teach You To Be Rich",url:"https://archive.org/search?query=ramit+sethi+teach+rich",badge:"Action-First",color:"#e8b84b",desc:"Ramit Sethi. 20s-30s ke liye. Automation, credit cards, investing — step by step.",why:"Theory nahi — exactly what to do, kab karna hai. Young people ke liye best practical guide.",tags:["practical","automation","young"]},
+    {name:"Money: Master the Game",url:"https://archive.org/search?query=tony+robbins+money+master+game",badge:"Interviews",color:"#e8b84b",desc:"Tony Robbins ne 50 top investors ke interviews liye — Dalio, Bogle, Soros. Condensed.",why:"Aggregated wisdom. Ray Dalio wala chapter specifically powerful hai.",tags:["interviews","dalio","comprehensive"]},
+    {name:"The Dhandho Investor",url:"https://archive.org/search?query=dhandho+investor+pabrai",badge:"Indian Lens",color:"#c9922a",desc:"Mohnish Pabrai. Gujarati businessman mindset + Buffett value investing. India context.",why:"'Heads I win, tails I don't lose much' — asymmetric bet philosophy. Indian examples.",tags:["value investing","india","asymmetric"]},
+    {name:"Zero to One",url:"https://archive.org/search?query=zero+to+one+thiel",badge:"Startup Wealth",color:"#b06030",desc:"Peter Thiel. Monopolies, secrets, building companies. Business creation as wealth vehicle.",why:"Business ownership = real wealth. Salary nahi. Thiel explain karta hai why monopoly matters.",tags:["startup","monopoly","thiel"]},
+    {name:"The Richest Man in Babylon",url:"https://archive.org/search?query=richest+man+babylon",badge:"Timeless",color:"#e8b84b",desc:"George Clason. Parables through ancient Babylon. 10% save karo, invest karo — fundamentals.",why:"1926 mein likha. Har basic money rule yahan hai. Public domain — completely free.",tags:["classic","fundamentals","free"]},
+    {name:"Die With Zero",url:"https://archive.org/search?query=die+with+zero+perkins",badge:"Contrarian",color:"#b06030",desc:"Bill Perkins. Wealth accumulate karna goal nahi — experiences maximize karna hai.",why:"Counter-narrative: over-saving bhi ek mistake hai. Optimize for life, not net worth number.",tags:["lifestyle","contrarian","experiences"]}
+  ],
+  frameworks:[
+    {name:"Naval's Wealth Creation Thread",url:"https://nav.al/rich",badge:"Free · Essential",color:"#c9922a",desc:"Naval Ravikant ka original Twitter thread — 'How to Get Rich (Without Getting Lucky)'. 40 principles.",why:"'Seek wealth, not money or status. Wealth is assets that earn while you sleep.' Every line is dense.",tags:["naval","principles","leverage"]},
+    {name:"Munger's Psychology of Human Misjudgment",url:"https://fs.blog/the-psychology-of-human-misjudgment",badge:"Farnam Street",color:"#c9922a",desc:"Charlie Munger ka famous Harvard speech. 25 cognitive biases jo financial decisions ruin karte hain.",why:"Poor Charlie's Almanack ka most important chapter. Free pe available. Read this first.",tags:["munger","biases","psychology"]},
+    {name:"Dalio's Principles (Free PDF)",url:"https://principles.com",badge:"Bridgewater",color:"#b06030",desc:"Ray Dalio — world's largest hedge fund founder. Life + Work principles. Macroeconomic framework.",why:"'Pain + Reflection = Progress' applies to investing too. Dalio's economic machine template = must.",tags:["dalio","principles","macro"]},
+    {name:"The Economic Machine (Video)",url:"https://www.youtube.com/watch?v=PHe0bXAIuk0",badge:"30 Min · Free",color:"#c9922a",desc:"Ray Dalio ka 30-minute video — how the economy works. Simplest explanation of debt cycles.",why:"Ye ek video dekh lo — economy, recessions, debt cycles sab samajh aayega. Free. Forever.",tags:["macro","dalio","video","economy"]},
+    {name:"Warren Buffett's 2023 Letter",url:"https://berkshirehathaway.com/letters/2023ltr.pdf",badge:"Latest",color:"#c9922a",desc:"Most recent Berkshire letter. Every year is a masterclass in capital allocation thinking.",why:"Specific insights update hote hain but core philosophy same hai. Annual ritual banao isko.",tags:["buffett","annual","capital"]},
+    {name:"Farnam Street — Mental Models",url:"https://fs.blog/mental-models",badge:"Free Library",color:"#c9922a",desc:"Shane Parrish ka curated mental models library. Compounding, first principles, second-order thinking.",why:"Wealth decisions mental models se driven hone chahiye — gut feeling se nahi. Yahan sab compiled hai.",tags:["mental models","decisions","library"]},
+    {name:"Morgan Housel's Blog",url:"https://collabfund.com/blog/authors/morgan",badge:"Free Articles",color:"#c9922a",desc:"Morgan Housel ka Collaborative Fund blog. Deep articles on money behavior, market history.",why:"Psychology of Money se bhi dense articles free pe. Regular reading material.",tags:["behavior","history","free"]},
+    {name:"Ben Graham's Security Analysis Concept",url:"https://www.amazon.com/Security-Analysis-Benjamin-Graham/dp/0070244960",badge:"Advanced",color:"#b06030",desc:"Graham's original framework — intrinsic value vs market price. Foundation of all value investing.",why:"Yeh concept samajhna = Mr Market game samajhna. Advanced but foundational.",tags:["value investing","analysis","advanced"]},
+    {name:"The Bogleheads Philosophy",url:"https://www.bogleheads.org/wiki/Bogleheads%27_investment_philosophy",badge:"Free Wiki",color:"#e8b84b",desc:"Community wiki. Low-cost index funds, diversification, long-term holding. Evidence-based.",why:"95% log ke liye optimal wealth strategy yahan described hai. Simple. Evidence-backed.",tags:["index","passive","evidence"]},
+    {name:"Howard Marks' Memos",url:"https://www.oaktreecapital.com/insights",badge:"Free Memos",color:"#c9922a",desc:"Howard Marks — Oaktree Capital. Market cycle memos since 1990. Buffett bhi inhe padhta hai.",why:"'The Most Important Thing' book ka live, updated version. Free subscription pe milte hain.",tags:["cycles","marks","memos"]},
+    {name:"Aswath Damodaran's Site",url:"https://pages.stern.nyu.edu/~adamodar",badge:"NYU Free",color:"#b06030",desc:"NYU Stern professor. Valuation framework, datasets, courses — all free online.",why:"Stocks ko value karna sikhna ho? Damodaran ka course > any paid finance course.",tags:["valuation","academic","free"]},
+    {name:"AQR Research Papers",url:"https://www.aqr.com/Insights/Research",badge:"Quant Finance",color:"#b06030",desc:"AQR Capital — Cliff Asness. Factor investing, momentum, value — free research papers.",why:"Hedge fund level research public ke liye free. Academic rigor + practical application.",tags:["quant","research","factors"]}
+  ],
+  data:[
+    {name:"Yahoo Finance",url:"https://finance.yahoo.com",badge:"Free Tier",color:"#c9922a",desc:"Stock prices, financials, earnings, news. Free historical data download.",why:"Starting point for any stock research. Screener bhi decent hai.",tags:["stocks","data","screener"]},
+    {name:"Macrotrends",url:"https://www.macrotrends.net",badge:"Historical Data",color:"#c9922a",desc:"Long-term historical charts — S&P 500, PE ratios, GDP, inflation, interest rates. Free.",why:"100+ years ka data. Market valuations historically kahan hain — yahan dekhna padta hai.",tags:["macro","historical","charts"]},
+    {name:"FRED (St. Louis Fed)",url:"https://fred.stlouisfed.org",badge:"Official US Data",color:"#b06030",desc:"Federal Reserve ka free economic database. 800,000+ data series. Inflation, rates, GDP, everything.",why:"Macro investing ke liye primary source. Central bank ka khud ka data — no middleman.",tags:["macro","federal reserve","official"]},
+    {name:"Simplywall.st (Free Tier)",url:"https://simplywall.st",badge:"Visual Analysis",color:"#e8b84b",desc:"Company financials visualized — snowflake model. Free tier for basic analysis.",why:"Numbers aur visuals ek saath. Non-financial log ke liye stock samajhna asaan hota hai.",tags:["stocks","visual","analysis"]},
+    {name:"GuruFocus",url:"https://gurufocus.com",badge:"Guru Portfolios",color:"#c9922a",desc:"Buffett, Munger, Ackman, Dalio — unke portfolios track karo. 13F filings visualized.",why:"Real money kahan laga raha hai duniya's best investors ka. Free basic access.",tags:["portfolios","gurus","13F"]},
+    {name:"Multpl.com",url:"https://multpl.com",badge:"Valuation Ratios",color:"#c9922a",desc:"S&P 500 PE ratio, Shiller PE, dividend yield, earnings yield — historical charts. Clean.",why:"Market expensive hai ya cheap? Shiller PE yahan dekhna hai. Simple. Crucial.",tags:["PE ratio","valuation","S&P"]},
+    {name:"Damodaran's Data",url:"https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html",badge:"Academic Free",color:"#b06030",desc:"Annual datasets — betas, risk premiums, industry margins, EV multiples. Updated annually.",why:"Valuation mein industry benchmarks chahiye? Yahan free Excel downloads hain.",tags:["valuation","industry","academic"]},
+    {name:"Screener.in",url:"https://screener.in",badge:"India Stocks",color:"#c9922a",desc:"Indian stocks ka comprehensive free screener. Balance sheets, P&L, cashflows, 10-year data.",why:"India mein ye tool free mein jo deta hai woh $100/month tools bhi nahi dete.",tags:["india","stocks","screener"]},
+    {name:"RBI Data Warehouse",url:"https://dbie.rbi.org.in",badge:"India Official",color:"#c9922a",desc:"Reserve Bank of India ka data. Inflation, interest rates, money supply, banking data.",why:"India ke monetary decisions samajhne ke liye primary source.",tags:["india","RBI","official"]},
+    {name:"SEBI Filings (BSE/NSE)",url:"https://www.bseindia.com",badge:"India Primary",color:"#c9922a",desc:"Company filings, annual reports, shareholding patterns — directly from exchanges.",why:"Jo company bolti hai woh nahi — jo file karti hai woh padho. Primary source.",tags:["india","filings","primary"]},
+    {name:"Global Market Cap",url:"https://companiesmarketcap.com",badge:"Rankings",color:"#e8b84b",desc:"Top companies by market cap — global aur country-wise. Live aur historical.",why:"Duniya ki wealth distribution kahan hai — quick visual context ke liye.",tags:["market cap","global","rankings"]},
+    {name:"Statista Finance",url:"https://statista.com/markets/401/topic/455/financial-services",badge:"Reports",color:"#e8b84b",desc:"Financial industry statistics, reports, charts. Free tier useful for overview data.",why:"Research papers aur pitches ke liye credible data points. Properly sourced.",tags:["statistics","reports","financial"]},
+    {name:"TradingEconomics",url:"https://tradingeconomics.com",badge:"Global Macro",color:"#b06030",desc:"196 countries ka economic data. GDP, inflation, interest rates, unemployment — live.",why:"Global macro view chahiye? Har country ka real-time data yahan hai.",tags:["global","macro","live"]},
+    {name:"Visual Capitalist",url:"https://visualcapitalist.com",badge:"Infographics",color:"#e8b84b",desc:"Wealth, markets, economy — visualized. Shareable, well-researched infographics.",why:"Data visualization = faster understanding. Useful for quickly grasping wealth patterns.",tags:["visualization","wealth","data"]}
+  ],
+  tools:[
+    {name:"Zerodha Kite",url:"https://zerodha.com",badge:"India Broker",color:"#c9922a",desc:"India ka best discount broker. ₹20 flat brokerage. Free delivery trading.",why:"Investing mein sabse pehle ek account chahiye. Zerodha = default choice India mein.",tags:["broker","india","trading"]},
+    {name:"Grow (Smallcase)",url:"https://groww.in",badge:"Beginner India",color:"#e8b84b",desc:"Mutual funds, stocks, ETFs — simple UI. Beginner ke liye best starting point India mein.",why:"SIP setup karo, forget karo. Automation + simplicity = most people ke liye best.",tags:["beginner","mutual funds","india"]},
+    {name:"Personal Capital / Empower",url:"https://empower.com",badge:"Net Worth Tracker",color:"#c9922a",desc:"Complete financial picture — investments, assets, liabilities — ek dashboard mein. Free.",why:"Net worth track karna shuru karo. Jo measure nahi hota woh improve nahi hota.",tags:["tracking","net worth","dashboard"]},
+    {name:"Portfolio Visualizer",url:"https://portfoliovisualizer.com",badge:"Backtesting",color:"#b06030",desc:"Portfolio backtesting, asset allocation analysis, Monte Carlo simulation. Free.",why:"'Ye portfolio historically kaise perform karta' — yahan test karo before investing.",tags:["backtesting","portfolio","analysis"]},
+    {name:"Compound Interest Calculator",url:"https://investor.gov/financial-tools-calculators/calculators/compound-interest-calculator",badge:"SEC Tool",color:"#e8b84b",desc:"US SEC ka free compound interest calculator. Visual graph ke saath.",why:"Compounding ka actual magic dekhna ho — yahan numbers daalo. Mind badhega.",tags:["calculator","compounding","SEC"]},
+    {name:"SIP Calculator",url:"https://groww.in/calculators/sip-calculator",badge:"India",color:"#e8b84b",desc:"Monthly SIP ka projected value calculate karo. Return, tenure, amount adjust karo.",why:"₹5000/month SIP at 12% return for 30 years = ₹1.8 crore. See it to believe it.",tags:["SIP","india","calculator"]},
+    {name:"Firefly III",url:"https://firefly-iii.org",badge:"Self-Hosted",color:"#b06030",desc:"Open-source personal finance manager. Self-hosted, private, no subscription.",why:"Data apna, server apna, privacy complete. Technical users ke liye perfect.",tags:["open source","self-hosted","budget"]},
+    {name:"GnuCash",url:"https://gnucash.org",badge:"Free Accounting",color:"#b06030",desc:"Free double-entry accounting software. Small business + personal finance.",why:"Serious money tracking ke liye. Quicken ka free, more powerful alternative.",tags:["accounting","free","software"]},
+    {name:"Moneycontrol",url:"https://moneycontrol.com",badge:"India News+Data",color:"#e8b84b",desc:"India markets, mutual funds, news, portfolio tracking. Free tier comprehensive.",why:"India mein sab log use karte hain. News + data ek jagah.",tags:["india","news","portfolio"]},
+    {name:"Value Research Online",url:"https://valueresearchonline.com",badge:"MF India",color:"#c9922a",desc:"India mutual funds ka best free analysis tool. Fund comparison, ratings, returns.",why:"Kaunsa mutual fund lena hai? Yahan research karo pehle. Independent, not sponsored.",tags:["mutual funds","india","research"]},
+    {name:"ETF.com",url:"https://etf.com",badge:"ETF Research",color:"#c9922a",desc:"ETF comparison, expense ratios, holdings, performance. US ETFs comprehensive database.",why:"Low-cost index investing ke liye ETF research = must. Free comprehensive data.",tags:["ETF","index","research"]},
+    {name:"Morningstar (Free Tier)",url:"https://morningstar.com",badge:"Fund Ratings",color:"#e8b84b",desc:"Fund ratings, analyst reports (some free), portfolio tools. Industry standard.",why:"Star ratings se zyada — actual analyst insights ka free tier solid hai.",tags:["funds","ratings","analysis"]}
+  ],
+  people:[
+    {name:"Warren Buffett Archive",url:"https://buffett.cnbc.com",badge:"Video Archive",color:"#c9922a",desc:"CNBC ka Buffett interview archive. Decades ka video. Annual meetings, interviews, speeches.",why:"Usse suno, sirf padho mat. Paisa banana ke baare mein 70 saal ka practical wisdom.",tags:["buffett","video","archive"]},
+    {name:"Charlie Munger — DJCO Meetings",url:"https://www.youtube.com/results?search_query=charlie+munger+daily+journal+meeting",badge:"YouTube Archive",color:"#c9922a",desc:"Daily Journal Corporation annual meetings. Munger openly bolte hain kuch bhi. Legendary.",why:"Buffett + Munger ki combination — Munger more blunt hai. Real talk.",tags:["munger","annual","meetings"]},
+    {name:"Ray Dalio — LinkedIn + YouTube",url:"https://www.linkedin.com/in/raydalio",badge:"Active",color:"#b06030",desc:"Dalio actively posts. Economic principles, market cycles, geopolitical views.",why:"Macro pe best insight. His posts are mini-essays with actual analysis.",tags:["dalio","macro","linkedin"]},
+    {name:"Naval Ravikant's Blog",url:"https://nav.al",badge:"Philosophy",color:"#c9922a",desc:"Naval ke aphorisms, long-form posts, podcast links. Wealth without sacrificing freedom.",why:"'Specific knowledge' concept — ek hi jagah properly explained hai.",tags:["naval","leverage","specific knowledge"]},
+    {name:"Morgan Housel — Collab Fund",url:"https://collabfund.com/blog/authors/morgan",badge:"Active Blog",color:"#c9922a",desc:"Regular articles on money, behavior, history. Best financial writer alive.",why:"Behavioral finance ko narrative mein convert karta hai. Padhne mein mazaa aata hai.",tags:["behavior","writing","finance"]},
+    {name:"Howard Marks Memos",url:"https://www.oaktreecapital.com/insights",badge:"Free Subscription",color:"#c9922a",desc:"Market cycle memos — subscribe for free. Going on since 1990. Essential reading.",why:"Buffett says: jab Howard Marks ka memo aaye, seedha padho. That's the endorsement.",tags:["cycles","memos","marks"]},
+    {name:"Aswath Damodaran YouTube",url:"https://www.youtube.com/@AswathDamodaranonValuation",badge:"Valuation Course",color:"#b06030",desc:"NYU professor ke full valuation courses YouTube pe. Free. Better than MBA finance.",why:"Stock valuation seekhna hai? 200+ videos free. Primary source.",tags:["valuation","education","youtube"]},
+    {name:"Cathie Wood — ARK Research",url:"https://ark-invest.com/research",badge:"Free Reports",color:"#b06030",desc:"ARK Invest ke research reports free download. Disruptive technology + equity research.",why:"Agree ya disagree — unka research methodology padhne se analysis sikhti hai.",tags:["research","disruptive","ARK"]},
+    {name:"Nassim Taleb — Medium + Papers",url:"https://medium.com/@nntaleb",badge:"Primary",color:"#b06030",desc:"Taleb khud likhta hai directly. Risk, probability, skin in the game updates.",why:"Books se zyada candid. Comment section pe fight bhi karta hai — entertaining + educational.",tags:["taleb","risk","probability"]},
+    {name:"Peter Lynch Interviews",url:"https://www.youtube.com/results?search_query=peter+lynch+interview",badge:"YouTube",color:"#c9922a",desc:"Lynch ke classic interviews — investing wisdom jo 80s mein kaha, aaj bhi sach hai.",why:"'Invest in what you know' — usse seedha suno. 30 min se less mein class complete.",tags:["lynch","stocks","interviews"]}
+  ],
+  india:[
+    {name:"Zerodha Varsity",url:"https://zerodha.com/varsity",badge:"Best Free India",color:"#c9922a",desc:"Complete stock market curriculum — technical, fundamental, derivatives, personal finance. Hindi bhi.",why:"India ka best free finance education. No other platform comes close. 10 modules.",tags:["india","education","free"]},
+    {name:"Screener.in",url:"https://screener.in",badge:"India Stocks",color:"#c9922a",desc:"Indian companies ka 10-year financial data, screener, watchlist. Free tier excellent.",why:"Fundamental analysis ke liye. Balance sheet, P&L, cashflow — sab clean format mein.",tags:["india","fundamental","free"]},
+    {name:"r/IndiaInvestments",url:"https://reddit.com/r/IndiaInvestments",badge:"Community",color:"#e8b84b",desc:"India-specific investing community. MF, stocks, FDs, tax — real questions, real answers.",why:"Wiki pehle padho. 90% questions cover hai wahan. High quality community.",tags:["india","community","reddit"]},
+    {name:"Freefincal",url:"https://freefincal.com",badge:"Evidence India",color:"#c9922a",desc:"Prof Pattu ka blog. Evidence-based Indian personal finance. No conflict of interest.",why:"India mein sabse honest financial blog. Peer-reviewed articles. No product selling.",tags:["india","evidence","honest"]},
+    {name:"SEBI Investor Education",url:"https://investor.sebi.gov.in",badge:"Official",color:"#c9922a",desc:"SEBI ka free investor education portal. Basics se advanced — official guidance.",why:"Regulatory body ka khud ka education. Authentic, no conflict of interest.",tags:["india","SEBI","official"]},
+    {name:"Moneylife",url:"https://www.moneylife.in",badge:"Independent",color:"#e8b84b",desc:"Independent financial journalism. Debashis Basu — exposes mis-selling, fraud.",why:"India mein financial mis-selling bahut common hai. Yeh watchdog hai.",tags:["india","journalism","watchdog"]},
+    {name:"Value Research Online",url:"https://valueresearchonline.com",badge:"MF India",color:"#c9922a",desc:"India mutual funds research. Best free tool for MF comparison, portfolio analysis.",why:"Direct plans vs regular plans difference yahan clearly dikhata hai. Crores ka difference.",tags:["india","mutual funds","research"]},
+    {name:"Prime Investor (Free Articles)",url:"https://primeinvestor.in",badge:"Research",color:"#e8b84b",desc:"SEBI-registered investment advisors ke free articles. Unbiased equity + MF research.",why:"Paid service hai lekin free articles bhi valuable. No commissions conflict.",tags:["india","research","SEBI registered"]},
+    {name:"NSE Academy",url:"https://www.nseindia.com/education",badge:"Free Courses",color:"#c9922a",desc:"National Stock Exchange ka free education. NCFM certifications ki prep material.",why:"Exchange ka khud ka education. Concepts authentic aur India-market relevant.",tags:["india","NSE","education"]},
+    {name:"RBI Grade B Study Material",url:"https://rbi.org.in/scripts/PublicationsView.aspx?id=14042",badge:"Free Reports",color:"#b06030",desc:"RBI ke monetary policy reports, annual reports — economics ki deepest understanding.",why:"Macro India samajhna hai? RBI khud explain karta hai kya soch raha hai.",tags:["india","RBI","macro"]},
+    {name:"Asan Ideas for Wealth",url:"https://asanideas.com",badge:"Hindi/Tamil",color:"#c9922a",desc:"Pattu ke simple, local language financial guides. Tamil + Hindi content.",why:"Language barrier hata ke India mein financial literacy badhaata hai.",tags:["india","hindi","simple"]},
+    {name:"Capitalmind",url:"https://capitalmind.in",badge:"Quant India",color:"#b06030",desc:"Deepak Shenoy ka platform. Data-driven Indian market analysis. Free newsletter.",why:"India mein quantitative approach lene wale few me se. Evidence-based.",tags:["india","quant","deepak shenoy"]}
+  ],
+  advanced:[
+    {name:"AQR Research Library",url:"https://www.aqr.com/Insights/Research",badge:"Quant Finance",color:"#b06030",desc:"Factor investing, momentum, value, carry — academic-grade free research papers.",why:"Hedge fund ki strategies public domain mein. Cliff Asness khud likhta hai.",tags:["quant","factors","hedge fund"]},
+    {name:"SSRN Finance Abstracts",url:"https://ssrn.com/en/index.cfm/finance",badge:"Academic",color:"#b06030",desc:"Pre-publication finance research. Find papers before they become mainstream.",why:"Academic alpha: research jo abhi popular nahi hua — practitioners se pehle padho.",tags:["academic","research","alpha"]},
+    {name:"CFA Institute Research",url:"https://www.cfainstitute.org/research",badge:"CFA Free",color:"#c9922a",desc:"CFA Institute ke free research briefs, reports, market integrity resources.",why:"Institutional investment thinking — free access to many reports.",tags:["CFA","institutional","research"]},
+    {name:"Options Clearing Corp Education",url:"https://www.theocc.com/education",badge:"Options",color:"#b06030",desc:"Derivatives aur options fundamentals — official clearing corp ka education.",why:"Options samajhna ho? Primary source se. No agenda except clarity.",tags:["options","derivatives","official"]},
+    {name:"Damodaran's Corporate Finance Course",url:"https://pages.stern.nyu.edu/~adamodar/New_Home_Page/corpfin.htm",badge:"NYU Free",color:"#b06030",desc:"Full corporate finance course — slides, videos, problem sets. NYU Stern level.",why:"MBA level corporate finance education without MBA cost or debt.",tags:["corporate finance","NYU","free course"]},
+    {name:"Khan Academy Finance",url:"https://khanacademy.org/economics-finance-domain",badge:"Foundation",color:"#e8b84b",desc:"Micro/macroeconomics, finance, accounting — first principles. Visual, interactive.",why:"Agar foundation weak hai — yahan aao. Compound interest to derivatives.",tags:["foundation","economics","free"]},
+    {name:"Patrick Boyle YouTube",url:"https://www.youtube.com/@PBoyle",badge:"Hedge Fund Intel",color:"#b06030",desc:"Ex-hedge fund manager. Quant finance, market history, economic analysis. High quality.",why:"Wall Street insider ka perspective. No paid courses — sab free YouTube pe.",tags:["hedge fund","quant","youtube"]},
+    {name:"Ben Felix YouTube",url:"https://www.youtube.com/@BenFelixCSI",badge:"Evidence-Based",color:"#c9922a",desc:"Evidence-based investing. Factor models, market efficiency, research-backed advice.",why:"Financial pornography ke baad ye padho. Actual data se baat karta hai.",tags:["evidence","factors","youtube"]},
+    {name:"Macro Voices Podcast",url:"https://www.macrovoices.com",badge:"Macro Investing",color:"#b06030",desc:"Professional investors ke saath macro discussions. Commodity cycles, rates, currencies.",why:"Macro hedge fund thinking free pe. Complex topics simple nahi — real complexity.",tags:["macro","podcast","professional"]},
+    {name:"Acquired Podcast",url:"https://www.acquired.fm",badge:"Business History",color:"#c9922a",desc:"Tech companies ka deep business history — Apple, Nvidia, Berkshire, LVMH. 3-4 ghante.",why:"Business models seedha samjho. Kyun kuch companies trillion-dollar ban jaati hain.",tags:["business","history","podcast"]}
+  ]
+};
+
+// Build grids
+Object.keys(CARDS).forEach(key=>{
+  const el = document.getElementById(key+'-grid');
+  if(!el) return;
+  CARDS[key].forEach(c=>{
+    const div = document.createElement('div');
+    div.className='card';
+    div.style.setProperty('--card-color',c.color);
+    div.innerHTML=`
+      <div class="card-top">
+        <div class="card-name">${c.name}</div>
+        <div class="badge" style="color:${c.color};border-color:${c.color}55;background:${c.color}11">${c.badge}</div>
+      </div>
+      <a href="${c.url}" target="_blank" class="card-url">${c.url.replace('https://','').replace('http://','').split('/')[0]}</a>
+      <div class="card-desc">${c.desc}</div>
+      <div class="card-why">${c.why}</div>
+      <div class="card-tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    `;
+    el.appendChild(div);
+  });
+});
+
+// Nav
+document.querySelectorAll('.nav-tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('on'));
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('on');
+    document.getElementById(btn.dataset.sec).classList.add('active');
+    window.scrollTo({top:document.querySelector('.nav').offsetTop-1,behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>

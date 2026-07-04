@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mentally Powerful — Munger-style Thinking + Local LLM Studio</title>
+  <style>
+    /* Internal CSS - futuristic, friendly, single-file */
+    :root{
+      --bg:#0b1020; --card:#0f1724; --muted:#9aa4b2; --accent:#4fd1c5; --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.02); --radius:14px; --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: radial-gradient(1200px 600px at 10% 10%, rgba(79,209,197,0.06), transparent), var(--bg); color:#e6eef6}
+    .app{max-width:1200px;margin:28px auto;padding:22px;display:grid;grid-template-columns:360px 1fr;gap:20px}
+
+    /* Sidebar */
+    .card{background:linear-gradient(180deg,var(--card), #08101a);padding:18px;border-radius:var(--radius);box-shadow:0 6px 30px rgba(6,10,20,0.6);}
+    h1{font-size:20px;margin:0 0 8px 0;letter-spacing:0.2px}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+    .small{font-size:12px;color:var(--muted)}
+    .model-config{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+    input, textarea, select, button{background:var(--glass);border:1px solid rgba(255,255,255,0.03);color:inherit;padding:10px;border-radius:10px}
+    input:focus,textarea:focus,select:focus{outline:2px solid rgba(79,209,197,0.12);backdrop-filter: blur(6px)}
+
+    label{font-size:12px;color:var(--muted)}
+    .checkbox-row{display:flex;gap:8px;align-items:center}
+
+    /* Main area */
+    .workspace{display:flex;flex-direction:column;gap:14px}
+    .row{display:flex;gap:12px}
+    .panel{flex:1;padding:14px;border-radius:12px;background:linear-gradient(180deg,var(--glass),var(--glass-2));min-height:120px}
+
+    .prompt{height:140px;resize:vertical}
+    .controls{display:flex;gap:10px;align-items:center}
+    .btn{padding:10px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),#2bb6b0);color:#052023;font-weight:600;cursor:pointer}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+
+    .heuristics{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+    .heuristic{display:flex;gap:10px;align-items:flex-start}
+    .heuristic b{display:inline-block;width:120px}
+
+    .history{max-height:420px;overflow:auto;margin-top:12px;padding-right:6px}
+    .message{padding:10px;border-radius:10px;margin-bottom:8px;background:rgba(255,255,255,0.02)}
+    .assistant{border-left:4px solid rgba(79,209,197,0.18)}
+    .user{border-left:4px solid rgba(130,130,255,0.06)}
+
+    .footer{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+
+    /* responsive */
+    @media (max-width:980px){.app{grid-template-columns:1fr;}.card{order:2}}
+  </style>
+</head>
+<body>
+  <!--
+    Mentally Powerful — Single-file HTML app
+    Purpose: Provide a local, Munger-inspired prompt assistant that connects to your local LLM Studio / local LLM HTTP endpoint.
+    How to use:
+      1) Run your local LLM server (LM Studio / Ollama / local LLM) and expose its HTTP API.
+      2) Set the LOCAL_API_URL and MODEL name in the 'Model' settings on the left.
+      3) Write a problem in the prompt area and toggle heuristics, then press "चलो सोचें 🧠" (Think!)
+
+    Note: This tool illustrates Charlie Munger's mental models heuristics as a prompt engineering wrapper — it does not impersonate or replicate the late Mr. Munger. Use responsibly.
+  -->
+  <div class="app">
+    <div class="card">
+      <h1>Mentally Powerful</h1>
+      <p class="lead">Apply a latticework of Munger-style mental models — invert, incentives, probabilities, circle of competence — and run thought experiments using your local LLM.</p>
+
+      <div class="model-config">
+        <label>Local API URL</label>
+        <input id="apiUrl" placeholder="http://127.0.0.1:8080/v1/generate" value="http://127.0.0.1:8080/v1/generate" />
+
+        <label>Model / Endpoint Name (optional)</label>
+        <input id="modelName" placeholder="model-name or endpoint (optional)" />
+
+        <label>Temperature / Creativity (0-1)</label>
+        <input id="temperature" type="number" min="0" max="1" step="0.1" value="0.2" />
+
+        <div style="display:flex;gap:8px;margin-top:6px;align-items:center">
+          <button class="btn" id="testBtn">✦ Test connection</button>
+          <button class="btn secondary" id="clearHistory">🧹 Clear history</button>
+        </div>
+
+        <div class="heuristics">
+          <label><input type="checkbox" id="applyHeuristics" checked /> Apply Munger heuristics to prompt</label>
+          <small class="small">Active heuristics: Invert problems, check incentives, ask for first principles, estimate probabilities, limit within circle-of-competence, simplify.</small>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>Prompt templates</label>
+          <select id="templateSel">
+            <option value="analysis">Structured analysis (best for deep thinking)</option>
+            <option value="decision">Decision helper (pros/cons, probabilities)</option>
+            <option value="inversion">Inversion first: What would cause failure?</option>
+            <option value="brainstorm">Creative alternatives</option>
+          </select>
+        </div>
+
+        <div class="small" style="margin-top:12px">Quick notes: Configure your local LLM Studio / server to accept POST requests. This app will POST JSON { model, prompt, temperature } or { prompt } depending on your server. See the "How to run" below.</div>
+
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0" />
+
+        <div class="small">
+          <strong>How to run</strong>
+          <ol style="padding-left:18px;margin:6px 0">
+            <li>Start your local LLM (LM Studio / Ollama / local API).</li>
+            <li>Point <code>Local API URL</code> to your generate/chat endpoint (example: <code>http://127.0.0.1:8080/v1/generate</code> or <code>http://localhost:8080/v1/chat/completions</code>).</li>
+            <li>Press <em>Test connection</em> to verify. If CORS blocks in browser, run the file from a local server (python -m http.server) or use a CORS proxy for testing.</li>
+          </ol>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="workspace">
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="display:flex;gap:8px;align-items:baseline">
+              <h2 style="margin:0">Prompt</h2>
+              <div class="small">— craft with Munger-style prompts</div>
+            </div>
+            <div class="small">Tip: start with a clear problem statement and a desired decision metric.</div>
+          </div>
+          <div class="small">Session: <span id="sessionId">—</span></div>
+        </div>
+
+        <textarea id="prompt" class="prompt" placeholder="Describe the problem, decision, or topic you want the model to think about...\nExample: Should I accept X job offer? Consider incentives, long-term optionality, and probable outcomes."></textarea>
+
+        <div class="controls">
+          <select id="roleSel">
+            <option value="analyst">Analyst</option>
+            <option value="skeptic">Skeptic</option>
+            <option value="devil">Devil's advocate</option>
+            <option value="teacher">Teacher / Explain like I'm 12</option>
+          </select>
+
+          <button id="thinkBtn" class="btn">चलो सोचें 🧠</button>
+          <button id="refineBtn" class="btn secondary">Refine using heuristics</button>
+
+          <div style="margin-left:auto" class="small">Model response:</div>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="panel" style="flex:1.1">
+          <h3 style="margin-top:2px">Output & Reasoning</h3>
+          <div id="output" style="white-space:pre-wrap;min-height:180px;padding:8px;margin-top:8px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border-radius:10px"></div>
+          <div class="footer">
+            <div class="small">Responses are generated by your local model — verify important claims.</div>
+            <div class="small">⚠️ This tool aids thinking; it is not professional advice.</div>
+          </div>
+        </div>
+
+        <div class="panel" style="width:320px;flex-shrink:0">
+          <h3 style="margin-top:2px">Checklist — Munger mental models</h3>
+          <div class="heuristics">
+            <label><input type="checkbox" id="h_invert" checked /> Inversion — what causes failure?</label>
+            <label><input type="checkbox" id="h_incentives" checked /> Incentives — whose incentives matter?</label>
+            <label><input type="checkbox" id="h_probs" checked /> Probabilistic thinking — estimate likelihoods</label>
+            <label><input type="checkbox" id="h_circle" checked /> Circle of competence — stay within or explicitly expand</label>
+            <label><input type="checkbox" id="h_simplify" checked /> Simplify — Pareto & Occam's razor</label>
+            <label><input type="checkbox" id="h_first" checked /> First principles — fundamentals & assumptions</label>
+          </div>
+
+          <div style="margin-top:12px">
+            <h4 style="margin:6px 0">History</h4>
+            <div id="history" class="history"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Simple single-file JS: builds transformed prompts by applying heuristics and sends to local LLM endpoint.
+    (function(){
+      const state = {sessionId: Date.now().toString(36), history: []};
+      document.getElementById('sessionId').innerText = state.sessionId;
+
+      // Utilities
+      function el(id){return document.getElementById(id)}
+      function pushHistory(role, text){state.history.unshift({role,text,time:new Date().toISOString()}); renderHistory();}
+      function renderHistory(){const h = el('history'); h.innerHTML = state.history.map(item=>`<div class="message ${item.role==='assistant'? 'assistant':'user'}"><div style="font-size:12px;color:var(--muted)">${item.time.replace('T',' ').slice(0,19)}</div><div style="margin-top:6px">${escapeHtml(item.text)}</div></div>`).join('');}
+      function escapeHtml(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+      // Heuristic transformer: takes base prompt and enriches with selected heuristics
+      function transformPrompt(base){
+        const checked = id => el(id) && el(id).checked;
+        const lines = [];
+        lines.push(`You are a careful, skeptical thinker. Use clear numbered steps and show probabilities where helpful.`);
+        lines.push(`Role: ${el('roleSel').value}. Session: ${state.sessionId}.`);
+
+        // Base problem
+        lines.push(`Problem statement:\n"""\n${base}\n"""`);
+
+        if( el('applyHeuristics').checked ){
+          if(checked('h_invert')) lines.push('1) Inversion: List ways this could fail or be made worse. For each failure mode, suggest mitigations.');
+          if(checked('h_incentives')) lines.push('2) Incentives: Identify stakeholders and their incentives. How do incentives shape likely outcomes?');
+          if(checked('h_probs')) lines.push('3) Probabilistic thinking: Give approximate probabilities (high/medium/low or percent) for key outcomes and justify numbers.');
+          if(checked('h_circle')) lines.push('4) Circle of competence: State what assumptions are inside and outside the current knowledge. Suggest how to proceed if outside.');
+          if(checked('h_first')) lines.push('5) First principles: Break down assumptions into fundamentals, and challenge any weak ones.');
+          if(checked('h_simplify')) lines.push('6) Simplify: Provide a concise 3-bullet summary and a recommended action (one-line).');
+        }
+
+        // Add template specifics
+        const template = el('templateSel').value;
+        if(template==='decision') lines.push('Also: produce a decision rubric with weights and a recommended decision (Accept / Decline / Defer).');
+        if(template==='inversion') lines.unshift('Start by inverting the goal: what would guarantee the opposite outcome?');
+        if(template==='brainstorm') lines.push('Finally, list 6 creative alternatives or experiments to test the hypothesis quickly.');
+
+        lines.push('\nAnswer in numbered sections. Be explicit about uncertainties.');
+        return lines.join('\n\n');
+      }
+
+      async function callLocalModel(prompt){
+        const apiUrl = el('apiUrl').value.trim();
+        const model = el('modelName').value.trim();
+        const temperature = parseFloat(el('temperature').value) || 0.2;
+        if(!apiUrl) return {error:'Set a local API URL in the left panel.'};
+
+        // Try a flexible request shape — many local LLM servers accept {model, prompt, temperature} or {prompt}
+        const payloadOptions = [
+          {model, prompt, temperature},
+          {prompt, temperature},
+          {input: prompt, temperature}
+        ];
+
+        // Try sequentially until one returns a plausible response
+        let lastErr=null; let respText='';
+        for(const payload of payloadOptions){
+          try{
+            const res = await fetch(apiUrl,{
+              method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)
+            });
+            if(!res.ok){ lastErr = `HTTP ${res.status} ${res.statusText}`; continue; }
+
+            // attempt to parse common response shapes
+            const data = await res.json();
+            // Common shapes: { output: '...', text: '...', choices:[{text:'...'}], results:[{content:'...'}], detail:... }
+            if(data.output && typeof data.output==='string') respText = data.output;
+            else if(data.text && typeof data.text==='string') respText = data.text;
+            else if(Array.isArray(data.choices) && data.choices[0] && (data.choices[0].text || data.choices[0].message && data.choices[0].message.content)){
+              respText = data.choices[0].text || (data.choices[0].message && data.choices[0].message.content) || '';
+            } else if(data.result && typeof data.result==='string') respText = data.result;
+            else if(typeof data === 'string') respText = data;
+            else { // fallback: stringify for debugging
+              respText = JSON.stringify(data, null, 2);
+            }
+
+            // success
+            return {text:respText};
+          }catch(e){ lastErr = e.message; continue; }
+        }
+        return {error: lastErr || 'Unknown error'};
+      }
+
+      // DOM bindings
+      el('testBtn').addEventListener('click', async ()=>{
+        const apiUrl = el('apiUrl').value.trim();
+        if(!apiUrl){ alert('Please enter a local API URL.'); return; }
+        el('output').innerText = 'Testing connection...';
+        try{
+          const res = await fetch(apiUrl,{method:'OPTIONS'}).catch(()=>null);
+          if(res && res.ok){ el('output').innerText = 'Connection OK (OPTIONS returned).'; return; }
+        }catch(e){}
+        // fallback: send a tiny payload
+        try{
+          const check = await fetch(apiUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:'ping'})});
+          if(check.ok){ el('output').innerText = 'Connection OK (POST succeeded).'; }
+          else el('output').innerText = `Connection test failed: HTTP ${check.status}`;
+        }catch(e){ el('output').innerText = 'Connection failed. If CORS blocks in browser, run this file via a local file server (python -m http.server) or enable CORS on your local LLM API.'; }
+      });
+
+      el('clearHistory').addEventListener('click', ()=>{state.history=[]; renderHistory(); el('output').innerText='History cleared.'});
+
+      el('thinkBtn').addEventListener('click', async ()=>{
+        const base = el('prompt').value.trim(); if(!base){ alert('Write a problem or question in the prompt area.'); return; }
+        const transformed = transformPrompt(base);
+        pushHistory('user', base);
+        el('output').innerText = 'Thinking...';
+
+        // show quick local echo of transformed prompt for transparency
+        el('output').innerText = '=== TRANSFORMED PROMPT ===\n\n' + transformed + '\n\n=== MODEL ANSWER BELOW ===\n\n';
+
+        const r = await callLocalModel(transformed);
+        if(r.error){ el('output').innerText += `\n[Error calling local model: ${r.error}]`; pushHistory('assistant', `[Error] ${r.error}`); return; }
+        el('output').innerText += r.text;
+        pushHistory('assistant', r.text);
+      });
+
+      el('refineBtn').addEventListener('click', ()=>{ const base = el('prompt').value.trim(); if(!base) return; el('prompt').value = transformPrompt(base); alert('Prompt replaced with heuristic-enhanced version. Review and press Think.'); });
+
+      // initial render
+      renderHistory();
+
+    })();
+  </script>
+</body>
+</html>

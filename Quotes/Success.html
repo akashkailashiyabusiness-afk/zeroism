@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success Quotes</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Google Fonts: Poppins (headings) and Inter (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, button { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body 
+    class="bg-gray-900 text-slate-200"
+    x-data="{
+        search: '',
+        rawQuotes: [
+            { text: 'Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.', author: 'Albert Schweitzer' },
+            { text: 'The only place where success comes before work is in the dictionary.', author: 'Vidal Sassoon' },
+            { text: 'Success usually comes to those who are too busy to be looking for it.', author: 'Henry David Thoreau' },
+            { text: 'Don’t be afraid to give up the good to go for the great.', author: 'John D. Rockefeller' },
+            { text: 'I find that the harder I work, the more luck I seem to have.', author: 'Thomas Jefferson' },
+            { text: 'Success is not in what you have, but who you are.', author: 'Bo Bennett' },
+            { text: 'The way to get started is to quit talking and begin doing.', author: 'Walt Disney' },
+            { text: 'You miss 100% of the shots you don’t take.', author: 'Wayne Gretzky' },
+            { text: 'The only limit to our realization of tomorrow will be our doubts of today.', author: 'Franklin D. Roosevelt' },
+            { text: 'What lies behind us and what lies before us are tiny matters compared to what lies within us.', author: 'Ralph Waldo Emerson' },
+            { text: 'Believe you can and you\'re halfway there.', author: 'Theodore Roosevelt' },
+            { text: 'Success is walking from failure to failure with no loss of enthusiasm.', author: 'Winston Churchill' },
+            { text: 'The best way to predict the future is to create it.', author: 'Peter Drucker' },
+            { text: 'Act as if what you do makes a difference. It does.', author: 'William James' },
+            { text: 'Success is not how high you have climbed, but how you make a positive difference to the world.', author: 'Roy T. Bennett' },
+            { text: 'Your time is limited, so don’t waste it living someone else’s life.', author: 'Steve Jobs' },
+            { text: 'The only way to achieve the impossible is to believe it is possible.', author: 'Charles Kingsleigh' },
+            { text: 'Success is the sum of small efforts, repeated day in and day out.', author: 'Robert Collier' },
+            { text: 'You are never too old to set another goal or to dream a new dream.', author: 'C.S. Lewis' },
+            { text: 'The future belongs to those who believe in the beauty of their dreams.', author: 'Eleanor Roosevelt' },
+            { text: 'Success is not final, failure is not fatal: it is the courage to continue that counts.', author: 'Winston Churchill' },
+            { text: 'Opportunities don\'t happen, you create them.', author: 'Chris Grosser' },
+            { text: 'Success is not the result of spontaneous combustion. You must set yourself on fire.', author: 'Arnold H. Glasow' }
+        ],
+        quotes: [],
+
+        init() {
+            // Remove duplicate quotes automatically
+            this.quotes = Array.from(new Map(this.rawQuotes.map(q => [q.text.toLowerCase(), q])).values());
+        },
+        
+        get filteredQuotes() {
+            if (this.search.trim() === '') return this.quotes;
+            const term = this.search.toLowerCase();
+            return this.quotes.filter(q => 
+                q.text.toLowerCase().includes(term) ||
+                q.author.toLowerCase().includes(term)
+            );
+        },
+        
+        showRandom() {
+            const randomIndex = Math.floor(Math.random() * this.quotes.length);
+            const randomQuote = this.quotes[randomIndex];
+            this.search = randomQuote.text;
+        }
+    }"
+>
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+        <h1 class="text-4xl md:text-5xl font-semibold text-center mb-8 text-amber-300">
+            Success Quotes
+        </h1>
+
+        <!-- Controls -->
+        <div class="sticky top-4 z-10 p-4 mb-10 bg-slate-800/80 backdrop-blur-lg rounded-xl shadow-lg ring-1 ring-white/10 flex flex-col sm:flex-row gap-4 items-center">
+             <div class="relative w-full flex-grow">
+                <svg class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
+                <input 
+                    type="text" 
+                    x-model.debounce.300ms="search" 
+                    placeholder="Search for success..."
+                    class="w-full p-3 pl-10 border border-slate-600 rounded-lg bg-slate-700 text-white placeholder-slate-400 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:outline-none transition">
+            </div>
+            <button @click="showRandom()" class="px-8 py-3 w-full sm:w-auto rounded-lg bg-amber-400 text-slate-900 font-semibold hover:bg-amber-300 active:scale-95 transition-all shadow-md hover:shadow-lg">
+                Random Quote
+            </button>
+        </div>
+
+        <!-- Quote Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <template x-for="quote in filteredQuotes" :key="quote.text">
+                <article class="bg-slate-800 rounded-lg shadow-lg p-6 flex flex-col border-t-4 border-amber-400 hover:shadow-amber-400/15 hover:-translate-y-2 transition-all duration-300">
+                    <blockquote class="text-lg italic flex-grow mb-4 text-slate-300" x-text="quote.text"></blockquote>
+                    <figcaption class="text-right font-semibold text-amber-400 mt-2" x-text="'— ' + quote.author"></figcaption>
+                </article>
+            </template>
+            
+            <!-- No results message -->
+            <div x-show="filteredQuotes.length === 0" class="md:col-span-2 lg:col-span-3 text-center py-10 text-slate-500">
+                <p class="text-xl">No quotes found.</p>
+                <button @click="search = ''" class="mt-4 text-amber-400 hover:underline">Clear search</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

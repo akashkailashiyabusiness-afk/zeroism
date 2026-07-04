@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Mental Models Toolbox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #495057;
+            --heading-color: #212529;
+            --primary-accent: #4a4e69;
+            --border-color: #e9ecef;
+            --shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 25px;
+        }
+
+        /* --- Header --- */
+        .main-header {
+            text-align: center;
+            margin: 20px 0 50px 0;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .main-header h1 {
+            font-family: 'Lora', serif;
+            font-size: 2.2rem;
+            color: var(--primary-accent);
+            margin: 0;
+            line-height: 1.3;
+        }
+        .main-header h1 span {
+            display: block;
+            font-size: 1.5rem;
+            font-family: 'Poppins', sans-serif;
+            color: var(--heading-color);
+            margin-top: 5px;
+        }
+
+        /* --- Grid of Disciplines --- */
+        .mental-models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .category-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .category-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .category-card h2 {
+            font-size: 1.4rem;
+            margin: 0 0 5px 0;
+            color: var(--heading-color);
+        }
+        .category-card p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* --- Modal (Pop-up) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+        }
+        .modal-content {
+            background-color: var(--bg-color);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            animation: slideDown 0.4s ease;
+        }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            top: 10px; right: 25px;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            margin-top: 0;
+            color: var(--heading-color);
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .model-list { list-style: none; padding: 0; margin: 0; }
+        .model-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .model-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .model-item h4 { margin: 0 0 5px 0; font-size: 1.1rem; color: var(--primary-accent); }
+        .model-item p { margin: 0 0 10px 0; font-size: 0.95rem; }
+        .learn-btn {
+            display: inline-block;
+            background-color: var(--heading-color);
+            color: white;
+            padding: 6px 14px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+        .learn-btn:hover { background-color: #000; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <h1>"To a man with a hammer, everything looks like a nail"
+            <span>Your Interactive Toolbox of Mental Models</span>
+        </h1>
+    </header>
+
+    <main class="mental-models-grid">
+        <div class="category-card" onclick="openModal('psychology-modal')"><div class="icon">🧠</div><h2>Psychology</h2><p>5 Models</p></div>
+        <div class="category-card" onclick="openModal('maths-modal')"><div class="icon">🧮</div><h2>Maths</h2><p>3 Models</p></div>
+        <div class="category-card" onclick="openModal('economics-modal')"><div class="icon">📈</div><h2>Economics</h2><p>5 Models</p></div>
+        <div class="category-card" onclick="openModal('markets-modal')"><div class="icon">📊</div><h2>Markets</h2><p>5 Models</p></div>
+        <div class="category-card" onclick="openModal('engineering-modal')"><div class="icon">⚙️</div><h2>Engineering</h2><p>3 Models</p></div>
+        <div class="category-card" onclick="openModal('biology-modal')"><div class="icon">🧬</div><h2>Biology</h2><p>2 Models</p></div>
+        <div class="category-card" onclick="openModal('management-modal')"><div class="icon">📋</div><h2>Management</h2><p>3 Models</p></div>
+        <div class="category-card" onclick="openModal('other-modal')"><div class="icon">🧩</div><h2>Other Key Models</h2><p>4 Models</p></div>
+    </main>
+
+    <!-- Modal Definitions -->
+    <div id="psychology-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('psychology-modal')">&times;</span>
+            <h3 class="modal-title">🧠 Psychology Models</h3>
+            <ul class="model-list">
+                <li class="model-item"><h4>Incentive-Caused Bias</h4><p>The universal tendency to act in one's own self-interest, often unconsciously, due to the incentives in place. Never underestimate its power.</p><a href="https://fs.blog/incentive-caused-bias/" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Consistency Principle</h4><p>People have a deep need to be seen as consistent. As such, once they have publicly committed to something, they are much more likely to follow through.</p><a href="https://www.youtube.com/watch?v=KyADBIZG388" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Social Proof</h4><p>The tendency to assume the actions of others reflect the correct behavior for a given situation. If everyone is doing it, it must be right.</p><a href="https://www.verywellmind.com/what-is-social-proof-2795908" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Sunk Cost Fallacy</h4><p>The tendency to continue an endeavor because of previously invested resources (time, money, effort), rather than on its current prospects.</p><a href="https://thedecisionlab.com/biases/the-sunk-cost-fallacy" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>First Conclusion Bias</h4><p>The mind's tendency to settle on the first conclusion that comes to it, without considering alternatives. It's a major barrier to rational thinking.</p><a href="https://www.linkedin.com/pulse/charlie-munger-first-conclusion-bias-fr%C3%A9d%C3%A9ric-le-bel/" class="learn-btn" target="_blank">Learn More</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="maths-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('maths-modal')">&times;</span>
+            <h3 class="modal-title">🧮 Maths Models</h3>
+            <ul class="model-list">
+                <li class="model-item"><h4>Basic Arithmetic</h4><p>A fundamental fluency with numbers is the starting point for understanding almost every other model. It's the language of reality.</p><a href="https://www.khanacademy.org/math/arithmetic" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Compounding</h4><p>The process where an asset's earnings are reinvested to generate additional earnings. It's a powerful force in finance, knowledge, and habits.</p><a href="https://www.youtube.com/watch?v=wf91rEGw8_Q" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Perms and Combs</h4><p>(Permutations and Combinations). The mathematical tools for understanding the number of possible outcomes in a given scenario. Essential for probability.</p><a href="https://www.youtube.com/watch?v=Xq3y0z_i-v4" class="learn-btn" target="_blank">Learn More</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="economics-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('economics-modal')">&times;</span>
+            <h3 class="modal-title">📈 Economics Models</h3>
+            <ul class="model-list">
+                <li class="model-item"><h4>Advantage of Scale</h4><p>(Economies of Scale). The cost advantages that businesses obtain due to their scale of operation, with cost per unit of output decreasing with increasing scale.</p><a href="https://www.investopedia.com/terms/e/economiesofscale.asp" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Wealth Effect</h4><p>The tendency for people to spend more as the value of their assets (like stocks or real estate) rises, even if their income has not changed.</p><a href="https://www.investopedia.com/terms/w/wealtheffect.asp" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Opportunity Cost</h4><p>The value of the next-best alternative that was not chosen. Every decision has an opportunity cost.</p><a href="https://www.youtube.com/watch?v=PSU-T3-98YE" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Tragedy of the Commons</h4><p>A situation where individual users, acting in their own self-interest, behave contrary to the common good of all users by depleting a shared resource.</p><a href="https://www.youtube.com/watch?v=bs25gm-cvI4" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Comparative Advantage in Trade</h4><p>The ability of an economy to produce goods and services at a lower opportunity cost than that of trade partners. It explains why trade is beneficial for all parties.</p><a href="https://www.youtube.com/watch?v=Fp_9W_jH184" class="learn-btn" target="_blank">Learn More</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="markets-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('markets-modal')">&times;</span>
+            <h3 class="modal-title">📊 Markets Models</h3>
+            <ul class="model-list">
+                <li class="model-item"><h4>Technology</h4><p>Understanding how new technologies emerge, disrupt existing industries, and create new opportunities is crucial for investing and business strategy.</p><a href="https://www.youtube.com/watch?v=Ey_54zGZ32w" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Competitive Destruction</h4><p>(Creative Destruction). The process of industrial mutation that incessantly revolutionizes the economic structure from within, destroying the old one, creating a new one.</p><a href="https://www.investopedia.com/terms/c/creativedestruction.asp" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Pari-Mutuel System</h4><p>A betting system where all bets of a particular type are placed together in a pool. The odds are determined by the collective wisdom (or folly) of the crowd, not a bookmaker.</p><a href="https://bleacherreport.com/articles/1598466-horse-racing-101-a-guide-to-betting-the-pari-mutuel-system" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Mr. Market</h4><p>An allegory created by Benjamin Graham to describe the stock market as a moody business partner who offers to buy or sell shares every day at fluctuating prices.</p><a href="https://www.investopedia.com/terms/m/mr-market.asp" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Cancer-Surgery Formula</h4><p>An analogy for business decisions where you must act decisively to cut out a failing part of a business (the "cancer") to save the healthy remainder, even if it's painful.</p><a href="https://www.youtube.com/watch?v=F9cO3-MLHns" class="learn-btn" target="_blank">Learn More</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="engineering-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('engineering-modal')">&times;</span>
+            <h3 class="modal-title">⚙️ Engineering Models</h3>
+            <ul class="model-list">
+                <li class="model-item"><h4>Back-up System (Redundancy)</h4><p>The inclusion of extra components which are not strictly necessary to functioning, in case of failure of other components.</p><a href="https://www.youtube.com/watch?v=5n0z_S-S82E" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Breakpoints</h4><p>A point in a system or process where it will fail or fundamentally change. Understanding where these are is key to building resilient systems.</p><a href="https://www.youtube.com/watch?v=G11iY-a-62k" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Margin of Safety</h4><p>Building a buffer between intended performance and failure points to account for uncertainty, risk, and unforeseen events.</p><a href="https://www.youtube.com/watch?v=p4rv40o2Q8E" class="learn-btn" target="_blank">Learn More</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="biology-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('biology-modal')">&times;</span>
+            <h3 class="modal-title">🧬 Biology Models</h3>
+            <ul class="model-list">
+                <li class="model-item"><h4>Natural Selection</h4><p>The process whereby organisms better adapted to their environment tend to survive and produce more offspring. This applies to ideas, businesses, and strategies.</p><a href="https://www.youtube.com/watch?v=0SCjhI86grU" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Feedback Loops</h4><p>A process in which the outputs of a system are circled back and used as inputs. They can be positive (amplifying) or negative (stabilizing).</p><a href="https://www.youtube.com/watch?v=inVZoI1AkC8" class="learn-btn" target="_blank">Learn More</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="management-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('management-modal')">&times;</span>
+            <h3 class="modal-title">📋 Management Models</h3>
+            <ul class="model-list">
+                <li class="model-item"><h4>Checklist</h4><p>A simple but powerful tool to reduce errors and ensure consistency, especially in complex tasks. It compensates for the limits of human memory and attention.</p><a href="https://www.youtube.com/watch?v=tS-Zz4-o5y8" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Big "No-Brainer" Questions</h4><p>The practice of asking obvious, fundamental questions to simplify complex problems and uncover the core issues (e.g., "What is the goal here?").</p><a href="https://fs.blog/first-principles/" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Patents and Trademarks</h4><p>Legal tools that create a temporary monopoly, providing a powerful incentive for innovation by allowing creators to profit from their ideas.</p><a href="https://www.youtube.com/watch?v=rj44G63r3Kk" class="learn-btn" target="_blank">Learn More</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="other-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('other-modal')">&times;</span>
+            <h3 class="modal-title">🧩 Other Key Models</h3>
+            <ul class="model-list">
+                <li class="model-item"><h4>Decision Tree</h4><p>A tree-like model of decisions and their possible consequences, used to map out choices and investigate outcomes.</p><a href="https://www.youtube.com/watch?v=Z41Lw-6EKPM" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Statistics</h4><p>The discipline of collecting, analyzing, and interpreting data. It's the primary tool for navigating uncertainty and making data-informed decisions.</p><a href="https://www.youtube.com/watch?v=Iq64-Qy52dE" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>Philosophy</h4><p>The study of fundamental questions about existence, knowledge, values, reason, mind, and language. It provides the "why" behind the "what".</p><a href="https://www.youtube.com/watch?v=1A_CAkYt3GY" class="learn-btn" target="_blank">Learn More</a></li>
+                <li class="model-item"><h4>History</h4><p>Studying history provides a vast database of human behavior, societal change, and repeated patterns, offering invaluable context for present-day decisions.</p><a href="https://www.youtube.com/watch?v=Yocja_N5s1I" class="learn-btn" target="_blank">Learn More</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "block";
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

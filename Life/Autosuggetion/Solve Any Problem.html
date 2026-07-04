@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 Mental Models for Problem Solving</title>
+    <style>
+        /* --- Google Fonts --- */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Lora:wght@600;700&display=swap');
+
+        /* --- CSS Variables & Global Styles --- */
+        :root {
+            --font-heading: 'Lora', serif;
+            --font-body: 'Roboto', sans-serif;
+            --color-bg: #f8f9fa;
+            --color-text: #343a40;
+            --color-heading: #212529;
+            --color-light-text: #6c757d;
+
+            --c1-bg: #fffbeb; --c1-border: #f59e0b;
+            --c2-bg: #fdf2f2; --c2-border: #ef4444;
+            --c3-bg: #f5f3ff; --c3-border: #8b5cf6;
+            --c4-bg: #f0fdf4; --c4-border: #22c55e;
+            --c5-bg: #eff6ff; --c5-border: #3b82f6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- Header --- */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        header h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            color: var(--color-heading);
+        }
+        header p {
+            font-size: 1.1rem;
+            color: var(--color-light-text);
+        }
+
+        /* --- Main Content Grid --- */
+        .models-container {
+            display: grid;
+            gap: 2rem;
+        }
+
+        /* --- Model Card Styling --- */
+        .model-card {
+            background-color: #fff;
+            border-radius: 12px;
+            border: 1px solid #dee2e6;
+            border-left: 5px solid;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        @media (min-width: 992px) {
+            .model-card {
+                grid-template-columns: 1fr 1.2fr;
+                gap: 2.5rem;
+                align-items: start;
+            }
+        }
+
+        .model-card h2 {
+            font-family: var(--font-heading);
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .model-card .description {
+            color: var(--color-light-text);
+            margin-bottom: 1.5rem;
+        }
+        .model-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .model-card ul {
+            list-style-position: inside;
+            padding-left: 0;
+            margin-bottom: 1.5rem;
+        }
+        .model-card li { margin-bottom: 0.25rem; }
+
+        /* --- Visual Area for Diagrams --- */
+        .visual-area {
+            background-color: var(--color-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 250px;
+            width: 100%;
+        }
+
+        /* --- Individual Card Colors --- */
+        #c1 { border-color: var(--c1-border); } #c1 .visual-area { background-color: var(--c1-bg); }
+        #c2 { border-color: var(--c2-border); } #c2 .visual-area { background-color: var(--c2-bg); }
+        #c3 { border-color: var(--c3-border); } #c3 .visual-area { background-color: var(--c3-bg); }
+        #c4 { border-color: var(--c4-border); } #c4 .visual-area { background-color: var(--c4-bg); }
+        #c5 { border-color: var(--c5-border); } #c5 .visual-area { background-color: var(--c5-bg); }
+
+
+        /* --- Diagram Specific Styles --- */
+
+        /* 1. Pre-Mortem & 5. Impact/Effort Matrix (2x2 Grid) */
+        .matrix-2x2 {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1 / 0.8;
+            border: 1px solid #ccc;
+        }
+        .matrix-2x2::before, .matrix-2x2::after { /* Axes lines */
+            content: '';
+            position: absolute;
+            background-color: #aaa;
+        }
+        .matrix-2x2::before { /* Vertical */
+            left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%);
+        }
+        .matrix-2x2::after { /* Horizontal */
+            top: 50%; left: 0; height: 1px; width: 100%; transform: translateY(-50%);
+        }
+        .matrix-quadrant {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .matrix-quadrant strong { font-size: 1rem; color: var(--color-heading); }
+        #c1 .matrix-quadrant { background-color: #fef3c7; border: 1px solid var(--c1-bg); }
+        #c5 .matrix-quadrant { background-color: #dbeafe; border: 1px solid var(--c5-bg); }
+        
+        .axis-label {
+            position: absolute;
+            color: var(--color-light-text);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .label-top { top: -20px; left: 50%; transform: translateX(-50%); }
+        .label-bottom { bottom: -20px; left: 50%; transform: translateX(-50%); }
+        .label-left { left: -60px; top: 50%; transform: translateY(-50%); text-align: center; }
+        .label-right { right: -60px; top: 50%; transform: translateY(-50%); text-align: center; }
+
+
+        /* 2. The 5 Whys Framework */
+        .five-whys-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .five-whys-table td {
+            padding: 0.75rem;
+            vertical-align: middle;
+        }
+        .five-whys-table tr:not(:last-child) td { border-bottom: 1px solid #e0e0e0; }
+        .five-whys-table .label {
+            font-weight: 700;
+            border-radius: 4px;
+            text-align: center;
+            padding: 0.5rem;
+        }
+        #c2 .five-whys-table .label { background-color: #fee2e2; color: #b91c1c; }
+        #c2 .five-whys-table .problem { background-color: #fecaca; font-weight: 500; }
+
+        /* 3. Decision Tree Analysis */
+        .decision-tree {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            width: 100%;
+            font-size: 0.85rem;
+        }
+        .dt-node {
+            background: white;
+            border: 2px solid var(--c3-border);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .dt-options {
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+            position: relative;
+        }
+        .dt-options::before { /* Central stem line */
+            content: '';
+            position: absolute;
+            left: -1rem;
+            top: 50%;
+            height: 100%;
+            width: 2px;
+            background: var(--c3-border);
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+        .dt-branch {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+        }
+        .dt-branch::before { /* Branch horizontal line */
+            content: '';
+            position: absolute;
+            left: -1rem;
+            width: 1rem;
+            height: 2px;
+            background: var(--c3-border);
+            z-index: 0;
+        }
+        .dt-outcomes {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+        }
+        .dt-outcomes::before { /* Final stem */
+             content: '';
+            position: absolute;
+            left: -0.75rem;
+            top: 50%;
+            height: 100%;
+            width: 2px;
+            background: #ccc;
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+        .dt-outcomes .dt-node {
+            border-color: #ccc;
+            width: 150px;
+        }
+         .dt-outcomes .dt-node::before { /* Final horizontal line */
+            content: '';
+            position: absolute;
+            left: -0.75rem;
+            width: 0.75rem;
+            height: 2px;
+            background: #ccc;
+            top: 50%;
+            transform: translateY(-50%);
+         }
+        .dt-outcomes .risk { border-color: #f87171; background: #fee2e2; }
+        .dt-outcomes .outcome { border-color: #4ade80; background: #dcfce7; }
+        
+        /* 4. Rapid SWOT */
+        .swot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            width: 100%;
+        }
+        .swot-item {
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid;
+        }
+        .swot-item h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        .swot-item p { font-size: 0.9rem; }
+        #c4 .swot-item {
+             background-color: #dcfce7; border-color: #4ade80;
+        }
+        #c4 .swot-item.weakness, #c4 .swot-item.threat {
+            background-color: #fee2e2; border-color: #f87171;
+        }
+        
+
+        /* --- Footer --- */
+        footer {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #343a40;
+            color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        footer p { margin-bottom: 1rem; font-size: 1.1rem; }
+        footer a {
+            display: inline-block;
+            background: var(--c5-border);
+            color: #fff;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        footer a:hover { background-color: #2563eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Solve Any Problem</h1>
+               </header>
+
+        <div class="models-container">
+
+            <!-- 1. Pre-Mortem Analysis -->
+            <section class="model-card" id="c1">
+                <div class="content-area">
+                    <h2>1. Pre-Mortem Analysis</h2>
+                    <div class="info-blocks">
+                        <h3>How to use it:</h3>
+                        <ul>
+                            <li>Spot failure points before they happen.</li>
+                            <li>Organize them on the matrix.</li>
+                            <li>Refine your plan to reduce risk and sharpen execution.</li>
+                        </ul>
+                        <h3>When to use it:</h3>
+                        <p>Launching a product, rolling out a strategy, or presenting to your board.</p>
+                    </div>
+                </div>
+                <div class="visual-area">
+                    <div class="matrix-2x2">
+                        <div class="axis-label label-top">High Likelihood</div>
+                        <div class="axis-label label-bottom">Low Likelihood</div>
+                        <div class="axis-label label-left">Low<br>Impact</div>
+                        <div class="axis-label label-right">High<br>Impact</div>
+                        <div class="matrix-quadrant"><strong>Share the Risk</strong></div>
+                        <div class="matrix-quadrant"><strong>Avoid the Risk</strong></div>
+                        <div class="matrix-quadrant"><strong>Accept the Risk</strong></div>
+                        <div class="matrix-quadrant"><strong>Reduce or<br>leverage the Risk</strong></div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 2. The 5 Whys Framework -->
+            <section class="model-card" id="c2">
+                <div class="content-area">
+                    <h2>2. The 5 Whys Framework</h2>
+                    <p class="description">Uncover the real reason behind recurring problems–fast.</p>
+                    <div class="info-blocks">
+                        <h3>How to use it:</h3>
+                        <p>Ask "why" five times in a row to uncover the root cause.</p>
+                        <h3>When to use it:</h3>
+                        <p>You're dealing with recurring performance problems.</p>
+                    </div>
+                </div>
+                <div class="visual-area">
+                    <table class="five-whys-table">
+                        <tr>
+                            <td class="label">PROBLEM</td>
+                            <td class="problem">We missed our revenue target this quarter.</td>
+                        </tr>
+                        <tr><td class="label">WHY 1</td><td>Sales came in 20% below forecast.</td></tr>
+                        <tr><td class="label">WHY 2</td><td>The new product failed to gain traction.</td></tr>
+                        <tr><td class="label">WHY 3</td><td>Our marketing didn't connect with the right audience.</td></tr>
+                        <tr><td class="label">WHY 4</td><td>We launched without validating the messaging.</td></tr>
+                        <tr><td class="label">WHY 5</td><td>We prioritized investor optics over go-to-market readiness.</td></tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 3. Decision Tree Analysis -->
+            <section class="model-card" id="c3">
+                <div class="content-area">
+                    <h2>3. Decision Tree Analysis</h2>
+                    <div class="info-blocks">
+                        <h3>How to use it:</h3>
+                        <ul>
+                            <li>Draw out each decision path.</li>
+                            <li>Attach outcomes, risks, and potential returns.</li>
+                            <li>Select based on clarity.</li>
+                        </ul>
+                        <h3>When to use it:</h3>
+                        <p>You're making complex decisions with multiple variables or trade-offs.</p>
+                    </div>
+                </div>
+                <div class="visual-area">
+                    <div class="decision-tree">
+                        <div class="dt-node">Who should lead our product launch execution?</div>
+                        <div class="dt-options">
+                            <div class="dt-branch">
+                                <div class="dt-node">OPTION A<br><small>Proven but Overbooked Team</small></div>
+                                <div class="dt-outcomes">
+                                    <div class="dt-node risk"><b>RISK</b><br>Burnout or slow response</div>
+                                    <div class="dt-node outcome"><b>OUTCOME</b><br>On-time launch but risk of team overload</div>
+                                </div>
+                            </div>
+                            <div class="dt-branch">
+                                <div class="dt-node">OPTION B<br><small>New Agile Team</small></div>
+                                <div class="dt-outcomes">
+                                    <div class="dt-node risk"><b>RISK</b><br>60-day launch delay</div>
+                                    <div class="dt-node outcome"><b>OUTCOME</b><br>Long-term speed gains post-launch</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Rapid SWOT -->
+            <section class="model-card" id="c4">
+                <div class="content-area">
+                    <h2>4. Rapid SWOT</h2>
+                    <div class="info-blocks">
+                        <h3>How to use it:</h3>
+                        <p>Answer each of these questions.</p>
+                        <h3>When to use it:</h3>
+                        <p>You're realigning strategy, pitching investors, or refining your positioning.</p>
+                    </div>
+                </div>
+                <div class="visual-area">
+                    <div class="swot-grid">
+                        <div class="swot-item strength"><h4>➕ Strengths</h4><p>What are we doing well right now?</p></div>
+                        <div class="swot-item opportunity"><h4>↗️ Opportunities</h4><p>Where can we grow or win quickly?</p></div>
+                        <div class="swot-item weakness"><h4>➖ Weaknesses</h4><p>What's holding us back?</p></div>
+                        <div class="swot-item threat"><h4>⚡️ Threats</h4><p>What risks or disruptions are on the horizon?</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Impact vs. Effort Matrix -->
+            <section class="model-card" id="c5">
+                <div class="content-area">
+                    <h2>5. Impact vs. Effort Matrix</h2>
+                    <div class="info-blocks">
+                        <h3>How to use it:</h3>
+                        <ul>
+                            <li>Map by impact vs. effort.</li>
+                            <li>Prioritize high-impact actions.</li>
+                            <li>Cut, automate, delegate others.</li>
+                        </ul>
+                        <h3>When to use it:</h3>
+                        <p>Resources are stretched, and you need clarity on what drives results.</p>
+                    </div>
+                </div>
+                <div class="visual-area">
+                     <div class="matrix-2x2">
+                        <div class="axis-label label-top">High Impact</div>
+                        <div class="axis-label label-bottom">Low Impact</div>
+                        <div class="axis-label label-left">Low Effort</div>
+                        <div class="axis-label label-right">High Effort</div>
+                        <div class="matrix-quadrant"><strong>Quick Wins</strong><br>Do these now.</div>
+                        <div class="matrix-quadrant"><strong>Strategic Plays</strong><br>Plan and invest here.</div>
+                        <div class="matrix-quadrant"><strong>Low-Value Tasks</strong><br>Automate or delegate.</div>
+                        <div class="matrix-quadrant"><strong>Drains on Focus</strong><br>Cut or avoid.</div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+       
+    </div>
+</body>
+</html>

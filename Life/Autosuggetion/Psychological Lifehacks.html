@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psychological Lifehacks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1c1c1e;
+            --text-color: #e2e2e2;
+            --title-color: #ffffff;
+            --accent-color: #cccccc;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            border-bottom: 2px solid #333;
+            padding-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            color: var(--title-color);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        main ol {
+            list-style: none;
+            counter-reset: lifehacks-counter;
+            padding: 0;
+        }
+
+        main li {
+            counter-increment: lifehacks-counter;
+            margin-bottom: 2.5rem;
+            padding-left: 4.5rem;
+            position: relative;
+            font-size: 1.1rem;
+        }
+        
+        main li .emoji {
+            margin-right: 0.5em;
+        }
+
+        main li::before {
+            content: counter(lifehacks-counter);
+            position: absolute;
+            left: 0;
+            top: -5px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            line-height: 1;
+            opacity: 0.5;
+        }
+        
+        em {
+            font-style: italic;
+            color: #b0b0b0;
+        }
+
+        footer {
+            margin-top: 4rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>🧠 Psychological Lifehacks</h1>
+        </header>
+
+        <main>
+            <ol>
+                <li><span class="emoji">👀</span> When you first meet people try to notice their eye color while also smiling at them. It might be because you look for a second or two longer, but all I can tell you is that people really respond to it.</li>
+                <li><span class="emoji">👣</span> Pay attention to people's feet. If you approach two people in the middle of a conversation, and they only turn their torsos and not their feet, they don't want you to join the conversation. Similarly if you are in a conversation with a coworker who you think is paying attention to you and their torso is turned towards you but their feet are facing in another direction, they want the conversation to end.</li>
+                <li><span class="emoji">🚪</span> Foot-in-the-door phenomenon. People are more likely to agree to do a task for you if you ask them to do something simpler first. (Gradual Commitment... makes people them think you like them)</li>
+                <li><span class="emoji">🤯</span> Alternatively you ask them to do an unreasonable task, and they'll say no, so then you ask for what you wanted, a much more reasonable task, and they're more likely to agree that way.</li>
+                <li><span class="emoji">👍</span> If you ask someone to do you a small favor, cognitive dissonance will make them believe that because they did that favor, they therefore <em>must</em> like you. {yes you all know that -- Ben Franklin}</li>
+                <li><span class="emoji">🤫</span> If you ask someone a question and they only partially answer just wait. If you stay silent and keep eye contact they will usually continue talking.</li>
+                <li><span class="emoji">🍬</span> Chew gum when you're approaching a situation that would make you nervous like public speaking or bungee jumping. I can't remember where I heard it but apparently if we are 'eating' something in our brains trip and it reasons 'I would not be eating if I were in danger. So I'm not in danger'. Has helped calm me a few times.</li>
+                <li><span class="emoji">🚶</span> Avoid the sidewalk shuffle by looking intently over the person's shoulder, or between people's heads in a group. Your gaze shows them where you're going. They'll drift toward the opposing side / create a gap to avoid you.</li>
+                <li><span class="emoji">👨‍🏫</span> When you're studying/learning something new, teach a friend how/about it. Let them ask questions. If you're able to teach something well, you understand it.</li>
+                <li><span class="emoji">💖</span> People will remember not what you said but how you made them feel.</li>
+                <li><span class="emoji">💼</span> For interviews I recommend altering your psychological state beforehand. Tell yourself "I've known these people all my life. We're old friends catching up. I can't wait to see them". Visualize the experience, shaking hands, making eye contact, having conversation. What things can you not wait to tell them? Hold an open pose...stand with your legs apart, hands on your hips, and shoulders back while doing this and SMILE. This may sound cliche but you are in charge of your own psychological state and the power of suggestion is strong.</li>
+                <li><span class="emoji">😁</span> If you get yourself to be really happy and excited to see other people, they will react the same to you. It doesn't always happen the first time, but it will definitely happen next time.</li>
+                <li><span class="emoji">🧘</span> My personal favorite is when people are angry at me; if I stay calm it'll get them even angrier, and be ashamed about it after.</li>
+                <li><span class="emoji">🔥</span> If you have a warm hand when you shake somebody's hand, you immediately become a more desirable person to get along with.</li>
+                <li><span class="emoji">🛡️</span> People have a certain image of themselves and will fight tooth and nail to cling to it. Use this information wisely. You can make people dislike you by attacking their self-image.</li>
+                <li><span class="emoji">🎢</span> False attribution of arousal. When you take somebody out on a first date, take them somewhere exciting that will get their heart beating. e.g. roller coaster or horror film. This gets their adrenaline up. It makes them think they enjoy spending time with you rather than the activity.</li>
+                <li><span class="emoji">😎</span> The key to confidence is walking into a room, and assuming everyone already likes you.</li>
+                <li><span class="emoji">💪</span> The physical effects of stress (increased breathing rate, heart rate ect.) mirror identically the physical effects of courage. So when you're feeling stress from any situation immediately reframe it: your body is getting ready to do courage, it's Not feeling stress...</li>
+                <li><span class="emoji">🗣️</span> Refer to people you've just met by their name. People loving being referred to by their name, and it will establish a sense of trust and friendship right away...</li>
+                <li><span class="emoji">😄</span> If you make the biggest smile you can, you will automatically feel happier.</li>
+                <li><span class="emoji">🎉</span> The moment your alarm wakes you up, immediately react by sitting up, pump your fists and shout "YEAH!" {wut?}</li>
+                <li><span class="emoji">👟</span> Always give your kid a choice that makes them think they are in control. For instance when I want him to put his shoes on I will say, "do you want to put your star wars shoes on or your shark shoes on?"</li>
+                <li><span class="emoji">👉</span> People are extraordinarily aware of their sense of touch. If someone (a member of the opposite sex?) 'accidentally' rests their knee on yours, let's say, they know it's there.</li>
+            </ol>
+        </main>
+        
+        <footer>
+            
+        </footer>
+    </div>
+</body>
+</html>

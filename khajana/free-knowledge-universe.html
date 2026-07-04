@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Knowledge Universe</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f4ef;
+  --ink: #1a1714;
+  --paper: #fffcf7;
+  --rule: #d8d0c4;
+  --accent: #c0392b;
+  --accent2: #2980b9;
+  --accent3: #27ae60;
+  --accent4: #8e44ad;
+  --accent5: #e67e22;
+  --muted: #8a8070;
+  --tag-bg: #ede9e2;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Space Grotesk', sans-serif;
+  line-height: 1.6;
+}
+
+/* MASTHEAD */
+.masthead {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0;
+}
+
+.masthead-top {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.masthead-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 1px;
+}
+
+.masthead-tagline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.masthead-hero {
+  padding: 40px 40px 32px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: end;
+}
+
+.masthead-kicker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.masthead-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -1px;
+  color: #fff;
+}
+
+.masthead-title span { color: var(--accent); }
+
+.masthead-sub {
+  margin-top: 16px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  max-width: 560px;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.masthead-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.stat-block {
+  text-align: right;
+}
+
+.stat-block .n {
+  font-family: 'Syne', sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.stat-block .l {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* NAV FILTERS */
+.nav-strip {
+  background: var(--ink);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 0 40px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav-strip::-webkit-scrollbar { display: none; }
+
+.nav-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 14px 20px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.35);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.nav-btn:hover { color: rgba(255,255,255,0.7); }
+.nav-btn.active { color: #fff; border-bottom-color: var(--accent); }
+
+/* CONTENT */
+.content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
+}
+
+/* SECTION */
+.section {
+  margin-bottom: 56px;
+}
+
+.section-rule {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.section-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+.section-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+
+.card {
+  background: var(--paper);
+  padding: 22px 24px;
+  transition: background 0.15s;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card.visible { display: flex; }
+.card:hover { background: #fffef8; }
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.card-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  padding: 3px 7px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 1px solid;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.card-url {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent2);
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.card-url:hover { text-decoration: underline; }
+
+.card-desc {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.6;
+}
+
+.card-why {
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+  padding-top: 6px;
+  border-top: 1px solid var(--rule);
+  line-height: 1.5;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  padding: 2px 7px;
+  background: var(--tag-bg);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* POWER DOTS */
+.power {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.pdot {
+  width: 6px; height: 6px;
+  background: var(--rule);
+}
+
+.pdot.on { background: var(--card-color, #c0392b); }
+
+/* FEATURED BAND */
+.featured-band {
+  background: var(--ink);
+  color: var(--paper);
+  margin: 0 -40px 48px;
+  padding: 28px 40px;
+  display: flex;
+  gap: 40px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.featured-band::-webkit-scrollbar { display: none; }
+
+.feat-item {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+  padding-right: 40px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+
+.feat-item:last-child { border-right: none; }
+
+.feat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.feat-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.feat-url {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+}
+
+.feat-url:hover { color: rgba(255,255,255,0.8); }
+
+.feat-why {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.5;
+}
+
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.3);
+  padding: 24px 40px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (max-width: 640px) {
+  .masthead-hero { grid-template-columns: 1fr; }
+  .masthead-stats { display: none; }
+  .content { padding: 24px 20px 60px; }
+  .featured-band { margin: 0 -20px 32px; padding: 20px; }
+  .grid { grid-template-columns: 1fr; }
+  .masthead-top, .masthead-hero, .nav-strip { padding-left: 20px; padding-right: 20px; }
+}
+</style>
+    <style>
+      .hub-back-btn{position:fixed;top:12px;left:12px;z-index:9999;display:flex;align-items:center;gap:8px;background:rgba(22,27,34,0.92);border:1px solid rgba(197,160,89,0.25);color:#c5a059;font-family:sans-serif;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:7px 14px;border-radius:999px;text-decoration:none;backdrop-filter:blur(10px);transition:all 0.2s ease;}
+      .hub-back-btn:hover{background:rgba(197,160,89,0.15);border-color:#c5a059;color:#d4af37;}
+    </style></head>
+<body>
+    <a href="/" class="hub-back-btn">&#8592; 0ISM Hub</a>
+
+<div class="masthead">
+  <div class="masthead-top">
+    <div class="masthead-date">KNOWLEDGE INTELLIGENCE BRIEF — 2025 EDITION</div>
+    <div class="masthead-tagline">FREE > Paid. Always.</div>
+  </div>
+  <div class="masthead-hero">
+    <div>
+      <div class="masthead-kicker">// OPEN SOURCE KNOWLEDGE UNIVERSE</div>
+      <div class="masthead-title">FREE SE<br><span>SABKUCH</span><br>SEEKHO</div>
+      <div class="masthead-sub">
+        Paid courses, textbooks, paywalls — sab ke saath compete karne wale free platforms.
+        OSINT tools, multi-source databases, dictionaries, research archives — complete with links.
+        No fluff. Only signal.
+      </div>
+    </div>
+    <div class="masthead-stats">
+      <div class="stat-block"><div class="n" id="total">0</div><div class="l">Resources</div></div>
+      <div class="stat-block"><div class="n">10</div><div class="l">Categories</div></div>
+      <div class="stat-block"><div class="n">$0</div><div class="l">Total Cost</div></div>
+    </div>
+  </div>
+  <div class="nav-strip" id="nav"></div>
+</div>
+
+<div class="content">
+
+  <!-- FEATURED -->
+  <div class="featured-band">
+    <div class="feat-item">
+      <div class="feat-label">🏆 Tier 1</div>
+      <div class="feat-name">MIT OCW</div>
+      <a href="https://ocw.mit.edu" target="_blank" class="feat-url">ocw.mit.edu</a>
+      <div class="feat-why">MIT ka poora curriculum. Free. Forever. No registration.</div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-label">🏆 Tier 1</div>
+      <div class="feat-name">Internet Archive</div>
+      <a href="https://archive.org" target="_blank" class="feat-url">archive.org</a>
+      <div class="feat-why">Books, films, software, web history. 35M+ items. Legal.</div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-label">🏆 Tier 1</div>
+      <div class="feat-name">arXiv</div>
+      <a href="https://arxiv.org" target="_blank" class="feat-url">arxiv.org</a>
+      <div class="feat-why">Cutting-edge research before peer review. Free preprints.</div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-label">🏆 Tier 1</div>
+      <div class="feat-name">Sci-Hub</div>
+      <a href="https://sci-hub.se" target="_blank" class="feat-url">sci-hub.se</a>
+      <div class="feat-why">85M+ paywalled papers. Free. Research ka samajhdaar saathi.</div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-label">🏆 Tier 1</div>
+      <div class="feat-name">Khan Academy</div>
+      <a href="https://khanacademy.org" target="_blank" class="feat-url">khanacademy.org</a>
+      <div class="feat-why">Math se economics tak. First principles pedagogy. Free.</div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-label">🏆 Tier 1</div>
+      <div class="feat-name">Wikidata</div>
+      <a href="https://wikidata.org" target="_blank" class="feat-url">wikidata.org</a>
+      <div class="feat-why">100M+ structured facts. Machine-readable. Connected knowledge graph.</div>
+    </div>
+  </div>
+
+  <div id="sections-root"></div>
+
+</div>
+
+<footer>
+  <span>FREE KNOWLEDGE UNIVERSE — COMPILED 2025</span>
+  <span>REAL SIGNAL. ZERO PAYWALL. INFINITE LEVERAGE.</span>
+</footer>
+
+<script>
+const db = [
+  {
+    cat: "📘 Education — Beats Paid Courses",
+    color: "#2980b9",
+    items: [
+      { name:"MIT OpenCourseWare", url:"https://ocw.mit.edu", badge:"FREE MIT", desc:"MIT ke actual courses — lectures, assignments, exams, readings. Every major subject. No registration.", why:"Duniya ki best university ka curriculum seedha. Koi course $0 main access karo.", tags:["courses","university","structured"], power:5 },
+      { name:"Khan Academy", url:"https://khanacademy.org", badge:"Foundation", desc:"Math, science, economics, computing, history. Foundation se advanced. Best pedagogy online.", why:"Kisi bhi subject ki neev pakki karni ho — yahan shuru karo.", tags:["beginner","math","science"], power:5 },
+      { name:"Coursera (Audit Mode)", url:"https://coursera.org", badge:"Audit Free", desc:"Top university courses audit karke free padho. Stanford, Johns Hopkins, Google sab yahan.", why:"Enroll → Audit option → poora course free. Certificate sirf paid hai.", tags:["audit","university","structured"], power:4 },
+      { name:"edX (Audit Mode)", url:"https://edx.org", badge:"Audit Free", desc:"Harvard, MIT, Berkeley ke courses. Audit mode main sab free.", why:"Same as Coursera — certificate pay, content free.", tags:["audit","harvard","mit"], power:4 },
+      { name:"Paul's Online Math Notes", url:"https://tutorial.math.lamar.edu", badge:"Math Bible", desc:"Calculus, Algebra, Differential Equations — professor ne likha, students ke liye. Clearest math notes online.", why:"Koi textbook nahi chahiye agar ye hai. Literally better than most paid courses.", tags:["math","calculus","free"], power:5 },
+      { name:"The Feynman Lectures (Physics)", url:"https://feynmanlectures.caltech.edu", badge:"Legend Tier", desc:"Richard Feynman ke physics lectures. Complete 3-volume set. Free online. HTML format.", why:"Physics ka sabse entertaining teacher ne likha. Caltech ne free release kiya.", tags:["physics","feynman","classic"], power:5 },
+      { name:"Stanford Encyclopedia of Philosophy", url:"https://plato.stanford.edu", badge:"Philosophy OS", desc:"Academic philosophy ka most authoritative free reference. Peer-reviewed. Continuously updated.", why:"Har philosophical concept yahan properly explain hai. Citation ke saath.", tags:["philosophy","academic","reference"], power:5 },
+      { name:"CrashCourse (YouTube)", url:"https://www.youtube.com/@crashcourse", badge:"Visual", desc:"History, science, literature, economics — animated explainers. John Green bhi hai.", why:"Complex topics ko visual format mein. Fast learning ke liye.", tags:["visual","youtube","overview"], power:4 },
+      { name:"NPTEL (IIT Lectures)", url:"https://nptel.ac.in", badge:"IIT Free", desc:"IIT ke professors ke lectures. Engineering, management, science — 1000+ courses in Hindi bhi.", why:"India ka best free technical education. Hindi mein bhi available.", tags:["IIT","hindi","engineering"], power:5 },
+      { name:"FreeCodeCamp", url:"https://freecodecamp.org", badge:"Coding Free", desc:"Web dev, Python, data science, machine learning — full curriculum. Certification free.", why:"Lakhs of developers yahan se sikhe hain. Udemy se better for self-learners.", tags:["coding","web","data science"], power:5 },
+      { name:"The Odin Project", url:"https://theodinproject.com", badge:"Web Dev", desc:"Full-stack web development curriculum. Project-based. Community-backed.", why:"Coding bootcamp ka free alternative. Real projects banate ho.", tags:["coding","web dev","projects"], power:4 },
+      { name:"CS50 (Harvard)", url:"https://cs50.harvard.edu/x", badge:"CS Bible", desc:"Harvard ka intro CS course. David Malan. Best intro to CS ever made. Free forever.", why:"Duniya ka sabse watched CS course. Beginners ke liye entry point.", tags:["CS","harvard","beginner"], power:5 }
+    ]
+  },
+  {
+    cat: "📚 Books & Libraries — Legal Free",
+    color: "#8e44ad",
+    items: [
+      { name:"Project Gutenberg", url:"https://gutenberg.org", badge:"70K Books", desc:"70,000+ copyright-free books. Marcus Aurelius, Darwin, Shakespeare — seedha download.", why:"Public domain = legal free. History ke sabse important minds yahan hain.", tags:["books","classics","free"], power:5 },
+      { name:"Internet Archive Books", url:"https://archive.org/details/books", badge:"35M Items", desc:"Millions of books, textbooks, comics, magazines. Borrow system bhi hai.", why:"Jab Gutenberg mein na mile — yahan hoga. Library card ka digital version.", tags:["books","borrow","archive"], power:5 },
+      { name:"Standard Ebooks", url:"https://standardebooks.org", badge:"Quality", desc:"Gutenberg ke books ko professionally formatted, typo-free, beautiful ebooks mein.", why:"Gutenberg ka polished version. EPUB, MOBI, AZW3 — sab formats.", tags:["ebooks","quality","formatted"], power:4 },
+      { name:"Open Library", url:"https://openlibrary.org", badge:"Borrow", desc:"Universal library. 4M+ books. 1-hour borrow system. Physical library ka digital twin.", why:"Out of print books bhi milte hain. Waitlist system hai.", tags:["borrow","catalog","rare"], power:4 },
+      { name:"Z-Library", url:"https://z-library.sk", badge:"Shadow Lib", desc:"22M+ books, 99M+ articles. Most comprehensive shadow library.", why:"Agar koi paid textbook chahiye — ye search karo. (Use VPN if needed)", tags:["textbooks","papers","shadow"], power:5 },
+      { name:"Library Genesis (LibGen)", url:"https://libgen.is", badge:"Shadow Lib", desc:"Academic textbooks, fiction, scientific papers. Mirror: libgen.rs bhi hai.", why:"Springer, Elsevier textbooks jo $200+ mein bik rahe hain — yahan free.", tags:["textbooks","academic","shadow"], power:5 },
+      { name:"Manybooks", url:"https://manybooks.net", badge:"Fiction", desc:"50,000+ free ebooks. Public domain + author-donated books.", why:"Fiction ke liye best free source. Curated collections hain.", tags:["fiction","ebooks","curated"], power:3 },
+      { name:"NASA Technical Reports", url:"https://ntrs.nasa.gov", badge:"Space Tech", desc:"NASA ki research, technical manuals, mission reports — sab free.", why:"Real aerospace engineering documents. Jo NASA ne actually likha.", tags:["engineering","space","technical"], power:4 }
+    ]
+  },
+  {
+    cat: "🔍 OSINT & Intelligence Tools",
+    color: "#c0392b",
+    items: [
+      { name:"OSINT Framework", url:"https://osintframework.com", badge:"Master Map", desc:"Visual tree of every OSINT tool categorized. Username, email, IP, social media — sab.", why:"Ye ek jagah itne saare OSINT tools nahi milenge. Start yahan se.", tags:["OSINT","map","tools"], power:5 },
+      { name:"Shodan", url:"https://shodan.io", badge:"Internet Scanner", desc:"Internet se connected har device ka search engine. IoT, servers, cameras, everything.", why:"'Google for hackers.' Security research ke liye. Free tier kaafi hai.", tags:["OSINT","security","IoT"], power:5 },
+      { name:"Maltego CE", url:"https://maltego.com/maltego-community", badge:"Graph Intel", desc:"Entities ke beech connections visualize karo. People, domains, IPs — web of connections.", why:"Journalists, investigators use karte hain. Community edition free.", tags:["OSINT","graph","investigation"], power:4 },
+      { name:"IntelTechniques", url:"https://inteltechniques.com/tools", badge:"OSINT Tools", desc:"Michael Bazzell ke OSINT tools. People search, social media, phone, email lookup.", why:"FBI OSINT trainer ne banaya. Professional grade, free tools.", tags:["OSINT","people","social"], power:5 },
+      { name:"Wayback Machine", url:"https://web.archive.org", badge:"Time Travel", desc:"800B+ web pages archived. Deleted websites, old versions — sab dekho.", why:"Koi page delete hua? Yahan dhundo. Evidence preservation ke liye critical.", tags:["archive","OSINT","history"], power:5 },
+      { name:"WHOIS Lookup", url:"https://whois.domaintools.com", badge:"Domain Intel", desc:"Domain ownership, registration, history. Reverse WHOIS bhi possible.", why:"Kisi website ke baare mein investigate karna ho — shuru yahan se.", tags:["domain","OSINT","ownership"], power:4 },
+      { name:"Hunter.io", url:"https://hunter.io", badge:"Email Finder", desc:"Domain se linked emails dhundho. 25 free searches/month.", why:"Cold outreach ya journalist investigation — real verified emails.", tags:["email","OSINT","outreach"], power:4 },
+      { name:"OSINT Combine", url:"https://www.osintcombine.com/tools", badge:"Multi-tool", desc:"Image location, bulk username search, Google dorks — sab ek jagah.", why:"Specialized tools jo mainstream OSINT miss karte hain.", tags:["OSINT","image","username"], power:4 },
+      { name:"Spyse (SecurityTrails)", url:"https://securitytrails.com", badge:"DNS Intel", desc:"DNS history, subdomain finder, IP info. Historical DNS records.", why:"Web infrastructure ka X-ray. Security researchers use karte hain.", tags:["DNS","security","intel"], power:4 },
+      { name:"Censys", url:"https://search.censys.io", badge:"Network Intel", desc:"Internet-connected devices aur networks ka database. Shodan ka competitor.", why:"Research-grade. Universities use karti hain. Free academic access.", tags:["network","security","OSINT"], power:4 },
+      { name:"GeoSpy", url:"https://geospy.ai", badge:"Image Geo", desc:"Photo se location identify karo — AI se. OSINT investigators ka tool.", why:"Background mein kya hai se location dhundho. Impressive accuracy.", tags:["image","geolocation","AI"], power:4 },
+      { name:"Exiftool", url:"https://exiftool.org", badge:"Metadata", desc:"Image/file metadata extract karo. GPS coordinates, camera model, edit history.", why:"Photos mein GPS data hota hai. OSINT ke liye gold mine.", tags:["metadata","OSINT","images"], power:4 }
+    ]
+  },
+  {
+    cat: "🌐 Multi-Source Databases & Knowledge Graphs",
+    color: "#27ae60",
+    items: [
+      { name:"Wikidata", url:"https://wikidata.org", badge:"100M Facts", desc:"Wikipedia ka structured database version. Queryable. 100M+ statements. Machine-readable.", why:"Har cheez connected hai. SPARQL se query karo. Developer ka knowledge graph.", tags:["database","linked data","structured"], power:5 },
+      { name:"DBpedia", url:"https://dbpedia.org", badge:"Linked Data", desc:"Wikipedia ka RDF/linked data version. Semantic web ka core resource.", why:"AI aur semantic search ke liye. Data interconnected hai automatically.", tags:["semantic","linked data","RDF"], power:4 },
+      { name:"Freebase Archive", url:"https://developers.google.com/freebase", badge:"Google Data", desc:"Google ka old knowledge graph. Archive accessible. Billions of facts.", why:"Google ka research data — historical value. AI training mein use hua.", tags:["knowledge graph","historical","Google"], power:3 },
+      { name:"OpenStreetMap", url:"https://openstreetmap.org", badge:"Free Maps", desc:"Wikipedia of maps. Community-maintained. More detailed than Google in many areas.", why:"Developer ke liye Google Maps API ka free alternative.", tags:["maps","geo","open source"], power:5 },
+      { name:"Our World in Data", url:"https://ourworldindata.org", badge:"Global Data", desc:"Oxford-backed. Global statistics on health, poverty, education, energy. Downloadable datasets.", why:"Har stat cite-able hai. News ke claims verify karne ke liye.", tags:["statistics","global","evidence"], power:5 },
+      { name:"World Bank Open Data", url:"https://data.worldbank.org", badge:"Economic", desc:"GDP, poverty, development indicators — 200+ countries. Free download.", why:"Official economic data. Students, researchers, journalists sab use karte.", tags:["economics","global","official"], power:4 },
+      { name:"UN Data", url:"https://data.un.org", badge:"UN Official", desc:"United Nations ka statistics portal. Demographics, trade, environment.", why:"Primary source data. Research papers mein cite hota hai.", tags:["UN","official","demographics"], power:4 },
+      { name:"Gapminder", url:"https://gapminder.org/data", badge:"Visual Data", desc:"Hans Rosling ka platform. Global development data beautifully visualized.", why:"Data storytelling ka master. Misconceptions debunk karte hain.", tags:["visualization","development","data"], power:4 },
+      { name:"Google Dataset Search", url:"https://datasetsearch.research.google.com", badge:"Meta Search", desc:"Datasets ke liye Google. Har topic ke datasets dhundo.", why:"Research ke liye raw data chahiye? Yahan search karo.", tags:["datasets","research","search"], power:4 },
+      { name:"Kaggle Datasets", url:"https://kaggle.com/datasets", badge:"ML Data", desc:"50,000+ datasets. Machine learning, data science, AI training.", why:"Practice ke liye real data. Public datasets free download.", tags:["ML","datasets","AI"], power:4 },
+      { name:"Zenodo", url:"https://zenodo.org", badge:"Research Data", desc:"CERN ka research data repository. Datasets, software, publications.", why:"DOI wala permanent research data. Reproducible science ke liye.", tags:["research","datasets","CERN"], power:4 },
+      { name:"CommonCrawl", url:"https://commoncrawl.org", badge:"Web Data", desc:"Poore web ka crawl data. Petabytes. Free download. GPT training mein use hua.", why:"AI models yahan se train hue. Raw internet data chahiye? Ye lo.", tags:["web data","AI","crawl"], power:5 }
+    ]
+  },
+  {
+    cat: "📖 Dictionaries, Encyclopedias & Reference",
+    color: "#e67e22",
+    items: [
+      { name:"Merriam-Webster", url:"https://merriam-webster.com", badge:"English Dict", desc:"America ka official dictionary. Thesaurus, word history, usage notes. Free.", why:"Etymology samajhna ho — yahan har word ka history hai.", tags:["dictionary","english","etymology"], power:5 },
+      { name:"Wiktionary", url:"https://en.wiktionary.org", badge:"Multi-lang", desc:"7M+ words across 4000+ languages. Etymology, pronunciation, translations.", why:"Wikipedia ka dictionary version. Har language mein cross-referenced.", tags:["multilingual","dictionary","etymology"], power:5 },
+      { name:"Oxford Reference (Free)", url:"https://oxfordreference.com", badge:"Oxford", desc:"Hundreds of specialist dictionaries — medicine, law, science, philosophy.", why:"Niche terminology ke liye. Oxford authority.", tags:["reference","specialist","oxford"], power:4 },
+      { name:"Encyclopedia Britannica (Free)", url:"https://britannica.com", badge:"Encyclopedia", desc:"Peer-reviewed encyclopedia. More reliable than Wikipedia for contested topics.", why:"Academic citations ke liye. Editors se verified content.", tags:["encyclopedia","academic","verified"], power:4 },
+      { name:"Wikipedia (Deep)", url:"https://wikipedia.org", badge:"Starting Point", desc:"Free encyclopedia. 60M+ articles. Talk pages main real debates hain.", why:"Starting point — references seedha primary sources pe jaate hain.", tags:["encyclopedia","free","starting point"], power:4 },
+      { name:"Investopedia", url:"https://investopedia.com", badge:"Finance Dict", desc:"Financial terms, concepts, formulas. Tutorials bhi hain.", why:"Finance ka sab kuch explain karta hai. Glossary + education = both.", tags:["finance","dictionary","education"], power:4 },
+      { name:"TechTerms", url:"https://techterms.com", badge:"Tech Dict", desc:"Technology terms simply explained. Computer science jargon.", why:"IT professional ko explain karna ho ya khud samajhna ho.", tags:["technology","dictionary","simple"], power:3 },
+      { name:"Wolfram Alpha", url:"https://wolframalpha.com", badge:"Computation", desc:"Computational knowledge engine. Math, science, stats — answers with steps.", why:"Calculator + encyclopedia + formula solver. Free tier kaafi powerful.", tags:["math","computation","science"], power:5 },
+      { name:"Encyclopedia of Mathematics", url:"https://encyclopediaofmath.org", badge:"Math Ref", desc:"Professional math encyclopedia. Springer-backed. Free online.", why:"Every math concept properly defined. PhD level reference.", tags:["math","reference","academic"], power:4 }
+    ]
+  },
+  {
+    cat: "🔬 Research & Science — Open Access",
+    color: "#16a085",
+    items: [
+      { name:"arXiv", url:"https://arxiv.org", badge:"Preprint King", desc:"Physics, Math, CS, Biology, Economics research before peer review. 2M+ papers.", why:"Cutting edge research seedha scientists se. Google Scholar se pehle aata hai.", tags:["research","preprint","science"], power:5 },
+      { name:"PubMed Central", url:"https://ncbi.nlm.nih.gov/pmc", badge:"Biomedical", desc:"NIH ka free biomedical research archive. 8M+ full-text articles.", why:"Medical research chahiye? Official NIH database. Free full text.", tags:["medical","biomedical","NIH"], power:5 },
+      { name:"DOAJ", url:"https://doaj.org", badge:"Open Journals", desc:"18,000+ peer-reviewed open access journals. Search by subject.", why:"Journals jinhe padhne ke liye $30/article nahi chahiye.", tags:["journals","open access","peer reviewed"], power:4 },
+      { name:"Unpaywall", url:"https://unpaywall.org", badge:"Paywall Bypass", desc:"Browser extension jo automatically free version dhundha hai paid papers ka.", why:"DOI ke saath paper link chahiye — Unpaywall seedha free version le aata hai.", tags:["extension","paywall","papers"], power:5 },
+      { name:"OpenDOAR", url:"https://v2.sherpa.ac.uk/opendoar", badge:"Repositories", desc:"5000+ open access institutional repositories. University research archives.", why:"University funded research — public domain hota hai mostly.", tags:["institutional","research","repositories"], power:3 },
+      { name:"Google Scholar", url:"https://scholar.google.com", badge:"Paper Search", desc:"Academic papers, citations, author profiles. Free access links dhundta hai.", why:"Research ka starting point. PDF links bhi milte hain. Author pages.", tags:["search","academic","citations"], power:5 },
+      { name:"Semantic Scholar", url:"https://semanticscholar.org", badge:"AI Search", desc:"AI-powered paper search. Influential citations, related work highlight karta hai.", why:"Google Scholar se smarter. Citation impact clearly show karta hai.", tags:["AI search","papers","citations"], power:4 },
+      { name:"SSRN", url:"https://ssrn.com", badge:"Social Sci", desc:"Social science, economics, law research preprints. 1M+ papers.", why:"Economics aur law research ke liye arXiv equivalent.", tags:["social science","law","economics"], power:4 },
+      { name:"NASA ADS", url:"https://ui.adsabs.harvard.edu", badge:"Astronomy", desc:"Astronomy, astrophysics research database. Harvard + NASA joint.", why:"Space science ka definitive research archive.", tags:["astronomy","space","Harvard"], power:4 }
+    ]
+  },
+  {
+    cat: "🛠️ Tools & Productivity — Free Tier Killers",
+    color: "#2c3e50",
+    items: [
+      { name:"Notion (Free)", url:"https://notion.so", badge:"Knowledge Base", desc:"Notes, databases, wikis, project management. Free tier bahut generous hai.", why:"Personal knowledge OS. Tera khud ka second brain.", tags:["notes","database","productivity"], power:5 },
+      { name:"Obsidian (Free)", url:"https://obsidian.md", badge:"Local PKM", desc:"Local markdown notes with bi-directional linking. Free forever for personal use.", why:"Zettelkasten ka tool. Notes ke beech connections dikhata hai.", tags:["notes","PKM","markdown"], power:5 },
+      { name:"Anki", url:"https://apps.ankiweb.net", badge:"Memory OS", desc:"Spaced repetition flashcards. Most scientifically proven learning tool.", why:"Medical students, language learners — jo bhi yaad rakhna ho permanently.", tags:["flashcards","memory","learning"], power:5 },
+      { name:"Logseq (Free)", url:"https://logseq.com", badge:"Graph Notes", desc:"Open source note-taking with knowledge graph. Privacy-first.", why:"Obsidian + Roam ka open source alternative. Daily journaling + knowledge.", tags:["notes","graph","open source"], power:4 },
+      { name:"Perplexity AI (Free)", url:"https://perplexity.ai", badge:"AI Research", desc:"AI-powered research tool. Real-time web search + synthesis. Free tier solid.", why:"Research ko fast karo. Citations ke saath answers. Student ka best friend.", tags:["AI","research","search"], power:4 },
+      { name:"Zotero", url:"https://zotero.org", badge:"Citations", desc:"Free research paper manager. Browser extension se seedha save karo. Citations auto-generate.", why:"Research papers organize karna ho — Mendeley ka free better version.", tags:["research","citations","organize"], power:4 },
+      { name:"DeepL (Free)", url:"https://deepl.com", badge:"Translation", desc:"Best AI translator. 30+ languages. Free tier: 500K characters.", why:"Google Translate se significantly better. Academic texts ke liye especially.", tags:["translation","language","AI"], power:4 }
+    ]
+  },
+  {
+    cat: "🗣️ Language Learning — Free",
+    color: "#d35400",
+    items: [
+      { name:"Duolingo (Free)", url:"https://duolingo.com", badge:"Gamified", desc:"40+ languages. Gamified daily practice. App + web.", why:"Habit banana easy hai. Beginner ke liye best starting point.", tags:["language","gamified","beginner"], power:4 },
+      { name:"Anki Decks (Languages)", url:"https://ankiweb.net/shared/decks/language", badge:"Vocabulary", desc:"Community-made language decks. Spaced repetition for vocabulary.", why:"Grammar app se zyada vocabulary important hai. Anki + frequency lists.", tags:["vocabulary","spaced rep","language"], power:5 },
+      { name:"Language Transfer", url:"https://languagetransfer.org", badge:"Audio Free", desc:"Audio courses for Spanish, French, German, Italian, Swahili. Thinking Method.", why:"Ek teacher ne banaya aur free release kiya. Better than paid courses.", tags:["audio","free","thinking method"], power:5 },
+      { name:"Clozemaster", url:"https://clozemaster.com", badge:"Intermediate", desc:"Intermediate vocabulary via fill-in-the-blank. Context mein words seekho.", why:"Duolingo ke baad yahan ao. Real sentences mein vocabulary build karo.", tags:["vocabulary","intermediate","context"], power:4 },
+      { name:"italki (Free Resources)", url:"https://italki.com/community", badge:"Community", desc:"Language exchange community. Free conversation partners dhundo worldwide.", why:"Native speakers ke saath practice karo. Free language exchange.", tags:["speaking","exchange","community"], power:4 }
+    ]
+  },
+  {
+    cat: "🎬 Video Learning — Free",
+    color: "#1abc9c",
+    items: [
+      { name:"3Blue1Brown", url:"https://www.youtube.com/@3blue1brown", badge:"Visual Math", desc:"Math concepts — calculus, linear algebra, neural nets — visually explained.", why:"Math mein real intuition milti hai. Grant Sanderson = genius teacher.", tags:["math","visual","youtube"], power:5 },
+      { name:"Veritasium", url:"https://www.youtube.com/@veritasium", badge:"Science", desc:"Physics, psychology, science — deep dives. Derek Muller ke saath.", why:"Education + entertainment = perfectly balanced. Real science.", tags:["physics","science","youtube"], power:5 },
+      { name:"Andrej Karpathy (YouTube)", url:"https://www.youtube.com/@AndrejKarpathy", badge:"AI Deep", desc:"OpenAI ex-research director. Neural networks, AI — ground-up explanations.", why:"GPT ko scratch se banana sikhata hai. Best AI education online.", tags:["AI","neural nets","deep"], power:5 },
+      { name:"Lex Fridman Podcast", url:"https://lexfridman.com/podcast", badge:"Long Form", desc:"Scientists, researchers, CEOs ke saath 3-4 ghante ke interviews.", why:"Yahan koi shallow nahi. Musk, Hawking, Hinton — actual depth.", tags:["interviews","science","AI"], power:4 },
+      { name:"TED-Ed", url:"https://ed.ted.com", badge:"Micro Lessons", desc:"5-10 minute animated educational videos. Thousands of topics.", why:"Quick concepts grasp karne ke liye. High production quality.", tags:["animated","quick","educational"], power:4 },
+      { name:"The Coding Train", url:"https://www.youtube.com/@TheCodingTrain", badge:"Creative Code", desc:"Daniel Shiffman. Creative coding, algorithms, p5.js, machine learning.", why:"Coding ko fun banata hai. Projects see results dete hain.", tags:["coding","creative","algorithms"], power:4 }
+    ]
+  },
+  {
+    cat: "📡 News, Intelligence & Media Literacy",
+    color: "#6c3483",
+    items: [
+      { name:"AllSides", url:"https://allsides.com", badge:"Bias Meter", desc:"Same story left/center/right se dikhao. Media bias ratings.", why:"News consume karne se pehle bias samjho. Media literacy ka tool.", tags:["news","bias","media literacy"], power:4 },
+      { name:"FactCheck.org", url:"https://factcheck.org", badge:"Fact Check", desc:"Political claims verify karo. Annenberg Public Policy Center backed.", why:"Viral claims check karne ke liye. Primary evidence with sources.", tags:["fact check","politics","evidence"], power:4 },
+      { name:"Ground News", url:"https://ground.news", badge:"Aggregator", desc:"Same news story ka coverage across 50,000+ sources. Blind Spots feature.", why:"Kya tera media source cover nahi kar raha? Yahan pata chalta hai.", tags:["news","aggregator","blind spots"], power:4 },
+      { name:"Reuters", url:"https://reuters.com", badge:"Wire Service", desc:"Wire service news. Minimum editorial slant. Direct reporting.", why:"News ka primary source. Sabse less biased mainstream.", tags:["news","primary","unbiased"], power:4 },
+      { name:"Associated Press", url:"https://apnews.com", badge:"Wire Service", desc:"AP news — fact-first journalism. Style guide bhi free available hai.", why:"Reuters ka American equivalent. Gold standard fact reporting.", tags:["news","AP","facts"], power:4 },
+      { name:"Media Bias Chart", url:"https://adfontesmedia.com", badge:"Visual Bias", desc:"News sources ko bias aur reliability ke basis pe map karta hai.", why:"Har news source ki positioning ek chart pe. Quick reference.", tags:["media","bias","visual"], power:4 }
+    ]
+  }
+];
+
+// Count total
+let total = 0;
+db.forEach(s => total += s.items.length);
+document.getElementById('total').textContent = total;
+
+// Build nav
+const nav = document.getElementById('nav');
+const allBtn = document.createElement('button');
+allBtn.className = 'nav-btn active';
+allBtn.dataset.cat = 'all';
+allBtn.textContent = 'All';
+nav.appendChild(allBtn);
+
+db.forEach(s => {
+  const btn = document.createElement('button');
+  btn.className = 'nav-btn';
+  btn.dataset.cat = s.cat;
+  btn.textContent = s.cat;
+  nav.appendChild(btn);
+});
+
+// Build sections
+const root = document.getElementById('sections-root');
+
+db.forEach(section => {
+  const secEl = document.createElement('div');
+  secEl.className = 'section';
+  secEl.dataset.cat = section.cat;
+
+  const ruleEl = document.createElement('div');
+  ruleEl.className = 'section-rule';
+  ruleEl.innerHTML = `
+    <div class="section-name">${section.cat}</div>
+    <div class="section-line"></div>
+    <div class="section-count">${section.items.length} resources</div>
+  `;
+  secEl.appendChild(ruleEl);
+
+  const gridEl = document.createElement('div');
+  gridEl.className = 'grid';
+
+  section.items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'card visible';
+    card.style.setProperty('--card-color', section.color);
+    card.innerHTML = `
+      <div class="card-head">
+        <div class="card-name">${item.name}</div>
+        <div class="badge" style="color:${section.color};border-color:${section.color}44;background:${section.color}11">${item.badge}</div>
+      </div>
+      <a href="${item.url}" target="_blank" class="card-url">${item.url.replace('https://','')}</a>
+      <div class="card-desc">${item.desc}</div>
+      <div class="card-why">${item.why}</div>
+      <div class="power">
+        ${[1,2,3,4,5].map(i=>`<div class="pdot ${i<=item.power?'on':''}" style="${i<=item.power?`background:${section.color}`:''}"></div>`).join('')}
+      </div>
+      <div class="card-tags">${item.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    `;
+    gridEl.appendChild(card);
+  });
+
+  secEl.appendChild(gridEl);
+  root.appendChild(secEl);
+});
+
+// Filter
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.cat;
+    document.querySelectorAll('.section').forEach(sec => {
+      sec.style.display = (cat === 'all' || sec.dataset.cat === cat) ? 'block' : 'none';
+    });
+  });
+});
+</script>
+</body>
+</html>

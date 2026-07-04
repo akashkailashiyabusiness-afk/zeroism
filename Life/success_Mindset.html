@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summary: Mindset</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS (Same as above) */
+         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+        body { background-color: #f0f4f8; color: #2d3748; line-height: 1.7; padding: 20px; overflow-x: hidden; }
+        .book-intro { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #f6ad55, #dd6b20); color: #fff; border-radius: 15px; margin-bottom: 40px; animation: fadeInDown 1s ease-out; } /* Adjusted Gradient */
+        .book-intro img { max-width: 200px; border-radius: 10px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); margin-bottom: 20px; }
+        .book-intro h1 { font-size: 2.8em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); }
+        .book-intro p { font-size: 1.3em; font-style: italic; opacity: 0.9; }
+        main { max-width: 1000px; margin: 0 auto; }
+        section { background: #fff; padding: 35px; margin-bottom: 40px; border-radius: 15px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); opacity: 0; animation: fadeInUp 0.8s ease-out forwards; }
+        section:nth-child(2) { animation-delay: 0.2s; }
+        section:nth-child(3) { animation-delay: 0.4s; }
+        section:nth-child(4) { animation-delay: 0.6s; }
+        section h2 { color: #dd6b20; font-size: 2.2em; margin-bottom: 20px; border-bottom: 3px solid #f6ad55; padding-bottom: 10px; transition: transform 0.3s ease; } /* Adjusted Colors */
+        section h2:hover { transform: translateX(10px); }
+        article h3 { color: #4a5568; font-size: 1.6em; margin: 25px 0 15px; transition: color 0.3s ease; }
+        article h3:hover { color: #dd6b20; } /* Adjusted Color */
+        ul { margin-left: 25px; }
+        ul li { margin-bottom: 15px; position: relative; padding-left: 20px; transition: transform 0.3s ease; }
+        ul li:hover { transform: translateX(5px); }
+        ul li:before { content: "➤"; color: #f6ad55; position: absolute; left: 0; } /* Adjusted Color */
+        ul li strong { color: #dd6b20; } /* Adjusted Color */
+        p { margin-bottom: 20px; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { .book-intro h1 { font-size: 2em; } .book-intro img { max-width: 150px; } section { padding: 25px; } section h2 { font-size: 1.8em; } }
+    </style>
+</head>
+<body>
+
+    <header class="book-intro">
+        <img src="mindset2.jpg">
+        <h1>Mindset: The New Psychology of Success</h1>
+        <p>by Carol S. Dweck</p>
+    </header>
+
+    <main>
+        <section id="summary">
+            <h2>📖 Summary</h2>
+            <p>Dweck introduces the powerful concept of "mindsets" – our beliefs about our own abilities and intelligence. She distinguishes between a <strong>fixed mindset</strong> (believing abilities are innate and unchangeable 🧱) and a <strong>growth mindset</strong> (believing abilities can be developed through dedication and hard work 🌱). This book shows how mindset impacts nearly every aspect of our lives, from parenting and business to relationships and sports.</p>
+        </section>
+
+        <section id="key-concepts">
+            <h2>🧠 Key Concepts</h2>
+            <ul>
+                <li><strong>Fixed Mindset:</strong> Avoids challenges, gives up easily, sees effort as fruitless, ignores useful negative feedback, feels threatened by the success of others. Goal is to look smart.</li>
+                <li><strong>Growth Mindset:</strong> Embraces challenges, persists in the face of setbacks, sees effort as the path to mastery, learns from criticism, finds lessons and inspiration in the success of others. Goal is to learn.</li>
+                <li><strong>Impact on Learning:</strong> Growth mindset fosters a love of learning and resilience essential for great accomplishment.</li>
+                <li><strong>Praise and Feedback:</strong> Praising intelligence ("You're so smart!") fosters a fixed mindset. Praising effort, strategy, and progress ("You worked really hard on that!") fosters a growth mindset.</li>
+                <li><strong>Changing Mindsets:</strong> Mindsets are beliefs, and beliefs can be changed with awareness and effort.</li>
+            </ul>
+        </section>
+
+        <section id="real-life">
+            <h2>🌍 Real-Life Examples</h2>
+            <ul>
+                <li><strong>School 🎓:</strong> A student with a fixed mindset avoids difficult subjects to avoid failing and looking dumb. A student with a growth mindset seeks challenging courses to learn more.</li>
+                <li><strong>Workplace 💼:</strong> An employee with a fixed mindset hides mistakes and avoids challenging projects. An employee with a growth mindset admits errors, seeks feedback, and volunteers for tough assignments.</li>
+                <li><strong>Parenting 👨‍👩‍👧:</strong> Telling a child "You're a natural artist!" (fixed) vs. "I love how you experimented with colors in that drawing!" (growth).</li>
+                <li><strong>Relationships ❤️:</strong> Believing relationship problems mean incompatibility (fixed) vs. believing challenges can be worked through with effort and communication (growth).</li>
+            </ul>
+        </section>
+
+        <section id="takeaways">
+            <h2>✨ Key Takeaways</h2>
+            <ul>
+                <li>Your beliefs about your abilities profoundly shape your life.</li>
+                <li>Cultivating a growth mindset leads to greater achievement and fulfillment.</li>
+                <li>Focus on effort, learning, and resilience rather than innate talent.</li>
+                <li>Pay attention to the feedback you give others (especially children) – praise the process!</li>
+                <li>You can consciously choose and develop a growth mindset at any stage of life.</li>
+            </ul>
+        </section>
+    </main>
+
+</body>
+</html>

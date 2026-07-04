@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>संपूर्ण जीवन दृष्टिकोण मार्गदर्शिका</title>
+    
+    <!--
+    PALETTE: Vibrant Neon Night (Slate 900 bg, Cyberpunk Accents - Cyan, Pink, Yellow)
+    
+    PLAN SUMMARY:
+    1. Introduction: Hook the reader with Morgan Housel's "Same as Ever" concept.
+    2. The 80/20 Rule: Visualize the Pareto principle across 4 life domains using Doughnut charts.
+    3. Life Lessons (10/90 & Compounding): Show the dramatic effect of compounding (Line Chart) and reaction vs response (Pie Chart).
+    4. Biography Wisdom: Use a grid layout with Unicode icons to display lessons from 5 great figures.
+    5. Conclusion: A final summarizing blueprint for life.
+    
+    VISUALIZATION CHOICES:
+    - 80/20 Rule -> Goal: Compare/Composition -> Chosen: Doughnut Chart -> Justification: Perfectly shows the stark contrast between the 20% effort and 80% result. Library: Chart.js. (NO SVG)
+    - Compounding -> Goal: Change over time -> Chosen: Line Chart -> Justification: Exponential growth is best visualized with a curving line over a timeline. Library: Chart.js. (NO SVG)
+    - 10/90 Rule -> Goal: Inform/Composition -> Chosen: Pie Chart -> Justification: Shows the overwhelming proportion of 'reaction' vs 'event'. Library: Chart.js. (NO SVG)
+    - Biographies -> Goal: Organize -> Chosen: Styled HTML Grid with Unicode Characters -> Justification: Clean, accessible way to organize qualitative data without relying on prohibited assets. (NO SVG, NO MERMAID)
+    
+    CONFIRMATION: I explicitly confirm that NEITHER Mermaid JS NOR SVG were used anywhere in this output. All graphics are Canvas-based or standard Unicode/HTML/CSS.
+    -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #2dd4bf, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden">
+
+    <header class="py-16 px-6 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-teal-900/20 to-slate-900 z-0"></div>
+        <div class="relative z-10 max-w-4xl mx-auto">
+            <div class="text-6xl mb-4">&#x1F31F;</div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 gradient-text tracking-tight">संपूर्ण जीवन दृष्टिकोण</h1>
+            <p class="text-xl md:text-2xl text-slate-300 font-light mb-8">एक ऐसा नज़रिया जो आपकी वास्तविकता बदल सकता है</p>
+            <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700 shadow-xl inline-block text-left max-w-3xl">
+                <p class="text-lg leading-relaxed text-slate-200">
+                    जीवन को देखने का हमारा नज़रिया ही हमारी वास्तविकता तय करता है। <strong>"Same As Ever"</strong> का मुख्य विचार यह है कि दुनिया कितनी भी बदल जाए, इंसान का मनोविज्ञान, उसका डर, लालच, और खुशी की तलाश हमेशा एक जैसी ही रहती है। यह मार्गदर्शिका उन चीज़ों पर केंद्रित है जो <strong>कभी नहीं बदलतीं</strong>।
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12 space-y-24">
+
+        <section id="constants">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-teal-400">जीवन के शाश्वत सत्य</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto text-lg">भविष्य की भविष्यवाणी करना मुश्किल है, लेकिन कुछ बुनियादी मानवीय सिद्धांत हमेशा समान रहते हैं।</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-card p-6 rounded-2xl text-center hover:scale-105 transition-transform duration-300">
+                    <div class="text-5xl mb-4">&#x2692;&#xFE0F;</div>
+                    <h3 class="text-xl font-semibold mb-2 text-white">कठिन परिश्रम</h3>
+                    <p class="text-slate-400 text-sm">कठिन परिश्रम का कोई विकल्प नहीं है। तकनीक बदल सकती है, लेकिन मेहनत का फल हमेशा मिलता है।</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center hover:scale-105 transition-transform duration-300">
+                    <div class="text-5xl mb-4">&#x1F91D;</div>
+                    <h3 class="text-xl font-semibold mb-2 text-white">विश्वास (Trust)</h3>
+                    <p class="text-slate-400 text-sm">विश्वास बनाने में सालों लगते हैं और टूटने में एक सेकंड। यह हर रिश्ते की नींव है।</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center hover:scale-105 transition-transform duration-300">
+                    <div class="text-5xl mb-4">&#x1F9D8;</div>
+                    <h3 class="text-xl font-semibold mb-2 text-white">आंतरिक शांति</h3>
+                    <p class="text-slate-400 text-sm">शांति और खुशी बाहरी उपलब्धियों से नहीं, बल्कि आपकी आंतरिक संतुष्टि से आती है।</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center hover:scale-105 transition-transform duration-300">
+                    <div class="text-5xl mb-4">&#x1F496;</div>
+                    <h3 class="text-xl font-semibold mb-2 text-white">सकारात्मक जुड़ाव</h3>
+                    <p class="text-slate-400 text-sm">लोग हमेशा उन लोगों से जुड़ना चाहेंगे जो उन्हें अच्छा और सुरक्षित महसूस कराते हैं।</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="pareto">
+            <div class="mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-amber-400 border-l-4 border-amber-400 pl-4">80/20 का नियम (पैरेटो सिद्धांत)</h2>
+                <p class="text-slate-300 text-lg">
+                    यह दुनिया का सबसे बेहतरीन उत्पादकता और जीवन प्रबंधन नियम है। यह दर्शाता है कि कैसे हमारे जीवन के हर क्षेत्र में केवल <strong>20% कारण (प्रयास)</strong> ही हमारे <strong>80% परिणाम</strong> उत्पन्न करते हैं। अपनी ऊर्जा को सही जगह केंद्रित करना ही सफलता की कुंजी है।
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-slate-800 rounded-2xl p-6 shadow-lg border border-slate-700">
+                    <h3 class="text-xl font-semibold text-center mb-4 text-white">करियर और काम</h3>
+                    <p class="text-sm text-slate-400 text-center mb-6">20% सबसे महत्वपूर्ण काम आपको 80% सफलता दिलाते हैं।</p>
+                    <div class="chart-container">
+                        <canvas id="careerChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-2xl p-6 shadow-lg border border-slate-700">
+                    <h3 class="text-xl font-semibold text-center mb-4 text-white">रिश्ते और खुशी</h3>
+                    <p class="text-sm text-slate-400 text-center mb-6">80% खुशी केवल 20% करीबी लोगों से आती है।</p>
+                    <div class="chart-container">
+                        <canvas id="relationChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-2xl p-6 shadow-lg border border-slate-700">
+                    <h3 class="text-xl font-semibold text-center mb-4 text-white">पैसे और खर्च</h3>
+                    <p class="text-sm text-slate-400 text-center mb-6">20% सही जगह किया गया निवेश 80% रिटर्न देता है।</p>
+                    <div class="chart-container">
+                        <canvas id="moneyChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-2xl p-6 shadow-lg border border-slate-700">
+                    <h3 class="text-xl font-semibold text-center mb-4 text-white">दैनिक आदतें</h3>
+                    <p class="text-sm text-slate-400 text-center mb-6">आपकी 20% अच्छी आदतें 80% जीवन को सकारात्मक बनाती हैं।</p>
+                    <div class="chart-container">
+                        <canvas id="habitChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="life-lessons">
+            <div class="mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-rose-400 border-l-4 border-rose-400 pl-4">दुनिया के सर्वश्रेष्ठ जीवन सबक</h2>
+                <p class="text-slate-300 text-lg">
+                    समय के साथ परखे गए ये सिद्धांत जीवन की जटिलताओं को सरल बनाते हैं। चाहे वह कंपाउंडिंग की ताकत हो या हमारी प्रतिक्रियाओं पर नियंत्रण।
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="order-2 lg:order-1 glass-card p-6 rounded-3xl">
+                    <div class="chart-container">
+                        <canvas id="compoundingChart"></canvas>
+                    </div>
+                    <div class="mt-6 text-center">
+                        <h4 class="text-xl font-bold text-teal-300">कंपाउंडिंग का जादू</h4>
+                        <p class="text-slate-400 mt-2 text-sm">रोज़ केवल 1% बेहतर होना आपको एक साल में लगभग 37 गुना बेहतर बना देता है। यह ज्ञान, आदतों और धन सभी पर लागू होता है।</p>
+                    </div>
+                </div>
+                
+                <div class="order-1 lg:order-2 space-y-6">
+                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 flex items-start gap-4">
+                        <div class="text-4xl">&#x1F6A8;</div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white mb-1">'ना' कहने की कला</h4>
+                            <p class="text-slate-400 text-sm">सफल लोग लगभग हर गैर-ज़रूरी चीज़ को 'ना' कहते हैं ताकि महत्वपूर्ण चीज़ों के लिए समय बच सके।</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 flex items-start gap-4">
+                        <div class="text-4xl">&#x1F451;</div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white mb-1">स्वास्थ्य पहला मुकुट है</h4>
+                            <p class="text-slate-400 text-sm">स्वस्थ इंसान के हज़ार सपने होते हैं, बीमार का केवल एक। शरीर और दिमाग को मंदिर समझें।</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 flex items-start gap-4">
+                        <div class="text-4xl">&#x23F3;</div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white mb-1">यह भी गुज़र जाएगा</h4>
+                            <p class="text-slate-400 text-sm">बुरा वक्त हो या सफलता, दोनों स्थायी नहीं हैं। बुरे वक्त में धैर्य और अच्छे में नम्रता रखें.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-slate-800 rounded-3xl p-8 border border-slate-700">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold text-white mb-4">प्रतिक्रिया (Reaction) बनाम अनुक्रिया (Response)</h3>
+                        <p class="text-slate-300 mb-4">
+                            जीवन का एक बहुत बड़ा हिस्सा इस बात पर निर्भर नहीं करता कि आपके साथ क्या होता है, बल्कि इस बात पर निर्भर करता है कि आप उसे कैसे संभालते हैं। तुरंत रिएक्ट करने के बजाय, सोच-समझकर रिस्पॉन्ड करना सीखें।
+                        </p>
+                        <ul class="text-slate-400 space-y-2 list-disc pl-5">
+                            <li>बाहरी परिस्थितियां आपके नियंत्रण में नहीं हैं।</li>
+                            <li>आपकी सोच और व्यवहार पूरी तरह आपके नियंत्रण में हैं।</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="chart-container">
+                            <canvas id="reactionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="biographies">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-purple-400">महान आत्मकथाओं से सर्वश्रेष्ठ सबक</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto text-lg">महानता जन्म से नहीं मिलती, बल्कि जीवन के संघर्षों में चुने गए नज़रिए (Attitude) से बनती है।</p>
+            </div>
+
+            <div class="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-transparent before:via-purple-500 before:to-transparent">
+                
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-purple-900 text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 text-xl">
+                        &#x1F56F;&#xFE0F;
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card p-6 rounded-2xl shadow-lg">
+                        <h3 class="font-bold text-xl text-purple-300 mb-1">विक्टर फ्रैंकल</h3>
+                        <span class="text-xs font-semibold tracking-wide text-slate-500 uppercase block mb-3">Man's Search for Meaning</span>
+                        <p class="text-slate-300 text-sm italic mb-2">"इंसान से उसकी हर चीज़ छीनी जा सकती है, सिवाय एक चीज़ के - अपना दृष्टिकोण चुनने की आज़ादी।"</p>
+                        <p class="text-slate-400 text-sm"><strong>सबक:</strong> जीवन में 'क्या' होता है, इससे ज़्यादा 'क्यों' मायने रखता है। एक 'कारण' हो तो कोई भी कष्ट सहा जा सकता है।</p>
+                    </div>
+                </div>
+
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-purple-900 text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 text-xl">
+                        &#x1F34F;
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card p-6 rounded-2xl shadow-lg">
+                        <h3 class="font-bold text-xl text-purple-300 mb-1">स्टीव जॉब्स</h3>
+                        <span class="text-xs font-semibold tracking-wide text-slate-500 uppercase block mb-3">Steve Jobs by Walter Isaacson</span>
+                        <p class="text-slate-300 text-sm italic mb-2">"हमेशा भूखे रहो, हमेशा मूर्ख बने रहो (Stay Hungry, Stay Foolish)।"</p>
+                        <p class="text-slate-400 text-sm"><strong>सबक:</strong> आपका समय सीमित है। अंत में धन नहीं, सादगी और प्रेम काम आता है। फोकस को सबसे ऊपर रखें।</p>
+                    </div>
+                </div>
+
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-purple-900 text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 text-xl">
+                        &#x262E;&#xFE0F;
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card p-6 rounded-2xl shadow-lg">
+                        <h3 class="font-bold text-xl text-purple-300 mb-1">महात्मा गांधी</h3>
+                        <span class="text-xs font-semibold tracking-wide text-slate-500 uppercase block mb-3">My Experiments with Truth</span>
+                        <p class="text-slate-300 text-sm italic mb-2">"वह बदलाव खुद बनिए, जो आप दुनिया में देखना चाहते हैं।"</p>
+                        <p class="text-slate-400 text-sm"><strong>सबक:</strong> दुनिया को बदलने के लिए शुरुआत खुद से करनी होती है। सत्य और अहिंसा सबसे बड़े हथियार हैं।</p>
+                    </div>
+                </div>
+
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-purple-900 text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 text-xl">
+                        &#x1F54A;&#xFE0F;
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card p-6 rounded-2xl shadow-lg">
+                        <h3 class="font-bold text-xl text-purple-300 mb-1">नेल्सन मंडेला</h3>
+                        <span class="text-xs font-semibold tracking-wide text-slate-500 uppercase block mb-3">Long Walk to Freedom</span>
+                        <p class="text-slate-300 text-sm italic mb-2">"क्रोध उस ज़हर की तरह है जिसे आप खुद पीते हैं और उम्मीद करते हैं कि दुश्मन मर जाए।"</p>
+                        <p class="text-slate-400 text-sm"><strong>सबक:</strong> 27 साल जेल के बाद भी क्षमा करना। क्षमा ही इंसान की सबसे बड़ी ताकत है।</p>
+                    </div>
+                </div>
+
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-purple-900 text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 text-xl">
+                        &#x1F4C8;
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card p-6 rounded-2xl shadow-lg">
+                        <h3 class="font-bold text-xl text-purple-300 mb-1">वॉरेन बफेट</h3>
+                        <span class="text-xs font-semibold tracking-wide text-slate-500 uppercase block mb-3">The Snowball</span>
+                        <p class="text-slate-300 text-sm italic mb-2">"जो काम पसंद नहीं, उसे सिर्फ पैसों के लिए करना बेवकूफी है।"</p>
+                        <p class="text-slate-400 text-sm"><strong>सबक:</strong> सफलता का राज IQ नहीं, धैर्य और अनुशासन है। समय को अपना काम करने दें।</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="conclusion" class="bg-gradient-to-br from-teal-900/40 to-blue-900/40 rounded-3xl p-8 md:p-12 text-center border border-teal-500/30">
+            <h2 class="text-3xl md:text-5xl font-bold mb-8 text-white">जीवन जीने का अंतिम मंत्र</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="bg-slate-900/60 p-6 rounded-xl border border-slate-700">
+                    <div class="text-3xl mb-3">&#x1F519;</div>
+                    <h4 class="text-lg font-bold text-teal-300 mb-2">बीते हुए कल</h4>
+                    <p class="text-sm text-slate-300">अपनी पिछली गलतियों और अनुभवों से सीखें।</p>
+                </div>
+                <div class="bg-slate-900/60 p-6 rounded-xl border border-slate-700 transform md:-translate-y-4">
+                    <div class="text-3xl mb-3">&#x23F5;&#xFE0F;</div>
+                    <h4 class="text-lg font-bold text-amber-300 mb-2">आज</h4>
+                    <p class="text-sm text-slate-300">पूरे जोश और 80/20 के फोकस के साथ वर्तमान में जिएं।</p>
+                </div>
+                <div class="bg-slate-900/60 p-6 rounded-xl border border-slate-700">
+                    <div class="text-3xl mb-3">&#x1F51C;</div>
+                    <h4 class="text-lg font-bold text-rose-300 mb-2">आने वाले कल</h4>
+                    <p class="text-sm text-slate-300">चिंता न करें, आज अच्छे बीज (आदतें) बोएं।</p>
+                </div>
+            </div>
+
+            <div class="inline-block bg-black/30 p-6 rounded-2xl border border-white/10">
+                <p class="text-xl md:text-2xl font-light text-slate-200 italic">
+                    "ज़िंदगी एक प्रतिध्वनि (Echo) की तरह है,<br>
+                    <span class="text-teal-400 font-semibold mt-2 block">आप जो दुनिया को देंगे, वही आपको वापस मिलेगा।"</span>
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 text-slate-500 text-sm">
+        <p>प्रेरित: "Same As Ever" एवं महान आत्मकथाएँ | डिज़ाइन: कैनवास इन्फोग्राफिक्स</p>
+    </footer>
+
+    <script>
+        function wrapLabel(labelStr) {
+            if (labelStr.length <= 16) return labelStr;
+            const words = labelStr.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + words[i].length + 1 <= 16) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        const commonTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = "'Noto Sans Devanagari', sans-serif";
+
+        const doughnutOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: { position: 'bottom', labels: { color: '#e2e8f0', padding: 20 } },
+                tooltip: commonTooltipConfig
+            }
+        };
+
+        const createDoughnut = (ctxId, label1, label2, color1, color2) => {
+            const ctx = document.getElementById(ctxId).getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [wrapLabel(label1), wrapLabel(label2)],
+                    datasets: [{
+                        data: [80, 20],
+                        backgroundColor: [color1, color2],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: doughnutOptions
+            });
+        };
+
+        createDoughnut('careerChart', 'परिणाम (सफलता)', 'प्रयास (महत्वपूर्ण काम)', '#2dd4bf', '#0f766e');
+        createDoughnut('relationChart', 'खुशी का हिस्सा', 'करीबी लोग', '#fb7185', '#be123c');
+        createDoughnut('moneyChart', 'कुल रिटर्न', 'सही निवेश', '#facc15', '#a16207');
+        createDoughnut('habitChart', 'सकारात्मक जीवन', 'अच्छी आदतें', '#c084fc', '#7e22ce');
+
+        const ctxReaction = document.getElementById('reactionChart').getContext('2d');
+        new Chart(ctxReaction, {
+            type: 'pie',
+            data: {
+                labels: [wrapLabel('आपके साथ जो घटित होता है'), wrapLabel('आप उस पर कैसे प्रतिक्रिया देते हैं')],
+                datasets: [{
+                    data: [10, 90],
+                    backgroundColor: ['#ef4444', '#3b82f6'],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#e2e8f0' } },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+
+        const ctxCompound = document.getElementById('compoundingChart').getContext('2d');
+        const days = Array.from({length: 12}, (_, i) => `महीना ${i+1}`);
+        const baselineData = Array.from({length: 12}, () => 1);
+        const compoundData = Array.from({length: 12}, (_, i) => Math.pow(1.01, (i+1)*30)); 
+
+        new Chart(ctxCompound, {
+            type: 'line',
+            data: {
+                labels: days.map(wrapLabel),
+                datasets: [
+                    {
+                        label: wrapLabel('रोज़ 1% सुधार (कंपाउंडिंग)'),
+                        data: compoundData,
+                        borderColor: '#2dd4bf',
+                        backgroundColor: 'rgba(45, 212, 191, 0.2)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: wrapLabel('कोई सुधार नहीं (स्थिर)'),
+                        data: baselineData,
+                        borderColor: '#64748b',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        tension: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { color: 'rgba(51, 65, 85, 0.5)' },
+                        title: { display: true, text: 'विकास गुना (Growth Multiplier)', color: '#94a3b8' }
+                    },
+                    x: { 
+                        grid: { display: false } 
+                    }
+                },
+                plugins: {
+                    legend: { position: 'top', labels: { color: '#e2e8f0' } },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+    </script>
+</body>
+</html>

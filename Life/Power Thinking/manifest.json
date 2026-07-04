@@ -1,0 +1,71 @@
+{
+  "name": "Super Think - AI Thinking Assistant",
+  "short_name": "SuperThink",
+  "description": "Advanced AI-powered thinking and reasoning assistant with interconnected tools",
+  "start_url": "./Super Think.html",
+  "display": "standalone",
+  "background_color": "#1a162e",
+  "theme_color": "#1e1b4b",
+  "orientation": "portrait-primary",
+  "scope": "./",
+  "lang": "en-US",
+  "categories": ["productivity", "education", "utilities"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSI+PHJlY3QgeD0iOCIgeT0iOCIgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjMTlhMTYyZSIgcng9IjQiLz48cGF0aCBkPSJNMTYgMjFsMTIgMTEtMTIgMTFMMjggMzFsMTItMTFMMjggMzFsMTIgMTFMMjggMzFsMTIgMTF6IiBmaWxsPSIjNjA2MjFGIi8+PHBhdGggZD0iTTE2IDEzbDE0IDUtMTQgNUwyOCAyM2syIDItMiAyTDI4IDIzTDI4IDIzZWkyIDJMMjggMjN6IiBmaWxsPSIjdmlvbGV0LTQwMCIvPjwvc3ZnPg==",
+      "sizes": "64x64",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijk2IiBmaWxsPSIjMTlhMTYyZSIgcng9IjgiLz48cGF0aCBkPSJNMzIgNDJsMjQgMjItMjQgMjJMNTYgNjJsMjQtMjJMNTYgNjJsMjQgMjJMNTYgNjJsMjQgMjJ6IiBmaWxsPSIjNjA2MjFGIi8+PHBhdGggZD0iTTMyIDI2bDI4IDEwLTI4IDEwTDU2IDQ2azQgNC00IDRMNTYgNDZMNTYgNDZlaTQgNEw1NiA0NnoiIGZpbGw9IiN2aW9sZXQtNDAwIi8+PC9zdmc+",
+      "sizes": "128x128",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgdmlld0JveD0iMCAwIDI1NiAyNTYiIGZpbGw9Im5vbmUiPjxyZWN0IHg9IjMyIiB5PSIzMiIgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIGZpbGw9IiMxOWExNjJlIiByeD0iMTYiLz48cGF0aCBkPSJNNjQgODRsNDggNDQtNDggNDRMMTEyIDEyNGw0OC00NEwxMTIgMTI0bDQ4IDQ0TDExMiAxMjRsNDggNDR6IiBmaWxsPSIjNjA2MjFGIi8+PHBhdGggZD0iTTY0IDUybDU2IDIwLTU2IDIwTDExMiA5Mms4IDgtOCA4TDExMiA5MkwxMTIgOTJlaTggOEwxMTIgOTJ6IiBmaWxsPSIjdmlvbGV0LTQwMCIvPjwvc3ZnPg==",
+      "sizes": "256x256",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiPjxyZWN0IHg9IjY0IiB5PSI2NCIgd2lkdGg9IjM4NCIgaGVpZ2h0PSIzODQiIGZpbGw9IiMxOWExNjJlIiByeD0iMzIiLz48cGF0aCBkPSJNMTI4IDE2OGw5NiA4OC05NiA4OEwyMjQgMjQ4bDk2LTg4TDIyNCAyNDhsOTYgODhMMjI0IDI0OGw5NiA4OHoiIGZpbGw9IiM2MDYyMUYiLz48cGF0aCBkPSJNMTI4IDEwNGwxMTIgNDAtMTEyIDQwTDIyNCAxODRrMTYgMTYtMTYgMTZMMjI0IDE4NEwyMjQgMTg0ZWkxNiAxNkwyMjQgMTg0eiIgZmlsbD0iI3Zpb2xldC00MDAiLz48L3N2Zz4=",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4MCIgaGVpZ2h0PSI3MjAiIHZpZXdCb3g9IjAgMCAxMjgwIDcyMCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjEyODAiIGhlaWdodD0iNzIwIiBmaWxsPSIjMWExNjJlIi8+PHRleHQgeD0iNjQwIiB5PSIzNjAiIGZpbGw9IiNlMmU4ZjAiIGZvbnQtZmFtaWx5PSJJbnRlciIgZm9udC1zaXplPSI0OCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U3VwZXIgVGhpbmsgLSBBSSBUaGlua2luZyBBc3Npc3RhbnQ8L3RleHQ+PC9zdmc+",
+      "sizes": "1280x720",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Thinking Session",
+      "short_name": "New Session",
+      "description": "Start a new thinking session",
+      "url": "./Super Think.html?mode=chat",
+      "icons": [
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSI+PHBhdGggZD0iTTQ4IDEydjcybTM2LTM2SDEyIiBzdHJva2U9IiM4YjVjZjYiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Problem Solver",
+      "short_name": "Solve",
+      "description": "Open problem solving mode",
+      "url": "./Super Think.html?mode=solve",
+      "icons": [
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSI+PGNpcmNsZSBjeD0iNDgiIGN5PSI0OCIgcj0iMzYiIHN0cm9rZT0iIzhiNWNmNiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0iTTQ4IDMydjE2bDE2IDgiIHN0cm9rZT0iIzhiNWNmNiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}

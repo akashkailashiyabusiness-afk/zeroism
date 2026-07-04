@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Bruce Lee Mindset</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Oswald', 'sans-serif'],
+                    },
+                    colors: {
+                        bruce: {
+                            yellow: '#FACC15',
+                            black: '#09090B',
+                            gray: '#27272A'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .clip-diagonal {
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+        }
+    </style>
+</head>
+<body class="bg-bruce-black text-white font-sans antialiased selection:bg-bruce-yellow selection:text-black">
+
+    <!-- Load Shared Navigation -->
+    <script src="shared-navigation.js"></script>
+
+    <!-- Hero Section -->
+    <header class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden clip-diagonal bg-zinc-900">
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-bruce-yellow via-bruce-black to-bruce-black"></div>
+        </div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="font-heading text-5xl md:text-7xl lg:text-8xl font-bold uppercase tracking-tight mb-6">
+                Master Your <span class="text-bruce-yellow">Mind</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl md:text-2xl text-gray-300 font-light italic">
+                "Empty your mind, be formless, shapeless — like water."
+            </p>
+            <div class="mt-10 flex justify-center gap-4">
+                <a href="#wisdom" class="bg-bruce-yellow text-black font-bold uppercase tracking-wider py-4 px-8 rounded shadow-lg shadow-bruce-yellow/20 hover:bg-yellow-500 hover:scale-105 transition-all duration-200">
+                    Learn the Mindset
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Philosophy Section -->
+    <section id="philosophy" class="py-20 bg-bruce-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-heading text-3xl md:text-5xl text-bruce-yellow font-bold uppercase tracking-wide">The Core Philosophy</h2>
+                <div class="w-24 h-1 bg-bruce-yellow mx-auto mt-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-bruce-gray p-8 rounded-xl border border-zinc-800 hover:border-bruce-yellow transition-colors group">
+                    <div class="w-14 h-14 bg-zinc-800 rounded-full flex items-center justify-center mb-6 group-hover:bg-bruce-yellow transition-colors">
+                        <svg class="w-7 h-7 text-white group-hover:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 font-heading uppercase">Jeet Kune Do</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        "The way of the intercepting fist." It’s not just a martial art; it’s a philosophy of stripping away the unessential. Use what works, discard what doesn't, and add what is uniquely your own.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-bruce-gray p-8 rounded-xl border border-zinc-800 hover:border-bruce-yellow transition-colors group">
+                    <div class="w-14 h-14 bg-zinc-800 rounded-full flex items-center justify-center mb-6 group-hover:bg-bruce-yellow transition-colors">
+                        <svg class="w-7 h-7 text-white group-hover:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 font-heading uppercase">Formlessness</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Rigidity leads to failure. True strength lies in adaptability. By having no rigid form, you can adapt to any situation or adversary life throws at you.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-bruce-gray p-8 rounded-xl border border-zinc-800 hover:border-bruce-yellow transition-colors group">
+                    <div class="w-14 h-14 bg-zinc-800 rounded-full flex items-center justify-center mb-6 group-hover:bg-bruce-yellow transition-colors">
+                        <svg class="w-7 h-7 text-white group-hover:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 font-heading uppercase">Self-Actualization</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Bruce believed deeply in honest self-expression. Don't go out and look for a successful personality and duplicate it. Cultivate your own true self.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Traits Section -->
+    <section id="traits" class="py-20 bg-zinc-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2">
+                    <h2 class="font-heading text-3xl md:text-5xl text-bruce-yellow font-bold uppercase tracking-wide mb-6">Develop the Traits</h2>
+                    <p class="text-gray-300 text-lg mb-8">
+                        Bruce Lee was more than a martial artist; he was a philosopher and a student of life. His unmatched charisma and success stemmed from specific psychological traits that anyone can learn and apply.
+                    </p>
+                    
+                    <ul class="space-y-6">
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-bruce-yellow text-black flex items-center justify-center font-bold mt-1">1</span>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-bold text-white">Absolute Focus</h4>
+                                <p class="text-gray-400 mt-1">The ability to block out distractions and channel all energy into a single point—much like his famous one-inch punch.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-bruce-yellow text-black flex items-center justify-center font-bold mt-1">2</span>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-bold text-white">Relentless Discipline</h4>
+                                <p class="text-gray-400 mt-1">Consistency over intensity. Showing up every day to perfect your craft, regardless of your mood.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-bruce-yellow text-black flex items-center justify-center font-bold mt-1">3</span>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-bold text-white">Supreme Confidence</h4>
+                                <p class="text-gray-400 mt-1">Not arrogance, but a deep self-trust born from hours of preparation and a complete understanding of one's own capabilities.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="md:w-1/2 relative">
+                    <div class="absolute inset-0 bg-bruce-yellow rounded-2xl transform translate-x-4 translate-y-4 opacity-50"></div>
+                    <img src="https://images.unsplash.com/photo-1555597673-b21d5c935865?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Martial Arts Silhouette" class="relative rounded-2xl shadow-2xl grayscale hover:grayscale-0 transition-all duration-500 object-cover h-[500px] w-full" onerror="this.src='https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Wisdom Generator -->
+    <section id="wisdom" class="py-24 bg-bruce-black text-center border-t border-zinc-800">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="font-heading text-4xl md:text-5xl text-white font-bold uppercase tracking-wide mb-4">Daily Mastery</h2>
+            <p class="text-gray-400 mb-10">Generate a core principle of Bruce Lee to apply to your day.</p>
+
+            <div class="bg-zinc-900 border-2 border-bruce-yellow/30 rounded-2xl p-8 md:p-12 shadow-2xl relative min-h-[300px] flex flex-col items-center justify-center transition-all">
+                
+                <div id="quote-container" class="hidden">
+                    <svg class="w-12 h-12 text-bruce-yellow/20 absolute top-6 left-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+                    
+                    <blockquote id="quote-text" class="text-2xl md:text-4xl font-light italic text-white mb-6 leading-tight">
+                        <!-- Quote goes here -->
+                    </blockquote>
+                    <p id="quote-action" class="text-bruce-yellow font-bold uppercase tracking-widest text-sm md:text-base">
+                        <!-- Action goes here -->
+                    </p>
+                </div>
+
+                <div id="initial-state">
+                    <button onclick="generateWisdom()" class="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-black bg-bruce-yellow rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-yellow-500/50">
+                        <span class="absolute w-0 h-0 transition-all duration-500 ease-out bg-white rounded-full group-hover:w-56 group-hover:h-56 opacity-10"></span>
+                        <span class="relative flex items-center gap-2 text-lg uppercase tracking-wider">
+                            Seek Wisdom
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </span>
+                    </button>
+                </div>
+
+                <div id="new-quote-btn" class="hidden mt-8">
+                    <button onclick="generateWisdom()" class="text-gray-400 hover:text-bruce-yellow transition-colors underline decoration-bruce-yellow/30 underline-offset-4">
+                        Draw another principle
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black py-8 border-t border-zinc-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between text-zinc-500 text-sm">
+            <p>&copy; 2026 Mindset Mastery. For educational purposes.</p>
+            <p class="mt-4 md:mt-0 flex items-center gap-2">
+                Designed with <span class="text-bruce-yellow">focus</span> and <span class="text-bruce-yellow">discipline</span>.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        const wisdomData = [
+            {
+                quote: "I fear not the man who has practiced 10,000 kicks once, but I fear the man who has practiced one kick 10,000 times.",
+                action: "Action: Dedicate 20 minutes today to hyper-focusing on one single, fundamental skill."
+            },
+            {
+                quote: "Adapt what is useful, reject what is useless, and add what is specifically your own.",
+                action: "Action: Identify one habit holding you back today. Discard it, and replace it with something uniquely beneficial to your goals."
+            },
+            {
+                quote: "If you spend too much time thinking about a thing, you'll never get it done.",
+                action: "Action: Stop planning. Take the very first physical step toward your biggest goal right now."
+            },
+            {
+                quote: "Knowing is not enough, we must apply. Willing is not enough, we must do.",
+                action: "Action: Write down one thing you 'know' you should do. Do it within the next hour."
+            },
+            {
+                quote: "Be happy, but never satisfied.",
+                action: "Action: Celebrate a recent win today, but immediately set the target for your next evolution."
+            },
+            {
+                quote: "A quick temper will make a fool of you soon enough.",
+                action: "Action: Practice the 'pause'. Next time you feel frustrated today, take three deep breaths before responding."
+            },
+            {
+                quote: "To hell with circumstances; I create opportunities.",
+                action: "Action: Stop blaming your environment. Find one way to leverage your current situation to your advantage today."
+            }
+        ];
+
+        let lastIndex = -1;
+
+        function generateWisdom() {
+            const container = document.getElementById('quote-container');
+            const initialState = document.getElementById('initial-state');
+            const quoteText = document.getElementById('quote-text');
+            const quoteAction = document.getElementById('quote-action');
+            const newQuoteBtn = document.getElementById('new-quote-btn');
+
+            // Hide initial button, show container
+            initialState.classList.add('hidden');
+            container.classList.remove('hidden');
+            newQuoteBtn.classList.remove('hidden');
+
+            // Remove animation class to re-trigger it
+            container.classList.remove('quote-enter');
+            
+            // Force DOM reflow
+            void container.offsetWidth;
+
+            // Pick random quote, ensuring it's not the same as the last one
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * wisdomData.length);
+            } while (newIndex === lastIndex && wisdomData.length > 1);
+            
+            lastIndex = newIndex;
+            const selection = wisdomData[newIndex];
+
+            // Update DOM
+            quoteText.innerHTML = `"${selection.quote}"`;
+            quoteAction.innerHTML = selection.action;
+
+            // Add animation
+            container.classList.add('quote-enter');
+        }
+    </script>
+</body>
+</html>

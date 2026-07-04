@@ -1,0 +1,21 @@
+{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "deepseek",
+      "*.md",
+      "**/*.bat",
+      "**/*.exe",
+      "**/*.sh",
+      "**/*.mjs",
+      "**/Most Powerful Wikipedia Pages Everyone Should Read/**",
+      "**/server/**",
+      "**/.env*",
+      "**/package.json",
+      "**/package-lock.json"
+    ]
+  }
+}

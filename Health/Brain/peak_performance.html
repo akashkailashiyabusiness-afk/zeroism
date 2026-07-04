@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peak Performance - Summary</title>
+    <style>
+        /* CSS from your provided code - Black Theme (Continued) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --primary-bg: #1e1e1e; /* Dark Gray/Black */
+            --text-color: #f0f0f0; /* Light Gray */
+            --accent-blue: #64b5f6; /* Light Blue */
+            --dark-blue: #1976d2; /* Darker Blue */
+            --shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            line-height: 1.7;
+            padding: 20px;
+            overflow-x: hidden;
+            transition: var(--transition);
+        }
+
+        /* Dark Mode - Already applied as default */
+        /* @media (prefers-color-scheme: dark) { ... }  - Removed as it's the default */
+
+        /* Book Intro Section */
+        .book-intro {
+            text-align: center;
+            padding: clamp(40px, 8vw, 60px) 20px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--dark-blue));
+            color: #fff;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-intro::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .book-intro:hover::before {
+            opacity: 0.8;
+        }
+
+        .book-intro img {
+            max-width: clamp(150px, 20vw, 200px);
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            transition: var(--transition);
+            transform: scale(1);
+        }
+
+        .book-intro img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .book-intro h1 {
+            font-size: clamp(2em, 5vw, 2.8em);
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .book-intro p {
+            font-size: clamp(1.1em, 3vw, 1.3em);
+            font-style: italic;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        section {
+            background: #2d2d2d; /* Darker Gray */
+            padding: clamp(25px, 5vw, 35px);
+            margin-bottom: 40px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+            transition: var(--transition);
+        }
+
+        section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        section:nth-child(2) { animation-delay: 0.2s; }
+        section:nth-child(3) { animation-delay: 0.4s; }
+        section:nth-child(4) { animation-delay: 0.6s; }
+
+        section h2 {
+            color: var(--accent-blue);
+            font-size: clamp(1.8em, 4vw, 2.2em);
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--accent-blue);
+            padding-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        section h2:hover {
+            transform: translateX(10px);
+            color: var(--dark-blue);
+        }
+
+        article h3 {
+            color: #b0bec5; /* Light Gray */
+            font-size: clamp(1.4em, 3vw, 1.6em);
+            margin: 25px 0 15px;
+            transition: var(--transition);
+        }
+
+        article h3:hover {
+            color: var(--accent-blue);
+            text-decoration: underline;
+            text-decoration-color: var(--accent-blue);
+            text-decoration-thickness: 2px;
+        }
+
+        ul {
+            margin-left: 25px;
+        }
+
+        ul li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 20px;
+            transition: var(--transition);
+        }
+
+        ul li:hover {
+            transform: translateX(5px);
+            color: var(--accent-blue);
+        }
+
+        ul li:before {
+            content: "➤";
+            color: var(--accent-blue);
+            position: absolute;
+            left: 0;
+            transition: var(--transition);
+        }
+
+        ul li:hover:before {
+            transform: scale(1.2);
+        }
+
+        ul li strong {
+            color: var(--accent-blue);
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: clamp(1em, 2vw, 1.1em);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Improved Responsive Design */
+        @media (max-width: 1024px) {
+            main {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .book-intro {
+                padding: 40px 15px;
+            }
+
+            .book-intro h1 {
+                font-size: 2em;
+            }
+
+            .book-intro img {
+                max-width: 150px;
+            }
+
+            section {
+                padding: 20px;
+            }
+
+            section h2 {
+                font-size: 1.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .book-intro {
+                padding: 30px 10px;
+            }
+
+            .book-intro h1 {
+                font-size: 1.6em;
+            }
+
+            .book-intro p {
+                font-size: 1em;
+            }
+
+            section {
+                padding: 15px;
+            }
+
+            section h2 {
+                font-size: 1.5em;
+            }
+
+            article h3 {
+                font-size: 1.2em;
+            }
+        }
+
+        /* Accessibility */
+        :focus {
+            outline: 3px solid var(--accent-blue);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *:before, *:after {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="book-intro">
+        <img src="peak_performance.jpeg" alt="Peak Performance Cover">
+        <h1>Peak Performance</h1>
+        <p><em>The Science of Reaching Your Greatest Potential</em></p>
+    </div>
+
+    <main>
+        <section>
+            <h2>Introduction: Beyond Grit and Grind</h2>
+            <p>Brad Stulberg and Steve Magness's "Peak Performance" challenges the conventional wisdom that relentless effort is the key to success. They argue that sustainable high performance requires a more nuanced approach, one that balances challenge and recovery. The book draws on research from neuroscience, psychology, and physiology to provide a practical framework for achieving your greatest potential. *Kaam mein badlav, jeevan mein badlav* (Change in work, change in life).</p>
+        </section>
+
+        <section>
+            <h2>The Three Pillars of Peak Performance</h2>
+            <p>The authors identify three key pillars of peak performance:</p>
+            <ul>
+                <li><strong>Purpose:</strong>  Having a clear sense of purpose and meaning in your work.</li>
+                <li><strong>Process:</strong>  Focusing on the process of improvement, rather than solely on outcomes.</li>
+                <li><strong>Recovery:</strong>  Prioritizing rest, recovery, and self-care.</li>
+            </ul>
+            <p>They argue that neglecting any one of these pillars can lead to burnout and diminished performance.</p>
+        </section>
+
+        <section>
+            <h2>The Growth Equation</h2>
+            <p>Stulberg and Magness introduce the "Growth Equation":</p>
+            <p><strong>Growth = Challenge - Skill + Recovery</strong></p>
+            <p>This equation highlights the importance of finding the right balance between challenge and skill, and prioritizing recovery to allow for growth.  If challenge exceeds skill, it leads to stress and anxiety. If recovery is insufficient, it leads to burnout.</p>
+        </section>
+
+        <section>
+            <h2>Real-Life Examples & Actionable Steps</h2>
+            <h3>Real-Life Example: Michael Jordan</h3>
+            <p>Michael Jordan is often cited as an example of someone who achieved peak performance. However, his success wasn't just about talent and hard work; it was also about his relentless focus on improvement, his ability to embrace challenges, and his commitment to recovery. He understood the importance of pushing his limits, but also of knowing when to rest and recharge.</p>
+
+            <h3>Actionable Steps for Achieving Peak Performance:</h3>
+            <ul>
+                <li><strong>Define Your Purpose:</strong>  What are you passionate about? What impact do you want to make?</li>
+                <li><strong>Focus on the Process:</strong>  Set small, achievable goals and focus on making consistent progress.</li>
+                <li><strong>Prioritize Recovery:</strong>  Get enough sleep, eat a healthy diet, and practice mindfulness.</li>
+                <li><strong>Embrace Challenge:</strong>  Step outside of your comfort zone and take on new challenges.</li>
+                <li><strong>Seek Feedback:</strong>  Ask for feedback from trusted sources and use it to improve.</li>
+            </ul>
+            <p>Peak performance is not about being perfect; it's about striving to be your best, while also prioritizing your well-being. *Badhao, par sambhal ke* (Grow, but carefully).</p>
+        </section>
+    </main>
+
+</body>
+</html>

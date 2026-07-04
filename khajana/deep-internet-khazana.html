@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Deep Internet Khazana (Open Source & OSINT)</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0c;
+  --panel: #121217;
+  --panel-hover: #1a1a24;
+  --border: #2a2a35;
+  --accent: #ff3366; /* Cyberpunk Pink/Red */
+  --accent-2: #00e5ff; /* Cyan */
+  --accent-3: #f2a900; /* Yellow */
+  --text-main: #e0e0e8;
+  --text-muted: #8a8a9e;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  background-image: radial-gradient(circle at top right, #1a1a24 0%, transparent 40%),
+                    radial-gradient(circle at bottom left, #121217 0%, transparent 40%);
+}
+
+/* Terminal Grid Overlay */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: 
+    linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
+/* HEADER */
+header {
+  padding: 80px 0 60px;
+  border-bottom: 1px solid var(--border);
+}
+
+.terminal-header {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent-2);
+  font-size: 14px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.terminal-header::before {
+  content: 'root@khazana:~#';
+  color: var(--accent);
+}
+
+.cursor {
+  display: inline-block;
+  width: 10px;
+  height: 18px;
+  background: var(--accent-2);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+h1 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -2px;
+  color: #fff;
+}
+
+h1 span {
+  color: var(--accent);
+  text-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
+}
+
+.subtitle {
+  margin-top: 24px;
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 800px;
+  line-height: 1.8;
+  font-weight: 300;
+}
+
+/* NAV */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(10, 10, 12, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 20px 0;
+  margin-bottom: 50px;
+}
+.nav::-webkit-scrollbar { display: none; }
+
+.nav-tab {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 12px 24px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  border-radius: 2px;
+}
+
+.nav-tab:hover {
+  background: var(--panel-hover);
+  color: #fff;
+}
+
+.nav-tab.on {
+  background: rgba(0, 229, 255, 0.1);
+  color: var(--accent-2);
+  border-color: var(--accent-2);
+}
+
+/* SECTIONS */
+.section { display: none; margin-bottom: 100px; }
+.section.active { display: block; animation: slideUp 0.5s ease; }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sec-head {
+  margin-bottom: 40px;
+}
+
+.sec-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  border-left: 4px solid var(--accent);
+  padding-left: 16px;
+}
+
+.sec-desc {
+  margin-top: 10px;
+  color: var(--text-muted);
+  font-size: 14px;
+  padding-left: 20px;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 2px;
+  background: var(--card-color, var(--accent-2));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.card:hover {
+  background: var(--panel-hover);
+  border-color: #3a3a4a;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.card:hover::before { opacity: 1; }
+
+.card-title-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.card-category {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.card-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--card-color, var(--accent-2));
+  text-decoration: none;
+  margin-bottom: 16px;
+  display: inline-block;
+}
+.card-link:hover { text-decoration: underline; }
+.card-link::before { content: '🔗 '; }
+
+.card-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #b0b0c0;
+  margin-bottom: 16px;
+  flex-grow: 1;
+}
+
+.card-why {
+  background: rgba(0,0,0,0.3);
+  padding: 12px 16px;
+  border-left: 2px solid var(--card-color, var(--accent-2));
+  font-size: 13px;
+  color: var(--text-main);
+  line-height: 1.5;
+  border-radius: 0 4px 4px 0;
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0 20px; }
+  .grid { grid-template-columns: 1fr; }
+  h1 { font-size: 32px; }
+}
+</style>
+    <style>
+      .hub-back-btn{position:fixed;top:12px;left:12px;z-index:9999;display:flex;align-items:center;gap:8px;background:rgba(22,27,34,0.92);border:1px solid rgba(197,160,89,0.25);color:#c5a059;font-family:sans-serif;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:7px 14px;border-radius:999px;text-decoration:none;backdrop-filter:blur(10px);transition:all 0.2s ease;}
+      .hub-back-btn:hover{background:rgba(197,160,89,0.15);border-color:#c5a059;color:#d4af37;}
+    </style></head>
+<body>
+    <a href="/" class="hub-back-btn">&#8592; 0ISM Hub</a>
+
+<div class="container">
+  <header>
+    <div class="terminal-header">execute ./open_knowledge_nexus.sh <span class="cursor"></span></div>
+    <h1>The Deep Internet <br><span>Khazana</span></h1>
+    <p class="subtitle">
+      YouTube, Reddit aur Quora ke aage ki duniya. Yeh internet ka wo hissa hai jahan real experts (developers, hackers, researchers) baat karte hain. Jahan OSINT tools hain, aur jahan duniya ki har degree/course ka free, superior open-source alternative available hai.
+    </p>
+  </header>
+
+  <nav class="nav" id="nav">
+    <button class="nav-tab on" data-sec="forums">💬 Deep Forums & Real People</button>
+    <button class="nav-tab" data-sec="education">🎓 Open Source Education (Anti-Paid)</button>
+    <button class="nav-tab" data-sec="osint">🕵️ OSINT & Multi-Source DBs</button>
+    <button class="nav-tab" data-sec="archives">📚 Digital Archives & Shadow Libs</button>
+  </nav>
+
+  <!-- FORUMS -->
+  <div class="section active" id="forums">
+    <div class="sec-head">
+      <div class="sec-title">Deep Forums & High-Signal Communities</div>
+      <div class="sec-desc">Reddit aur Quora ab SEO spam se bhar chuke hain. Ye wo platforms hain jahan actual builders, scientists aur thinkers bina noise ke discussions karte hain.</div>
+    </div>
+    <div class="grid" id="forums-grid"></div>
+  </div>
+
+  <!-- EDUCATION -->
+  <div class="section" id="education">
+    <div class="sec-head">
+      <div class="sec-title">Open Source Education (Beat Paid Courses)</div>
+      <div class="sec-desc">Ek rupya bhi kharch karne ki zarurat nahi hai. Internet par Ivy League education se lekar hardcore dev skills tak sab free aur open-source hai.</div>
+    </div>
+    <div class="grid" id="education-grid"></div>
+  </div>
+
+  <!-- OSINT -->
+  <div class="section" id="osint">
+    <div class="sec-head">
+      <div class="sec-title">OSINT & Multi-Source Dictionaries</div>
+      <div class="sec-desc">Data aggregation, investigations, aur internet ki hidden information nikalne ke ultimate frameworks aur databases.</div>
+    </div>
+    <div class="grid" id="osint-grid"></div>
+  </div>
+
+  <!-- ARCHIVES -->
+  <div class="section" id="archives">
+    <div class="sec-head">
+      <div class="sec-title">Digital Archives & Shadow Libraries</div>
+      <div class="sec-desc">Duniya ka koi bhi research paper, book, ya deleted history dhoondhne ki places. Knowledge should be free.</div>
+    </div>
+    <div class="grid" id="archives-grid"></div>
+  </div>
+
+</div>
+
+<script>
+const DB = {
+  forums: [
+    {n:"Hacker News", u:"https://news.ycombinator.com", c:"#ff6600", cat:"Tech/Startups", d:"Y Combinator dwara chalaya gaya forum. Duniya ke top founders, engineers aur scientists yahan daily news discuss karte hain.", w:"Agar aapko tech industry ki asli pulse janni hai, toh HN se better kuch nahi. No memes, pure high-intellect discussion."},
+    {n:"LessWrong", u:"https://www.lesswrong.com", c:"#00e5ff", cat:"Rationality/AI", d:"A community dedicated to improving human reasoning and understanding cognitive biases. Deep focus on AI alignment.", w:"Inke articles aur discussions aapke sochne ka tarika (Mental Models) completely badal denge. Hardcore logic."},
+    {n:"Lobste.rs", u:"https://lobste.rs", c:"#ff3366", cat:"Computing", d:"A highly curated, invite-only community for computing and software development.", w:"Reddit ke programming subreddits ab basic ho gaye hain. Lobsters par actual hardcore engineers system design discuss karte hain."},
+    {n:"Tildes", u:"https://tildes.net", c:"#00e5ff", cat:"General", d:"A non-profit, ad-free alternative to Reddit focused on high-quality discussion and extreme moderation.", w:"Reddit ka purana, better version jahan log actually long-form thoughtful comments likhte hain, trolls nahi."},
+    {n:"Stack Exchange Network", u:"https://stackexchange.com/sites", c:"#f2a900", cat:"Q&A", d:"Stack Overflow ke alava, Inke paas Math, Physics, Cryptography, aur Reverse Engineering ke 170+ expert Q&A sites hain.", w:"Quora par ab bots aur fake stories hain. Stack Exchange par real experts point-to-point technical answers dete hain."}
+  ],
+  education: [
+    {n:"OSSU (Open Source Society)", u:"https://github.com/ossu/computer-science", c:"#f2a900", cat:"Computer Science", d:"A complete computer science education using only free online materials (Harvard, MIT, etc.).", w:"Kahin se CS degree ya paid bootcamp lene ki zarurat nahi. Is path ko follow karo, ye kisi bhi paid course ko beat karta hai."},
+    {n:"Teach Yourself CS", u:"https://teachyourselfcs.com", c:"#00e5ff", cat:"Fundamentals", d:"A curated list of the absolute best textbooks and video lectures for 9 core CS subjects.", w:"Self-taught developers hamesha fundamentals me fail hote hain. Ye site batati hai exact kaunsi book aur video lecture dekhna hai."},
+    {n:"MIT OpenCourseWare", u:"https://ocw.mit.edu", c:"#ff3366", cat:"University", d:"MIT ke saare courses ka syllabus, video lectures, assignments aur exams completely free.", w:"Duniya ki best tech university ka course material free. Agar aapko Linear Algebra ya Algorithms sikhna hai, start here."},
+    {n:"Roadmap.sh", u:"https://roadmap.sh", c:"#f2a900", cat:"Career Paths", d:"Community-driven roadmaps, articles, and resources for developers (Frontend, Backend, DevOps, AI).", w:"Bhatakne ki zarurat nahi hai. Ek path select karo, aur step-by-step free resources par click karke sikhte jao."},
+    {n:"The Odin Project", u:"https://www.theodinproject.com", c:"#00e5ff", cat:"Web Dev", d:"Full stack web development curriculum. Completely free, open-source, and project-based.", w:"Udemy ke $15 courses ya $10k bootcamps se 100x better hai. Yeh aapko real-world projects banana sikhata hai."}
+  ],
+  osint: [
+    {n:"OSINT Framework", u:"https://osintframework.com", c:"#ff3366", cat:"Directory", d:"The ultimate web-based map of OSINT (Open Source Intelligence) tools.", w:"Email address, username, phone number, ya IP address ke through kisi ko bhi track/investigate karne ke saare tools ek jagah interconnected hain."},
+    {n:"Bellingcat", u:"https://www.bellingcat.com", c:"#00e5ff", cat:"Investigations", d:"An independent international collective of researchers, investigators and citizen journalists using OSINT.", w:"Ye log sikhate hain ki Google Earth, social media images aur public data ka use karke international crimes kaise solve kiye jate hain. Peak OSINT."},
+    {n:"Wikidata", u:"https://www.wikidata.org", c:"#f2a900", cat:"Multi-Source DB", d:"A free and open knowledge base that can be read and edited by both humans and machines.", w:"Wikipedia insano ke liye hai, Wikidata machines ke liye. Isme duniya ka saara data structured format (graphs/nodes) mein connected hai."},
+    {n:"MITRE ATT&CK", u:"https://attack.mitre.org", c:"#ff3366", cat:"Cybersecurity", d:"A globally-accessible knowledge base of adversary tactics and techniques based on real-world observations.", w:"Cybersecurity ka ultimate encyclopedia. Hackers actual mein systems ko kaise penetrate karte hain, iski complete dictionary."},
+    {n:"Shodan", u:"https://www.shodan.io", c:"#f2a900", cat:"Search Engine", d:"A search engine for Internet-connected devices (servers, webcams, routers, etc.).", w:"Google websites ko index karta hai, Shodan 'devices' ko index karta hai. Hackers/OSINT researchers iska use open ports dhoondhne ke liye karte hain."}
+  ],
+  archives: [
+    {n:"Internet Archive", u:"https://archive.org", c:"#00e5ff", cat:"History", d:"A non-profit library of millions of free books, movies, software, music, websites, and more.", w:"Internet ka backup. Agar koi website delete ho gayi hai, toh 'Wayback Machine' se usko wapas dekha ja sakta hai."},
+    {n:"Anna's Archive", u:"https://annas-archive.org", c:"#ff3366", cat:"Shadow Library", d:"The world's largest open-source shadow library aggregator (combines Sci-Hub, LibGen, Z-Library).", w:"Duniya ki har book, har research paper, aur har magazine yahan free mein available hai. Paid academia ka ultimate bypass."},
+    {n:"Sci-Hub", u:"https://sci-hub.se", c:"#f2a900", cat:"Research", d:"A website that provides free access to millions of research papers and articles.", w:"Academia mein har paper paywall ke piche hota hai. Sci-Hub DOI link lekar aapko wo paper instantly free mein de deta hai."}
+  ]
+};
+
+// Render
+Object.keys(DB).forEach(key => {
+  const grid = document.getElementById(key + '-grid');
+  DB[key].forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.setProperty('--card-color', item.c);
+    
+    card.innerHTML = `
+      <div class="card-title-wrap">
+        <div class="card-title">${item.n}</div>
+        <div class="card-category">${item.cat}</div>
+      </div>
+      <a href="${item.u}" target="_blank" class="card-link">${item.u.replace('https://', '')}</a>
+      <div class="card-desc">${item.d}</div>
+      <div class="card-why">${item.w}</div>
+    `;
+    grid.appendChild(card);
+  });
+});
+
+// Tabs
+const tabs = document.querySelectorAll('.nav-tab');
+const sections = document.querySelectorAll('.section');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.getAttribute('data-sec');
+    tabs.forEach(t => t.classList.remove('on'));
+    tab.classList.add('on');
+    
+    sections.forEach(sec => {
+      sec.classList.remove('active');
+      if(sec.id === target) sec.classList.add('active');
+    });
+  });
+});
+</script>
+</body>
+</html>

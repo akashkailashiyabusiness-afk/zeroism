@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Life System - Complete Wisdom Integration</title>
+    <link rel="stylesheet" href="shared-styles.css">
+    <style>
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .tab-button.active {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: white;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .tab-button:hover:not(.active) {
+            background: var(--glass-hover);
+            color: var(--text-primary);
+        }
+        .habit-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent-purple);
+        }
+        .completed {
+            opacity: 0.7;
+            background: rgba(16, 185, 129, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="glass-nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-icon">∞</div>
+                <span class="nav-title gradient-text">Master Life System</span>
+            </a>
+            <div class="nav-links">
+                <a href="#dashboard" class="nav-link">Dashboard</a>
+                <a href="#tools" class="nav-link">Tools</a>
+                <a href="#wisdom" class="nav-link">Wisdom</a>
+                <a href="index.html" class="glass-button secondary">← Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content animate-fade-in-up">
+            <h1 class="hero-title">
+                Master Your <span class="text-yellow">Life</span><br>
+                Find Your <span class="text-blue">Truth</span><br>
+                Live Your <span class="text-purple">Purpose</span>
+            </h1>
+            <p class="hero-subtitle">
+                The complete integration of ancient wisdom and modern tools. Live like Osho, focus like Bruce Lee, think like Einstein, build like Naval, optimize like Tim Ferriss, endure like the Stoics.
+            </p>
+            <div class="hero-buttons">
+                <button onclick="showSection('dashboard')" class="glass-button primary">
+                    <span>🚀</span> Enter the System
+                </button>
+                <button onclick="generateMasterWisdom()" class="glass-button secondary">
+                    <span>✨</span> Get Daily Wisdom
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Dashboard -->
+    <section id="dashboard" class="section">
+        <div class="section-header">
+            <h2 class="section-title">Your Life Mastery <span class="gradient-text">Dashboard</span></h2>
+            <p class="section-subtitle">Access all tools and wisdom in one integrated system</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="text-center mb-12">
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
+                <button onclick="showTab('wisdom-tab')" class="tab-button active" id="wisdom-btn">
+                    🧠 Wisdom Engine
+                </button>
+                <button onclick="showTab('problem-solver')" class="tab-button" id="solver-btn">
+                    🎯 Problem Solver
+                </button>
+                <button onclick="showTab('habit-tracker')" class="tab-button" id="habit-btn">
+                    📊 Habit Tracker
+                </button>
+                <button onclick="showTab('decision-maker')" class="tab-button" id="decision-btn">
+                    ⚖️ Decision Maker
+                </button>
+                <button onclick="showTab('life-designer')" class="tab-button" id="designer-btn">
+                    🎨 Life Designer
+                </button>
+            </div>
+        </div>
+
+        <!-- Wisdom Engine Tab -->
+        <div id="wisdom-tab" class="tab-content active">
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="glass-card">
+                    <h3 class="text-3xl font-bold text-center mb-8 gradient-text">Daily Wisdom Generator</h3>
+                    
+                    <div id="wisdom-display" class="text-center" style="min-height: 300px; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="mb-6">
+                            <div style="width: 96px; height: 96px; background: linear-gradient(135deg, var(--accent-yellow), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; font-size: 3rem;">🧠</div>
+                            <h4 class="text-2xl font-serif mb-4">Ready for Today's Wisdom?</h4>
+                            <p class="text-secondary mb-8">Get personalized insights from the greatest minds in history</p>
+                        </div>
+                        
+                        <div id="wisdom-content" style="display: none;">
+                            <div class="mb-6">
+                                <span id="wisdom-source" class="glass-button" style="background: rgba(245, 158, 11, 0.2); border-color: var(--accent-yellow); color: var(--accent-yellow);"></span>
+                            </div>
+                            <blockquote id="wisdom-quote" class="text-2xl font-serif mb-6 text-center"></blockquote>
+                            <p id="wisdom-action" class="text-lg text-secondary mb-8 text-center"></p>
+                            <div id="wisdom-practice" class="glass-card mb-6" style="background: rgba(139, 92, 246, 0.05);">
+                                <h5 class="font-bold text-purple mb-3">Today's Practice:</h5>
+                                <p id="practice-text" class="text-secondary"></p>
+                            </div>
+                        </div>
+                        
+                        <button onclick="generateMasterWisdom()" class="glass-button primary">
+                            <span>✨</span> Generate Wisdom
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <!-- Problem Solver Tab -->
+            <div id="problem-solver" class="tab-content">
+                <div class="max-w-6xl mx-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Problem Input -->
+                        <div class="bg-gray-800 rounded-2xl p-8">
+                            <h3 class="text-2xl font-bold mb-6 text-master-purple">🎯 Define Your Challenge</h3>
+                            <textarea 
+                                id="problemInput" 
+                                placeholder="Describe your problem, question, or challenge in detail..."
+                                class="w-full h-32 bg-gray-700 border border-gray-600 rounded-lg p-4 text-white placeholder-gray-400 focus:border-master-purple focus:outline-none"
+                            ></textarea>
+                            <div class="mt-4 flex gap-2">
+                                <button onclick="analyzeProblem()" class="bg-master-purple hover:bg-purple-700 px-6 py-3 rounded-lg font-semibold transition-colors">
+                                    Analyze & Solve
+                                </button>
+                                <button onclick="clearProblem()" class="bg-gray-700 hover:bg-gray-600 px-4 py-3 rounded-lg font-semibold transition-colors">
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Solution Output -->
+                        <div class="bg-gray-800 rounded-2xl p-8">
+                            <h3 class="text-2xl font-bold mb-6 text-master-green">🧠 Multi-Perspective Solution</h3>
+                            <div id="solutionOutput" class="space-y-4 text-gray-300">
+                                <p class="italic">Enter your problem to receive a comprehensive analysis using the combined wisdom of great thinkers...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Problem Examples -->
+                    <div class="mt-8">
+                        <h4 class="text-xl font-bold text-center mb-6 text-gray-300">Try These Example Problems</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <button onclick="loadProblemExample('career')" class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition-colors">
+                                <h5 class="font-bold text-blue-400 mb-2">💼 Career Stuck</h5>
+                                <p class="text-sm text-gray-300">Feeling trapped in current job</p>
+                            </button>
+                            <button onclick="loadProblemExample('relationship')" class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition-colors">
+                                <h5 class="font-bold text-pink-400 mb-2">❤️ Relationship</h5>
+                                <p class="text-sm text-gray-300">Communication issues</p>
+                            </button>
+                            <button onclick="loadProblemExample('health')" class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition-colors">
+                                <h5 class="font-bold text-green-400 mb-2">🏃 Health Goals</h5>
+                                <p class="text-sm text-gray-300">Can't stick to routines</p>
+                            </button>
+                            <button onclick="loadProblemExample('purpose')" class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition-colors">
+                                <h5 class="font-bold text-purple-400 mb-2">🎯 Life Purpose</h5>
+                                <p class="text-sm text-gray-300">Finding meaning and direction</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Habit Tracker Tab -->
+            <div id="habit-tracker" class="tab-content">
+                <div class="max-w-6xl mx-auto">
+                    <div class="text-center mb-8">
+                        <h3 class="text-3xl font-bold mb-4 gradient-text">Master Habit Tracker</h3>
+                        <p class="text-gray-300">Track the habits that align with the wisdom of the masters</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Osho Habits -->
+                        <div class="bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-500/20 rounded-2xl p-6">
+                            <h4 class="text-xl font-bold text-orange-400 mb-4 flex items-center gap-2">
+                                🧘 Osho - Awareness
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Morning meditation</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="meditation">
+                                </div>
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Witness thoughts</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="witness">
+                                </div>
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Present moment awareness</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="present">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bruce Lee Habits -->
+                        <div class="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-2xl p-6">
+                            <h4 class="text-xl font-bold text-yellow-400 mb-4 flex items-center gap-2">
+                                ⚡ Bruce Lee - Focus
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Physical training</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="training">
+                                </div>
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Skill practice</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="skill">
+                                </div>
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Adapt & improve</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="adapt">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Einstein Habits -->
+                        <div class="bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-2xl p-6">
+                            <h4 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                                🧠 Einstein - Curiosity
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Ask deep questions</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="questions">
+                                </div>
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Learn something new</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="learn">
+                                </div>
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Think in analogies</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="analogies">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Naval Habits -->
+                        <div class="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-2xl p-6">
+                            <h4 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                                💎 Naval - Wealth
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Read for knowledge</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="read">
+                                </div>
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Build specific knowledge</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="build">
+                                </div>
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Long-term thinking</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="longterm">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tim Ferriss Habits -->
+                        <div class="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-2xl p-6">
+                            <h4 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                                ⚙️ Tim Ferriss - Efficiency
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">80/20 analysis</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="pareto">
+                                </div>
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Eliminate time wasters</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="eliminate">
+                                </div>
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Test & measure</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="test">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stoic Habits -->
+                        <div class="bg-gradient-to-br from-red-500/10 to-pink-500/10 border border-red-500/20 rounded-2xl p-6">
+                            <h4 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                                🏛️ Stoics - Resilience
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Morning reflection</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="reflect">
+                                </div>
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Focus on what you control</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="control">
+                                </div>
+                                <div class="habit-item flex items-center justify-between">
+                                    <span class="text-sm">Evening gratitude</span>
+                                    <input type="checkbox" class="habit-checkbox" data-habit="gratitude">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Habit Progress -->
+                    <div class="mt-8 bg-gray-800 rounded-2xl p-6">
+                        <h4 class="text-xl font-bold text-center mb-4 text-master-gold">Today's Progress</h4>
+                        <div class="flex justify-center">
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-master-green" id="habit-score">0/18</div>
+                                <div class="text-gray-400">Habits Completed</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Decision Maker Tab -->
+            <div id="decision-maker" class="tab-content">
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-center mb-8">
+                        <h3 class="text-3xl font-bold mb-4 gradient-text">Master Decision Framework</h3>
+                        <p class="text-gray-300">Make better decisions using proven frameworks from the masters</p>
+                    </div>
+
+                    <div class="bg-gray-800 rounded-2xl p-8">
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">What decision are you facing?</label>
+                            <textarea 
+                                id="decisionInput" 
+                                placeholder="Describe the decision you need to make..."
+                                class="w-full h-24 bg-gray-700 border border-gray-600 rounded-lg p-4 text-white placeholder-gray-400 focus:border-master-blue focus:outline-none"
+                            ></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Option A</label>
+                                <input 
+                                    type="text" 
+                                    id="optionA" 
+                                    placeholder="First option..."
+                                    class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white placeholder-gray-400 focus:border-master-blue focus:outline-none"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Option B</label>
+                                <input 
+                                    type="text" 
+                                    id="optionB" 
+                                    placeholder="Second option..."
+                                    class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white placeholder-gray-400 focus:border-master-blue focus:outline-none"
+                                >
+                            </div>
+                        </div>
+
+                        <button onclick="analyzeDecision()" class="w-full bg-gradient-to-r from-master-blue to-master-purple text-white py-3 rounded-lg font-semibold hover:scale-105 transition-transform">
+                            Analyze Decision
+                        </button>
+
+                        <div id="decisionOutput" class="mt-8 hidden">
+                            <h4 class="text-xl font-bold text-master-gold mb-4">Decision Analysis</h4>
+                            <div id="decisionResults" class="space-y-4"></div>
+                        </div>
+                    </div>
+
+                    <!-- Decision Templates -->
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="loadDecisionTemplate('career')" class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition-colors">
+                            <h5 class="font-bold text-blue-400 mb-2">💼 Career Change</h5>
+                            <p class="text-sm text-gray-300">Should I change jobs?</p>
+                        </button>
+                        <button onclick="loadDecisionTemplate('investment')" class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition-colors">
+                            <h5 class="font-bold text-green-400 mb-2">💰 Investment</h5>
+                            <p class="text-sm text-gray-300">Should I make this investment?</p>
+                        </button>
+                        <button onclick="loadDecisionTemplate('relationship')" class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition-colors">
+                            <h5 class="font-bold text-pink-400 mb-2">❤️ Relationship</h5>
+                            <p class="text-sm text-gray-300">Should I commit to this relationship?</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Life Designer Tab -->
+            <div id="life-designer" class="tab-content">
+                <div class="max-w-6xl mx-auto">
+                    <div class="text-center mb-8">
+                        <h3 class="text-3xl font-bold mb-4 gradient-text">Life Design Canvas</h3>
+                        <p class="text-gray-300">Design your ideal life using the wisdom of the masters</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Vision Board -->
+                        <div class="bg-gray-800 rounded-2xl p-6">
+                            <h4 class="text-xl font-bold text-master-purple mb-4">🎯 Life Vision</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">10-Year Vision</label>
+                                    <textarea 
+                                        id="vision10" 
+                                        placeholder="Where do you see yourself in 10 years?"
+                                        class="w-full h-20 bg-gray-700 border border-gray-600 rounded-lg p-3 text-white placeholder-gray-400 focus:border-master-purple focus:outline-none"
+                                    ></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Core Values</label>
+                                    <input 
+                                        type="text" 
+                                        id="coreValues" 
+                                        placeholder="What matters most to you?"
+                                        class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white placeholder-gray-400 focus:border-master-purple focus:outline-none"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Life Purpose</label>
+                                    <textarea 
+                                        id="lifePurpose" 
+                                        placeholder="What is your reason for being?"
+                                        class="w-full h-20 bg-gray-700 border border-gray-600 rounded-lg p-3 text-white placeholder-gray-400 focus:border-master-purple focus:outline-none"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Life Areas -->
+                        <div class="bg-gray-800 rounded-2xl p-6">
+                            <h4 class="text-xl font-bold text-master-green mb-4">🌟 Life Areas Assessment</h4>
+                            <div class="space-y-4">
+                                <div class="life-area">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium">Health & Fitness</span>
+                                        <span id="health-score" class="text-master-green">5/10</span>
+                                    </div>
+                                    <input type="range" min="1" max="10" value="5" class="w-full" id="health-slider" onchange="updateScore('health', this.value)">
+                                </div>
+                                <div class="life-area">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium">Career & Finance</span>
+                                        <span id="career-score" class="text-master-blue">5/10</span>
+                                    </div>
+                                    <input type="range" min="1" max="10" value="5" class="w-full" id="career-slider" onchange="updateScore('career', this.value)">
+                                </div>
+                                <div class="life-area">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium">Relationships</span>
+                                        <span id="relationships-score" class="text-master-pink">5/10</span>
+                                    </div>
+                                    <input type="range" min="1" max="10" value="5" class="w-full" id="relationships-slider" onchange="updateScore('relationships', this.value)">
+                                </div>
+                                <div class="life-area">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium">Personal Growth</span>
+                                        <span id="growth-score" class="text-master-purple">5/10</span>
+                                    </div>
+                                    <input type="range" min="1" max="10" value="5" class="w-full" id="growth-slider" onchange="updateScore('growth', this.value)">
+                                </div>
+                                <div class="life-area">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium">Fun & Recreation</span>
+                                        <span id="fun-score" class="text-master-orange">5/10</span>
+                                    </div>
+                                    <input type="range" min="1" max="10" value="5" class="w-full" id="fun-slider" onchange="updateScore('fun', this.value)">
+                                </div>
+                                <div class="life-area">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium">Contribution & Legacy</span>
+                                        <span id="contribution-score" class="text-master-gold">5/10</span>
+                                    </div>
+                                    <input type="range" min="1" max="10" value="5" class="w-full" id="contribution-slider" onchange="updateScore('contribution', this.value)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Plan Generator -->
+                    <div class="mt-8 bg-gray-800 rounded-2xl p-6">
+                        <h4 class="text-xl font-bold text-master-gold mb-4">📋 90-Day Action Plan</h4>
+                        <button onclick="generateActionPlan()" class="bg-gradient-to-r from-master-gold to-master-orange text-black px-6 py-3 rounded-lg font-semibold hover:scale-105 transition-transform">
+                            Generate My Action Plan
+                        </button>
+                        <div id="actionPlan" class="mt-6 hidden">
+                            <div id="actionPlanContent" class="space-y-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Quick Access Tools Section -->
+    <section id="tools" class="py-24 bg-gradient-to-br from-gray-900 to-master-dark">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="font-serif text-4xl md:text-5xl font-bold mb-6">Quick Access Tools</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">Instant access to your most-used life optimization tools</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Morning Routine Generator -->
+                <div class="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-2xl p-6 card-hover">
+                    <h3 class="text-xl font-bold text-yellow-400 mb-4 flex items-center gap-2">
+                        🌅 Morning Routine Generator
+                    </h3>
+                    <p class="text-gray-300 text-sm mb-4">Create the perfect morning routine based on your goals and available time.</p>
+                    <button onclick="generateMorningRoutine()" class="bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                        Generate Routine
+                    </button>
+                    <div id="morningRoutine" class="mt-4 hidden">
+                        <div class="bg-gray-800/50 rounded-lg p-3">
+                            <div id="morningRoutineContent"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Energy Optimizer -->
+                <div class="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-2xl p-6 card-hover">
+                    <h3 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                        ⚡ Energy Optimizer
+                    </h3>
+                    <p class="text-gray-300 text-sm mb-4">Track and optimize your energy levels throughout the day.</p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>Current Energy:</span>
+                            <span id="currentEnergy" class="text-green-400">7/10</span>
+                        </div>
+                        <input type="range" min="1" max="10" value="7" class="w-full" id="energySlider" onchange="updateEnergy(this.value)">
+                        <button onclick="getEnergyTips()" class="bg-green-500/20 hover:bg-green-500/30 text-green-400 px-4 py-2 rounded-lg text-sm font-semibold transition-colors w-full">
+                            Get Energy Tips
+                        </button>
+                    </div>
+                    <div id="energyTips" class="mt-4 hidden">
+                        <div class="bg-gray-800/50 rounded-lg p-3">
+                            <div id="energyTipsContent"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Focus Timer -->
+                <div class="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-2xl p-6 card-hover">
+                    <h3 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                        🎯 Focus Timer
+                    </h3>
+                    <p class="text-gray-300 text-sm mb-4">Pomodoro timer with Bruce Lee's focus principles.</p>
+                    <div class="text-center">
+                        <div id="timerDisplay" class="text-3xl font-bold text-blue-400 mb-4">25:00</div>
+                        <div class="flex gap-2 justify-center">
+                            <button onclick="startTimer()" id="startBtn" class="bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 px-3 py-2 rounded text-sm font-semibold">
+                                Start
+                            </button>
+                            <button onclick="pauseTimer()" id="pauseBtn" class="bg-gray-600/20 hover:bg-gray-600/30 text-gray-400 px-3 py-2 rounded text-sm font-semibold">
+                                Pause
+                            </button>
+                            <button onclick="resetTimer()" id="resetBtn" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 px-3 py-2 rounded text-sm font-semibold">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gratitude Journal -->
+                <div class="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-6 card-hover">
+                    <h3 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                        🙏 Gratitude Journal
+                    </h3>
+                    <p class="text-gray-300 text-sm mb-4">Daily gratitude practice for mental well-being.</p>
+                    <textarea 
+                        id="gratitudeInput" 
+                        placeholder="What are you grateful for today?"
+                        class="w-full h-20 bg-gray-700 border border-gray-600 rounded-lg p-3 text-white placeholder-gray-400 text-sm focus:border-purple-500 focus:outline-none"
+                    ></textarea>
+                    <button onclick="saveGratitude()" class="mt-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 px-4 py-2 rounded-lg text-sm font-semibold transition-colors w-full">
+                        Save Entry
+                    </button>
+                </div>
+
+                <!-- Quote Generator -->
+                <div class="bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-2xl p-6 card-hover">
+                    <h3 class="text-xl font-bold text-red-400 mb-4 flex items-center gap-2">
+                        💭 Wisdom Quote
+                    </h3>
+                    <div id="quickQuote" class="text-gray-300 text-sm italic mb-4">
+                        "The unexamined life is not worth living." - Socrates
+                    </div>
+                    <button onclick="generateQuickQuote()" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 px-4 py-2 rounded-lg text-sm font-semibold transition-colors w-full">
+                        New Quote
+                    </button>
+                </div>
+
+                <!-- Life Score -->
+                <div class="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-2xl p-6 card-hover">
+                    <h3 class="text-xl font-bold text-cyan-400 mb-4 flex items-center gap-2">
+                        📊 Life Score
+                    </h3>
+                    <div class="text-center">
+                        <div id="lifeScore" class="text-4xl font-bold text-cyan-400 mb-2">7.2</div>
+                        <div class="text-gray-400 text-sm mb-4">Overall Life Satisfaction</div>
+                        <button onclick="calculateLifeScore()" class="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                            Recalculate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-black border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="mb-8">
+                <div class="w-12 h-12 bg-gradient-to-r from-master-gold to-master-purple rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white font-bold text-xl">∞</span>
+                </div>
+                <h3 class="font-serif text-2xl font-bold gradient-text mb-2">Master Life System</h3>
+                <p class="text-gray-400">The complete integration of wisdom for modern living</p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm text-gray-500 mb-8">
+                <div>🧘 Osho</div>
+                <div>⚡ Bruce Lee</div>
+                <div>🧠 Einstein</div>
+                <div>💎 Naval</div>
+                <div>⚙️ Tim Ferriss</div>
+                <div>🏛️ Stoics</div>
+            </div>
+            
+            <div class="flex justify-center gap-4 mb-6">
+                <a href="ultimate-life-toolkit.html" class="text-master-gold hover:text-yellow-400 transition-colors">Life Toolkit</a>
+                <a href="truth-finder-system.html" class="text-master-purple hover:text-purple-400 transition-colors">Truth Finder</a>
+                <a href="osho.html" class="text-orange-400 hover:text-orange-300 transition-colors">Osho Wisdom</a>
+                <a href="bruslee.html" class="text-yellow-400 hover:text-yellow-300 transition-colors">Bruce Lee Focus</a>
+            </div>
+            
+             </div>
+    </footer>
+    <!-- JavaScript for Master Life System -->
+    <script>
+        // Master Wisdom Database
+        const masterWisdom = [
+            {
+                source: "Osho - The Awakened One",
+                quote: "Life is not a problem to be solved, but a mystery to be lived.",
+                action: "Today, instead of trying to fix everything, simply witness what is happening around you without judgment.",
+                practice: "Spend 10 minutes in silent meditation, just watching your breath and thoughts without trying to change anything."
+            },
+            {
+                source: "Bruce Lee - The Focused Warrior",
+                quote: "I fear not the man who has practiced 10,000 kicks once, but I fear the man who has practiced one kick 10,000 times.",
+                action: "Choose one skill or habit today and practice it with complete focus for 20 minutes.",
+                practice: "Identify your most important skill and dedicate focused practice time to it daily."
+            },
+            {
+                source: "Einstein - The Curious Mind",
+                quote: "The important thing is not to stop questioning. Curiosity has its own reason for existing.",
+                action: "Ask 'Why?' five times about something you take for granted today.",
+                practice: "Keep a curiosity journal. Write down one fascinating question each day and explore it."
+            },
+            {
+                source: "Naval - The Modern Sage",
+                quote: "Seek wealth, not money or status. Wealth is having assets that earn while you sleep.",
+                action: "Identify one skill you can develop that will create long-term value, not just immediate income.",
+                practice: "Spend 30 minutes daily building specific knowledge that can't be easily replicated."
+            },
+            {
+                source: "Tim Ferriss - The Optimizer",
+                quote: "Focus on being productive instead of busy.",
+                action: "Eliminate one time-wasting activity today and replace it with something that moves you toward your goals.",
+                practice: "Do a weekly 80/20 analysis: What 20% of activities produce 80% of your results?"
+            },
+            {
+                source: "Marcus Aurelius - The Stoic Emperor",
+                quote: "You have power over your mind - not outside events. Realize this, and you will find strength.",
+                action: "When facing a challenge today, ask: 'What aspects of this can I control vs. cannot control?'",
+                practice: "Start each day by writing down three things you're grateful for and three things you can control."
+            }
+        ];
+
+        // Problem-solving frameworks
+        const problemFrameworks = {
+            career: {
+                problem: "I feel stuck in my current job but I'm afraid to make a change. I have financial responsibilities but I'm not fulfilled by my work.",
+                osho: "Are you solving this from fear or from love? What does your inner knowing tell you about your true calling?",
+                bruce: "What skills do you need to develop to make the transition? How can you adapt your approach like water finding a new path?",
+                einstein: "What assumptions are you making about security vs. fulfillment? How would you explain this dilemma to a child?",
+                naval: "How can you build specific knowledge in your desired field while maintaining current income? What's the asymmetric opportunity?",
+                ferriss: "What's the minimum viable transition? Could you test your new path with 20% of your time first?",
+                stoic: "What aspects of this situation can you control? How can you use this challenge to build courage and wisdom?"
+            },
+            relationship: {
+                problem: "My partner and I keep having the same arguments and I don't know how to break the cycle. We love each other but we're not communicating well.",
+                osho: "Are you trying to change them or yourself? Can you love without possessing or controlling?",
+                bruce: "How can you be authentic while adapting to their communication style? What's working that you can build on?",
+                einstein: "What would this relationship look like from their perspective? What patterns are you not seeing?",
+                naval: "Is this relationship adding energy or draining it? What boundaries do you need for mutual growth?",
+                ferriss: "What's the one conversation that could solve 80% of the issues? What's the minimum effective dose of change?",
+                stoic: "How can you be the best version of yourself regardless of their behavior? What can you control in this dynamic?"
+            },
+            health: {
+                problem: "I know I should exercise and eat better but I can't seem to stick to any routine. I start strong but always fall back into old habits.",
+                osho: "What is your body trying to tell you? Are you listening to its wisdom or fighting against it?",
+                bruce: "What daily practice would make the biggest difference? How can you make it as natural as breathing?",
+                einstein: "What's the root cause, not just the symptoms? What simple principle could guide all your health decisions?",
+                naval: "How can you optimize for long-term health, not short-term fixes? What systems can you build?",
+                ferriss: "What's the minimum effective dose? What simple changes yield maximum results with least effort?",
+                stoic: "How can you use this health challenge to develop discipline and resilience? What would Marcus Aurelius do?"
+            },
+            purpose: {
+                problem: "I feel lost and don't know what my purpose in life is. I want to make a meaningful contribution but I'm not sure how.",
+                osho: "Stop seeking purpose and start being present. Purpose reveals itself when you're fully alive in this moment.",
+                bruce: "What are you naturally drawn to practice and improve? Your purpose often lies in what you can't help but do.",
+                einstein: "What problems in the world make you genuinely curious? What would you explore if you had unlimited time?",
+                naval: "What specific knowledge do you have that others need? How can you serve while building wealth?",
+                ferriss: "What would you do if you couldn't fail? What experiments can you run to test different paths?",
+                stoic: "How can you serve the common good? What legacy do you want to leave for future generations?"
+            }
+        };
+
+        // Decision templates
+        const decisionTemplates = {
+            career: {
+                decision: "Should I leave my stable job to start my own business?",
+                optionA: "Stay in current job (security, steady income)",
+                optionB: "Start own business (freedom, potential upside)"
+            },
+            investment: {
+                decision: "Should I invest my savings in this opportunity?",
+                optionA: "Keep money in safe investments (low risk, low return)",
+                optionB: "Invest in opportunity (higher risk, higher potential return)"
+            },
+            relationship: {
+                decision: "Should I commit to a long-term relationship with my partner?",
+                optionA: "Commit fully (stability, shared future)",
+                optionB: "Keep options open (freedom, uncertainty)"
+            }
+        };
+
+        // Tab Management
+        function showTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('bg-gray-800', 'hover:bg-gray-700');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Activate corresponding button
+            const buttonMap = {
+                'wisdom-tab': 'wisdom-btn',
+                'problem-solver': 'solver-btn',
+                'habit-tracker': 'habit-btn',
+                'decision-maker': 'decision-btn',
+                'life-designer': 'designer-btn'
+            };
+            
+            const activeBtn = document.getElementById(buttonMap[tabId]);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                activeBtn.classList.remove('bg-gray-800', 'hover:bg-gray-700');
+            }
+        }
+
+        // Wisdom Generator
+        let lastWisdomIndex = -1;
+        function generateMasterWisdom() {
+            const wisdomContent = document.getElementById('wisdom-content');
+            const sourceEl = document.getElementById('wisdom-source');
+            const quoteEl = document.getElementById('wisdom-quote');
+            const actionEl = document.getElementById('wisdom-action');
+            const practiceEl = document.getElementById('practice-text');
+
+            // Get random wisdom
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * masterWisdom.length);
+            } while (newIndex === lastWisdomIndex && masterWisdom.length > 1);
+            
+            lastWisdomIndex = newIndex;
+            const wisdom = masterWisdom[newIndex];
+
+            // Update content
+            sourceEl.textContent = wisdom.source;
+            quoteEl.textContent = `"${wisdom.quote}"`;
+            actionEl.textContent = wisdom.action;
+            practiceEl.textContent = wisdom.practice;
+
+            // Show wisdom content
+            wisdomContent.classList.remove('hidden');
+        }
+
+        // Problem Solver
+        function loadProblemExample(type) {
+            const framework = problemFrameworks[type];
+            if (framework) {
+                document.getElementById('problemInput').value = framework.problem;
+            }
+        }
+
+        function analyzeProblem() {
+            const problemText = document.getElementById('problemInput').value.trim();
+            const outputDiv = document.getElementById('solutionOutput');
+            
+            if (!problemText) {
+                outputDiv.innerHTML = '<p class="text-red-400">Please enter a problem to analyze.</p>';
+                return;
+            }
+
+            // Determine problem type
+            let framework = problemFrameworks.career; // default
+            const text = problemText.toLowerCase();
+            
+            if (text.includes('relationship') || text.includes('partner') || text.includes('family')) {
+                framework = problemFrameworks.relationship;
+            } else if (text.includes('health') || text.includes('fitness') || text.includes('exercise')) {
+                framework = problemFrameworks.health;
+            } else if (text.includes('purpose') || text.includes('meaning') || text.includes('direction')) {
+                framework = problemFrameworks.purpose;
+            }
+
+            outputDiv.innerHTML = `
+                <div class="space-y-4">
+                    <div class="bg-orange-900/20 border border-orange-500/30 rounded-lg p-4">
+                        <h4 class="font-bold text-orange-400 mb-2">🧘 Osho's Awareness Perspective</h4>
+                        <p class="text-sm">${framework.osho}</p>
+                    </div>
+                    
+                    <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
+                        <h4 class="font-bold text-yellow-400 mb-2">⚡ Bruce Lee's Action Perspective</h4>
+                        <p class="text-sm">${framework.bruce}</p>
+                    </div>
+                    
+                    <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">
+                        <h4 class="font-bold text-purple-400 mb-2">🧠 Einstein's Curiosity Perspective</h4>
+                        <p class="text-sm">${framework.einstein}</p>
+                    </div>
+                    
+                    <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+                        <h4 class="font-bold text-blue-400 mb-2">💎 Naval's Strategic Perspective</h4>
+                        <p class="text-sm">${framework.naval}</p>
+                    </div>
+                    
+                    <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+                        <h4 class="font-bold text-green-400 mb-2">⚙️ Tim Ferriss's Efficiency Perspective</h4>
+                        <p class="text-sm">${framework.ferriss}</p>
+                    </div>
+                    
+                    <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+                        <h4 class="font-bold text-red-400 mb-2">🏛️ Stoic Resilience Perspective</h4>
+                        <p class="text-sm">${framework.stoic}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function clearProblem() {
+            document.getElementById('problemInput').value = '';
+            document.getElementById('solutionOutput').innerHTML = '<p class="italic">Enter your problem to receive a comprehensive analysis using the combined wisdom of great thinkers...</p>';
+        }
+
+        // Habit Tracker
+        function updateHabitScore() {
+            const checkboxes = document.querySelectorAll('.habit-checkbox');
+            const checked = document.querySelectorAll('.habit-checkbox:checked');
+            const score = `${checked.length}/${checkboxes.length}`;
+            document.getElementById('habit-score').textContent = score;
+        }
+
+        // Add event listeners to habit checkboxes
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.habit-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', updateHabitScore);
+            });
+        });
+
+        // Decision Maker
+        function loadDecisionTemplate(type) {
+            const template = decisionTemplates[type];
+            if (template) {
+                document.getElementById('decisionInput').value = template.decision;
+                document.getElementById('optionA').value = template.optionA;
+                document.getElementById('optionB').value = template.optionB;
+            }
+        }
+
+        function analyzeDecision() {
+            const decision = document.getElementById('decisionInput').value.trim();
+            const optionA = document.getElementById('optionA').value.trim();
+            const optionB = document.getElementById('optionB').value.trim();
+            
+            if (!decision || !optionA || !optionB) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const output = document.getElementById('decisionOutput');
+            const results = document.getElementById('decisionResults');
+            
+            results.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+                        <h5 class="font-bold text-blue-400 mb-3">Option A Analysis</h5>
+                        <p class="text-sm mb-2"><strong>Option:</strong> ${optionA}</p>
+                        <div class="space-y-2 text-sm">
+                            <div><strong>Pros:</strong> Lower risk, predictable outcome</div>
+                            <div><strong>Cons:</strong> Limited upside, potential regret</div>
+                            <div><strong>10-year view:</strong> Safe but potentially limiting</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">
+                        <h5 class="font-bold text-purple-400 mb-3">Option B Analysis</h5>
+                        <p class="text-sm mb-2"><strong>Option:</strong> ${optionB}</p>
+                        <div class="space-y-2 text-sm">
+                            <div><strong>Pros:</strong> Higher potential, growth opportunity</div>
+                            <div><strong>Cons:</strong> Higher risk, uncertain outcome</div>
+                            <div><strong>10-year view:</strong> Potentially transformative</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 bg-gradient-to-r from-master-gold/10 to-master-purple/10 border border-master-gold/20 rounded-lg p-4">
+                    <h5 class="font-bold text-master-gold mb-3">Master's Recommendation</h5>
+                    <p class="text-sm text-gray-300">Consider: What would you regret more in 10 years - taking this risk or not taking it? Choose the option that aligns with your long-term vision and values, not your short-term fears.</p>
+                </div>
+            `;
+            
+            output.classList.remove('hidden');
+        }
+
+        // Life Designer
+        function updateScore(area, value) {
+            document.getElementById(`${area}-score`).textContent = `${value}/10`;
+        }
+
+        function generateActionPlan() {
+            const vision = document.getElementById('vision10').value;
+            const values = document.getElementById('coreValues').value;
+            const purpose = document.getElementById('lifePurpose').value;
+            
+            const actionPlan = document.getElementById('actionPlan');
+            const content = document.getElementById('actionPlanContent');
+            
+            content.innerHTML = `
+                <div class="bg-gray-700 rounded-lg p-4">
+                    <h5 class="font-bold text-master-gold mb-3">Your 90-Day Action Plan</h5>
+                    <div class="space-y-4">
+                        <div>
+                            <h6 class="font-semibold text-master-blue mb-2">Month 1: Foundation</h6>
+                            <ul class="text-sm space-y-1 text-gray-300">
+                                <li>• Establish daily meditation practice (Osho)</li>
+                                <li>• Begin skill development routine (Bruce Lee)</li>
+                                <li>• Start curiosity journal (Einstein)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h6 class="font-semibold text-master-green mb-2">Month 2: Building</h6>
+                            <ul class="text-sm space-y-1 text-gray-300">
+                                <li>• Optimize daily routines (Tim Ferriss)</li>
+                                <li>• Build specific knowledge (Naval)</li>
+                                <li>• Practice stoic exercises (Marcus Aurelius)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h6 class="font-semibold text-master-purple mb-2">Month 3: Integration</h6>
+                            <ul class="text-sm space-y-1 text-gray-300">
+                                <li>• Integrate all practices into lifestyle</li>
+                                <li>• Measure progress and adjust</li>
+                                <li>• Plan next 90-day cycle</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            actionPlan.classList.remove('hidden');
+        }
+
+        // Quick Tools
+        function generateMorningRoutine() {
+            const routine = document.getElementById('morningRoutine');
+            const content = document.getElementById('morningRoutineContent');
+            
+            const routines = [
+                "5:30 AM - Wake up (no snooze)<br>5:35 AM - Drink water & light stretching<br>5:45 AM - 10 min meditation<br>6:00 AM - Physical exercise<br>6:30 AM - Shower & prepare<br>7:00 AM - Healthy breakfast<br>7:30 AM - Review daily priorities",
+                "6:00 AM - Wake up naturally<br>6:05 AM - Gratitude practice<br>6:15 AM - Journal writing<br>6:30 AM - Exercise or yoga<br>7:00 AM - Mindful breakfast<br>7:30 AM - Read or learn<br>8:00 AM - Plan the day"
+            ];
+            
+            content.innerHTML = routines[Math.floor(Math.random() * routines.length)];
+            routine.classList.remove('hidden');
+        }
+
+        function updateEnergy(value) {
+            document.getElementById('currentEnergy').textContent = `${value}/10`;
+        }
+
+        function getEnergyTips() {
+            const energyLevel = document.getElementById('energySlider').value;
+            const tips = document.getElementById('energyTips');
+            const content = document.getElementById('energyTipsContent');
+            
+            let tipText = '';
+            if (energyLevel <= 3) {
+                tipText = "Low energy: Take a 10-min walk, drink water, do breathing exercises, or take a power nap.";
+            } else if (energyLevel <= 6) {
+                tipText = "Medium energy: Perfect for routine tasks. Consider a healthy snack or brief meditation.";
+            } else {
+                tipText = "High energy: Great time for challenging work, creative projects, or important decisions.";
+            }
+            
+            content.innerHTML = tipText;
+            tips.classList.remove('hidden');
+        }
+
+        // Focus Timer
+        let timerInterval;
+        let timeLeft = 25 * 60; // 25 minutes in seconds
+        let isRunning = false;
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        alert('Focus session complete! Take a 5-minute break.');
+                        resetTimer();
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            if (isRunning) {
+                clearInterval(timerInterval);
+                isRunning = false;
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            timeLeft = 25 * 60;
+            updateTimerDisplay();
+        }
+
+        function saveGratitude() {
+            const gratitude = document.getElementById('gratitudeInput').value.trim();
+            if (gratitude) {
+                // In a real app, this would save to localStorage or a database
+                alert('Gratitude saved! 🙏');
+                document.getElementById('gratitudeInput').value = '';
+            }
+        }
+
+        function generateQuickQuote() {
+            const quotes = [
+                '"The unexamined life is not worth living." - Socrates',
+                '"Be yourself; everyone else is already taken." - Oscar Wilde',
+                '"Life is what happens to you while you\'re busy making other plans." - John Lennon',
+                '"The only way to do great work is to love what you do." - Steve Jobs',
+                '"In the middle of difficulty lies opportunity." - Einstein'
+            ];
+            
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('quickQuote').textContent = randomQuote;
+        }
+
+        function calculateLifeScore() {
+            // This would calculate based on the life areas assessment
+            const score = (Math.random() * 3 + 6).toFixed(1); // Random score between 6-9
+            document.getElementById('lifeScore').textContent = score;
+        }
+
+        // Section Navigation
+        function showSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTimerDisplay();
+            updateHabitScore();
+        });
+    </script>
+</body>
+</html>

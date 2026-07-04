@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Life System - Complete Wisdom Integration</title>
+    <link rel="stylesheet" href="shared-styles.css">
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .tab-button {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: white;
+        }
+        .habit-checkbox { width: 20px; height: 20px; accent-color: var(--accent-purple); }
+        .completed { opacity: 0.7; background: rgba(16, 185, 129, 0.1); }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="glass-nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-icon">∞</div>
+                <span class="nav-title gradient-text">Master Life System</span>
+            </a>
+            <div class="nav-links">
+                <a href="#dashboard" class="nav-link">Dashboard</a>
+                <a href="index.html" class="glass-button secondary">← Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content animate-fade-in-up">
+            <h1 class="hero-title">
+                Master Your <span class="text-yellow">Life</span><br>
+                Find Your <span class="text-blue">Truth</span><br>
+                Live Your <span class="text-purple">Purpose</span>
+            </h1>
+            <p class="hero-subtitle">
+                Complete integration of ancient wisdom and modern tools. Live like Osho, focus like Bruce Lee, think like Einstein.
+            </p>
+            <div class="hero-buttons">
+                <button onclick="showTab('wisdom-tab')" class="glass-button primary">
+                    <span>🚀</span> Enter Dashboard
+      

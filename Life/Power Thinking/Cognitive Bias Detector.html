@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cognitive Bias Detector — Clear Thinking</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--bg:#0b0f15;--panel:#101622;--text:#e6e9ef;--muted:#a1a1aa;--brand:#6ee7ff;--warning:#f59e0b;--danger:#ef4444;--success:#10b981}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#090d13,#0b0f15);color:var(--text);font:15px/1.45 system-ui,Segoe UI,Roboto}
+    .wrap{max-width:1200px;margin:0 auto;padding:16px}
+    .card{background:#0f1626;border:1px solid #22314d;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:16px;margin-bottom:12px}
+    .row{display:flex;gap:10px;align-items:center}
+    .title{font-weight:800;font-size:20px}
+    textarea,input,select{background:#0f1524;border:1px solid #283659;color:var(--text);border-radius:10px;padding:10px;width:100%}
+    .btn{background:linear-gradient(180deg,#2a3552,#1b2440);border:1px solid #2b3758;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer;transition:all 0.2s}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(110,231,255,0.2)}
+    .mono{font-family:ui-monospace,Consolas,Menlo,monospace}
+    .bubble{padding:12px;border-radius:12px;border:1px solid #243354;background:#0f1628;margin:8px 0}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .bias-card{background:#0d1420;border:1px solid #1e3a5f;border-radius:12px;padding:12px;margin:6px 0;cursor:pointer;transition:all 0.2s}
+    .bias-card:hover{border-color:var(--brand);transform:translateY(-1px)}
+    .bias-card.detected{border-color:var(--warning);background:#1a1200}
+    .bias-title{color:var(--brand);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+    .bias-desc{font-size:13px;color:var(--muted);line-height:1.4}
+    .severity{display:inline-block;padding:3px 8px;border-radius:12px;font-size:11px;font-weight:600;margin-left:8px}
+    .severity-high{background:var(--danger);color:white}
+    .severity-medium{background:var(--warning);color:white}
+    .severity-low{background:var(--success);color:white}
+    .detection-result{border-left:4px solid var(--warning);background:#1a1200;padding:12px;margin:8px 0;border-radius:0 8px 8px 0}
+    .mitigation{background:#0a1a0a;border-left:4px solid var(--success);padding:10px;margin:6px 0;border-radius:0 8px 8px 0}
+    @media(max-width:768px){.grid{grid-template-columns:1fr}}
+  </style>
+  <script>const HUB_KEY='ai_hub_cfg';function hub(){try{return JSON.parse(localStorage.getItem(HUB_KEY)||'{}')}catch(_){return{}}}</script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row" style="justify-content:space-between;margin-bottom:8px">
+      <div class="title">🧠 Cognitive Bias Detector</div>
+      <a class="btn" href="⚡ALL ai.html">🏠 Hub</a>
+    </div>
+
+    <section class="card">
+      <div class="row">
+        <select id="mode" style="max-width:240px">
+          <option value="detect">🔍 Detect Biases</option>
+          <option value="analyze">📊 Deep Analysis</option>
+          <option value="mitigate">🛡️ Mitigation Plan</option>
+          <option value="training">🎯 Bias Training</option>
+        </select>
+        <input id="apiBase" placeholder="API Base (http://localhost:1234/v1)">
+        <input id="model" placeholder="Model (e.g., llama3)">
+        <input id="apiKey" placeholder="API Key (optional)">
+        <input id="temperature" type="number" step="0.1" min="0" max="2" value="0.3" style="max-width:90px">
+        <label class="row" style="gap:6px"><input type="checkbox" id="stream" checked> Stream</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <textarea id="input" rows="5" placeholder="Paste your text, argument, decision, or reasoning to analyze for cognitive biases..." class="mono"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="analyze">🔍 Analyze</button>
+        <button class="btn" id="clear">🧹 Clear</button>
+        <button class="btn" id="examples">💡 Examples</button>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h3 style="color:var(--brand);margin-bottom:12px">🎯 Common Biases</h3>
+        <div id="biasLibrary"></div>
+      </section>
+      
+      <section class="card">
+        <h3 style="color:var(--brand);margin-bottom:12px">📊 Detection Summary</h3>
+        <div id="summary">
+          <div class="bias-desc">Analyze text to see bias detection summary</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card">
+      <div id="output"></div>
+    </section>
+  </div>
+
+  <script>
+    const biases = {
+      confirmation: {
+        name: 'Confirmation Bias',
+        icon: '🔍',
+        desc: 'Seeking information that confirms existing beliefs while ignoring contradictory evidence',
+        severity: 'high',
+        keywords: ['confirms', 'proves', 'obviously', 'clearly shows', 'as expected']
+      },
+      anchoring: {
+        name: 'Anchoring Bias',
+        icon: '⚓',
+        desc: 'Over-relying on the first piece of information encountered',
+        severity: 'medium',
+        keywords: ['first', 'initial', 'starting from', 'based on']
+      },
+      availability: {
+        name: 'Availability Heuristic',
+        icon: '📺',
+        desc: 'Overestimating likelihood of events with greater recall availability',
+        severity: 'medium',
+        keywords: ['remember', 'recall', 'recent', 'heard about', 'saw on news']
+      },
+      sunk_cost: {
+        name: 'Sunk Cost Fallacy',
+        icon: '💸',
+        desc: 'Continuing investment based on previously invested resources',
+        severity: 'high',
+        keywords: ['already invested', 'too far to quit', 'waste', 'put so much into']
+      },
+      bandwagon: {
+        name: 'Bandwagon Effect',
+        icon: '🚌',
+        desc: 'Adopting beliefs because many others have adopted them',
+        severity: 'medium',
+        keywords: ['everyone', 'most people', 'popular', 'trend', 'majority']
+      },
+      authority: {
+        name: 'Appeal to Authority',
+        icon: '👑',
+        desc: 'Accepting claims because an authority figure endorses them',
+        severity: 'medium',
+        keywords: ['expert says', 'according to', 'authority', 'specialist claims']
+      },
+      survivorship: {
+        name: 'Survivorship Bias',
+        icon: '🎯',
+        desc: 'Focusing on successful examples while overlooking failures',
+        severity: 'high',
+        keywords: ['successful', 'winners', 'made it', 'survivors']
+      },
+      hindsight: {
+        name: 'Hindsight Bias',
+        icon: '🔮',
+        desc: 'Perceiving past events as more predictable than they were',
+        severity: 'low',
+        keywords: ['should have known', 'obvious', 'predictable', 'saw it coming']
+      },
+      overconfidence: {
+        name: 'Overconfidence Bias',
+        icon: '💪',
+        desc: 'Overestimating one\'s abilities, knowledge, or chances of success',
+        severity: 'high',
+        keywords: ['definitely', 'certain', 'sure', 'no doubt', 'guaranteed']
+      },
+      framing: {
+        name: 'Framing Effect',
+        icon: '🖼️',
+        desc: 'Drawing different conclusions based on how information is presented',
+        severity: 'medium',
+        keywords: ['gain', 'loss', 'positive', 'negative', 'opportunity']
+      }
+    };
+
+    const modePrompts = {
+      detect: 'You are a cognitive bias detection expert. Analyze the text for cognitive biases: 1) Identify specific biases present with evidence. 2) Quote exact phrases showing bias. 3) Rate severity (high/medium/low). 4) Explain why each bias is problematic. 5) Suggest 2-3 alternative perspectives. Be precise and educational.',
+      analyze: 'You are a deep cognitive analysis expert. Provide comprehensive bias analysis: 1) Map all detected biases with interconnections. 2) Analyze root causes and triggers. 3) Assess impact on decision quality. 4) Identify blind spots and assumptions. 5) Rate overall reasoning quality (1-10). 6) Provide structured improvement plan.',
+      mitigate: 'You are a bias mitigation specialist. Create actionable debiasing plan: 1) Prioritize biases by impact. 2) Provide specific counter-techniques for each bias. 3) Design decision-making checklist. 4) Suggest perspective-taking exercises. 5) Create monitoring system for future bias detection. Focus on practical, implementable solutions.',
+      training: 'You are a cognitive training coach. Design bias awareness training: 1) Create scenarios to practice bias recognition. 2) Provide exercises to strengthen critical thinking. 3) Design reflection questions for self-assessment. 4) Suggest daily practices to reduce bias. 5) Create progress tracking system. Make it engaging and practical.'
+    };
+
+    function applyHub() {
+      const h = hub();
+      if (h.apiBase) apiBase.value = h.apiBase;
+      if (h.model) model.value = h.model;
+      if (h.apiKey) apiKey.value = h.apiKey;
+    }
+
+    function renderBiasLibrary() {
+      const library = document.getElementById('biasLibrary');
+      library.innerHTML = '';
+      
+      Object.entries(biases).forEach(([key, bias]) => {
+        const card = document.createElement('div');
+        card.className = 'bias-card';
+        card.innerHTML = `
+          <div class="bias-title">
+            ${bias.icon} ${bias.name}
+            <span class="severity severity-${bias.severity}">${bias.severity}</span>
+          </div>
+          <div class="bias-desc">${bias.desc}</div>
+        `;
+        card.onclick = () => insertBiasExample(key);
+        library.appendChild(card);
+      });
+    }
+
+    function insertBiasExample(biasKey) {
+      const examples = {
+        confirmation: "I knew cryptocurrency was a good investment because it went up 20% last month, confirming my research.",
+        anchoring: "The house was listed at $500K, so $450K seems like a reasonable offer.",
+        availability: "Plane crashes are very dangerous - I just saw another one on the news yesterday.",
+        sunk_cost: "We've already spent $50K on this project, we can't stop now even though it's not working.",
+        bandwagon: "Everyone is switching to this new diet, so it must be effective.",
+        authority: "The CEO said this strategy will work, so we should implement it immediately.",
+        survivorship: "Look at all these successful entrepreneurs who dropped out of college - education isn't important.",
+        hindsight: "The market crash was obviously going to happen, all the signs were there.",
+        overconfidence: "I'm definitely going to win this negotiation - I've never lost one before.",
+        framing: "This investment has a 90% success rate vs. This investment fails 10% of the time."
+      };
+      
+      input.value = examples[biasKey] || '';
+      input.focus();
+    }
+
+    function showExamples() {
+      const examples = [
+        "Our team should hire more developers because Google has thousands of engineers.",
+        "I don't need to save for retirement - I'll probably get a big promotion soon.",
+        "This marketing campaign will definitely work because our competitor's similar campaign was successful.",
+        "We should continue this failing project because we've already invested 6 months in it."
+      ];
+      
+      input.value = examples[Math.floor(Math.random() * examples.length)];
+      input.focus();
+    }
+
+    function updateSummary(analysis) {
+      const summary = document.getElementById('summary');
+      const detectedBiases = extractDetectedBiases(analysis);
+      
+      if (detectedBiases.length === 0) {
+        summary.innerHTML = '<div class="bias-desc">No significant biases detected</div>';
+        return;
+      }
+      
+      let summaryHTML = `<div class="detection-result">Detected ${detectedBiases.length} potential bias(es):</div>`;
+      detectedBiases.forEach(bias => {
+        summaryHTML += `<div class="bias-card detected">
+          <div class="bias-title">${bias.icon} ${bias.name}</div>
+          <div class="bias-desc">${bias.evidence}</div>
+        </div>`;
+      });
+      
+      summary.innerHTML = summaryHTML;
+    }
+
+    function extractDetectedBiases(text) {
+      const detected = [];
+      const lowerText = text.toLowerCase();
+      
+      Object.entries(biases).forEach(([key, bias]) => {
+        const hasKeywords = bias.keywords.some(keyword => lowerText.includes(keyword.toLowerCase()));
+        const mentioned = lowerText.includes(bias.name.toLowerCase());
+        
+        if (hasKeywords || mentioned) {
+          detected.push({
+            ...bias,
+            evidence: `Potential indicators found in analysis`
+          });
+        }
+      });
+      
+      return detected;
+    }
+
+    function bubble(text, type = 'default') {
+      const d = document.createElement('div');
+      d.className = 'bubble mono';
+      if (type === 'analysis') {
+        d.style.borderLeft = '4px solid var(--brand)';
+        d.style.background = '#0a1420';
+      }
+      d.textContent = text;
+      return d;
+    }
+
+    async function call(messages) {
+      const base = (apiBase.value || 'http://localhost:1234/v1').replace(/\/$/, '');
+      const headers = { 'Content-Type': 'application/json' };
+      if (apiKey.value) headers['Authorization'] = 'Bearer ' + apiKey.value;
+      const body = { model: model.value || 'local', temperature: Number(temperature.value || 0.3), messages, stream: stream.checked };
+      const res = await fetch(base + '/chat/completions', { method: 'POST', headers, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      if (!stream.checked) { const j = await res.json(); return j.choices?.[0]?.message?.content || '(no content)' }
+      const reader = res.body.getReader(); const dec = new TextDecoder('utf-8'); let acc = '';
+      while (true) { const { value, done } = await reader.read(); if (done) break; const chunk = dec.decode(value, { stream: true });
+        chunk.split('\n').forEach(line => { const m = line.match(/^data: (.*)$/); if (m && m[1] !== '[DONE]') { try { const j = JSON.parse(m[1]); acc += (j.choices?.[0]?.delta?.content || '') } catch (_) { } } });
+        output.lastChild.textContent = acc; output.scrollTop = output.scrollHeight;
+      }
+      return acc;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      applyHub();
+      renderBiasLibrary();
+      
+      analyze.onclick = async () => {
+        const sys = modePrompts[mode.value] || modePrompts.detect;
+        const user = input.value.trim();
+        if (!user) return;
+        
+        const analysisEl = bubble('🧠 Analyzing for cognitive biases...', 'analysis');
+        output.appendChild(analysisEl);
+        
+        try {
+          const analysis = await call([
+            { role: 'system', content: sys },
+            { role: 'user', content: user }
+          ]);
+          analysisEl.textContent = analysis;
+          updateSummary(analysis);
+        } catch (e) {
+          analysisEl.textContent = 'Error: ' + e.message;
+        }
+      };
+      
+      clear.onclick = () => { 
+        output.innerHTML = ''; 
+        document.getElementById('summary').innerHTML = '<div class="bias-desc">Analyze text to see bias detection summary</div>';
+      };
+      
+      examples.onclick = showExamples;
+    });
+
+    const mode = document.getElementById('mode');
+    const apiBase = document.getElementById('apiBase');
+    const model = document.getElementById('model');
+    const apiKey = document.getElementById('apiKey');
+    const temperature = document.getElementById('temperature');
+    const stream = document.getElementById('stream');
+    const input = document.getElementById('input');
+    const analyze = document.getElementById('analyze');
+    const clear = document.getElementById('clear');
+    const examples = document.getElementById('examples');
+    const output = document.getElementById('output');
+  </script>
+</body>
+</html>

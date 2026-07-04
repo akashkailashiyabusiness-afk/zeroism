@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Studio: How To Think</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0d1117;
+            --surface-color: #161b22;
+            --border-color: #30363d;
+            --primary-text: #c9d1d9;
+            --secondary-text: #8b949e;
+            --accent-glow: #58a6ff;
+            --accent-cyan: #79c0ff;
+            --accent-green: #56d364;
+            --accent-purple: #d2a8ff;
+            --accent-yellow: #e3b341;
+            --accent-orange: #ffab70;
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: var(--bg-dark);
+            color: var(--primary-text);
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .studio-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .studio-header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -2px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .studio-header .subtitle {
+            font-size: 1.2rem;
+            color: var(--accent-cyan);
+            margin: 0;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px 0 rgba(88, 166, 255, 0.3);
+            border-color: var(--accent-glow);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            color: var(--accent-cyan);
+            margin: 0 0 1rem 0;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--accent-green);
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .card p, .card ul li {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--secondary-text);
+        }
+        
+        .card strong {
+            color: var(--primary-text);
+            font-weight: 500;
+        }
+
+        /* Collapsible content */
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+
+        .card.active .collapsible-content {
+            max-height: 500px; /* Adjust as needed */
+        }
+        
+        .card.philosopher-card h2 {
+            color: var(--accent-purple);
+        }
+
+        .process-flow {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .process-flow li {
+            background-color: var(--bg-dark);
+            padding: 0.5rem 0.75rem;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            font-size: 0.8rem !important;
+            flex-grow: 1;
+            text-align: center;
+        }
+        
+        .process-flow.design li { color: var(--accent-orange); }
+        .process-flow.seven-ways li { color: var(--accent-yellow); }
+
+        blockquote {
+            border-left: 3px solid var(--accent-purple);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            font-style: italic;
+            color: var(--primary-text);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .studio-header h1 { font-size: 2.2rem; }
+            .studio-header .subtitle { font-size: 1rem; }
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="studio-header">
+        <h1>How To Think</h1>
+        <p class="subtitle">An Interactive Exploration of Philosophical & Modern Frameworks</p>
+    </header>
+
+    <main class="grid-container">
+        
+        <!-- Key Philosophers -->
+        <article class="card philosopher-card" onclick="toggleActive(this)">
+            <h2>René Descartes</h2>
+            <p><strong>I think therefore I am.</strong></p>
+            <div class="collapsible-content">
+                <blockquote>"What then am I? A thing which thinks. What is a thing which thinks? It is a thing which doubts, understands, conceives, affirms, denies, wills, and refuses, which also imagines and feels."</blockquote>
+            </div>
+        </article>
+
+        <article class="card philosopher-card" onclick="toggleActive(this)">
+            <h2>John Locke</h2>
+            <p><strong>Experience is the foundation of all knowledge. We are born a blank slate (tabula rasa).</strong></p>
+            <div class="collapsible-content">
+                <blockquote>"Thinking on its own is not enough. Locke believed that knowledge was founded on empirical observation and experience. There are no innate ideas that are with us when we are born."</blockquote>
+            </div>
+        </article>
+
+        <article class="card philosopher-card" onclick="toggleActive(this)">
+            <h2>David Hume</h2>
+            <p><strong>Causality is learned by experience, not reason.</strong></p>
+            <div class="collapsible-content">
+                <blockquote>"Hume believed causes and effects are discoverable not by reason but by experience. Even with the perspective of the past, humanity cannot dictate future events because thoughts of the past are limited compared to the possibilities for the future."</blockquote>
+            </div>
+        </article>
+        
+        <!-- Design Thinking -->
+        <article class="card">
+            <h2>Design Thinking</h2>
+            <p>A non-linear, iterative process to understand users, challenge assumptions, redefine problems, and create innovative solutions to prototype and test.</p>
+            <ul class="process-flow design">
+                <li>Empathise</li>
+                <li>Define</li>
+                <li>Ideate</li>
+                <li>Prototype</li>
+                <li>Test</li>
+            </ul>
+        </article>
+
+        <!-- The Seven Ways of Thinking -->
+        <article class="card">
+            <h2>The Seven Ways of Thinking</h2>
+            <p>A framework for structuring thought processes, moving from identification to conclusion.</p>
+            <ul class="process-flow seven-ways">
+                <li>Identify</li>
+                <li>Delineate</li>
+                <li>Differentiate</li>
+                <li>Advocate</li>
+                <li>Revise</li>
+                <li>Summarise</li>
+                <li>Integrate</li>
+                <li>Refute</li>
+            </ul>
+            <p style="margin-top:1rem;"><strong>Paired Concepts:</strong> Creative, Analytical, Critical, Concrete, Abstract, Divergent, Convergent.</p>
+        </article>
+        
+        <!-- Philosophical Perspectives -->
+        <article class="card" onclick="toggleActive(this)">
+            <h2>Philosophical Perspectives</h2>
+            <p>Generalized views of the world that form beliefs and guide action. Click to explore the frameworks.</p>
+            <div class="collapsible-content">
+                <h3>To Predict</h3>
+                <p><strong>Positivism:</strong> Knowledge is deductive, value-free, and relies on empirical scientific evidence.</p>
+                <h3>To Understand</h3>
+                <p><strong>Interpretivism:</strong> Natural science methods cannot apply to social science; interpretations are culturally derived.</p>
+                <h3>To Emancipate or Liberate</h3>
+                <p><strong>Critical Theory:</strong> Research should be used to change situations, focusing on power relations and critiquing assumptions.</p>
+                 <h3>To Deconstruct</h3>
+                <p><strong>Post-Modernism:</strong> Truth claims are socially constructed to serve interests; distrusts universal definitions of reality.</p>
+            </div>
+        </article>
+        
+        <!-- Foundational Concepts -->
+        <article class="card">
+            <h2>Foundational Concepts</h2>
+            <h3>Metaphysics</h3>
+            <p>The study of the nature of reality.</p>
+            <h3>Epistemology</h3>
+            <p>The study of being and knowledge.</p>
+            <h3>Ontology</h3>
+            <p>What exists in the human world that we can acquire knowledge about?</p>
+        </article>
+        
+        <!-- Reality Paradigms -->
+        <article class="card">
+            <h2>Reality Paradigms</h2>
+            <h3>Realism: <strong>One reality exists.</strong></h3>
+            <p><strong>Naïve Realism:</strong> Reality can be understood using appropriate methods. <br><strong>Critical Realism:</strong> Reality captured by broad critical examination.</p>
+            <h3>Relativism: <strong>Multiple realities exist.</strong></h3>
+            <p>Realities exist as multiple, intangible mental constructions; no reality beyond subjects.</p>
+        </article>
+
+        <!-- Modern Thinking Methods -->
+        <article class="card" onclick="toggleActive(this)">
+            <h2>Modern Thinking Methods</h2>
+            <p>Recognized methods for structured thought used today. Click to see more.</p>
+            <div class="collapsible-content">
+                <h3>Critical Thinking</h3>
+                <p>The analysis, assessment, and dispositions of thought, identifying skills and barriers.</p>
+                <h3>Conceptual Thinking</h3>
+                <p>The practice of connecting abstract, disparate ideas to deepen understanding and create new ideas.</p>
+                <h3>Bloom's Taxonomy</h3>
+                <p>A cognitive learning process: Remember, Understand, Apply, Analyse, Evaluate, Create.</p>
+                 <h3>School of Thought</h3>
+                <p>Considers factors like Logical Fallacies and Cognitive Bias that affect reasoning.</p>
+            </div>
+        </article>
+    </main>
+
+    <script>
+        function toggleActive(element) {
+            element.classList.toggle('active');
+        }
+    </script>
+
+</body>
+</html>

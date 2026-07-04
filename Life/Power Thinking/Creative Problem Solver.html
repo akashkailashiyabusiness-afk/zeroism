@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creative Problem Solver — Innovation Catalyst</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--bg:#0b0f15;--panel:#101622;--text:#e6e9ef;--muted:#a1a1aa;--brand:#6ee7ff;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--creative:#ff6b9d}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#090d13,#0b0f15);color:var(--text);font:15px/1.45 system-ui,Segoe UI,Roboto}
+    .wrap{max-width:1200px;margin:0 auto;padding:16px}
+    .card{background:#0f1626;border:1px solid #22314d;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:16px;margin-bottom:12px}
+    .row{display:flex;gap:10px;align-items:center}
+    .title{font-weight:800;font-size:20px}
+    textarea,input,select{background:#0f1524;border:1px solid #283659;color:var(--text);border-radius:10px;padding:10px;width:100%}
+    .btn{background:linear-gradient(180deg,#2a3552,#1b2440);border:1px solid #2b3758;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer;transition:all 0.2s}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(110,231,255,0.2)}
+    .btn.creative{background:linear-gradient(180deg,#ff6b9d,#c44569);border-color:#ff6b9d}
+    .mono{font-family:ui-monospace,Consolas,Menlo,monospace}
+    .bubble{padding:12px;border-radius:12px;border:1px solid #243354;background:#0f1628;margin:8px 0}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .technique-card{background:#0d1420;border:1px solid #1e3a5f;border-radius:12px;padding:12px;margin:6px 0;cursor:pointer;transition:all 0.2s}
+    .technique-card:hover{border-color:var(--creative);transform:translateY(-1px);box-shadow:0 4px 12px rgba(255,107,157,0.2)}
+    .technique-title{color:var(--creative);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+    .technique-desc{font-size:13px;color:var(--muted);line-height:1.4}
+    .idea-bubble{border-left:4px solid var(--creative);background:#1a0a14;padding:12px;margin:8px 0;border-radius:0 12px 12px 0}
+    .constraint{border-left:4px solid var(--warning);background:#1a1200;padding:10px;margin:6px 0;border-radius:0 8px 8px 0}
+    .solution-path{background:#0a1a0a;border-left:4px solid var(--success);padding:10px;margin:6px 0;border-radius:0 8px 8px 0}
+    .random-word{display:inline-block;background:var(--creative);color:white;padding:4px 8px;border-radius:6px;margin:2px;font-weight:600;cursor:pointer}
+    @media(max-width:768px){.grid{grid-template-columns:1fr}}
+  </style>
+  <script>const HUB_KEY='ai_hub_cfg';function hub(){try{return JSON.parse(localStorage.getItem(HUB_KEY)||'{}')}catch(_){return{}}}</script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row" style="justify-content:space-between;margin-bottom:8px">
+      <div class="title">💡 Creative Problem Solver</div>
+      <a class="btn" href="⚡ALL ai.html">🏠 Hub</a>
+    </div>
+
+    <section class="card">
+      <div class="row">
+        <select id="technique" style="max-width:280px">
+          <option value="scamper">🔄 SCAMPER Method</option>
+          <option value="brainstorm">⚡ Brainstorming</option>
+          <option value="six_hats">🎩 Six Thinking Hats</option>
+          <option value="random_word">🎲 Random Word</option>
+          <option value="analogies">🔗 Analogical Thinking</option>
+          <option value="constraints">🚧 Constraint Removal</option>
+          <option value="reverse">↩️ Reverse Thinking</option>
+          <option value="morphological">📊 Morphological Box</option>
+        </select>
+        <input id="apiBase" placeholder="API Base (http://localhost:1234/v1)">
+        <input id="model" placeholder="Model (e.g., llama3)">
+        <input id="apiKey" placeholder="API Key (optional)">
+        <input id="temperature" type="number" step="0.1" min="0" max="2" value="0.9" style="max-width:90px">
+        <label class="row" style="gap:6px"><input type="checkbox" id="stream" checked> Stream</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <textarea id="input" rows="4" placeholder="Describe your challenge, problem, or goal that needs creative solutions..." class="mono"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn creative" id="generate">💡 Generate Ideas</button>
+        <button class="btn" id="clear">🧹 Clear</button>
+        <button class="btn" id="randomize">🎲 Random Spark</button>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h3 style="color:var(--creative);margin-bottom:12px">🧰 Creative Techniques</h3>
+        <div id="techniquesLibrary"></div>
+      </section>
+      
+      <section class="card">
+        <h3 style="color:var(--creative);margin-bottom:12px">💫 Inspiration Board</h3>
+        <div id="inspiration">
+          <div class="technique-desc">Generate ideas to populate your inspiration board</div>
+          <div style="margin-top:12px" id="randomWords"></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card">
+      <div id="output"></div>
+    </section>
+  </div>
+
+  <script>
+    const creativeTechniques = {
+      scamper: {
+        name: 'SCAMPER Method',
+        icon: '🔄',
+        desc: 'Systematic creative thinking: Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse',
+        example: 'How might we SUBSTITUTE materials in this product?'
+      },
+      brainstorm: {
+        name: 'Brainstorming',
+        icon: '⚡',
+        desc: 'Generate many ideas quickly without judgment, then refine the best ones',
+        example: 'List 20 ways to improve customer experience'
+      },
+      six_hats: {
+        name: 'Six Thinking Hats',
+        icon: '🎩',
+        desc: 'Explore from different perspectives: facts, emotions, caution, optimism, creativity, process',
+        example: 'What would the optimistic yellow hat say about this idea?'
+      },
+      random_word: {
+        name: 'Random Word Technique',
+        icon: '🎲',
+        desc: 'Use random stimuli to trigger unexpected connections and novel solutions',
+        example: 'How does "butterfly" relate to our marketing challenge?'
+      },
+      analogies: {
+        name: 'Analogical Thinking',
+        icon: '🔗',
+        desc: 'Draw insights from similar situations in nature, other industries, or domains',
+        example: 'How do ants solve logistics problems? What can we learn?'
+      },
+      constraints: {
+        name: 'Constraint Removal',
+        icon: '🚧',
+        desc: 'Identify and challenge limiting assumptions to open new possibilities',
+        example: 'What if budget/time/technology were unlimited?'
+      },
+      reverse: {
+        name: 'Reverse Thinking',
+        icon: '↩️',
+        desc: 'Consider the opposite or reverse of the problem to gain new insights',
+        example: 'How might we make customers hate our product?'
+      },
+      morphological: {
+        name: 'Morphological Analysis',
+        icon: '📊',
+        desc: 'Break problem into dimensions and systematically combine different options',
+        example: 'Combine different materials × shapes × functions'
+      }
+    };
+
+    const techniquePrompts = {
+      scamper: 'You are a SCAMPER creativity facilitator. Apply each SCAMPER prompt systematically: SUBSTITUTE (what can be substituted?), COMBINE (what can be combined?), ADAPT (what can be adapted from elsewhere?), MODIFY (what can be magnified/minimized?), PUT TO OTHER USE (how else can this be used?), ELIMINATE (what can be removed?), REVERSE (what can be rearranged/reversed?). Generate 2-3 specific ideas for each prompt.',
+      brainstorm: 'You are a brainstorming facilitator. Generate creative ideas using these principles: 1) Quantity over quality initially. 2) No criticism or judgment. 3) Wild ideas encouraged. 4) Build on others\' ideas. 5) Stay focused on the topic. Produce 15-20 diverse, creative solutions. Then highlight the 5 most promising ones with brief rationale.',
+      six_hats: 'You are a Six Thinking Hats facilitator. Explore the problem from each hat perspective: WHITE (facts, data, information), RED (emotions, feelings, hunches), BLACK (caution, critical judgment, risks), YELLOW (optimism, benefits, hope), GREEN (creativity, alternatives, possibilities), BLUE (process, control, thinking about thinking). Provide insights from each hat, then synthesize.',
+      random_word: 'You are a random word creativity coach. Use unexpected word associations to spark ideas: 1) Generate 3-5 random words. 2) Force connections between each word and the problem. 3) Explore metaphors and analogies. 4) Let associations flow freely. 5) Develop the most promising connections into concrete ideas. Be playful and unexpected.',
+      analogies: 'You are an analogical thinking expert. Find creative solutions through analogies: 1) Identify similar problems in nature, other industries, history, or domains. 2) Analyze how those systems solve similar challenges. 3) Extract underlying principles and patterns. 4) Adapt those solutions to the current problem. 5) Generate multiple analogical solutions. Think broadly across domains.',
+      constraints: 'You are a constraint-breaking facilitator. Challenge limiting assumptions: 1) Identify all stated and unstated constraints. 2) Question each constraint - is it real or assumed? 3) Imagine solutions if key constraints were removed. 4) Find ways to work around or transform constraints. 5) Generate breakthrough ideas by relaxing limitations. Think beyond conventional boundaries.',
+      reverse: 'You are a reverse thinking specialist. Approach the problem backwards: 1) Define the opposite of the desired outcome. 2) List ways to achieve that opposite result. 3) Reverse each "bad" solution to find good ones. 4) Consider what NOT to do, then flip it. 5) Explore paradoxes and contradictions. Use provocative reversal to unlock new perspectives.',
+      morphological: 'You are a morphological analysis expert. Break down the problem systematically: 1) Identify 3-4 key dimensions/parameters of the problem. 2) List 3-5 options for each dimension. 3) Create systematic combinations across dimensions. 4) Evaluate unusual combinations for breakthrough potential. 5) Develop the most promising combinations into concrete solutions. Be systematic yet creative.'
+    };
+
+    const randomWords = [
+      'butterfly', 'telescope', 'jazz', 'volcano', 'origami', 'lighthouse', 'quantum', 'bamboo',
+      'symphony', 'glacier', 'kaleidoscope', 'tornado', 'compass', 'aurora', 'labyrinth', 'phoenix',
+      'prism', 'waterfall', 'constellation', 'metamorphosis', 'echo', 'spiral', 'crystal', 'migration'
+    ];
+
+    function applyHub() {
+      const h = hub();
+      if (h.apiBase) apiBase.value = h.apiBase;
+      if (h.model) model.value = h.model;
+      if (h.apiKey) apiKey.value = h.apiKey;
+    }
+
+    function renderTechniquesLibrary() {
+      const library = document.getElementById('techniquesLibrary');
+      library.innerHTML = '';
+      
+      Object.entries(creativeTechniques).forEach(([key, tech]) => {
+        const card = document.createElement('div');
+        card.className = 'technique-card';
+        card.innerHTML = `
+          <div class="technique-title">${tech.icon} ${tech.name}</div>
+          <div class="technique-desc">${tech.desc}</div>
+          <div style="margin-top:6px;font-size:11px;color:var(--muted);font-style:italic">${tech.example}</div>
+        `;
+        card.onclick = () => {
+          technique.value = key;
+          insertTechniquePrompt(key);
+        };
+        library.appendChild(card);
+      });
+    }
+
+    function insertTechniquePrompt(techKey) {
+      const prompts = {
+        scamper: 'Apply SCAMPER method to: ',
+        brainstorm: 'Generate creative solutions for: ',
+        six_hats: 'Explore from six thinking perspectives: ',
+        random_word: 'Use random word associations to solve: ',
+        analogies: 'Find analogical solutions for: ',
+        constraints: 'Remove constraints and reimagine: ',
+        reverse: 'Use reverse thinking to approach: ',
+        morphological: 'Break down systematically: '
+      };
+      
+      input.value = prompts[techKey] || '';
+      input.focus();
+    }
+
+    function generateRandomWords() {
+      const words = document.getElementById('randomWords');
+      const selectedWords = [];
+      for (let i = 0; i < 6; i++) {
+        const word = randomWords[Math.floor(Math.random() * randomWords.length)];
+        if (!selectedWords.includes(word)) {
+          selectedWords.push(word);
+        }
+      }
+      
+      words.innerHTML = selectedWords.map(word => 
+        `<span class="random-word" onclick="useRandomWord('${word}')">${word}</span>`
+      ).join('');
+    }
+
+    function useRandomWord(word) {
+      const currentText = input.value.trim();
+      const connector = currentText ? '. How does "' + word + '" relate to this?' : 'How does "' + word + '" inspire solutions for: ';
+      input.value = currentText + connector;
+      input.focus();
+    }
+
+    function updateInspiration(analysis) {
+      const inspiration = document.getElementById('inspiration');
+      const ideas = extractCreativeIdeas(analysis);
+      
+      if (ideas.length === 0) {
+        inspiration.innerHTML = '<div class="technique-desc">Generate ideas to populate your inspiration board</div>';
+        return;
+      }
+      
+      let inspirationHTML = '<div class="technique-desc">Creative Ideas Generated:</div>';
+      ideas.forEach(idea => {
+        inspirationHTML += `<div class="idea-bubble">${idea}</div>`;
+      });
+      
+      inspiration.innerHTML = inspirationHTML;
+    }
+
+    function extractCreativeIdeas(text) {
+      const ideas = [];
+      const lines = text.split('\n');
+      
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        if (trimmed.match(/^\d+[\.\)]/)) { // Numbered list items
+          ideas.push(trimmed.replace(/^\d+[\.\)\s]*/, ''));
+        } else if (trimmed.startsWith('•') || trimmed.startsWith('-')) { // Bullet points
+          ideas.push(trimmed.replace(/^[•\-\s]*/, ''));
+        } else if (trimmed.toLowerCase().includes('idea') || trimmed.toLowerCase().includes('solution')) {
+          ideas.push(trimmed);
+        }
+      });
+      
+      return ideas.slice(0, 8); // Limit to 8 ideas
+    }
+
+    function bubble(text, type = 'default') {
+      const d = document.createElement('div');
+      d.className = 'bubble mono';
+      if (type === 'creative') {
+        d.style.borderLeft = '4px solid var(--creative)';
+        d.style.background = '#1a0a14';
+      }
+      d.textContent = text;
+      return d;
+    }
+
+    async function call(messages) {
+      const base = (apiBase.value || 'http://localhost:1234/v1').replace(/\/$/, '');
+      const headers = { 'Content-Type': 'application/json' };
+      if (apiKey.value) headers['Authorization'] = 'Bearer ' + apiKey.value;
+      const body = { model: model.value || 'local', temperature: Number(temperature.value || 0.9), messages, stream: stream.checked };
+      const res = await fetch(base + '/chat/completions', { method: 'POST', headers, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      if (!stream.checked) { const j = await res.json(); return j.choices?.[0]?.message?.content || '(no content)' }
+      const reader = res.body.getReader(); const dec = new TextDecoder('utf-8'); let acc = '';
+      while (true) { const { value, done } = await reader.read(); if (done) break; const chunk = dec.decode(value, { stream: true });
+        chunk.split('\n').forEach(line => { const m = line.match(/^data: (.*)$/); if (m && m[1] !== '[DONE]') { try { const j = JSON.parse(m[1]); acc += (j.choices?.[0]?.delta?.content || '') } catch (_) { } } });
+        output.lastChild.textContent = acc; output.scrollTop = output.scrollHeight;
+      }
+      return acc;
+    }
+
+    // Make useRandomWord globally accessible
+    window.useRandomWord = useRandomWord;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      applyHub();
+      renderTechniquesLibrary();
+      generateRandomWords();
+      
+      generate.onclick = async () => {
+        const sys = techniquePrompts[technique.value] || techniquePrompts.brainstorm;
+        const user = input.value.trim();
+        if (!user) return;
+        
+        const creativeEl = bubble('💡 Generating creative solutions...', 'creative');
+        output.appendChild(creativeEl);
+        
+        try {
+          const analysis = await call([
+            { role: 'system', content: sys },
+            { role: 'user', content: user }
+          ]);
+          creativeEl.textContent = analysis;
+          updateInspiration(analysis);
+        } catch (e) {
+          creativeEl.textContent = 'Error: ' + e.message;
+        }
+      };
+      
+      clear.onclick = () => { 
+        output.innerHTML = ''; 
+        document.getElementById('inspiration').innerHTML = '<div class="technique-desc">Generate ideas to populate your inspiration board</div>';
+      };
+      
+      randomize.onclick = () => {
+        generateRandomWords();
+        const word = randomWords[Math.floor(Math.random() * randomWords.length)];
+        input.value = `How does "${word}" inspire new solutions for: `;
+        input.focus();
+      };
+    });
+
+    const technique = document.getElementById('technique');
+    const apiBase = document.getElementById('apiBase');
+    const model = document.getElementById('model');
+    const apiKey = document.getElementById('apiKey');
+    const temperature = document.getElementById('temperature');
+    const stream = document.getElementById('stream');
+    const input = document.getElementById('input');
+    const generate = document.getElementById('generate');
+    const clear = document.getElementById('clear');
+    const randomize = document.getElementById('randomize');
+    const output = document.getElementById('output');
+  </script>
+</body>
+</html>

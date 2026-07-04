@@ -1,0 +1,95 @@
+{
+  "name": "khajana-awareness-data",
+  "title": "Deep Awareness & Hidden Truths Knowledge Base (खजाना)",
+  "description": "A verified, cross-referenced knowledge base focusing on mental liberation, systemic truths, financial illusions, geopolitical narratives, and paths to total freedom. All claims verified with Wikipedia sources. Organized following Open Knowledge Format (OKF) principles.",
+  "profile": "data-package",
+  "version": "2.4",
+  "keywords": [
+    "awareness", "mind control", "geopolitics", "system exposed",
+    "swadeshi", "corporate trap", "critical thinking", "solutions",
+    "NWO", "CBDC", "petrodollar", "propaganda", "silenced geniuses",
+    "big pharma", "suppressed history", "freedom roadmap", "curated resources", "dashboard"
+  ],
+  "resources": [
+    {
+      "name": "awareness-journey-index",
+      "path": "awareness_journey_index.md",
+      "description": "Main index tracking the 6 pillars of the awakening journey."
+    },
+    {
+      "name": "master-timeline",
+      "path": "master_timeline.md",
+      "description": "Chronological timeline from 1694 to present. Wikipedia verified."
+    },
+    {
+      "name": "master-reading-list",
+      "path": "master_reading_list.md",
+      "description": "30 books, 10 documentaries, 6 YouTube channels, 17 websites."
+    },
+    {
+      "name": "silenced-geniuses",
+      "path": "silenced_geniuses.md",
+      "description": "30 geniuses from India & worldwide who were killed or silenced for challenging the system. Wikipedia verified."
+    },
+    {
+      "name": "curated-web-resources",
+      "path": "curated_web_resources.md",
+      "description": "A consolidated database of 280+ premium free resources for coding, OSINT, health, psychology, and finance parsed from local HTML databases."
+    },
+    {
+      "name": "dashboard",
+      "path": "dashboard.html",
+      "description": "A self-contained local interactive HTML dashboard to track the 30-day action plan, write critical thinking journal logs, and search curated web resources."
+    },
+    {
+      "name": "dar-se-mukti",
+      "path": "dar_se_mukti_data.md",
+      "description": "Dar Se Mukti: psychological conditioning, advertising psychology, media propaganda."
+    },
+    {
+      "name": "devender-balhara",
+      "path": "devender_balhara_data.md",
+      "description": "Dr. Devender Balhara, JSM, NWO, CBDC resistance, Swadeshi."
+    },
+    {
+      "name": "historical-figures",
+      "path": "historical_figures_data.md",
+      "description": "7 historical thinkers (Rajiv Dixit, Osho, Krishnamurti, Phule, Cooper, Chomsky, Bernays)."
+    },
+    {
+      "name": "corporate-trap",
+      "path": "corporate_trap_data.md",
+      "description": "Corporate exploitation, wage slavery, performance punishment."
+    },
+    {
+      "name": "powerful-questions",
+      "path": "powerful_questions_data.md",
+      "description": "Critical thinking questions with linked books, videos, and websites."
+    },
+    {
+      "name": "freedom-solutions",
+      "path": "freedom_solutions_data.md",
+      "description": "Q&A solutions for mental, financial, health, and educational freedom."
+    },
+    {
+      "name": "health-bigpharma",
+      "path": "health_bigpharma_data.md",
+      "description": "Chapter 4: Food industry practices, pesticide usage, Big Pharma, and suppressed medicine (Ayurveda, Royal Rife)."
+    },
+    {
+      "name": "suppressed-history",
+      "path": "suppressed_history_data.md",
+      "description": "Chapter 5: Suppressed inventions, rewritten Indian history, government operations (MK-Ultra, Paperclip)."
+    },
+    {
+      "name": "path-to-freedom",
+      "path": "path_to_freedom_data.md",
+      "description": "Chapter 6: Practical roadmap to total freedom, including a 30-day action plan."
+    },
+    {
+      "name": "enhancement-plan",
+      "path": "enhancement_plan.md",
+      "description": "Internal plan documenting improvements made to the knowledge base."
+    }
+  ]
+}

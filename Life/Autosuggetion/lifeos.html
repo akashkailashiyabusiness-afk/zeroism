@@ -1,0 +1,291 @@
+import React, { useState, useEffect } from 'react';
+
+// Custom inline Icon component to bypass external dependency errors
+const Icon = ({ name, size = 24, className = "", strokeWidth = 2 }) => {
+  const icons = {
+    Compass: <><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></>,
+    Coins: <><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></>,
+    Dumbbell: <><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 2.515a2 2 0 0 0-2.829 2.828l1.768 1.767a2 2 0 0 0-2.829 2.829l6.364 6.364a2 2 0 0 0 2.829-2.829l-1.767-1.768a2 2 0 0 0 2.829-2.829z"/></>,
+    Brain: <><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/></>,
+    Plane: <><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21.5 4c0 0-2-.5-3.5 1L14.5 8.5 6.3 6.7C5.4 6.5 4.5 6.9 4 7.6L2.3 9.8c-.3.4-.2.9.2 1.2L8 14l-4.5 4.5-2.8-.9c-.4-.1-.8.1-1 .5l-.5 1c-.1.3.1.7.4.8l4.4 2.1c.3.1.6.1.8 0l2.1-4.4c.1-.3 0-.6-.3-.8l-1-.5c-.4-.2-.9-.1-1.3.3L8.5 12l5.5 5.5 3 1.7c.3.2.8.1 1.2-.2l2.2-1.7c.7-.5 1.1-1.4.9-2.3Z"/></>,
+    Zap: <><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></>,
+    Moon: <><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></>,
+    Sun: <><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></>,
+    Quote: <><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></>,
+    Sparkles: <><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M3 5h4"/><path d="M19 17v4"/><path d="M17 19h4"/></>,
+    CheckCircle2: <><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></>,
+    Circle: <><circle cx="12" cy="12" r="10"/></>
+  };
+
+  return (
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      width={size} 
+      height={size} 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth={strokeWidth} 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      className={className}
+    >
+      {icons[name]}
+    </svg>
+  );
+};
+
+const categories = [
+  {
+    id: 'core',
+    title: 'Core Principles',
+    icon: 'Compass',
+    color: 'text-blue-500',
+    bg: 'bg-blue-50 dark:bg-blue-500/10',
+    border: 'border-blue-100 dark:border-blue-500/20',
+    items: [
+      "Donate ♥️ Yourself Through Work 😉",
+      "KISS – Keep It Simple & Straightforward",
+      "Create an easily accessible tool that reminds you what's important",
+      "\"Divine\" = \"Natural\" (Stoic mindset)",
+      "There are no facts, only interpretations.",
+      "Get outside every day. Miracles are waiting everywhere."
+    ]
+  },
+  {
+    id: 'wealth',
+    title: 'Wealth 🤑',
+    icon: 'Coins',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-50 dark:bg-emerald-500/10',
+    border: 'border-emerald-100 dark:border-emerald-500/20',
+    items: [
+      "Money is a tool, not the goal. Freedom is the goal.",
+      "Your time is your true wealth.",
+      "Gold 🪙 and silver 🥈 preserve value during currency inflation.",
+      "Fiat currencies always return to zero; confidence-based only.",
+      "Wealth = Income + Wealth × Return on Investment",
+      "ROI = \"Buy & Hold\" + Valuation + Margin of Safety",
+      "Income = Accountability × Leverage × Specific Knowledge",
+      "Leverage = Capital + People + Intellectual Property",
+      "Specific Knowledge = Rare skills that can’t be easily trained"
+    ]
+  },
+  {
+    id: 'body',
+    title: 'Body 💪',
+    icon: 'Dumbbell',
+    color: 'text-rose-500',
+    bg: 'bg-rose-50 dark:bg-rose-500/10',
+    border: 'border-rose-100 dark:border-rose-500/20',
+    items: [
+      "Never sacrifice your health for more wealth.",
+      "A fit body shows patience, discipline, resilience, work ethic & self-control.",
+      "Being in shape is a sign of self-respect.",
+      "Health = Exercise × Diet × Sleep",
+      "Exercise = High-Intensity Training + Sports + Rest",
+      "Diet = Natural Foods + Intermittent Fasting × Plants",
+      "Sleep = 8-9 hrs + No alarms + Circadian rhythm"
+    ]
+  },
+  {
+    id: 'mind',
+    title: 'Mind 🧠',
+    icon: 'Brain',
+    color: 'text-purple-500',
+    bg: 'bg-purple-50 dark:bg-purple-500/10',
+    border: 'border-purple-100 dark:border-purple-500/20',
+    items: [
+      "Frame every so-called disaster: “Will this matter in 5 years?”",
+      "You get in life what you have the courage to ask for.",
+      "Nothing kills you faster than your own mind.",
+      "No one thinks about you as much as you think they do.",
+      "As long as you have breath, you can fix anything.",
+      "“People will cut you open just to see what you're made of. Show them it's love.”"
+    ]
+  },
+  {
+    id: 'time',
+    title: 'Time & Travel 🧳',
+    icon: 'Plane',
+    color: 'text-sky-500',
+    bg: 'bg-sky-50 dark:bg-sky-500/10',
+    border: 'border-sky-100 dark:border-sky-500/20',
+    items: [
+      "Travel because money returns. Time doesn’t.",
+      "Small moments = big impact.",
+      "Don’t waste time on things or people that drain energy.",
+      "Life is short. Invest your time wisely."
+    ]
+  },
+  {
+    id: 'habits',
+    title: 'Mini Habits',
+    icon: 'Zap',
+    color: 'text-amber-500',
+    bg: 'bg-amber-50 dark:bg-amber-500/10',
+    border: 'border-amber-100 dark:border-amber-500/20',
+    items: [
+      "Eat half. Walk double. Laugh triple. Love without measure.",
+      "Get outside every day. Nature heals.",
+      "Respect your energy: it's limited daily.",
+      "Happiness = Health + Wealth + Good Relationships"
+    ]
+  }
+];
+
+export default function App() {
+  const [darkMode, setDarkMode] = useState(false);
+  const [completedItems, setCompletedItems] = useState(new Set());
+  const [dailyFocus, setDailyFocus] = useState(null);
+
+  // Initialize dark mode based on system preference
+  useEffect(() => {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setDarkMode(true);
+    }
+    generateDailyFocus();
+  }, []);
+
+  // Apply dark mode class to html body
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+
+  const toggleItem = (categoryId, itemIndex) => {
+    const key = `${categoryId}-${itemIndex}`;
+    setCompletedItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(key)) {
+        newSet.delete(key);
+      } else {
+        newSet.add(key);
+      }
+      return newSet;
+    });
+  };
+
+  const generateDailyFocus = () => {
+    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    const randomItem = randomCategory.items[Math.floor(Math.random() * randomCategory.items.length)];
+    setDailyFocus({ category: randomCategory.title, text: randomItem, color: randomCategory.color });
+  };
+
+  return (
+    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-800'} font-sans pb-20`}>
+      
+      {/* Sticky Header */}
+      <header className={`sticky top-0 z-50 backdrop-blur-md border-b transition-colors duration-300 ${darkMode ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-slate-200'}`}>
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className={`p-2 rounded-lg ${darkMode ? 'bg-indigo-500/20 text-indigo-400' : 'bg-indigo-100 text-indigo-600'}`}>
+              <Icon name="Compass" size={20} strokeWidth={2.5} />
+            </div>
+            <h1 className="font-bold text-xl tracking-tight">Life OS</h1>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className={`hidden md:flex items-center gap-2 text-sm font-medium italic ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+              <Icon name="Quote" size={14} />
+              "Your true wealth is your time and freedom."
+            </div>
+            <button 
+              onClick={() => setDarkMode(!darkMode)}
+              className={`p-2.5 rounded-full transition-all duration-200 ${darkMode ? 'bg-slate-800 hover:bg-slate-700 text-yellow-400' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}`}
+              aria-label="Toggle Dark Mode"
+            >
+              {darkMode ? <Icon name="Sun" size={18} /> : <Icon name="Moon" size={18} />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-6xl mx-auto px-6 pt-10">
+        
+        {/* Hero Section */}
+        <div className={`mb-12 p-8 md:p-12 rounded-3xl border transition-colors duration-300 ${darkMode ? 'bg-gradient-to-br from-slate-800 to-slate-900 border-slate-700' : 'bg-gradient-to-br from-indigo-600 to-blue-700 border-indigo-500'} text-white shadow-xl relative overflow-hidden`}>
+          <div className="absolute top-0 right-0 -mt-10 -mr-10 opacity-10">
+            <Icon name="Compass" size={240} />
+          </div>
+          
+          <div className="relative z-10">
+            <h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">Your Daily Philosophy Toolkit</h2>
+            <p className="text-lg md:text-xl opacity-90 mb-8 max-w-2xl font-light">
+              Body 💪 Mind 🧠 Wealth 🤑 — A centralized dashboard to align your daily actions with your core values.
+            </p>
+            
+            {/* Daily Focus Banner */}
+            {dailyFocus && (
+              <div className={`mt-6 p-5 rounded-2xl backdrop-blur-sm border inline-block max-w-full ${darkMode ? 'bg-white/10 border-white/10' : 'bg-black/20 border-white/20'}`}>
+                <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider mb-2 text-indigo-100">
+                  <Icon name="Sparkles" size={16} /> Today's Focus ({dailyFocus.category})
+                </div>
+                <p className="text-xl md:text-2xl font-medium leading-relaxed">
+                  "{dailyFocus.text}"
+                </p>
+                <button 
+                  onClick={generateDailyFocus}
+                  className={`mt-4 text-sm px-4 py-2 rounded-lg font-medium transition-colors ${darkMode ? 'bg-white/10 hover:bg-white/20' : 'bg-white/20 hover:bg-white/30'}`}
+                >
+                  Generate New Focus
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Masonry Grid for Categories */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categories.map((category) => {
+            return (
+              <section 
+                key={category.id} 
+                className={`flex flex-col rounded-3xl border transition-all duration-300 hover:shadow-lg ${darkMode ? 'bg-slate-800/50 border-slate-700 hover:border-slate-600' : 'bg-white border-slate-200 hover:border-slate-300'}`}
+              >
+                <div className={`p-6 pb-4 border-b flex items-center gap-4 rounded-t-3xl ${darkMode ? 'border-slate-700' : 'border-slate-100'} ${category.bg}`}>
+                  <div className={`p-3 rounded-xl bg-white/50 dark:bg-black/20 ${category.color}`}>
+                    <Icon name={category.icon} size={24} strokeWidth={2.5} />
+                  </div>
+                  <h2 className={`text-xl font-bold ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>
+                    {category.title}
+                  </h2>
+                </div>
+                
+                <div className="p-4 flex-grow">
+                  <ul className="space-y-2">
+                    {category.items.map((item, index) => {
+                      const isCompleted = completedItems.has(`${category.id}-${index}`);
+                      return (
+                        <li 
+                          key={index}
+                          onClick={() => toggleItem(category.id, index)}
+                          className={`group flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all duration-200 ${
+                            isCompleted 
+                              ? (darkMode ? 'bg-slate-700/30 opacity-60' : 'bg-slate-100 opacity-60') 
+                              : (darkMode ? 'hover:bg-slate-700/50' : 'hover:bg-slate-50')
+                          }`}
+                        >
+                          <div className={`mt-0.5 flex-shrink-0 transition-colors duration-200 ${isCompleted ? category.color : (darkMode ? 'text-slate-600' : 'text-slate-300 group-hover:text-slate-400')}`}>
+                            {isCompleted ? <Icon name="CheckCircle2" size={18} /> : <Icon name="Circle" size={18} />}
+                          </div>
+                          <span className={`text-sm leading-relaxed transition-all duration-200 ${isCompleted ? 'line-through' : ''}`}>
+                            {item}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </section>
+            );
+          })}
+        </div>
+        
+      </main>
+    </div>
+  );
+}

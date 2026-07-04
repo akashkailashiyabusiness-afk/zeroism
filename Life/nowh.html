@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>अब की शक्ति: आध्यात्मिक ज्ञानोदय का मार्ग 🌟</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="bookstyle.css"> <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #fff3e0;
+            color: #2d3748;
+            line-height: 1.7;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .book-intro {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #4c78a8, #1a365d);
+            color: #fff;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .book-intro h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .book-intro p {
+            font-size: 1.3em;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        section {
+            background: #fff;
+            padding: 35px;
+            margin-bottom: 40px;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        section.active {
+            opacity: 1;
+        }
+
+        section h2 {
+            color: #ef5350;
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #ffffff;
+            padding-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        section h2:hover {
+            transform: translateX(10px);
+        }
+
+        article h3 {
+            color: #4a5568;
+            font-size: 1.6em;
+            margin: 25px 0 15px;
+            transition: color 0.3s ease;
+        }
+
+        article h3:hover {
+            color: #ffca28;
+        }
+
+        ul {
+            margin-left: 25px;
+        }
+
+        ul li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        ul li:hover {
+            transform: translateX(5px);
+        }
+
+        ul li:before {
+            content: "➤";
+            color: #ffca28;
+            position: absolute;
+            left: 0;
+        }
+
+        ul li strong {
+            color: #ef5350;
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            padding: 16px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .quiz-container select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #4a5568;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .quiz-container button {
+            background: #ef5350;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .quiz-container button:hover {
+            background: #ffca28;
+            color: #2d3748;
+        }
+
+        .quiz-result {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .correct {
+            color: #2f855a;
+        }
+
+        .incorrect {
+            color: #c53030;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 8px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            margin-bottom: 24px;
+        }
+
+        .tablink {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-size: 1em;
+            font-weight: 500;
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tablink:hover, .tablink.active {
+            background: #4a5568;
+            color: #fff;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .book-intro h1 {
+                font-size: 2em;
+            }
+
+            section {
+                padding: 25px;
+            }
+
+            section h2 {
+                font-size: 1.8em;
+            }
+
+            .tablink {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="book-intro">
+        <img src="nowh.webp" alt="Steve Jobs Biography Cover">
+        <h1>अब की शक्ति: आध्यात्मिक ज्ञानोदय का मार्ग 🌟</h1>
+        <p>एखार्ट टॉल की किताब से प्रेरणा ✨</p>
+    </div>
+
+    <main>
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tablink active" onclick="showTab('मूलसंकल्पनाएं')">मूल बातें 😊</button>
+            <button class="tablink" onclick="showTab('अहं')">अहं 😕</button>
+            <button class="tablink" onclick="showTab('दर्दशरीर')">दर्द शरीर 😢</button>
+            <button class="tablink" onclick="showTab('अभ्यास')">अभ्यास 🧘</button>
+            <button class="tablink" onclick="showTab('प्रश्नोत्तरी')">प्रश्नोत्तरी ❓</button>
+        </div>
+
+        <!-- Tab Content Container -->
+        <section id="tab-content"></section>
+    </main>
+
+    <script>
+        // डेटा ऑब्जेक्ट जिसमें सारी जानकारी है
+        const tabData = {
+            मूलसंकल्पनाएं: {
+                title: "मूल बातें 😊",
+                content: `
+                    <article>
+                        <div class="grid">
+                            <div class="card">
+                                <h3>अब 🌈</h3>
+                                <p>सिर्फ अभी का पल असली है! बीता हुआ समय बस याद है, और आने वाला समय बस ख्याल।</p>
+                                <p><em>उदाहरण: खाना खाते वक्त सिर्फ स्वाद का मज़ा लो, कल की चिंता मत करो 🍽️</em></p>
+                                <p>एखार्ट टॉल कहते हैं कि अभी में जीने से मन को सुकून मिलता है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>उपस्थिति 🌿</h3>
+                                <p>अभी के पल में पूरा ध्यान देना, बिना कुछ जज किए। अपने विचारों और भावनाओं को बस देखो।</p>
+                                <p><em>उदाहरण: बारिश की बूंदों को सुनो, सिर्फ उनकी आवाज़ पर ध्यान दो 🌧️</em></p>
+                                <p>ये तरीका मन को शांत करता है और खुशी देता है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>मन से जुड़ाव 🧠</h3>
+                                <p>लोग सोचते हैं कि वो अपने विचार हैं, लेकिन ये गलत है। तुम विचारों से अलग हो।</p>
+                                <p><em>उदाहरण: नौकरी में गलती हुई तो सोचो ये सिर्फ एक घटना है, तुम नहीं 🙅</em></p>
+                                <p>ये समझने से डर और दुख कम होता है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>शांति की खोज 🕊️</h3>
+                                <p>वर्तमान में जीने से मन शांत होता है। ना बीते की चिंता, ना भविष्य का डर।</p>
+                                <p><em>उदाहरण: पेड़ों को देखते वक्त सिर्फ उनकी हवा में हिलती पत्तियों पर ध्यान दो 🌳</em></p>
+                                <p>शांति तुम्हारे अंदर ही है, बस उसे ढूंढो।</p>
+                            </div>
+                        </div>
+                    </article>
+                `
+            },
+            अहं: {
+                title: "अहं 😕",
+                content: `
+                    <article>
+                        <div class="grid">
+                            <div class="card">
+                                <h3>अहं का बनना 🏰</h3>
+                                <p>अहं तुम्हारी पुरानी यादों और अनुभवों से बनता है। ये तुम्हें तुम्हारी नौकरी, पैसे, या रुतबे से जोड़ता है।</p>
+                                <p><em>उदाहरण: “मैं बड़ा अफसर हूँ” सोचना अहं है 💼</em></p>
+                                <p>ये हमेशा तारीफ चाहता है और हार से डरता है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>अहं क्या करता है? ⚔️</h3>
+                                <p>अहं तुम्हें अलग और खास बताता है। ये हर चीज़ को कंट्रोल करना चाहता है।</p>
+                                <p><em>उदाहरण: दोस्त से बहस में सिर्फ जीतना चाहना, चाहे सही हो या गलत 🗣️</em></p>
+                                <p>अहं दुख देता है अगर ये मन पर हावी हो जाए।</p>
+                            </div>
+                            <div class="card">
+                                <h3>अहं को छोड़ना 🌅</h3>
+                                <p>अभी के पल में रहो और विचारों को छोड़ दो। इससे अहं धीरे-धीरे कम होता है।</p>
+                                <p><em>उदाहरण: कोई गलत बोले तो बस सुनो, जवाब देने की जल्दी मत करो 🤐</em></p>
+                                <p>इससे मन को आज़ादी और प्यार मिलता है।</p>
+                            </div>
+                        </div>
+                    </article>
+                `
+            },
+            दर्दशरीर: {
+                title: "दर्द शरीर 😢",
+                content: `
+                    <article>
+                        <div class="grid">
+                            <div class="card">
+                                <h3>दर्द शरीर क्या है? 💔</h3>
+                                <p>पुराने दुख और भावनाएं जो मन में जमा हो जाती हैं। ये कभी-कभी अचानक जाग उठता है।</p>
+                                <p><em>उदाहरण: पुरानी बात याद आने पर अचानक उदास होना 😔</em></p>
+                                <p>ये तुम्हारे विचारों को और गुस्से को बढ़ाता है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>दर्द शरीर को समझना 🔍</h3>
+                                <p>ये अचानक भारीपन या गुस्सा लाता है। कोई छोटी बात भी इसे जगा सकती है।</p>
+                                <p><em>उदाहरण: कोई पुराना गाना सुनकर अचानक रोना आना 🎶</em></p>
+                                <p>इसे बस देखो, इसके साथ मत उलझो।</p>
+                            </div>
+                            <div class="card">
+                                <h3>दर्द शरीर को ठीक करना 🌱</h3>
+                                <p>अभी के पल में ध्यान देने से ये धीरे-धीरे खत्म होता है। जागरूकता इसे कमज़ोर करती है।</p>
+                                <p><em>उदाहरण: गुस्सा आए तो सांस पर ध्यान दो, उसे जाने दो 🌬️</em></p>
+                                <p>इससे मन हल्का और खुश होता है।</p>
+                            </div>
+                        </div>
+                    </article>
+                `
+            },
+            अभ्यास: {
+                title: "अभ्यास 🧘",
+                content: `
+                    <article>
+                        <div class="grid">
+                            <div class="card">
+                                <h3>सचेत सांस 🌬️</h3>
+                                <p>अपनी सांस को महसूस करो। ये तुम्हें अभी के पल में लाता है।</p>
+                                <p><em>टिप: 5 मिनट रोज़ सांस पर ध्यान दो, कुछ और मत सोचो 😌</em></p>
+                                <p>ये मन को शांत और खुश करता है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>शरीर स्कैन 💆</h3>
+                                <p>अपने शरीर को ध्यान से देखो, हर हिस्से को महसूस करो।</p>
+                                <p><em>टिप: लेटकर पैरों से सिर तक धीरे-धीरे ध्यान ले जाओ 🦶</em></p>
+                                <p>इससे तनाव कम होता है और नींद अच्छी आती है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>स्वीकार करना 🤗</h3>
+                                <p>जो है, उसे वैसे ही मान लो। ना लड़ो, ना बदलने की कोशिश करो।</p>
+                                <p><em>टिप: परेशानी आए तो कहो, “ठीक है, ये अभी ऐसा है” 🙏</em></p>
+                                <p>ये मन को सुकून देता है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>प्रकृति से जुड़ना 🌳</h3>
+                                <p>प्रकृति में समय बिताओ, उसकी सुंदरता को महसूस करो।</p>
+                                <p><em>टिप: पार्क में टहलो और पेड़ों की आवाज़ सुनो 🍃</em></p>
+                                <p>ये मन को ताज़ा और शांत करता है।</p>
+                            </div>
+                            <div class="card">
+                                <h3>खुशी का अभ्यास 😄</h3>
+                                <p>हर दिन कुछ अच्छी चीज़ों के लिए शुक्रिया कहो।</p>
+                                <p><em>टिप: रात को 3 चीज़ें लिखो जो तुम्हें खुश करती हैं 📝</em></p>
+                                <p>इससे मन में प्यार और खुशी बढ़ती है।</p>
+                            </div>
+                        </div>
+                    </article>
+                `
+            },
+            प्रश्नोत्तरी: {
+                title: "प्रश्नोत्तरी ❓",
+                content: `
+                    <article class="quiz-container">
+                        <div class="card">
+                            <p><strong>प्रश्न 1: 'अब की शक्ति' किस पर ध्यान देती है? 🤔</strong></p>
+                            <select id="quizAnswer1">
+                                <option value="A">कल की प्लानिंग</option>
+                                <option value="B">आज में जीना</option>
+                                <option value="C">पुरानी बातें</option>
+                            </select>
+                            <button onclick="checkAnswer1()">जवाब दो! 🚀</button>
+                            <div id="result1" class="quiz-result"></div>
+                        </div>
+                        <div class="card">
+                            <p><strong>प्रश्न 2: दर्द शरीर क्या है? 😢</strong></p>
+                            <select id="quizAnswer2">
+                                <option value="A">शारीरिक दर्द</option>
+                                <option value="B">पुराना मन का दुख</option>
+                                <option value="C">खुशी की बात</option>
+                            </select>
+                            <button onclick="checkAnswer2()">जवाब दो! 🚀</button>
+                            <div id="result2" class="quiz-result"></div>
+                        </div>
+                        <div class="card">
+                            <p><strong>प्रश्न 3: शांति की खोज कैसे होती है? 🕊️</strong></p>
+                            <select id="quizAnswer3">
+                                <option value="A">ज़्यादा सोचकर</option>
+                                <option value="B">वर्तमान में रहकर</option>
+                                <option value="C">पैसे कमाकर</option>
+                            </select>
+                            <button onclick="checkAnswer3()">जवाब दो! 🚀</button>
+                            <div id="result3" class="quiz-result"></div>
+                        </div>
+                    </article>
+                `
+            }
+        };
+
+        // टैब दिखाने का फंक्शन
+        function showTab(tabName) {
+            const contentContainer = document.getElementById('tab-content');
+            const tablinks = document.getElementsByClassName('tablink');
+
+            // सभी टैब्स से एक्टिव हटाओ
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove('active');
+            }
+
+            // क्लिक किया टैब एक्टिव करो
+            const clickedTab = Array.from(tablinks).find(tab => tab.textContent === tabData[tabName].title || tab.textContent === tabName);
+            if (clickedTab) {
+                clickedTab.classList.add('active');
+            }
+
+            // टैब का कंटेंट दिखाओ
+            const tab = tabData[tabName];
+            if (tab) {
+                contentContainer.innerHTML = `
+                    <h2>${tab.title}</h2>
+                    ${tab.content}
+                `;
+            }
+        }
+
+        // क्विज़ के जवाब चेक करने के फंक्शन
+        function checkAnswer1() {
+            const answer = document.getElementById("quizAnswer1").value;
+            const result = document.getElementById("result1");
+            if (answer === "B") {
+                result.innerHTML = "बिल्कुल सही! 🎉 अभी में जीना ही असली बात है!";
+                result.classList.add("correct");
+                result.classList.remove("incorrect");
+            } else {
+                result.innerHTML = "अरे, गलत हो गया 😅 ये किताब आज के पल की बात करती है!";
+                result.classList.add("incorrect");
+                result.classList.remove("correct");
+            }
+        }
+
+        function checkAnswer2() {
+            const answer = document.getElementById("quizAnswer2").value;
+            const result = document.getElementById("result2");
+            if (answer === "B") {
+                result.innerHTML = "वाह, सही जवाब! 🎈 दर्द शरीर पुराने दुख हैं!";
+                result.classList.add("correct");
+                result.classList.remove("incorrect");
+            } else {
+                result.innerHTML = "ओहो, गलत 😔 ये मन के पुराने दुख हैं, शरीर का दर्द नहीं!";
+                result.classList.add("incorrect");
+                result.classList.remove("correct");
+            }
+        }
+
+        function checkAnswer3() {
+            const answer = document.getElementById("quizAnswer3").value;
+            const result = document.getElementById("result3");
+            if (answer === "B") {
+                result.innerHTML = "शाबाश! 🌟 शांति अभी के पल में मिलती है!";
+                result.classList.add("correct");
+                result.classList.remove("incorrect");
+            } else {
+                result.innerHTML = "नहीं-नहीं 😕 शांति वर्तमान में रहने से मिलती है!";
+                result.classList.add("incorrect");
+                result.classList.remove("correct");
+            }
+        }
+
+        // पहला टैब शुरू में दिखाओ
+        showTab('मूलसंकल्पनाएं');
+    </script>
+</body>
+</html>

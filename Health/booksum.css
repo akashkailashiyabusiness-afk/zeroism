@@ -1,0 +1,389 @@
+body {
+    font-family: 'Segoe UI', Georgia, serif; /* Combining fonts for a modern yet book-like feel */
+    line-height: 1.8;
+    margin: 0;
+    padding: 20px;
+    background: #fff;
+    color: #000; /* Changed text color to black */
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.reading-mode {
+    background-color: #F5F5DC; /* Light beige for reading mode */
+    color: #333; /* Dark gray for reading mode text */
+}
+
+
+
+.reading-mode .container {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.book-cover {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.book-cover img {
+    max-width: 300px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.book-cover img:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.book-title {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+
+
+
+
+
+
+
+
+
+.book-grid {
+    display: grid;
+    
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.book-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.book-card:hover {
+    transform: translateY(-15px);
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1);
+}
+
+.book-card img {
+    width: 100%;
+    height: 100%;
+    
+}
+
+
+
+
+@media (max-width: 600px) {
+    .book-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 10px;
+        width: auto;
+        height: auto;}
+  
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+h2 {
+    color: #15278b;
+    border-bottom: 3px solid #15278b;
+    padding-bottom: 8px;
+    margin-top: 40px;
+    font-size: clamp(22px, 3vw, 30px);
+    animation: slideInLeft 0.8s ease-in-out;
+}
+
+
+
+h3 {
+    color: #000; /* Changed to black */
+    margin-top: 25px;
+    font-size: clamp(18px, 2.5vw, 24px);
+    animation: slideInRight 0.8s ease-in-out;
+}
+
+.reading-mode h3 {
+    color: #8B4513;
+}
+
+h4 {
+    color: #e71454;
+}
+
+.reading-mode h4 {
+    color: #8B4513;
+}
+
+p {
+    margin-bottom: 20px;
+    font-size: clamp(16px, 2vw, 18px);
+    color: #000; /* Changed to black */
+}
+
+.reading-mode p {
+    color: #333; /* Dark gray for reading mode */
+}
+
+ul, ol {
+    padding-left: 30px;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+ul li {
+    background: #192080;
+    margin: 5px 0;
+    
+    padding: 10px;
+    border-radius: 10px;
+    color: #fdfdfd; /* Changed to black */
+    position: relative;
+    transition: background 0.3s ease;
+}
+
+
+
+
+
+
+
+.reading-mode ul li {
+    background: rgba(139, 69, 19, 0.1); /* Subtle brown tint for reading mode */
+    color: #333; /* Dark gray for reading mode */
+}
+
+ul li::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    color: #00ddeb;
+}
+
+.reading-mode ul li::before {
+    color: #8B4513;
+}
+
+
+
+
+
+
+
+
+
+
+li {
+    margin-bottom: 12px;
+}
+
+strong {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+section, .section {
+    margin-bottom: 40px;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: float 4s ease-in-out infinite;
+}
+
+section:hover, .section:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+.reading-mode section, .reading-mode .section {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(139, 69, 19, 0.2);
+}
+
+.rule {
+    margin: 10px 0;
+    padding: 10px;
+    border-left: 4px solid #ffd000;
+    transition: border-color 0.3s ease;
+}
+
+.reading-mode .rule {
+    border-left: 4px solid #8B4513;
+}
+
+
+
+.reading-mode code {
+    background: rgba(139, 69, 19, 0.1);
+    color: #8B4513;
+}
+
+a {
+    color: #00ddeb;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.reading-mode a {
+    color: #8B4513;
+}
+
+a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.reading-mode a:hover {
+    color: #5A2E0D;
+}
+
+.key-concept {
+    border-left: 5px solid #00ddeb;
+    padding-left: 20px;
+    margin-bottom: 25px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.reading-mode .key-concept {
+    border-left: 5px solid #8B4513;
+    background: rgba(139, 69, 19, 0.05);
+}
+
+.key-concept:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #fff;
+}
+
+.reading-mode .key-concept:hover {
+    background: rgba(139, 69, 19, 0.15);
+    border-color: #5A2E0D;
+}
+
+.key-concept h3 {
+    color: #00ddeb;
+}
+
+.reading-mode .key-concept h3 {
+    color: #8B4513;
+}
+
+.law {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.reading-mode .law {
+    border: 1px solid rgba(139, 69, 19, 0.2);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.law:hover {
+    border-color: #00ddeb;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.reading-mode .law:hover {
+    border-color: #8B4513;
+    background: rgba(139, 69, 19, 0.1);
+}
+
+.law h3 {
+    color: #e67e22;
+}
+
+.reading-mode .law h3 {
+    color: #8B4513;
+}
+
+/* Background Particles */
+.bg-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    animation: drift linear infinite;
+}
+
+@keyframes drift {
+    0% { transform: translateY(100vh); opacity: 0; }
+    10% { opacity: 0.5; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(-10vh); opacity: 0; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+    from { transform: translateX(-50px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(50px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    h1 { font-size: 2em; }
+    .book-cover img { max-width: 200px; }
+    section, .section { padding: 15px; }
+    ul, ol { padding-left: 20px; }
+    .container { padding: 15px; }
+}
